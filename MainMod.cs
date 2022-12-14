@@ -6,6 +6,8 @@ namespace CMS21MP
     {
        public Client client;
        public ModGUI modGUI;
+
+       public ThreadManager threadManager;
        
         public override void OnApplicationStart() // Runs after Game Initialization.
         {
@@ -19,6 +21,9 @@ namespace CMS21MP
            
            modGUI = new ModGUI();
            modGUI.Mod = this;
+
+           threadManager = new ThreadManager();
+           
            MelonLogger.Msg("Mod Initialized!");
         }
 
@@ -34,7 +39,7 @@ namespace CMS21MP
 
         public override void OnUpdate() // Runs once per frame.
         {
-           // MelonLogger.Msg("OnUpdate");
+           threadManager.UpdateThread();
         }
 
         public override void OnFixedUpdate() // Can run multiple times per frame. Mostly used for Physics.
