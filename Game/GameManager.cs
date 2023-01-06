@@ -1,0 +1,49 @@
+using System.Collections.Generic;
+using MelonLoader;
+using UnityEngine;
+
+namespace CMS21MP
+{
+    public class GameManager : MonoBehaviour
+    {
+        public static GameManager instance;
+
+        public static Dictionary<int, PlayerManager> players = new Dictionary<int, PlayerManager>();
+
+        public GameObject localPlayerPrefab;
+        public GameObject playerPrefab;
+
+        public void Initialize()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                MelonLogger.Msg("Instance already exists, destroying object!");
+                Destroy(this);
+            }
+        }
+
+        public void SpawnPlayer(int _id, string _username, Vector3 _position, Quaternion _rotation)
+        {
+            GameObject _player;
+            if (_id == Client.instance.myId)
+            {
+                _player = Instantiate(localPlayerPrefab, _position, _rotation);
+                MelonLogger.Msg("LocalPlayerSpawned!");
+            }
+            else
+            {
+                _player = Instantiate(playerPrefab, _position, _rotation);
+                MelonLogger.Msg("OnlinePlayerSpawned!");
+                _player.transform.position = GameObject.Find("First Person Controller").transform.position;
+            }
+
+            _player.GetComponent<PlayerManager>().id = _id;
+            _player.GetComponent<PlayerManager>().username = _username;
+            players.Add(_id, _player.GetComponent<PlayerManager>());
+        }
+    }
+}

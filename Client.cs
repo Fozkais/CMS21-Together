@@ -18,6 +18,9 @@ namespace CMS21MP
         public int port = 7777;
         public int myId = 0;
         public TCP tcp;
+        public UDP udp;
+
+        private bool isConnected = false;
 
         private delegate void PacketHandler(Packet _packet);
 
@@ -37,12 +40,22 @@ namespace CMS21MP
                 Destroy(this);
             }
             tcp = new TCP();
+            udp = new UDP();
+            
             threadManager = new ThreadManager();
         }
+
+        public void ClientOnApplicationQuit()
+        {
+            Disconnect();
+        }
+        
 
         public void ConnectToServer()
         {
             InitializeClientData();
+
+            isConnected = true;
             tcp.Connect();
         }
 
@@ -78,7 +91,7 @@ namespace CMS21MP
                 stream = socket.GetStream();
 
                 receivedData = new Packet();
-                
+
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
 
@@ -89,7 +102,7 @@ namespace CMS21MP
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        // disconnect
+                        instance.Disconnect();
                         return;
                     }
 
@@ -101,14 +114,14 @@ namespace CMS21MP
                 }
                 catch
                 {
-                    // disconnect
+                    Disconnect();
                 }
             }
 
             private bool HandleData(byte[] _data)
             {
                 int _packetLenght = 0;
-                
+
                 receivedData.SetBytes(_data);
                 if (receivedData.UnreadLength() >= 4)
                 {
@@ -148,15 +161,151 @@ namespace CMS21MP
 
                 return false;
             }
+
+            public void SendData(Packet _packet)
+            {
+                try
+                {
+                    if (socket != null)
+                    {
+                        stream.BeginWrite(_packet.ToArray(), 0,
+                            _packet.Length(), null, null);
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg($"Error sending data to server via TCP: {e}");
+                    throw;
+                }
+            }
+
+            private void Disconnect()
+            {
+                instance.Disconnect();
+
+                stream = null;
+                receivedData = null;
+                receiveBuffer = null;
+                socket = null;
+            }
         }
+
+        public class UDP
+            {
+                public UdpClient socket;
+                public IPEndPoint endPoint;
+
+                public UDP()
+                {
+                    endPoint = new IPEndPoint(IPAddress.Parse(instance.ip), instance.port);
+                }
+                public void Connect(int localPort)
+                {
+                    socket = new UdpClient(localPort);
+                    try
+                    {
+                        socket.Connect(endPoint);
+                    }
+                    catch
+                    {
+                        endPoint = new IPEndPoint(IPAddress.Parse(instance.ip), instance.port);
+                        socket.Connect(endPoint);
+                    }
+                    socket.BeginReceive(ReceiveCallback, null);
+
+                    using(Packet packet = new Packet())
+                    {
+                        SendData(packet);
+                    }
+                }
+
+                public void SendData(Packet _packet)
+                {
+                    try
+                    {
+                        _packet.InsertInt(instance.myId);
+                        if (socket != null)
+                        {
+                            socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
+                        }
+                    }
+                    catch (Exception _ex)
+                    {
+                        MelonLogger.Msg($"Error sending data to server via UDP: {_ex}");
+                    }
+                }
+
+                private void ReceiveCallback(IAsyncResult _result)
+                {
+                    try
+                    {
+                        byte[] _data = socket.EndReceive(_result, ref endPoint);
+                        socket.BeginReceive(ReceiveCallback, null);
+
+                        if (_data.Length < 4)
+                        {
+                            instance.Disconnect();
+                            return;
+                        }
+
+                        HandleData(_data);
+                    }
+                    catch
+                    {
+                        Disconnect();
+                    }
+                }
+
+                private void HandleData(byte[] _data)
+                {
+                    using (Packet _packet = new Packet(_data))
+                    {
+                        int _packetLength = _packet.ReadInt();
+                        _data = _packet.ReadBytes(_packetLength);
+                    }
+
+                    ThreadManager.ExecuteOnMainThread(() =>
+                    {
+                        using (Packet _packet = new Packet(_data))
+                        {
+                            int _packetId = _packet.ReadInt();
+                            packetHandlers[_packetId](_packet);
+                        }
+                    });
+                }
+
+                private void Disconnect()
+                {
+                    instance.Disconnect();
+                    endPoint = null;
+                    socket = null;
+                }
+            }
 
         private void InitializeClientData()
         {
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ServerPackets.welcome, ClientHandle.Welcome }
+                { (int)ServerPackets.welcome, ClientHandle.Welcome },
+                { (int)ServerPackets.udpTest, ClientHandle.UDPTest },
+                { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
+                { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
+                { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation }
             };
             MelonLogger.Msg("Initialized Packets!");
+        }
+        
+        private void Disconnect()
+        {
+            if (isConnected)
+            {
+                isConnected = false;
+                tcp.socket.Close();
+                udp.socket.Close();
+                
+                MelonLogger.Msg("Disconnected from server.");
+            }
         }
     }
 }

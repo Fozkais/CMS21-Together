@@ -1,10 +1,11 @@
 ﻿using System;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CMS21MP
 {
-    public class ModGUI
+    public class ModGUI : MonoBehaviour
     {
         public static ModGUI instance;
         public MainMod Mod;
@@ -15,6 +16,23 @@ namespace CMS21MP
 
         public string ipAdress = "127.0.0.1";
         public string usernameField = "player";
+
+        public Vector3 player2Pos;
+        public string player2Position;
+
+
+        public void Initialize()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                MelonLogger.Msg("Instance already exists, destroying object!");
+                Destroy(this);
+            }
+        }
 
         public void OnGUI()
         {
@@ -29,8 +47,15 @@ namespace CMS21MP
                 GUI.Box(new Rect(panelOffsetX, panelOffsetY, panelSizeX, panelSizeY), "Multiplayer GUI");
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 50, panelSizeX - 20, 35), "Connect"))
                 {
-                    Mod.client.ip = ipAdress;
-                    Mod.client.ConnectToServer();
+                    if (SceneManager.GetActiveScene().name == "garage")
+                    {
+                        Mod.client.ip = ipAdress;
+                        Mod.client.ConnectToServer();
+                    }
+                    else
+                    {  
+                        MelonLogger.Msg("Please launch a game before connecting to Server!");
+                    }
                 }
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 90, panelSizeX - 20, 35), "Host"))
                 {
@@ -39,6 +64,7 @@ namespace CMS21MP
                 
                 ipAdress = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 130, panelSizeX - 20, 25), ipAdress);
                 usernameField = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 160, panelSizeX - 20, 25), usernameField);
+                GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 185, panelSizeX - 20, 25), "player2Pos : "+player2Pos.ToString());
             }
         }
 

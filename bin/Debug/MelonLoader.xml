@@ -4,13 +4,198 @@
         <name>MelonLoader</name>
     </assembly>
     <members>
+        <member name="P:MelonLoader.MelonAdditionalDependenciesAttribute.AssemblyNames">
+            <summary>
+            The (simple) assembly names of Additional Dependencies that aren't directly referenced but should still be regarded as important.
+            </summary>
+        </member>
         <member name="P:MelonLoader.MelonAuthorColorAttribute.Color">
             <summary>
             Color of the Author Log.
             </summary>
         </member>
+        <member name="P:MelonLoader.MelonAuthorColorAttribute.DrawingColor">
+            <summary>
+            Color of the Author Log.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonColorAttribute.Color">
+            <summary>
+            Color of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonColorAttribute.DrawingColor">
+            <summary>
+            Color of the Author Log.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonGameAttribute.Developer">
+            <summary>
+            Developer of the Game.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonGameAttribute.Name">
+            <summary>
+            Name of the Game.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonGameAttribute.Universal">
+            <summary>
+            If the Attribute is set as Universal or not.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonGameAttribute.IsCompatible(System.String,System.String)">
+            <summary>
+            Returns true or false if the Game is compatible with this Assembly.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonGameAttribute.IsCompatible(MelonLoader.MelonGameAttribute)">
+            <summary>
+            Returns true or false if the Game is compatible with this Assembly.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonGameAttribute.IsCompatibleBecauseUniversal(MelonLoader.MelonGameAttribute)">
+            <summary>
+            Returns true or false if the Game is compatible with this Assembly specifically because of Universal Compatibility.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonGameVersionAttribute.Version">
+            <summary>
+            Version of the Game.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonGameVersionAttribute.Universal">
+            <summary>
+            If the Attribute is set as Universal or not.
+            </summary>
+        </member>
         <member name="P:MelonLoader.MelonIDAttribute.ID">
             <summary>ID of the Melon.</summary>
+        </member>
+        <member name="P:MelonLoader.MelonIncompatibleAssembliesAttribute.AssemblyNames">
+            <summary>
+            The (simple) assembly names of the mods that are incompatible.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.SystemType">
+            <summary>
+            System.Type of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.Name">
+            <summary>
+            Name of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.Version">
+            <summary>
+            Version of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.SemanticVersion">
+            <summary>
+            Semantic Version of the Melon. Will be null if Version is not using the <see href="https://semver.org">Semantic Versioning</see> format.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.Author">
+            <summary>
+            Author of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonInfoAttribute.DownloadLink">
+            <summary>
+            Download Link of the Melon.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonInfoAttribute.#ctor(System.Type,System.String,System.String,System.String,System.String)">
+            <summary>
+            MelonInfo constructor.
+            </summary>
+            <param name="type">The main Melon type of the Melon (for example TestMod)</param>
+            <param name="name">Name of the Melon</param>
+            <param name="version">Version of the Melon</param>
+            <param name="author">Author of the Melon</param>
+            <param name="downloadLink">URL to the download link of the mod [optional]</param>
+        </member>
+        <member name="M:MelonLoader.MelonInfoAttribute.#ctor(System.Type,System.String,System.Int32,System.Int32,System.Int32,System.String,System.String,System.String)">
+            <summary>
+            MelonInfo constructor.
+            </summary>
+            <param name="type">The main Melon type of the Melon (for example TestMod)</param>
+            <param name="name">Name of the Melon</param>
+            <param name="versionMajor">Version Major of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="versionMinor">Version Minor of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="versionRevision">Version Revision of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="versionIdentifier">Version Identifier of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="author">Author of the Melon</param>
+            <param name="downloadLink">URL to the download link of the mod [optional]</param>
+        </member>
+        <member name="M:MelonLoader.MelonInfoAttribute.#ctor(System.Type,System.String,System.Int32,System.Int32,System.Int32,System.String,System.String)">
+            <summary>
+            MelonInfo constructor.
+            </summary>
+            <param name="type">The main Melon type of the Melon (for example TestMod)</param>
+            <param name="name">Name of the Melon</param>
+            <param name="versionMajor">Version Major of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="versionMinor">Version Minor of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="versionRevision">Version Revision of the Melon (Using the <see href="https://semver.org">Semantic Versioning</see> format)</param>
+            <param name="author">Author of the Melon</param>
+            <param name="downloadLink">URL to the download link of the mod [optional]</param>
+        </member>
+        <member name="P:MelonLoader.MelonOptionalDependenciesAttribute.AssemblyNames">
+            <summary>
+            The (simple) assembly names of the dependencies that should be regarded as optional.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonPriorityAttribute.Priority">
+            <summary>
+            Priority of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonProcessAttribute.EXE_Name">
+            <summary>
+            Name of the Game's Executable without the '.exe' extension.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonProcessAttribute.Universal">
+            <summary>
+            If the Attribute is set as Universal or not.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonProcessAttribute.IsCompatible(System.String)">
+            <summary>
+            Checks if the Attribute is compatible with <paramref name="processName"/> or not.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderBuildAttribute.HashCode">
+            <summary>
+            Build HashCode of MelonLoader.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.SemVer">
+            <summary>
+            Specified SemVersion.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Major">
+            <summary>
+            Specified Version Major.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Minor">
+            <summary>
+            Specified Version Minor.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Patch">
+            <summary>
+            Specified Version Patch.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.IsMinimum">
+            <summary>
+            If Version Specified is a Minimum.
+            </summary>
         </member>
         <member name="P:MelonLoader.LemonArraySegment`1.Array">
             <summary>Gets the original array containing the range of elements that the array segment delimits.</summary>
@@ -76,24 +261,501 @@
             <summary>Returns an enumerator that iterates through an array segment.</summary>
             <returns>An enumerator that can be used to iterate through the array segment.</returns>
         </member>
-        <member name="P:MelonLoader.MelonGameVersionAttribute.Version">
+        <member name="M:MelonLoader.LemonEnumerator`1.#ctor(`0[])">
             <summary>
-            Version of the Game.
+            Creates a new instance of <see cref="T:MelonLoader.LemonEnumerator`1"/> with a new copy of '<paramref name="lemons"/>'.
             </summary>
         </member>
-        <member name="P:MelonLoader.MelonGameVersionAttribute.Universal">
+        <member name="M:MelonLoader.LemonEnumerator`1.#ctor(System.Collections.Generic.IList{`0})">
             <summary>
-            If the Attribute is set as Universal or not.
+            Creates a new instance of <see cref="T:MelonLoader.LemonEnumerator`1"/> with a new copy of '<paramref name="lemons"/>'.
             </summary>
         </member>
-        <member name="P:MelonLoader.MelonProcessAttribute.EXE_Name">
+        <member name="F:MelonLoader.MelonEvents.OnPreInitialization">
             <summary>
-            Name of the Game's Executable.
+            Called after all MelonPlugins are initialized.
             </summary>
         </member>
-        <member name="P:MelonLoader.MelonProcessAttribute.Universal">
+        <member name="F:MelonLoader.MelonEvents.OnApplicationEarlyStart">
             <summary>
-            If the Attribute is set as Universal or not.
+            Called after Game Initialization, before OnApplicationStart and before Assembly Generation on Il2Cpp games.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnPreSupportModule">
+            <summary>
+            Called after all MelonMods are initialized and before the right Support Module is loaded.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnApplicationStart">
+            <summary>
+            Called after all MelonLoader components are fully initialized (including all MelonMods).
+            <para>Don't use this event to initialize your Melons anymore! Instead, override <see cref="M:MelonLoader.MelonBase.OnInitializeMelon"/>.</para>
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnApplicationLateStart">
+            <summary>
+            Called when the first 'Start' Unity Messages are invoked.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnApplicationDefiniteQuit">
+            <summary>
+            Called before the Application is closed. It is not possible to prevent the game from closing at this point.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnApplicationQuit">
+            <summary>
+            Called on a quit request. It is possible to abort the request in this callback.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnUpdate">
+            <summary>
+            Called once per frame.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnFixedUpdate">
+            <summary>
+            Called every 0.02 seconds, unless Time.fixedDeltaTime has a different Value. It is recommended to do all important Physics calculations inside this Callback.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnLateUpdate">
+            <summary>
+            Called once per frame, after <see cref="F:MelonLoader.MelonEvents.OnUpdate"/>.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnGUI">
+            <summary>
+            Called at every IMGUI event. Only use this for drawing IMGUI Elements.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnSceneWasLoaded">
+            <summary>
+            Called when a new Scene is loaded.
+            <para>
+            Arguments:
+            <br><see cref="T:System.Int32"/>: Build Index of the Scene.</br>
+            <br><see cref="T:System.String"/>: Name of the Scene.</br>
+            </para>
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnSceneWasInitialized">
+            <summary>
+            Called once a Scene is initialized.
+            <para>
+            Arguments:
+            <br><see cref="T:System.Int32"/>: Build Index of the Scene.</br>
+            <br><see cref="T:System.String"/>: Name of the Scene.</br>
+            </para>
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnSceneWasUnloaded">
+            <summary>
+            Called once a Scene unloads.
+            <para>
+            Arguments:
+            <br><see cref="T:System.Int32"/>: Build Index of the Scene.</br>
+            <br><see cref="T:System.String"/>: Name of the Scene.</br>
+            </para>
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonEvents.OnPreModsLoaded">
+            <summary>
+            Called before MelonMods are loaded from the Mods folder.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonAssembly.OnAssemblyResolving">
+            <summary>
+            Called before a process of resolving Melons from a MelonAssembly has started.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonAssembly.LoadedAssemblies">
+            <summary>
+            List of all loaded MelonAssemblies.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.FindMelonInstance``1">
+            <summary>
+            Tries to find the instance of Melon with type T, whether it's registered or not
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.GetMelonAssemblyOfMember(System.Reflection.MemberInfo,System.Object)">
+            <summary>
+            Gets the MelonAssembly of the given member. If the given member is not in any MelonAssembly, returns null.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.LoadMelonAssembly(System.String,System.Boolean)">
+            <summary>
+            Loads or finds a MelonAssembly from path.
+            </summary>
+            <param name="path">Path of the MelonAssembly</param>
+            <param name="loadMelons">Sets whether Melons should be auto-loaded or not</param>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.LoadRawMelonAssembly(System.String,System.Byte[],System.Byte[],System.Boolean)">
+            <summary>
+            Loads or finds a MelonAssembly from raw Assembly Data.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.LoadMelonAssembly(System.String,System.Reflection.Assembly,System.Boolean)">
+            <summary>
+            Loads or finds a MelonAssembly.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonAssembly.Hash">
+            <summary>
+            A SHA256 Hash of the Assembly.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonAssembly.LoadedMelons">
+            <summary>
+            A list of all loaded Melons in the Assembly.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonAssembly.RottenMelons">
+            <summary>
+            A list of all broken Melons in the Assembly.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonAssembly.UnregisterMelons(System.String,System.Boolean)">
+            <summary>
+            Unregisters all Melons in this Assembly.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonBase.OnMelonRegistered">
+            <summary>
+            Called once a Melon is fully registered.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonBase.OnMelonUnregistered">
+            <summary>
+            Called when a Melon unregisters.
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonBase.OnMelonInitializing">
+            <summary>
+            Called before a Melon starts initializing.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.CreateWrapper``1(System.String,System.String,System.String,MelonLoader.MelonGameAttribute[],MelonLoader.MelonProcessAttribute[],System.Int32,System.Nullable{System.Drawing.Color},System.Nullable{System.Drawing.Color},System.String)">
+            <summary>
+            Creates a new Melon instance for a Wrapper.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.RegisterSorted``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Registers a List of Melons in the right order.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.MelonAssembly">
+            <summary>
+            MelonAssembly of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.Priority">
+            <summary>
+            Priority of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.ConsoleColor">
+            <summary>
+            Console Color of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.AuthorConsoleColor">
+            <summary>
+            Console Color of the Author that made this melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.Info">
+            <summary>
+            Info Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedProcesses">
+            <summary>
+            Process Attributes of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.Games">
+            <summary>
+            Game Attributes of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedGameVersions">
+            <summary>
+            Game Version Attributes of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.OptionalDependencies">
+            <summary>
+            Optional Dependencies Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedPlatforms">
+            <summary>
+            Platform Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedDomain">
+            <summary>
+            Platform Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedMLVersion">
+            <summary>
+            Verify Loader Version Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.SupportedMLBuild">
+            <summary>
+            Verify Build Version Attribute of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.HarmonyInstance">
+            <summary>
+            Auto-Created Harmony Instance of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.LoggerInstance">
+            <summary>
+            Auto-Created MelonLogger Instance of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.ID">
+            <summary>
+            Optional ID of the Melon.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.Registered">
+            <summary>
+            <see langword="true"/> if the Melon is registered.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonBase.MelonTypeName">
+            <summary>
+            Name of the current Melon Type.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnPreSupportModule">
+            <summary>
+            Runs before Support Module Initialization and after Assembly Generation for Il2Cpp Games.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnUpdate">
+            <summary>
+            Runs once per frame.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnFixedUpdate">
+            <summary>
+            Can run multiple times per frame. Mostly used for Physics.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnLateUpdate">
+            <summary>
+            Runs once per frame, after <see cref="M:MelonLoader.MelonBase.OnUpdate"/>.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnGUI">
+            <summary>
+            Can run multiple times per frame. Mostly used for Unity's IMGUI.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnApplicationQuit">
+            <summary>
+            Runs on a quit request. It is possible to abort the request in this callback.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnPreferencesSaved">
+            <summary>
+            Runs when Melon Preferences get saved.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnPreferencesSaved(System.String)">
+            <summary>
+            Runs when Melon Preferences get saved. Gets passed the Preferences's File Path.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnPreferencesLoaded">
+            <summary>
+            Runs when Melon Preferences get loaded.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnPreferencesLoaded(System.String)">
+            <summary>
+            Runs when Melon Preferences get loaded. Gets passed the Preferences's File Path.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnEarlyInitializeMelon">
+            <summary>
+            Runs when the Melon is registered. Executed before the Melon's info is printed to the console. This callback should only be used a constructor for the Melon.
+            </summary>
+            <remarks>
+            Please note that this callback may run before the Support Module is loaded.
+            <br>As a result, using unhollowed assemblies may not be possible yet and you would have to override <see cref="M:MelonLoader.MelonBase.OnInitializeMelon"/> instead.</br>
+            </remarks>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnInitializeMelon">
+            <summary>
+            Runs after the Melon has registered. This callback waits until MelonLoader has fully initialized (<see cref="F:MelonLoader.MelonEvents.OnApplicationStart"/>).
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnLateInitializeMelon">
+            <summary>
+            Runs after <see cref="M:MelonLoader.MelonBase.OnInitializeMelon"/>. This callback waits until Unity has invoked the first 'Start' messages (<see cref="F:MelonLoader.MelonEvents.OnApplicationLateStart"/>).
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.OnDeinitializeMelon">
+            <summary>
+            Runs when the Melon is unregistered. Also runs before the Application is closed (<see cref="F:MelonLoader.MelonEvents.OnApplicationDefiniteQuit"/>).
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.Register">
+            <summary>
+            Registers the Melon.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.FindMelon(System.String,System.String)">
+            <summary>
+            Tries to find a registered Melon that matches the given Info.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonBase.Unregister(System.String,System.Boolean)">
+            <summary>
+            Unregisters the Melon and all other Melons located in the same Assembly.
+            <para>This only unsubscribes the Melons from all Callbacks/<see cref="T:MelonLoader.MelonEvent"/>s and unpatches all Methods that were patched by Harmony, but doesn't actually unload the whole Assembly.</para>
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonHandler.PluginsDirectory">
+            <summary>
+            Directory of Plugins.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonHandler.ModsDirectory">
+            <summary>
+            Directory of Mods.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonHandler.Plugins">
+            <summary>
+            List of Plugins.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonHandler.Mods">
+            <summary>
+            List of Mods.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonMod.OnSceneWasLoaded(System.Int32,System.String)">
+            <summary>
+            Runs when a new Scene is loaded.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonMod.OnSceneWasInitialized(System.Int32,System.String)">
+            <summary>
+            Runs once a Scene is initialized.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonMod.OnSceneWasUnloaded(System.Int32,System.String)">
+            <summary>
+            Runs once a Scene unloads.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonPlugin.OnPreInitialization">
+            <summary>
+            Runs before Game Initialization.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonPlugin.OnApplicationEarlyStart">
+            <summary>
+            Runs after Game Initialization, before OnApplicationStart and before Assembly Generation on Il2Cpp games
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonPlugin.OnPreModsLoaded">
+            <summary>
+            Runs before MelonMods from the Mods folder are loaded.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.MelonPlugin.OnApplicationStarted">
+            <summary>
+            Runs after all MelonLoader components are fully initialized (including all MelonMods).
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonTypeBase`1.RegisteredMelons">
+            <summary>
+            List of registered <typeparamref name="T"/>s.
+            </summary>
+        </member>
+        <member name="P:MelonLoader.MelonTypeBase`1.TypeName">
+            <summary>
+            A Human-Readable Name for <typeparamref name="T"/>.
+            </summary>
+        </member>
+        <member name="T:MelonLoader.RottenMelon">
+            <summary>
+            An info class for broken Melons.
+            </summary>
+        </member>
+        <member name="T:MelonLoader.Modules.MelonModule">
+            <summary>
+            A base for external MelonLoader modules.
+            </summary>
+        </member>
+        <member name="T:MelonLoader.Pastel.ConsoleExtensions">
+            <summary>
+            Controls colored console output by <see langword="Pastel"/>.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.Enable">
+            <summary>
+            Enables any future console color output produced by Pastel.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.Disable">
+            <summary>
+            Disables any future console color output produced by Pastel.
+            </summary>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.Pastel(System.String,System.Drawing.Color)">
+            <summary>
+            Returns a string wrapped in an ANSI foreground color code using the specified color.
+            </summary>
+            <param name="input">The string to color.</param>
+            <param name="color">The color to use on the specified string.</param>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.Pastel(System.String,System.String)">
+            <summary>
+            Returns a string wrapped in an ANSI foreground color code using the specified color.
+            </summary>
+            <param name="input">The string to color.</param>
+            <param name="hexColor">The color to use on the specified string.<para>Supported format: [#]RRGGBB.</para></param>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.PastelBg(System.String,System.Drawing.Color)">
+            <summary>
+            Returns a string wrapped in an ANSI background color code using the specified color.
+            </summary>
+            <param name="input">The string to color.</param>
+            <param name="color">The color to use on the specified string.</param>
+        </member>
+        <member name="M:MelonLoader.Pastel.ConsoleExtensions.PastelBg(System.String,System.String)">
+            <summary>
+            Returns a string wrapped in an ANSI background color code using the specified color.
+            </summary>
+            <param name="input">The string to color.</param>
+            <param name="hexColor">The color to use on the specified string.<para>Supported format: [#]RRGGBB.</para></param>
+        </member>
+        <member name="F:MelonLoader.MelonPreferences.OnPreferencesLoaded">
+            <summary>
+            Occurs when a Preferences File has been loaded.
+            <para>
+            <see cref="T:System.String"/>: Path of the Preferences File.
+            </para>
+            </summary>
+        </member>
+        <member name="F:MelonLoader.MelonPreferences.OnPreferencesSaved">
+            <summary>
+            Occurs when a Preferences File has been saved.
+            <para>
+            <see cref="T:System.String"/>: Path of the Preferences File.
+            </para>
             </summary>
         </member>
         <member name="T:MelonLoader.ICSharpCode.SharpZipLib.BZip2.BZip2">
@@ -11065,89 +11727,6 @@
             </param>
             <returns>Converted array</returns>
         </member>
-        <member name="T:MelonLoader.EnumExtensions">
-            <summary>
-            Extentions for enums.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.EnumExtensions.HasFlag(System.Enum,System.Enum)">
-            <summary>
-            From: http://www.sambeauvois.be/blog/2011/08/enum-hasflag-method-extension-for-4-0-framework/
-            A FX 3.5 way to mimic the FX4 "HasFlag" method.
-            </summary>
-            <param name="variable">The tested enum.</param>
-            <param name="value">The value to test.</param>
-            <returns>True if the flag is set. Otherwise false.</returns>
-        </member>
-        <member name="P:MelonLoader.MelonAdditionalDependenciesAttribute.AssemblyNames">
-            <summary>
-            The (simple) assembly names of Additional Dependencies that aren't directly referenced but should still be regarded as important.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonColorAttribute.Color">
-            <summary>
-            Color of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonIncompatibleAssembliesAttribute.AssemblyNames">
-            <summary>
-            The (simple) assembly names of the mods that are incompatible.
-            </summary>
-        </member>
-        <member name="F:MelonLoader.MelonPriorityAttribute.Priority">
-            <summary>
-            Priority of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderBuildAttribute.HashCode">
-            <summary>
-            Build HashCode of MelonLoader.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.SemVer">
-            <summary>
-            Specified SemVersion.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Major">
-            <summary>
-            Specified Version Major.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Minor">
-            <summary>
-            Specified Version Minor.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Patch">
-            <summary>
-            Specified Version Patch.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.Revision">
-            <summary>
-            Specified Version Revision.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.VerifyLoaderVersionAttribute.IsMinimum">
-            <summary>
-            If Version Specified is a Minimum.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonCoroutines.Start(System.Collections.IEnumerator)">
-            <summary>
-            Start a new coroutine.<br />
-            Coroutines are called at the end of the game Update loops.
-            </summary>
-            <param name="routine">The target routine</param>
-            <returns>An object that can be passed to Stop to stop this coroutine</returns>
-        </member>
-        <member name="M:MelonLoader.MelonCoroutines.Stop(System.Object)">
-            <summary>
-            Stop a currently running coroutine
-            </summary>
-            <param name="coroutineToken">The coroutine to stop</param>
-        </member>
         <member name="T:MelonLoader.TinyJSON.Include">
             <summary>
             Mark members that should be included.
@@ -11181,230 +11760,33 @@
             If a field or property is not found while decoding, this list will be searched for a matching alias.
             </summary>
         </member>
-        <member name="P:MelonLoader.MelonGameAttribute.Developer">
+        <member name="T:MelonLoader.EnumExtensions">
             <summary>
-            Developer of the Game.
+            Extentions for enums.
             </summary>
         </member>
-        <member name="P:MelonLoader.MelonGameAttribute.Name">
+        <member name="M:MelonLoader.EnumExtensions.HasFlag(System.Enum,System.Enum)">
             <summary>
-            Name of the Game.
+            From: http://www.sambeauvois.be/blog/2011/08/enum-hasflag-method-extension-for-4-0-framework/
+            A FX 3.5 way to mimic the FX4 "HasFlag" method.
             </summary>
+            <param name="variable">The tested enum.</param>
+            <param name="value">The value to test.</param>
+            <returns>True if the flag is set. Otherwise false.</returns>
         </member>
-        <member name="P:MelonLoader.MelonGameAttribute.Universal">
+        <member name="M:MelonLoader.MelonCoroutines.Start(System.Collections.IEnumerator)">
             <summary>
-            If the Attribute is set as Universal or not.
+            Start a new coroutine.<br />
+            Coroutines are called at the end of the game Update loops.
             </summary>
+            <param name="routine">The target routine</param>
+            <returns>An object that can be passed to Stop to stop this coroutine</returns>
         </member>
-        <member name="M:MelonLoader.MelonGameAttribute.IsCompatible(System.String,System.String)">
+        <member name="M:MelonLoader.MelonCoroutines.Stop(System.Object)">
             <summary>
-            Returns true or false if the Game is compatible with this Assembly.
+            Stop a currently running coroutine
             </summary>
-        </member>
-        <member name="M:MelonLoader.MelonGameAttribute.IsCompatible(MelonLoader.MelonGameAttribute)">
-            <summary>
-            Returns true or false if the Game is compatible with this Assembly.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonGameAttribute.IsCompatibleBecauseUniversal(MelonLoader.MelonGameAttribute)">
-            <summary>
-            Returns true or false if the Game is compatible with this Assembly specifically because of Universal Compatibility.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonInfoAttribute.SystemType">
-            <summary>
-            System.Type of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonInfoAttribute.Name">
-            <summary>
-            Name of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonInfoAttribute.Version">
-            <summary>
-            Version of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonInfoAttribute.Author">
-            <summary>
-            Author of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonInfoAttribute.DownloadLink">
-            <summary>
-            Download Link of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.Assembly">
-            <summary>
-            Assembly of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.Location">
-            <summary>
-            File Location of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.Priority">
-            <summary>
-            Priority of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.ConsoleColor">
-            <summary>
-            Console Color of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.AuthorConsoleColor">
-            <summary>
-            Console Color of the Author that made this melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.Info">
-            <summary>
-            Info Attribute of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.Games">
-            <summary>
-            Game Attributes of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.OptionalDependencies">
-            <summary>
-            Optional Dependencies Attribute of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.HarmonyInstance">
-            <summary>
-            Auto-Created Harmony Instance of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.LoggerInstance">
-            <summary>
-            Auto-Created MelonLogger Instance of the Melon.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonBase.ID">
-            <summary>
-            Optional ID of the Melon.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnPreSupportModule">
-            <summary>
-            Runs before Support Module Initialization, after Assembly Generation on Il2Cpp Games
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnApplicationStart">
-            <summary>
-            Runs after Game Initialization.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnApplicationLateStart">
-            <summary>
-            Runs after OnApplicationStart.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnUpdate">
-            <summary>
-            Runs once per frame.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnLateUpdate">
-            <summary>
-            Runs once per frame after OnUpdate and OnFixedUpdate have finished.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnGUI">
-            <summary>
-            Can run multiple times per frame. Mostly used for Unity's IMGUI.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnApplicationQuit">
-            <summary>
-            Runs when the Game is told to Close.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnPreferencesSaved">
-            <summary>
-            Runs when Melon Preferences get saved.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnPreferencesSaved(System.String)">
-            <summary>
-            Runs when Melon Preferences get saved. Gets passed the Preferences's File Path.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnPreferencesLoaded">
-            <summary>
-            Runs when Melon Preferences get loaded.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonBase.OnPreferencesLoaded(System.String)">
-            <summary>
-            Runs when Melon Preferences get loaded. Gets passed the Preferences's File Path.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonOptionalDependenciesAttribute.AssemblyNames">
-            <summary>
-            The (simple) assembly names of the dependencies that should be regarded as optional.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonHandler.PluginsDirectory">
-            <summary>
-            Directory of Plugins.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonHandler.Plugins">
-            <summary>
-            List of Plugins.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonHandler.ModsDirectory">
-            <summary>
-            Directory of Mods.
-            </summary>
-        </member>
-        <member name="P:MelonLoader.MelonHandler.Mods">
-            <summary>
-            List of Mods.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonMod.OnSceneWasLoaded(System.Int32,System.String)">
-            <summary>
-            Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonMod.OnSceneWasInitialized(System.Int32,System.String)">
-            <summary>
-            Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonMod.OnSceneWasUnloaded(System.Int32,System.String)">
-            <summary>
-            Runs when a Scene has Unloaded and is passed the Scene's Build Index and Name.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonMod.OnFixedUpdate">
-            <summary>
-            Can run multiple times per frame. Mostly used for Physics.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonMod.BONEWORKS_OnLoadingScreen">
-            <summary>
-            Runs when BONEWORKS shows the Loading Screen. Only runs if the Melon is used in BONEWORKS.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonPlugin.OnPreInitialization">
-            <summary>
-            Runs before Game Initialization.
-            </summary>
-        </member>
-        <member name="M:MelonLoader.MelonPlugin.OnApplicationEarlyStart">
-            <summary>
-            Runs after Game Initialization, before OnApplicationStart and before Assembly Generation on Il2Cpp games
-            </summary>
+            <param name="coroutineToken">The coroutine to stop</param>
         </member>
         <member name="M:Semver.IntExtensions.Digits(System.Int32)">
             <summary>

@@ -1,3 +1,13 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CIl2Cppmscorlib_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CUnityEngine_002ECoreModule_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CUnityEngine_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CUnityEngine_002EIMGUIModule_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CUnityEngine_002EInputLegacyModule_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005CIl2CppInterop_002ERuntime_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005CMelonLoader_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CRiptideNetworking_002Edll/@EntryIndexedValue">True</s:Boolean>
-	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CRiptideNetworking_002Exml/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CRiptideNetworking_002Exml/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
+  &lt;Assembly Path="E:\Modding\CMS21\CMS21MP\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll" /&gt;&#xD;
+&lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>
