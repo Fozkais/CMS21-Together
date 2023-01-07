@@ -5,22 +5,21 @@ namespace CMS21MP
 {
     public class playerInputManagement : MonoBehaviour
     {
-        public void inputFixedUpdate()
+        private Vector3 lastPos = new Vector3(0,0,0);
+        public void playerPosUpdate()
         {
-            SendInputToServer();
+            SendPositionToServer();
         }
 
-        private void SendInputToServer()
+        private void SendPositionToServer()
         {
-            // Upgrade to get player input settings
-            bool[] _inputs = new bool[]
+            Vector3 playerPos = GameObject.Find("First Person Controller").transform.position;
+
+            if (Vector3.Distance(playerPos, lastPos) > 1)
             {
-                Input.GetKey(KeyCode.Z),
-                Input.GetKey(KeyCode.S),
-                Input.GetKey(KeyCode.Q),
-                Input.GetKey(KeyCode.D)
-            };
-            ClientSend.PlayerMovement(_inputs);
+                lastPos = playerPos;
+                ClientSend.PlayerMovement(playerPos);
+            }
         }
     }
 }

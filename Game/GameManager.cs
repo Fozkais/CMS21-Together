@@ -31,13 +31,11 @@ namespace CMS21MP
             GameObject _player;
             if (_id == Client.instance.myId)
             {
-                _player = Instantiate(localPlayerPrefab, _position, _rotation);
-                MelonLogger.Msg("LocalPlayerSpawned!");
+                _player = GameObject.Find("First Person Controller");
             }
             else
             {
                 _player = Instantiate(playerPrefab, _position, _rotation);
-                MelonLogger.Msg("OnlinePlayerSpawned!");
                 _player.transform.position = GameObject.Find("First Person Controller").transform.position;
             }
 

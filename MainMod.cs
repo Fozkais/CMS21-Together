@@ -15,12 +15,12 @@ namespace CMS21MP
 
 
        public bool isPrefabSet = false;
-       public GameObject playerPrefab;
-       public GameObject onlinePlayerPrefab;
-       
+
        public ThreadManager threadManager;
 
        public static bool isConnected = false;
+       public static int playerConnected;
+       public static int maxPlayer;
        
         public override void OnInitializeMelon() // Runs during Game Initialization.
         {
@@ -62,10 +62,22 @@ namespace CMS21MP
         public override void OnUpdate() // Runs once per frame.
         {
            threadManager.UpdateThread();
-           if (isPrefabSet == false && SceneManager.GetActiveScene().name == "garage")
+           if (SceneManager.GetActiveScene().name == "garage")
            {
-              playerInit();
-              isPrefabSet = true;
+              if (!isPrefabSet)
+              {
+                 playerInit();
+                 isPrefabSet = true;
+              }
+              else if(isConnected)
+              {
+                 GameObject.Find("First Person Controller").GetComponent<playerInputManagement>().playerPosUpdate();
+              }
+           }
+           else
+           {
+              isPrefabSet = false;
+              Client.instance.Disconnect();
            }
         }
 
@@ -111,20 +123,21 @@ namespace CMS21MP
            ClassInjector.RegisterTypeInIl2Cpp<PlayerManager>();
            ClassInjector.RegisterTypeInIl2Cpp<playerInputManagement>();
 
-           GameObject playerPref = GameObject.Find("First Person Controller");
-           playerPref.AddComponent<PlayerManager>();
-           playerPref.AddComponent<playerInputManagement>();
+           GameObject playerPrefab = GameObject.Find("First Person Controller");
+           playerPrefab.AddComponent<PlayerManager>();
+           playerPrefab.AddComponent<playerInputManagement>();
+
+           GameObject model = new GameObject();
+           model.name = "othersPlayer";
+           model.AddComponent<MeshFilter>();
+           model.AddComponent<MeshRenderer>();
+           model.AddComponent<PlayerManager>();
            
-           playerPrefab = playerPref;
-           LoggerInstance.Msg("Player Prefabs set succesfully!");
+          // var pModel = Resources.Load("Assets/Models/playerModel.fbx");
+           model.GetComponent<MeshFilter>().mesh = GameObject.CreatePrimitive(PrimitiveType.Capsule).GetComponent<Mesh>();
+           model.transform.localScale = new Vector3(1, 1, 1);
 
-           GameObject model = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-           model.transform.localScale = new Vector3(10, 10, 10);
-           model.transform.SetParent(playerPref.transform);
-           onlinePlayerPrefab = playerPref;
-           LoggerInstance.Msg("Online player configured succesfully!");
-
-           gameManager.playerPrefab = onlinePlayerPrefab;
+           gameManager.playerPrefab = model;
            gameManager.localPlayerPrefab = playerPrefab;
            
         }

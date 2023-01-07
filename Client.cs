@@ -20,7 +20,7 @@ namespace CMS21MP
         public TCP tcp;
         public UDP udp;
 
-        private bool isConnected = false;
+        public bool isConnected = false;
 
         private delegate void PacketHandler(Packet _packet);
 
@@ -288,15 +288,15 @@ namespace CMS21MP
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ServerPackets.welcome, ClientHandle.Welcome },
-                { (int)ServerPackets.udpTest, ClientHandle.UDPTest },
                 { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
-                { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation }
+                { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
+                { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected}
             };
             MelonLogger.Msg("Initialized Packets!");
         }
         
-        private void Disconnect()
+        public void Disconnect()
         {
             if (isConnected)
             {

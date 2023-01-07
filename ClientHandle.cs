@@ -19,13 +19,13 @@ namespace CMS21MP
             Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
             MainMod.isConnected = true;
         }
-        
-        public static void UDPTest(Packet _packet)
-        {
-            string _msg = _packet.ReadString();
 
-            MelonLogger.Msg($"Received packet via UDP. Contains message: {_msg}");
-            ClientSend.UDPTestReceived();
+        public static void PlayerConnected(Packet _packet)
+        {
+            int _connected = _packet.ReadInt();
+            int _maxConnected = _packet.ReadInt();
+
+            MainMod.playerConnected = _connected;
         }
         
         public static void SpawnPlayer(Packet _packet)
@@ -44,6 +44,7 @@ namespace CMS21MP
             int _id = _packet.ReadInt();
             Vector3 _position = _packet.ReadVector3();
 
+            MelonLogger.Msg($"received new pos for player{_id} !");
             GameManager.players[_id].transform.position = _position;
         }
         public static void PlayerRotation(Packet _packet)

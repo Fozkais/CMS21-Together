@@ -12,7 +12,7 @@ namespace CMS21MP
         spawnPlayer,
         playerPosition,
         playerRotation,
-        udpTest
+        playerConnected
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -20,7 +20,6 @@ namespace CMS21MP
     {
         welcomeReceived = 1,
         playerMovement,
-        udpTestReceived
     }
 
     public class Packet : IDisposable

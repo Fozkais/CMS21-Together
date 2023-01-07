@@ -28,27 +28,16 @@ namespace CMS21MP
             }
             
         }
-        public static void UDPTestReceived()
-        {
-            using (Packet _packet = new Packet((int)ClientPackets.udpTestReceived))
-            {
-                _packet.Write("Received a UDP packet.");
 
-                SendUDPData(_packet);
-            }
-        }
-
-        public static void PlayerMovement(bool[] _inputs)
+        public static void PlayerMovement(Vector3 _position)
         {
             using (Packet _packet = new Packet((int)ClientPackets.playerMovement))
             {
-                _packet.Write(_inputs.Length);
-                foreach (bool input in _inputs)
-                {
-                    _packet.Write(input);
-                }
+                _packet.Write(Client.instance.myId);
+                _packet.Write(_position);
                 _packet.Write(GameManager.players[Client.instance.myId].transform.rotation);
                 
+                MelonLogger.Msg($"Sending playerPos to server!");
                 SendUDPData(_packet);
             }
         }

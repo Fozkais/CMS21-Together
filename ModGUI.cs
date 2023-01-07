@@ -65,6 +65,12 @@ namespace CMS21MP
                 ipAdress = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 130, panelSizeX - 20, 25), ipAdress);
                 usernameField = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 160, panelSizeX - 20, 25), usernameField);
                 GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 185, panelSizeX - 20, 25), "player2Pos : "+player2Pos.ToString());
+                GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 215, panelSizeX - 20, 25),"Slots : "+ MainMod.playerConnected.ToString()+"/"+MainMod.maxPlayer.ToString());
+                
+                if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, panelSizeX - 20, 35), "Disconnect"))
+                {
+                    Client.instance.Disconnect();
+                }
             }
         }
 
