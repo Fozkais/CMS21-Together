@@ -43,3 +43,4 @@ E:\Modding\CMS21\CMS21MP\bin\Debug\Il2CppInterop.Runtime.dll
 E:\Modding\CMS21\CMS21MP\bin\Debug\Il2Cppmscorlib.dll
 E:\Modding\CMS21\CMS21MP\bin\Debug\Il2CppInterop.Common.dll
 E:\Modding\CMS21\CMS21MP\bin\Debug\Microsoft.Extensions.Logging.Abstractions.dll
+E:\Modding\CMS21\CMS21MP\bin\Debug\UnityEngine.AssetBundleModule.dll

@@ -1,7 +1,7 @@
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP
+namespace CMS21MP.ClientSide
 {
     public static class ClientSend
     {
@@ -37,7 +37,7 @@ namespace CMS21MP
                 _packet.Write(_position);
                 _packet.Write(GameManager.players[Client.instance.myId].transform.rotation);
                 
-                MelonLogger.Msg($"Sending playerPos to server!");
+               // MelonLogger.Msg($"Sending playerPos to server!");
                 SendUDPData(_packet);
             }
         }

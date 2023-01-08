@@ -7,7 +7,7 @@ using System;
 using MelonLoader;
 
 
-namespace CMS21MP
+namespace CMS21MP.ClientSide
 {
     public class Client : MonoBehaviour
     {

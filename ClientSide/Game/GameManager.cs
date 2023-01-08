@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CMS21MP.ClientSide;
 using MelonLoader;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace CMS21MP
         public static GameManager instance;
 
         public static Dictionary<int, PlayerManager> players = new Dictionary<int, PlayerManager>();
-
+    
         public GameObject localPlayerPrefab;
         public GameObject playerPrefab;
 

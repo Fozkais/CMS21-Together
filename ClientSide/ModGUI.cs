@@ -1,9 +1,10 @@
 ﻿using System;
+using CMS21MP.ServerSide;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace CMS21MP
+namespace CMS21MP.ClientSide
 {
     public class ModGUI : MonoBehaviour
     {
@@ -59,7 +60,15 @@ namespace CMS21MP
                 }
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 90, panelSizeX - 20, 35), "Host"))
                 {
-
+                    if (SceneManager.GetActiveScene().name == "garage")
+                    {
+                        Server.Start(4,7777);
+                        MainMod.isHosting = true;
+                    }
+                    else
+                    {  
+                        MelonLogger.Msg("Please launch a game before hosting a Server!");
+                    }
                 }
                 
                 ipAdress = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 130, panelSizeX - 20, 25), ipAdress);
@@ -67,9 +76,16 @@ namespace CMS21MP
                 GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 185, panelSizeX - 20, 25), "player2Pos : "+player2Pos.ToString());
                 GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 215, panelSizeX - 20, 25),"Slots : "+ MainMod.playerConnected.ToString()+"/"+MainMod.maxPlayer.ToString());
                 
-                if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, panelSizeX - 20, 35), "Disconnect"))
+                if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
                 {
                     Client.instance.Disconnect();
+                }
+                if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))
+                {
+                    if (MainMod.isHosting)
+                    {
+                        //
+                    }
                 }
             }
         }

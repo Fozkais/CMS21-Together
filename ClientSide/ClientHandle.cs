@@ -2,7 +2,7 @@ using System.Net;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP
+namespace CMS21MP.ClientSide
 {
     public class ClientHandle
     {
@@ -44,7 +44,7 @@ namespace CMS21MP
             int _id = _packet.ReadInt();
             Vector3 _position = _packet.ReadVector3();
 
-            MelonLogger.Msg($"received new pos for player{_id} !");
+           // MelonLogger.Msg($"received new pos for player{_id} !");
             GameManager.players[_id].transform.position = _position;
         }
         public static void PlayerRotation(Packet _packet)

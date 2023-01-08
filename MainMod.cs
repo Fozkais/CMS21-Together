@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using CMS21MP.ClientSide;
+using CMS21MP.ServerSide;
 using Il2CppInterop.Runtime.Injection;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Client = CMS21MP.ClientSide.Client;
 
 namespace CMS21MP
 {
@@ -11,16 +16,20 @@ namespace CMS21MP
        public GameManager gameManager;
        public Client client;
        public ModGUI modGUI;
-       public Utils utils;
 
 
        public bool isPrefabSet = false;
 
        public ThreadManager threadManager;
 
+       public static bool isHosting = false;
        public static bool isConnected = false;
        public static int playerConnected;
        public static int maxPlayer;
+
+       public AssetBundle playerModel;
+       
+       public static Dictionary<int, Vector3> UpdateQueue = new Dictionary<int, Vector3>();
        
         public override void OnInitializeMelon() // Runs during Game Initialization.
         {
@@ -38,9 +47,6 @@ namespace CMS21MP
            modGUI = new ModGUI();
            modGUI.Initialize();
            modGUI.Mod = this;
-
-           utils = new Utils();
-           utils.Initialize();
 
            gameManager = new GameManager();
            gameManager.Initialize();
@@ -61,7 +67,6 @@ namespace CMS21MP
 
         public override void OnUpdate() // Runs once per frame.
         {
-           threadManager.UpdateThread();
            if (SceneManager.GetActiveScene().name == "garage")
            {
               if (!isPrefabSet)
@@ -79,6 +84,17 @@ namespace CMS21MP
               isPrefabSet = false;
               Client.instance.Disconnect();
            }
+           if (UpdateQueue.Count > 0)
+           {
+              foreach (KeyValuePair<int, Vector3> element in UpdateQueue)
+              {
+                 ServerSend.PlayerPosition(element.Key, element.Value);
+                 UpdateQueue.Remove(element.Key);
+              }
+           }
+           
+           
+           threadManager.UpdateThread();
         }
 
         public override void OnFixedUpdate() // Can run multiple times per frame. Mostly used for Physics.
@@ -116,7 +132,6 @@ namespace CMS21MP
         {
            // MelonLogger.Msg("OnPreferencesLoaded");
         }
-       
         
         public void playerInit()
         {
@@ -126,15 +141,20 @@ namespace CMS21MP
            GameObject playerPrefab = GameObject.Find("First Person Controller");
            playerPrefab.AddComponent<PlayerManager>();
            playerPrefab.AddComponent<playerInputManagement>();
-
+           
+          // playerModel = AssetBundle.LoadFromFile(Path.Combine(Directory.GetCurrentDirectory(),"AssetBundles", "playermodel.model"));
+          // if (playerModel == null)
+          // {
+           //   LoggerInstance.Msg("Can't load bundle! : " + Path.Combine(Directory.GetCurrentDirectory(),"AssetBundles", "playermodel.model"));
+          // }
+           
+           //var mesh = playerModel.LoadAsset<GameObject>("playerModel").GetComponentInChildren<MeshFilter>().sharedMesh;
            GameObject model = new GameObject();
-           model.name = "othersPlayer";
+           model.name = "playerPrefab";
            model.AddComponent<MeshFilter>();
            model.AddComponent<MeshRenderer>();
            model.AddComponent<PlayerManager>();
-           
-          // var pModel = Resources.Load("Assets/Models/playerModel.fbx");
-           model.GetComponent<MeshFilter>().mesh = GameObject.CreatePrimitive(PrimitiveType.Capsule).GetComponent<Mesh>();
+          // model.GetComponent<MeshFilter>().mesh = mesh;
            model.transform.localScale = new Vector3(1, 1, 1);
 
            gameManager.playerPrefab = model;
