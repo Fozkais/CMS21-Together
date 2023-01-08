@@ -35,9 +35,20 @@ namespace CMS21MP.ClientSide
             {
                 _packet.Write(Client.instance.myId);
                 _packet.Write(_position);
-                _packet.Write(GameManager.players[Client.instance.myId].transform.rotation);
-                
-               // MelonLogger.Msg($"Sending playerPos to server!");
+
+                // MelonLogger.Msg($"Sending playerPos to server!");
+                SendUDPData(_packet);
+            }
+        }
+
+        public static void PlayerRotation(Quaternion _rotation)
+        {
+            using (Packet _packet = new Packet((int)ClientPackets.playerRotation))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(_rotation);
+
+                // MelonLogger.Msg($"Sending playerPos to server!");
                 SendUDPData(_packet);
             }
         }

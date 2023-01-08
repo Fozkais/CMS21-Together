@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using CMS21MP.ClientSide;
-using MelonLoader;
 using UnityEngine;
+using MelonLoader;
 
 namespace CMS21MP.ServerSide
 {
@@ -88,7 +87,7 @@ namespace CMS21MP.ServerSide
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        Server.clients[id].Disconnect();
+                        Server.clients[id].Disconnect(id);
                         return;
                     }
 
@@ -101,7 +100,7 @@ namespace CMS21MP.ServerSide
                 catch (Exception _ex)
                 {
                     MelonLogger.Msg($"Error receiving TCP data: {_ex}");
-                    Server.clients[id].Disconnect();
+                    Server.clients[id].Disconnect(id);
                 }
             }
             private bool HandleData(byte[] _data)
@@ -222,8 +221,9 @@ namespace CMS21MP.ServerSide
             }
         }
 
-        private void Disconnect()
+        private void Disconnect(int id)
         {
+            ServerSend.PlayerDisconnect(id);
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
             player = null;
@@ -231,11 +231,14 @@ namespace CMS21MP.ServerSide
             udp.Disconnect();
             
             int connected = 0;
-            foreach (KeyValuePair<int, Client> player in Server.clients)
+            for (int i = 1; i <= Server.MaxPlayers; i++)
             {
-                connected += 1;
+                if (Server.clients[i].tcp.socket != null)
+                {
+                    connected += 1;
+                }
             }
-            ServerSend.PlayerConnected(connected, Server.clients.Count);
+            ServerSend.PlayerConnected(connected, Server.MaxPlayers);
         }
     }
 }

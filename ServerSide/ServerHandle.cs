@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CMS21MP.ClientSide;
 using MelonLoader;
 using UnityEngine;
@@ -26,10 +27,29 @@ namespace CMS21MP.ServerSide
         {
             _fromclient = _packet.ReadInt();
             Vector3 position = _packet.ReadVector3();
+
+            if (MainMod.MovUpdateQueue.ContainsKey(_fromclient))
+            {
+                MainMod.MovUpdateQueue[_fromclient].Add(position);
+            }
+            else
+            {
+                MainMod.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
+            }
+        }
+        public static void PlayerRotation(int _fromclient, Packet _packet)
+        {
+            _fromclient = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            // MelonLogger.Msg($"Player{_fromclient} sended new Pos!");
-            MainMod.UpdateQueue.Add(_fromclient, position);
+            if (MainMod.RotUpdateQueue.ContainsKey(_fromclient))
+            {
+                MainMod.RotUpdateQueue[_fromclient].Add(_rotation);
+            }
+            else
+            {
+                MainMod.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
+            }
         }
     }
 }

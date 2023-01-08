@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CMS21MP.ServerSide;
 using MelonLoader;
 using UnityEngine;
@@ -50,6 +51,10 @@ namespace CMS21MP.ClientSide
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
                     {
+                        if (!MainMod.isPrefabSet)
+                        {
+                            Mod.playerInit();
+                        }
                         Mod.client.ip = ipAdress;
                         Mod.client.ConnectToServer();
                     }
@@ -79,6 +84,11 @@ namespace CMS21MP.ClientSide
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
                 {
                     Client.instance.Disconnect();
+                    foreach (KeyValuePair<int, PlayerManager> element in MPGameManager.players)
+                    {
+                        Destroy(element.Value.transform.gameObject);
+                        MPGameManager.players.Remove(element.Key);
+                    }
                 }
                 if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))
                 {

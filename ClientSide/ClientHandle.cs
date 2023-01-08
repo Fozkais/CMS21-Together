@@ -26,6 +26,7 @@ namespace CMS21MP.ClientSide
             int _maxConnected = _packet.ReadInt();
 
             MainMod.playerConnected = _connected;
+            MainMod.maxPlayer = _maxConnected;
         }
         
         public static void SpawnPlayer(Packet _packet)
@@ -35,7 +36,7 @@ namespace CMS21MP.ClientSide
             Vector3 _position = _packet.ReadVector3();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            GameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
+            MPGameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
         }
 
 
@@ -45,14 +46,25 @@ namespace CMS21MP.ClientSide
             Vector3 _position = _packet.ReadVector3();
 
            // MelonLogger.Msg($"received new pos for player{_id} !");
-            GameManager.players[_id].transform.position = _position;
+           MPGameManager.players[_id].transform.position = _position;
         }
         public static void PlayerRotation(Packet _packet)
         {
             int _id = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            GameManager.players[_id].transform.rotation = _rotation;
+            MPGameManager.players[_id].transform.rotation = _rotation;
+        }
+
+        public static void PlayerDisconnect(Packet _packet)
+        {
+            int _id = _packet.ReadInt();
+
+            GameObject.Destroy(MPGameManager.players[_id].gameObject);
+            MPGameManager.players.Remove(_id);
+            MainMod.MovUpdateQueue.Remove(_id);
+            MainMod.RotUpdateQueue.Remove(_id);
+
         }
     }
 }

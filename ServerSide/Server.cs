@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using MelonLoader;
+using System.Net;
 
 namespace CMS21MP.ServerSide
 {
@@ -16,7 +16,7 @@ namespace CMS21MP.ServerSide
 
         public static Dictionary<int, packetHandler> packetHandlers;
 
-        private static TcpListener tcpListener;
+        public static TcpListener tcpListener;
         private static UdpClient udpListener;
 
         public static void Start(int _maxPlayers, int _port)
@@ -121,6 +121,7 @@ namespace CMS21MP.ServerSide
             {
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
+                {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

@@ -12,7 +12,8 @@ namespace CMS21MP
         spawnPlayer,
         playerPosition,
         playerRotation,
-        playerConnected
+        playerConnected,
+        playerDisconnect
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -20,6 +21,8 @@ namespace CMS21MP
     {
         welcomeReceived = 1,
         playerMovement,
+        playerRotation,
+        playerDisconnecting
     }
 
     public class Packet : IDisposable

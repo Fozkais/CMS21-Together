@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using CMS21MP.ClientSide;
 using CMS21MP.ServerSide;
+using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
 using MelonLoader;
 using UnityEngine;
@@ -13,12 +14,12 @@ namespace CMS21MP
 {
     public class MainMod : MelonMod
     {
-       public GameManager gameManager;
+       public MPGameManager gameManager;
        public Client client;
        public ModGUI modGUI;
 
 
-       public bool isPrefabSet = false;
+       public static bool isPrefabSet = false;
 
        public ThreadManager threadManager;
 
@@ -28,8 +29,9 @@ namespace CMS21MP
        public static int maxPlayer;
 
        public AssetBundle playerModel;
-       
-       public static Dictionary<int, Vector3> UpdateQueue = new Dictionary<int, Vector3>();
+
+       public static Dictionary<int, List<Vector3>> MovUpdateQueue = new Dictionary<int, List<Vector3>>();
+       public static Dictionary<int, List<Quaternion>> RotUpdateQueue = new Dictionary<int, List<Quaternion>>();
        
         public override void OnInitializeMelon() // Runs during Game Initialization.
         {
@@ -48,7 +50,7 @@ namespace CMS21MP
            modGUI.Initialize();
            modGUI.Mod = this;
 
-           gameManager = new GameManager();
+           gameManager = new MPGameManager();
            gameManager.Initialize();
 
            
@@ -69,29 +71,34 @@ namespace CMS21MP
         {
            if (SceneManager.GetActiveScene().name == "garage")
            {
-              if (!isPrefabSet)
-              {
-                 playerInit();
-                 isPrefabSet = true;
-              }
-              else if(isConnected)
+              if(isConnected)
               {
                  GameObject.Find("First Person Controller").GetComponent<playerInputManagement>().playerPosUpdate();
               }
            }
-           else
+           if (MovUpdateQueue.Count > 0)
            {
-              isPrefabSet = false;
-              Client.instance.Disconnect();
-           }
-           if (UpdateQueue.Count > 0)
-           {
-              foreach (KeyValuePair<int, Vector3> element in UpdateQueue)
+              foreach (KeyValuePair<int, List<Vector3>> element in MovUpdateQueue)
               {
-                 ServerSend.PlayerPosition(element.Key, element.Value);
-                 UpdateQueue.Remove(element.Key);
+                 for (int i = 0; i < element.Value.Count; i++)
+                 {
+                     ServerSend.PlayerPosition(element.Key, element.Value[i]);
+                     MovUpdateQueue[element.Key].Remove(element.Value[i]);
+                 }
               }
            }
+           if (RotUpdateQueue.Count > 0)
+           {
+              foreach (KeyValuePair<int, List<Quaternion>> element in RotUpdateQueue)
+              {
+                 for (int i = 0; i < element.Value.Count; i++)
+                 {
+                    ServerSend.PlayerRotation(element.Key, element.Value[i]);
+                    RotUpdateQueue[element.Key].Remove(element.Value[i]);
+                 }
+              }
+           }
+           
            
            
            threadManager.UpdateThread();
@@ -132,7 +139,7 @@ namespace CMS21MP
         {
            // MelonLogger.Msg("OnPreferencesLoaded");
         }
-        
+
         public void playerInit()
         {
            ClassInjector.RegisterTypeInIl2Cpp<PlayerManager>();
@@ -141,25 +148,44 @@ namespace CMS21MP
            GameObject playerPrefab = GameObject.Find("First Person Controller");
            playerPrefab.AddComponent<PlayerManager>();
            playerPrefab.AddComponent<playerInputManagement>();
-           
-          // playerModel = AssetBundle.LoadFromFile(Path.Combine(Directory.GetCurrentDirectory(),"AssetBundles", "playermodel.model"));
-          // if (playerModel == null)
-          // {
-           //   LoggerInstance.Msg("Can't load bundle! : " + Path.Combine(Directory.GetCurrentDirectory(),"AssetBundles", "playermodel.model"));
-          // }
-           
-           //var mesh = playerModel.LoadAsset<GameObject>("playerModel").GetComponentInChildren<MeshFilter>().sharedMesh;
-           GameObject model = new GameObject();
-           model.name = "playerPrefab";
-           model.AddComponent<MeshFilter>();
-           model.AddComponent<MeshRenderer>();
-           model.AddComponent<PlayerManager>();
-          // model.GetComponent<MeshFilter>().mesh = mesh;
-           model.transform.localScale = new Vector3(1, 1, 1);
 
-           gameManager.playerPrefab = model;
-           gameManager.localPlayerPrefab = playerPrefab;
-           
+           AssetBundle pModel = AssetBundle.LoadFromFile(@"Mods\cms21mp\playermodel");
+
+           if (pModel != null)
+           {
+              MelonLogger.Msg("Assets found inside of file are:");
+              foreach (string item in pModel.AllAssetNames())
+              {
+                 MelonLogger.Msg(item);
+              }
+
+              UnityEngine.Object ueobject = pModel.LoadAsset("assets/prefabs/playermodel.prefab");
+              GameObject gameObjectPrefab = ueobject.TryCast<GameObject>(); //Is this gameobject? Lets try at least
+              // MelonLogger.Msg(gameObjectPrefab.ToString());
+
+              //Lets spawn this object to visible world (it will be on location 0 0 0) 
+              GameObject model = GameObject.Instantiate(gameObjectPrefab);
+              model.GetComponentInChildren<MeshRenderer>().material =
+                 Singleton<GameInventory>.Instance.materials["body_paint"];
+
+              model.name = "playerPrefab";
+              model.AddComponent<MeshFilter>();
+              model.AddComponent<MeshRenderer>();
+              model.AddComponent<PlayerManager>();
+              model.GetComponent<MeshFilter>().mesh = gameObjectPrefab.GetComponentInChildren<MeshFilter>().sharedMesh;
+              model.transform.localScale = new Vector3(1f, 1f, 1f);
+              model.transform.position = new Vector3(0, -10, 0);
+              model.transform.rotation = new Quaternion(0, 180, 0, 0);
+
+              gameManager.playerPrefab = model;
+              gameManager.localPlayerPrefab = playerPrefab;
+
+              isPrefabSet = true;
+           }
+           else
+           {
+              MelonLogger.Msg("AssetBundle load failed");
+           }
         }
     }
 }

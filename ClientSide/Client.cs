@@ -291,7 +291,8 @@ namespace CMS21MP.ClientSide
                 { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
-                { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected}
+                { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected},
+                {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect}
             };
             MelonLogger.Msg("Initialized Packets!");
         }
