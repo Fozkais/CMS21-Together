@@ -51,12 +51,15 @@ namespace CMS21MP.ClientSide
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
                     {
-                        if (!MainMod.isPrefabSet)
+                        if (!MainMod.isHosting && !MainMod.isConnected)
                         {
-                            Mod.playerInit();
+                            if (!MainMod.isPrefabSet)
+                            {
+                                Mod.playerInit();
+                            }
+                            Mod.client.ip = ipAdress;
+                            Mod.client.ConnectToServer();
                         }
-                        Mod.client.ip = ipAdress;
-                        Mod.client.ConnectToServer();
                     }
                     else
                     {  
@@ -67,8 +70,18 @@ namespace CMS21MP.ClientSide
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
                     {
-                        Server.Start(4,7777);
-                        MainMod.isHosting = true;
+                        if (!MainMod.isConnected && !MainMod.isHosting)
+                        {
+                            Server.Start(4,7777);
+                            MainMod.isHosting = true;
+                            
+                            if (!MainMod.isPrefabSet)
+                            {
+                                Mod.playerInit();
+                            }
+                            Mod.client.ip = "127.0.0.1";
+                            Mod.client.ConnectToServer();
+                        }
                     }
                     else
                     {  
@@ -84,10 +97,10 @@ namespace CMS21MP.ClientSide
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
                 {
                     Client.instance.Disconnect();
-                    foreach (KeyValuePair<int, PlayerManager> element in MPGameManager.players)
+                    foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
                     {
                         Destroy(element.Value.transform.gameObject);
-                        MPGameManager.players.Remove(element.Key);
+                        PlayerManager.players.Remove(element.Key);
                     }
                 }
                 if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace CMS21MP
+namespace CMS21MP.DataHandle
 {
     /// <summary>Sent from server to client.</summary>
     public enum ServerPackets
@@ -13,7 +13,8 @@ namespace CMS21MP
         playerPosition,
         playerRotation,
         playerConnected,
-        playerDisconnect
+        playerDisconnect,
+        playerInventory
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -22,7 +23,8 @@ namespace CMS21MP
         welcomeReceived = 1,
         playerMovement,
         playerRotation,
-        playerDisconnecting
+        playerDisconnecting,
+        playerInventory
     }
 
     public class Packet : IDisposable

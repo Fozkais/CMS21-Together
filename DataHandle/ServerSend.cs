@@ -1,6 +1,8 @@
+using CMS21MP.ServerSide;
+using Il2Cpp;
 using UnityEngine;
 
-namespace CMS21MP.ServerSide
+namespace CMS21MP.DataHandle
 {
     public class ServerSend
     {
@@ -120,6 +122,18 @@ namespace CMS21MP.ServerSide
                 SendTCPDataToAll(_packet);
             }
             
+        }
+
+        public static void PlayerInventory(int clientId, Item item)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.playerInventory))
+            {
+                _packet.Write(item.ID);
+                _packet.Write(item.Condition);
+                _packet.Write(item.Quality);
+
+                SendTCPDataToAll(clientId,_packet);
+            }
         }
     }
 }

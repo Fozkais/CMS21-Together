@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
+using CMS21MP.DataHandle;
 
 namespace CMS21MP.ServerSide
 {
@@ -121,7 +122,8 @@ namespace CMS21MP.ServerSide
             {
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
-                {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation}
+                {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
+                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory},
             };
             MelonLogger.Msg("Initialized Packets!");
         }

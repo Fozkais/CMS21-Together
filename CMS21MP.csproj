@@ -66,21 +66,22 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
-    <Compile Include="ClientSide\ClientHandle.cs" />
-    <Compile Include="ClientSide\ClientSend.cs" />
-    <Compile Include="ClientSide\MPGameManager.cs" />
-    <Compile Include="ClientSide\ModGUI.cs" />
-    <Compile Include="ClientSide\playerInputManagement.cs" />
     <Compile Include="ClientSide\PlayerManager.cs" />
+    <Compile Include="ClientSide\playerManagement.cs" />
+    <Compile Include="ClientSide\PlayerInfo.cs" />
+    <Compile Include="DataHandle\ClientHandle.cs" />
+    <Compile Include="DataHandle\ClientSend.cs" />
+    <Compile Include="DataHandle\DataUpdating.cs" />
+    <Compile Include="DataHandle\Packet.cs" />
+    <Compile Include="DataHandle\ServerHandle.cs" />
+    <Compile Include="DataHandle\ServerSend.cs" />
     <Compile Include="MainMod.cs" />
-    <Compile Include="Packet.cs" />
+    <Compile Include="ModGUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSide\Client.cs" />
     <Compile Include="ServerSide\Constants.cs" />
     <Compile Include="ServerSide\Player.cs" />
     <Compile Include="ServerSide\Server.cs" />
-    <Compile Include="ServerSide\ServerHandle.cs" />
-    <Compile Include="ServerSide\ServerSend.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CMS21MP.ClientSide;
+using CMS21MP.DataHandle;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
@@ -14,11 +15,10 @@ namespace CMS21MP
 {
     public class MainMod : MelonMod
     {
-       public MPGameManager gameManager;
+       public PlayerManager gameManager;
        public Client client;
        public ModGUI modGUI;
-
-
+       
        public static bool isPrefabSet = false;
 
        public ThreadManager threadManager;
@@ -28,12 +28,9 @@ namespace CMS21MP
        public static int playerConnected;
        public static int maxPlayer;
 
-       public AssetBundle playerModel;
+       public static GameObject localPlayer;
 
-       public static Dictionary<int, List<Vector3>> MovUpdateQueue = new Dictionary<int, List<Vector3>>();
-       public static Dictionary<int, List<Quaternion>> RotUpdateQueue = new Dictionary<int, List<Quaternion>>();
-       
-        public override void OnInitializeMelon() // Runs during Game Initialization.
+       public override void OnInitializeMelon() // Runs during Game Initialization.
         {
            
         }
@@ -50,7 +47,7 @@ namespace CMS21MP
            modGUI.Initialize();
            modGUI.Mod = this;
 
-           gameManager = new MPGameManager();
+           gameManager = new PlayerManager();
            gameManager.Initialize();
 
            
@@ -59,7 +56,10 @@ namespace CMS21MP
 
         public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
         {
-           // MelonLogger.Msg("OnSceneWasLoaded: " + buildindex.ToString() + " | " + sceneName);
+           if (SceneManager.GetActiveScene().name == "garage")
+           {
+              localPlayer = GameObject.FindObjectOfType<FPSInputController>().gameObject;
+           }
         }
 
         public override void OnSceneWasInitialized(int buildindex, string sceneName) // Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
@@ -69,38 +69,7 @@ namespace CMS21MP
 
         public override void OnUpdate() // Runs once per frame.
         {
-           if (SceneManager.GetActiveScene().name == "garage")
-           {
-              if(isConnected)
-              {
-                 GameObject.Find("First Person Controller").GetComponent<playerInputManagement>().playerPosUpdate();
-              }
-           }
-           if (MovUpdateQueue.Count > 0)
-           {
-              foreach (KeyValuePair<int, List<Vector3>> element in MovUpdateQueue)
-              {
-                 for (int i = 0; i < element.Value.Count; i++)
-                 {
-                     ServerSend.PlayerPosition(element.Key, element.Value[i]);
-                     MovUpdateQueue[element.Key].Remove(element.Value[i]);
-                 }
-              }
-           }
-           if (RotUpdateQueue.Count > 0)
-           {
-              foreach (KeyValuePair<int, List<Quaternion>> element in RotUpdateQueue)
-              {
-                 for (int i = 0; i < element.Value.Count; i++)
-                 {
-                    ServerSend.PlayerRotation(element.Key, element.Value[i]);
-                    RotUpdateQueue[element.Key].Remove(element.Value[i]);
-                 }
-              }
-           }
-           
-           
-           
+           DataUpdating.UpdateData();
            threadManager.UpdateThread();
         }
 
@@ -143,11 +112,11 @@ namespace CMS21MP
         public void playerInit()
         {
            ClassInjector.RegisterTypeInIl2Cpp<PlayerManager>();
-           ClassInjector.RegisterTypeInIl2Cpp<playerInputManagement>();
+           ClassInjector.RegisterTypeInIl2Cpp<playerManagement>();
 
            GameObject playerPrefab = GameObject.Find("First Person Controller");
-           playerPrefab.AddComponent<PlayerManager>();
-           playerPrefab.AddComponent<playerInputManagement>();
+           playerPrefab.AddComponent<PlayerInfo>();
+           playerPrefab.AddComponent<playerManagement>();
 
            AssetBundle pModel = AssetBundle.LoadFromFile(@"Mods\cms21mp\playermodel");
 
@@ -171,7 +140,7 @@ namespace CMS21MP
               model.name = "playerPrefab";
               model.AddComponent<MeshFilter>();
               model.AddComponent<MeshRenderer>();
-              model.AddComponent<PlayerManager>();
+              model.AddComponent<PlayerInfo>();
               model.GetComponent<MeshFilter>().mesh = gameObjectPrefab.GetComponentInChildren<MeshFilter>().sharedMesh;
               model.transform.localScale = new Vector3(1f, 1f, 1f);
               model.transform.position = new Vector3(0, -10, 0);
@@ -181,6 +150,7 @@ namespace CMS21MP
               gameManager.localPlayerPrefab = playerPrefab;
 
               isPrefabSet = true;
+              MelonLogger.Msg("ModelCreated SuccesFully");
            }
            else
            {

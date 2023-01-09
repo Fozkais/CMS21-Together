@@ -1,9 +1,11 @@
 using System.Collections.Generic;
 using CMS21MP.ClientSide;
+using CMS21MP.ServerSide;
+using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ServerSide
+namespace CMS21MP.DataHandle
 {
     public class ServerHandle
     {
@@ -21,20 +23,20 @@ namespace CMS21MP.ServerSide
                                   $" the wrong client ID ({_clientIdCheck})!");
             }
             Server.clients[_fromClient].SendIntoGame(_username);
-        }
+            }
 
         public static void PlayerMovement(int _fromclient, Packet _packet)
         {
             _fromclient = _packet.ReadInt();
             Vector3 position = _packet.ReadVector3();
 
-            if (MainMod.MovUpdateQueue.ContainsKey(_fromclient))
+            if (DataUpdating.MovUpdateQueue.ContainsKey(_fromclient))
             {
-                MainMod.MovUpdateQueue[_fromclient].Add(position);
+                DataUpdating.MovUpdateQueue[_fromclient].Add(position);
             }
             else
             {
-                MainMod.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
+                DataUpdating.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
             }
         }
         public static void PlayerRotation(int _fromclient, Packet _packet)
@@ -42,13 +44,35 @@ namespace CMS21MP.ServerSide
             _fromclient = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            if (MainMod.RotUpdateQueue.ContainsKey(_fromclient))
+            if (DataUpdating.RotUpdateQueue.ContainsKey(_fromclient))
             {
-                MainMod.RotUpdateQueue[_fromclient].Add(_rotation);
+                DataUpdating.RotUpdateQueue[_fromclient].Add(_rotation);
             }
             else
             {
-                MainMod.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
+                DataUpdating.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
+            }
+        }
+
+        public static void PlayerInventory(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            string _itemID = _packet.ReadString();
+            float _itemCondition = _packet.ReadFloat();
+            int _itemQuality = _packet.ReadInt();
+
+            Item item = new Item();
+            item.ID = _itemID;
+            item.Condition = _itemCondition;
+            item.Quality = _itemQuality;
+
+            if (DataUpdating.InventoryUpdateQueue.ContainsKey(_fromClient))
+            {
+                DataUpdating.InventoryUpdateQueue[_fromClient].Add(item);
+            }
+            else
+            {
+                DataUpdating.InventoryUpdateQueue.Add(_fromClient, new List<Item>{item});
             }
         }
     }

@@ -1,4 +1,6 @@
 using System.Net;
+using CMS21MP.DataHandle;
+using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
@@ -36,7 +38,7 @@ namespace CMS21MP.ClientSide
             Vector3 _position = _packet.ReadVector3();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            MPGameManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
+            PlayerManager.instance.SpawnPlayer(_id, _username, _position, _rotation);
         }
 
 
@@ -46,24 +48,49 @@ namespace CMS21MP.ClientSide
             Vector3 _position = _packet.ReadVector3();
 
            // MelonLogger.Msg($"received new pos for player{_id} !");
-           MPGameManager.players[_id].transform.position = _position;
+           if (PlayerManager.players[_id] != null)
+           {
+               PlayerManager.players[_id].transform.position = _position;
+           }
         }
         public static void PlayerRotation(Packet _packet)
         {
             int _id = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            MPGameManager.players[_id].transform.rotation = _rotation;
+            if (PlayerManager.players.ContainsKey(_id))
+            {
+                PlayerManager.players[_id].transform.rotation = _rotation;
+            }
+            else
+            {
+                
+            }
+        }
+
+        public static void PlayerInventory(Packet _packet)
+        {
+            string _itemId = _packet.ReadString();
+            float _itemCondition = _packet.ReadFloat();
+            int _itemQuality = _packet.ReadInt();
+
+            Item item = new Item();
+            item.ID = _itemId;
+            item.Condition = _itemCondition;
+            item.Quality = _itemQuality;
+            
+            GameScript.Get().GetComponent<Inventory>().items.Add(item);
         }
 
         public static void PlayerDisconnect(Packet _packet)
         {
             int _id = _packet.ReadInt();
 
-            GameObject.Destroy(MPGameManager.players[_id].gameObject);
-            MPGameManager.players.Remove(_id);
-            MainMod.MovUpdateQueue.Remove(_id);
-            MainMod.RotUpdateQueue.Remove(_id);
+            GameObject.Destroy(PlayerManager.players[_id].gameObject);
+            PlayerManager.players.Remove(_id);
+            DataUpdating.MovUpdateQueue.Remove(_id);
+            DataUpdating.RotUpdateQueue.Remove(_id);
+            DataUpdating.InventoryUpdateQueue.Remove(_id);
 
         }
     }

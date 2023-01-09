@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System;
+using CMS21MP.DataHandle;
 using MelonLoader;
 
 
@@ -292,7 +293,8 @@ namespace CMS21MP.ClientSide
                 { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
                 { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected},
-                {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect}
+                {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect},
+                {(int)ServerPackets.playerInventory, ClientHandle.PlayerInventory}
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -304,7 +306,8 @@ namespace CMS21MP.ClientSide
                 isConnected = false;
                 tcp.socket.Close();
                 udp.socket.Close();
-                
+
+                MainMod.isConnected = false;
                 MelonLogger.Msg("Disconnected from server.");
             }
         }

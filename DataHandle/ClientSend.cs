@@ -1,7 +1,9 @@
+using CMS21MP.ClientSide;
+using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide
+namespace CMS21MP.DataHandle
 {
     public static class ClientSend
     {
@@ -50,6 +52,19 @@ namespace CMS21MP.ClientSide
 
                 // MelonLogger.Msg($"Sending playerPos to server!");
                 SendUDPData(_packet);
+            }
+        }
+
+        public static void PlayerInventory(Item _item)
+        {
+            using (Packet _packet = new Packet((int)ClientPackets.playerInventory))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(_item.ID);
+                _packet.Write(_item.Condition);
+                _packet.Write(_item.Quality);
+
+                SendTCPData(_packet);
             }
         }
     }
