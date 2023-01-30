@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using CMS21MP.DataHandle;
@@ -14,6 +13,7 @@ namespace CMS21MP.ServerSide
 
         public int id;
         public Player player;
+        public bool isHosting = false;
         
         public TCP tcp;
         public UDP udp;
@@ -54,7 +54,7 @@ namespace CMS21MP.ServerSide
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
                 ServerSend.Welcome(id, "Welcome to the server!");
-                
+
                 int connected = 0;
                 for (int i = 1; i <= Server.MaxPlayers; i++)
                 {
@@ -210,12 +210,6 @@ namespace CMS21MP.ServerSide
                     {
                         ServerSend.SpawnPlayer(id, _client.player);
                     }
-                }
-            }
-            foreach (Client _client in Server.clients.Values)
-            {
-                if (_client.player != null)
-                {
                     ServerSend.SpawnPlayer(_client.id, player); 
                 }
             }

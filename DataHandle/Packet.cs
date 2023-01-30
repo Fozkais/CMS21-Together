@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Il2Cpp;
 using UnityEngine;
 
 namespace CMS21MP.DataHandle
@@ -14,7 +15,8 @@ namespace CMS21MP.DataHandle
         playerRotation,
         playerConnected,
         playerDisconnect,
-        playerInventory
+        playerInventory,
+        playerMoney
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -24,7 +26,8 @@ namespace CMS21MP.DataHandle
         playerMovement,
         playerRotation,
         playerDisconnecting,
-        playerInventory
+        playerInventory,
+        playerMoney
     }
 
     public class Packet : IDisposable
@@ -169,7 +172,7 @@ namespace CMS21MP.DataHandle
             buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
         }
         /// <summary>Adds a Vector3 to the packet.</summary>
-        /// <param name="_value">The string to add.</param>
+        /// <param name="_value">The Vector3 to add.</param>
         public void Write(Vector3 _value)
         {
             Write(_value.x);
@@ -177,7 +180,7 @@ namespace CMS21MP.DataHandle
             Write(_value.z);
         }
         /// <summary>Adds a Quaternion to the packet.</summary>
-        /// <param name="_value">The string to add.</param>
+        /// <param name="_value">The Quaternion to add.</param>
         public void Write(Quaternion _value)
         {
             Write(_value.x);

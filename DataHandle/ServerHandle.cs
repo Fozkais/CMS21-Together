@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using CMS21MP.ClientSide;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using MelonLoader;
@@ -7,7 +6,7 @@ using UnityEngine;
 
 namespace CMS21MP.DataHandle
 {
-    public class ServerHandle
+    public static class ServerHandle
     {
         public static void WelcomeReceived(int _fromClient, Packet _packet)
         {
@@ -23,7 +22,7 @@ namespace CMS21MP.DataHandle
                                   $" the wrong client ID ({_clientIdCheck})!");
             }
             Server.clients[_fromClient].SendIntoGame(_username);
-            }
+        }
 
         public static void PlayerMovement(int _fromclient, Packet _packet)
         {
@@ -60,19 +59,38 @@ namespace CMS21MP.DataHandle
             string _itemID = _packet.ReadString();
             float _itemCondition = _packet.ReadFloat();
             int _itemQuality = _packet.ReadInt();
+            long _itemUID = _packet.ReadLong();
+            bool status = _packet.ReadBool();
 
             Item item = new Item();
             item.ID = _itemID;
             item.Condition = _itemCondition;
             item.Quality = _itemQuality;
+            item.UID = _itemUID;
+            
+            MelonLogger.Msg($"SV: Received ItemFromClient[{_fromClient}], ID:{_itemID}, UID:{_itemUID}, Type:{status}");
 
-            if (DataUpdating.InventoryUpdateQueue.ContainsKey(_fromClient))
+            if (status)
             {
-                DataUpdating.InventoryUpdateQueue[_fromClient].Add(item);
+                if (ServerData.AddItemQueue.ContainsKey(_fromClient))
+                {
+                    ServerData.AddItemQueue[_fromClient].Add(item);
+                }
+                else
+                {
+                    ServerData.AddItemQueue.Add(_fromClient, new List<Item>(){item});
+                }
             }
             else
             {
-                DataUpdating.InventoryUpdateQueue.Add(_fromClient, new List<Item>{item});
+                if (ServerData.RemoveItemQueue.ContainsKey(_fromClient))
+                {
+                    ServerData.RemoveItemQueue[_fromClient].Add(item);
+                }
+                else
+                {
+                        ServerData.RemoveItemQueue.Add(_fromClient, new List<Item>(){item});
+                }
             }
         }
     }

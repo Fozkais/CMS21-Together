@@ -55,7 +55,7 @@ namespace CMS21MP.DataHandle
             }
         }
 
-        public static void PlayerInventory(Item _item)
+        public static void PlayerInventory(Item _item, bool status)
         {
             using (Packet _packet = new Packet((int)ClientPackets.playerInventory))
             {
@@ -63,7 +63,10 @@ namespace CMS21MP.DataHandle
                 _packet.Write(_item.ID);
                 _packet.Write(_item.Condition);
                 _packet.Write(_item.Quality);
-
+                _packet.Write(_item.UID);
+                _packet.Write(status);
+                
+                MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}");
                 SendTCPData(_packet);
             }
         }

@@ -20,9 +20,9 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005CMelonLoader_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CRiptideNetworking_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CRiptideNetworking_002Exml/@EntryIndexedValue">True</s:Boolean>
-	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=CodeStyle/@EntryIndexedValue">Off</s:String>
-	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=NamingFilter/@EntryIndexedValue">Off</s:String>
-	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/FiltersState/=SpellingFilter/@EntryIndexedValue">Off</s:String>
+	
+	
+	
 	<s:String x:Key="/Default/CodeInspection/PencilsConfiguration/Storage/@EntryValue">ThisComputer</s:String>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="E:\Modding\CMS21\CMS21MP\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll" /&gt;&#xD;

@@ -77,7 +77,15 @@ namespace CMS21MP.ClientSide
                 };
 
                 receiveBuffer = new byte[dataBufferSize];
-                socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
+                try
+                {
+                    socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg($"Error while connecting to server!: {e}");
+                    throw;
+                }
             }
 
             private void ConnectCallback(IAsyncResult _result)
@@ -85,15 +93,19 @@ namespace CMS21MP.ClientSide
                 socket.EndConnect(_result);
 
                 if (!socket.Connected)
-                {
+                { 
+                    MelonLogger.Msg("Cannot Connect to Server!");
                     return;
                 }
+                else
+                {
+                    stream = socket.GetStream();
 
-                stream = socket.GetStream();
+                    receivedData = new Packet();
 
-                receivedData = new Packet();
+                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+                }
 
-                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
 
             private void ReceiveCallback(IAsyncResult _result)

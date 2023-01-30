@@ -65,7 +65,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientSide\Client.cs" />
+    <Compile Include="ClientSide\C_Client.cs" />
     <Compile Include="ClientSide\PlayerManager.cs" />
     <Compile Include="ClientSide\playerManagement.cs" />
     <Compile Include="ClientSide\PlayerInfo.cs" />
@@ -73,13 +73,13 @@
     <Compile Include="DataHandle\ClientSend.cs" />
     <Compile Include="DataHandle\DataUpdating.cs" />
     <Compile Include="DataHandle\Packet.cs" />
+    <Compile Include="DataHandle\ServerData.cs" />
     <Compile Include="DataHandle\ServerHandle.cs" />
     <Compile Include="DataHandle\ServerSend.cs" />
     <Compile Include="MainMod.cs" />
     <Compile Include="ModGUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerSide\Client.cs" />
-    <Compile Include="ServerSide\Constants.cs" />
+    <Compile Include="ServerSide\SV_Client.cs" />
     <Compile Include="ServerSide\Player.cs" />
     <Compile Include="ServerSide\Server.cs" />
     <Compile Include="ThreadManager.cs" />

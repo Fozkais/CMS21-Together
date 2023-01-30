@@ -31,11 +31,16 @@ namespace CMS21MP.ServerSide
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            
+
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
             MelonLogger.Msg($"Server started on port {Port}.");
+        }
+
+        public static void Stop()
+        {
+            tcpListener.Stop();
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)
@@ -123,7 +128,7 @@ namespace CMS21MP.ServerSide
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
                 {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
-                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory},
+                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

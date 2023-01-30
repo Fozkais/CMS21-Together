@@ -29,6 +29,7 @@ namespace CMS21MP
        public static int maxPlayer;
 
        public static GameObject localPlayer;
+       public static Inventory localInventory;
 
        public override void OnInitializeMelon() // Runs during Game Initialization.
         {
@@ -59,6 +60,7 @@ namespace CMS21MP
            if (SceneManager.GetActiveScene().name == "garage")
            {
               localPlayer = GameObject.FindObjectOfType<FPSInputController>().gameObject;
+              localInventory = GameScript.Get().GetComponent<Inventory>();
            }
         }
 
@@ -120,17 +122,8 @@ namespace CMS21MP
 
            AssetBundle pModel = AssetBundle.LoadFromFile(@"Mods\cms21mp\playermodel");
 
-           if (pModel != null)
-           {
-              MelonLogger.Msg("Assets found inside of file are:");
-              foreach (string item in pModel.AllAssetNames())
-              {
-                 MelonLogger.Msg(item);
-              }
-
-              UnityEngine.Object ueobject = pModel.LoadAsset("assets/prefabs/playermodel.prefab");
+           UnityEngine.Object ueobject = pModel.LoadAsset("assets/prefabs/playermodel.prefab");
               GameObject gameObjectPrefab = ueobject.TryCast<GameObject>(); //Is this gameobject? Lets try at least
-              // MelonLogger.Msg(gameObjectPrefab.ToString());
 
               //Lets spawn this object to visible world (it will be on location 0 0 0) 
               GameObject model = GameObject.Instantiate(gameObjectPrefab);
@@ -151,11 +144,6 @@ namespace CMS21MP
 
               isPrefabSet = true;
               MelonLogger.Msg("ModelCreated SuccesFully");
-           }
-           else
-           {
-              MelonLogger.Msg("AssetBundle load failed");
-           }
         }
     }
 }

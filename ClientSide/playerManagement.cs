@@ -1,7 +1,8 @@
-using System;
-using CMS21MP.ClientSide;
+using System.Collections.Generic;
+using System.Linq;
 using CMS21MP.DataHandle;
 using Il2Cpp;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21MP.ClientSide
@@ -10,7 +11,13 @@ namespace CMS21MP.ClientSide
     {
         private Vector3 lastPos = new Vector3(0,0,0);
         private Quaternion lastRot = new Quaternion(0, 0, 0, 0);
-        private Inventory lastInventory = new Inventory();
+        public static List<Item> InventoryHandler = new List<Item>();
+        
+        // Handler
+        public List<Item> currentInventory = new List<Item>();
+        public static List<long> ItemsUID = new List<long>();
+        public List<Item> currentInventoryHandler = new List<Item>();
+
         public void playerInfoUpdate()
         {
             SendPositionToServer();
@@ -40,20 +47,37 @@ namespace CMS21MP.ClientSide
                 ClientSend.PlayerRotation(playerRot);
             }
         }
-
         private void SendInventoryToServer()
         {
-            Inventory inventorySize = GameScript.Get().GetComponent<Inventory>();
-            foreach (Item element in inventorySize.items)
+            var localInventory = MainMod.localInventory.items;
+
+            currentInventory.Clear();
+            foreach (Item item in localInventory)
             {
-                if (lastInventory.items.Contains(element))
+                currentInventory.Add(item);
+                if (ItemsUID.Count == 0)
                 {
-                    return;
+                    ItemsUID.Add(1);
                 }
-                else
+            }
+
+            for (int i = 0; i < currentInventory.Count; i++) 
+            {
+                if (!ItemsUID.Contains(currentInventory[i].UID)) 
                 {
-                    ClientSend.PlayerInventory(element);
-                    lastInventory.items.Add(element);
+                    ItemsUID.Add(currentInventory[i].UID);
+                    InventoryHandler.Add(currentInventory[i]);
+                    ClientSend.PlayerInventory(currentInventory[i], true); // Add new Item
+                }
+            }
+
+            for (int i = 0; i < InventoryHandler.Count; i++)
+            {
+                if (!currentInventory.Contains(InventoryHandler[i]) && ItemsUID.Contains(InventoryHandler[i].UID))
+                {
+                    ItemsUID.Remove(InventoryHandler[i].UID);
+                    InventoryHandler.Remove(InventoryHandler[i]);
+                    ClientSend.PlayerInventory(InventoryHandler[i], false);
                 }
             }
         }
