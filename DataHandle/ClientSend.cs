@@ -66,7 +66,7 @@ namespace CMS21MP.DataHandle
                 _packet.Write(_item.UID);
                 _packet.Write(status);
                 
-                MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}");
+                MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}, Type:{status}");
                 SendTCPData(_packet);
             }
         }

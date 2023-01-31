@@ -3,7 +3,7 @@ using Il2Cpp;
 
 namespace CMS21MP.DataHandle
 {
-    public static class ServerData
+    public class ServerData
     {
         public static Dictionary<int, List<Item>> AddItemQueue = new Dictionary<int, List<Item>>();
         public static Dictionary<int, List<Item>> RemoveItemQueue = new Dictionary<int, List<Item>>();
@@ -37,6 +37,5 @@ namespace CMS21MP.DataHandle
                 }
             }
         }
-        
     }
 }

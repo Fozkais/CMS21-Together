@@ -22,7 +22,8 @@ namespace CMS21MP.ClientSide
         {
             SendPositionToServer();
             SendRotationToServer();
-            SendInventoryToServer();
+            AddItem();
+            RemoveItem();
         }
 
         private void SendPositionToServer()
@@ -47,37 +48,47 @@ namespace CMS21MP.ClientSide
                 ClientSend.PlayerRotation(playerRot);
             }
         }
-        private void SendInventoryToServer()
+        private void AddItem()
         {
+            if (ItemsUID.Count == 0)
+                ItemsUID.Add(1);
+            
             var localInventory = MainMod.localInventory.items;
 
             currentInventory.Clear();
             foreach (Item item in localInventory)
             {
                 currentInventory.Add(item);
-                if (ItemsUID.Count == 0)
-                {
-                    ItemsUID.Add(1);
-                }
             }
 
             for (int i = 0; i < currentInventory.Count; i++) 
             {
                 if (!ItemsUID.Contains(currentInventory[i].UID)) 
                 {
+                    MelonLogger.Msg($"Founded a new Item ! ID:{currentInventory[i].ID}, UID:{currentInventory[i].UID}");
                     ItemsUID.Add(currentInventory[i].UID);
                     InventoryHandler.Add(currentInventory[i]);
                     ClientSend.PlayerInventory(currentInventory[i], true); // Add new Item
                 }
             }
+        }
 
-            for (int i = 0; i < InventoryHandler.Count; i++)
+        private void RemoveItem()
+        {
+            currentInventoryHandler.Clear();
+            foreach (Item item in InventoryHandler)
             {
-                if (!currentInventory.Contains(InventoryHandler[i]) && ItemsUID.Contains(InventoryHandler[i].UID))
+                currentInventoryHandler.Add(item);
+            }
+
+            for (int i = 0; i < currentInventoryHandler.Count; i++)
+            {
+                if (!MainMod.localInventory.items.Contains(currentInventoryHandler[i]))
                 {
-                    ItemsUID.Remove(InventoryHandler[i].UID);
-                    InventoryHandler.Remove(InventoryHandler[i]);
-                    ClientSend.PlayerInventory(InventoryHandler[i], false);
+                    MelonLogger.Msg($"Founded a Removed Item ! ID:{currentInventoryHandler[i].ID}, UID:{currentInventoryHandler[i].UID}");
+                    ItemsUID.Remove(currentInventoryHandler[i].UID);
+                    InventoryHandler.Remove(currentInventoryHandler[i]);
+                    ClientSend.PlayerInventory(currentInventoryHandler[i], false);
                 }
             }
         }
