@@ -46,7 +46,8 @@ namespace CMS21MP.ServerSide
                 socket.SendBufferSize = dataBufferSize;
 
                 stream = socket.GetStream();
-
+                stream.ReadTimeout = 200;
+                
                 receivedData = new Packet();
 
                 receiveBuffer = new byte[dataBufferSize];
@@ -151,6 +152,7 @@ namespace CMS21MP.ServerSide
             public void Disconnect()
             {
                 socket.Close();
+                stream.Close();
                 stream = null;
                 receivedData = null;
                 receiveBuffer = null;
@@ -222,8 +224,10 @@ namespace CMS21MP.ServerSide
 
             player = null;
             tcp.Disconnect();
+            
             udp.Disconnect();
             
+
             int connected = 0;
             for (int i = 1; i <= Server.MaxPlayers; i++)
             {

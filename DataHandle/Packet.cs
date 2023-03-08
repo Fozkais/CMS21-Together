@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Il2Cpp;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21MP.DataHandle
@@ -16,7 +19,10 @@ namespace CMS21MP.DataHandle
         playerConnected,
         playerDisconnect,
         playerInventory,
-        playerMoney
+        playerMoney,
+        playerScene,
+        spawnCars,
+        moveCars
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -25,9 +31,11 @@ namespace CMS21MP.DataHandle
         welcomeReceived = 1,
         playerMovement,
         playerRotation,
-        playerDisconnecting,
         playerInventory,
-        playerMoney
+        playerMoney,
+        playerScene,
+        spawnCars,
+        moveCars
     }
 
     public class Packet : IDisposable
@@ -188,6 +196,37 @@ namespace CMS21MP.DataHandle
             Write(_value.z);
             Write(_value.w);
         }
+
+        public void Write(CarLoader _value)
+        {
+            byte[] array = ObjectoByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+
+        public void Write(Item _value)
+        {
+            byte[] array = ObjectoByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        
+        public void Write(carData _value)
+        {
+            byte[] array = ObjectoByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+
+        private byte[] ObjectoByteArray(object obj)
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            MemoryStream ms = new MemoryStream();
+            bf.Serialize(ms, obj);
+
+            return ms.ToArray();
+        }
+        
         #endregion
 
         #region Read Data
@@ -371,6 +410,38 @@ namespace CMS21MP.DataHandle
         public Quaternion ReadQuaternion(bool _moveReadPos = true)
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+
+        public CarLoader ReadCarLoader(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (CarLoader) ByteArrayToObject(array); // Convert the bytes array to CarLoader
+        }
+        
+        public Item ReadItem(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (Item) ByteArrayToObject(array); // Convert the bytes array to Item
+        }
+        
+        public carData ReadCarData(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (carData) ByteArrayToObject(array); // Convert the bytes array to Item
+        }
+        
+        private object ByteArrayToObject(byte[] arrBytes)
+        {
+            MemoryStream memStream = new MemoryStream();
+            BinaryFormatter binForm = new BinaryFormatter();
+            memStream.Write(arrBytes, 0, arrBytes.Length);
+            memStream.Seek(0, SeekOrigin.Begin);
+            object obj = (object) binForm.Deserialize(memStream);
+
+            return obj;
         }
         #endregion
 
