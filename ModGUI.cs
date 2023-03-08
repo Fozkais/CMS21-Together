@@ -16,8 +16,8 @@ namespace CMS21MP.ClientSide
         public bool isMultiplayerGUIShowed = false;
 
 
-        public string ipAdress = "127.0.0.1";
-        public string usernameField = "player";
+        public string ipAdress = "192.168.1.94";
+        public string usernameField = "player2";
 
         public Vector3 player2Pos;
         public string player2Position;
@@ -51,7 +51,7 @@ namespace CMS21MP.ClientSide
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
                     {
-                        if (!MainMod.isHosting && !MainMod.isConnected)
+                        if ( !MainMod.isConnected)
                         {
                             if (!MainMod.isPrefabSet)
                             {
@@ -80,6 +80,7 @@ namespace CMS21MP.ClientSide
                                 Mod.playerInit();
                             }
                             Mod.client.ip = "127.0.0.1";
+                            usernameField = "player";
                             Mod.client.ConnectToServer();
                         }
                     }
@@ -98,8 +99,13 @@ namespace CMS21MP.ClientSide
                     Client.instance.Disconnect();
                     foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
                     {
-                        Destroy(element.Value.transform.gameObject);
-                        PlayerManager.players.Remove(element.Key);
+                        Destroy(element.Value.gameObject);
+                    }
+                    PlayerManager.players.Clear();
+                    if (MainMod.isHosting)
+                    {
+                        Server.Stop();
+                        MainMod.isHosting = false;
                     }
                 }
                 if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))

@@ -1,6 +1,7 @@
 using System;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CMS21MP.ClientSide
 {
@@ -10,5 +11,6 @@ namespace CMS21MP.ClientSide
     {
         public int id;
         public string username;
+        public string activeScene = "garage";
     }
 }

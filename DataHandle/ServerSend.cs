@@ -65,6 +65,7 @@ namespace CMS21MP.DataHandle
             {
                 _packet.Write(_msg);
                 _packet.Write(_toClient);
+                _packet.Write(ServerData.serverMoney);
 
                 SendTCPData(_toClient, _packet);
             }
@@ -138,8 +139,52 @@ namespace CMS21MP.DataHandle
                 _packet.Write(item.UID);
                 _packet.Write(status);
                 
-                MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
+               // MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
                 SendTCPDataToAll(clientID,_packet);
+            }
+        }
+
+        public static void PlayerMoney(int clientID, int money, bool status)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.playerMoney))
+            {
+                _packet.Write(money);
+                _packet.Write(status);
+                
+                SendTCPDataToAll(clientID, _packet);
+            }
+        }
+
+        public static void PlayerScene(int clientID, string username, string scene)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.playerScene))
+            {
+                _packet.Write(clientID);
+                _packet.Write(username);
+                _packet.Write(scene);
+
+                SendTCPDataToAll(clientID, _packet);
+            }
+        }
+
+        public static void SpawnCars(int fromClient, carData data)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.spawnCars))
+            {
+                _packet.Write(data);
+
+                SendTCPDataToAll(fromClient, _packet);
+            }
+        }
+
+        public static void MoveCar(int clientID, int carPosition, int carLoaderID)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.moveCars))
+            {
+                _packet.Write(carPosition);
+                _packet.Write(carLoaderID);
+
+                SendTCPDataToAll(clientID, _packet);
             }
         }
     }

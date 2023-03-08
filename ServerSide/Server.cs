@@ -40,7 +40,25 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
-            tcpListener.Stop();
+            try
+            {
+                tcpListener.Stop();
+                udpListener.Close();
+                
+                foreach (KeyValuePair<int, Client> tcpClient in clients)
+                {
+                    tcpClient.Value.tcp.socket.GetStream().Close();
+                    tcpClient.Value.tcp.socket.Close();
+                }
+                clients.Clear();
+                
+                tcpListener.Server.Dispose();
+                udpListener.Dispose();
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Msg($"Error while closing server! : {e}");
+            }
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)
@@ -128,7 +146,11 @@ namespace CMS21MP.ServerSide
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
                 {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
-                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory}
+                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory},
+                {(int)ClientPackets.playerMoney, ServerHandle.PlayerMoney},
+                {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
+                {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
+                {(int)ClientPackets.moveCars, ServerHandle.MoveCar}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

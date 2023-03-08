@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using CMS21MP.ClientSide;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace CMS21MP.DataHandle
 {
@@ -15,13 +18,25 @@ namespace CMS21MP.DataHandle
         {
             if (MainMod.isConnected)
             {
-                MainMod.localPlayer.GetComponent<playerManagement>().playerInfoUpdate();
-                UpdatePlayerMovement();
-                UpdatePlayerRotation();
-
-                if (MainMod.isHosting)
+                if (MainMod.playableSceneChecker())
                 {
-                    ServerData.UpdateInventory();
+                    if (MainMod.localPlayer != null)
+                    {
+                        MainMod.localPlayer.GetComponent<playerManagement>().playerInfoUpdate();
+                        UpdatePlayerMovement();
+                        UpdatePlayerRotation();
+                        //UpdatePlayerScene();
+
+                        if (MainMod.isHosting)
+                        {
+                            if (MainMod.playableSceneWithInventory())
+                            {
+                                ServerData.UpdateInventory();
+                            }
+                            ServerData.UpdateCarList();
+                        }
+                    }
+                    
                 }
             }
 
@@ -53,6 +68,25 @@ namespace CMS21MP.DataHandle
                         ServerSend.PlayerRotation(element.Key, element.Value[i]);
                         RotUpdateQueue[element.Key].Remove(element.Value[i]);
                     }
+                }
+            }
+        }
+
+        public static void UpdatePlayerScene()
+        {
+            if (PlayerManager.players.Count > 0)
+            {
+                foreach (KeyValuePair<int, PlayerInfo> player in PlayerManager.players)
+                {
+                    if (player.Value.activeScene != SceneManager.GetActiveScene().name)
+                    {
+                        if (GameObject.Find($"{player.Value.username}") != null && player.Value.id != Client.instance.myId)
+                        {
+                            Object.Destroy(GameObject.Find($"{player.Value.username}"));
+                            PlayerManager.players.Remove(player.Value.id);
+                        }
+                    }
+                   
                 }
             }
         }

@@ -68,7 +68,9 @@ namespace CMS21MP.DataHandle
             item.Quality = _itemQuality;
             item.UID = _itemUID;
             
-            MelonLogger.Msg($"SV: Received ItemFromClient[{_fromClient}], ID:{_itemID}, UID:{_itemUID}, Type:{status}");
+            
+           // Item item = _packet.ReadItem();
+           // MelonLogger.Msg($"SV: Received ItemFromClient[{_fromClient}], ID:{item.ID}, UID:{item.UID}, Type:{status}");
 
             if (status)
             {
@@ -89,9 +91,53 @@ namespace CMS21MP.DataHandle
                 }
                 else
                 {
-                        ServerData.RemoveItemQueue.Add(_fromClient, new List<Item>(){item});
+                    ServerData.RemoveItemQueue.Add(_fromClient, new List<Item>(){item});
                 }
             }
+        }
+
+        public static void PlayerMoney(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            int _money =  _packet.ReadInt();
+            bool status = _packet.ReadBool();
+            
+           ServerSend.PlayerMoney(_fromClient,_money, status);
+        }
+        public static void PlayerScene(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            string _username = _packet.ReadString();
+            string _scene = _packet.ReadString();
+            
+            MelonLogger.Msg($"SV : Received scene: {_scene} from client with ID:{_fromClient} !");
+            ServerSend.PlayerScene(_fromClient, _username, _scene);
+        }
+
+        public static void SpawnCars(int _fromClient, Packet _packet)
+        { 
+            _fromClient = _packet.ReadInt();
+            carData data = _packet.ReadCarData();
+
+            //CarLoader carLoader = _packet.ReadCarLoader();
+            
+           //MelonLogger.Msg($"SV: Received carLoader : Color[{carLoader.color}], PlaceNo[{carLoader.placeNo}], carID[{carLoader.carToLoad}]");
+           
+           MelonLogger.Msg($"SV: Received new carInfo : ID[{data.carID}], LoaderID:[{data.carLoaderID}], carPos[{data.carPosition}], Status[{data.status}]");
+           //ServerData.carList.Add(data);
+           ServerSend.SpawnCars(_fromClient, data);
+        }
+        
+        public static void MoveCar(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            int carPosition = _packet.ReadInt();
+            int carLoaderID = _packet.ReadInt();
+            
+            MelonLogger.Msg("SV: Received new carPosition! sending new pos to players.");
+
+            //ServerData.carListHandle[carLoaderID].carPosition = carPosition;
+            ServerSend.MoveCar(_fromClient, carPosition, carLoaderID);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace CMS21MP.ClientSide
         public TCP tcp;
         public UDP udp;
 
-        public bool isConnected = false;
+        public bool isConnected;
 
         private delegate void PacketHandler(Packet _packet);
 
@@ -57,12 +57,20 @@ namespace CMS21MP.ClientSide
             InitializeClientData();
 
             isConnected = true;
-            tcp.Connect();
+    
+            try
+            {
+                tcp.Connect();
+            }
+            catch (ObjectDisposedException ex)
+            {
+                MelonLogger.Msg($"Failed to connect to server. Error: {ex}");
+            }
         }
 
         public class TCP
         {
-            public TcpClient socket;
+            public TcpClient socket = new TcpClient();
 
             private NetworkStream stream;
             private Packet receivedData;
@@ -75,16 +83,16 @@ namespace CMS21MP.ClientSide
                     ReceiveBufferSize = dataBufferSize,
                     SendBufferSize = dataBufferSize
                 };
-
+    
                 receiveBuffer = new byte[dataBufferSize];
+    
                 try
                 {
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
                 }
-                catch (Exception e)
+                catch (ObjectDisposedException ex)
                 {
-                    MelonLogger.Msg($"Error while connecting to server!: {e}");
-                    throw;
+                    MelonLogger.Msg($"Failed to connect to server. Error: {ex}");
                 }
             }
 
@@ -97,14 +105,11 @@ namespace CMS21MP.ClientSide
                     MelonLogger.Msg("Cannot Connect to Server!");
                     return;
                 }
-                else
-                {
-                    stream = socket.GetStream();
 
-                    receivedData = new Packet();
+                stream = socket.GetStream();
+                receivedData = new Packet();
 
-                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
-                }
+                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
             }
 
@@ -125,8 +130,9 @@ namespace CMS21MP.ClientSide
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-                catch
+                catch (Exception e)
                 {
+                    MelonLogger.Msg($"Error caused Disconnection! : {e}");
                     Disconnect();
                 }
             }
@@ -266,6 +272,7 @@ namespace CMS21MP.ClientSide
                     }
                     catch
                     {
+                        MelonLogger.Msg("Error caused Disconnection");
                         Disconnect();
                     }
                 }
@@ -306,7 +313,11 @@ namespace CMS21MP.ClientSide
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
                 { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected},
                 {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect},
-                {(int)ServerPackets.playerInventory, ClientHandle.PlayerInventory}
+                {(int)ServerPackets.playerInventory, ClientHandle.PlayerInventory},
+                {(int)ServerPackets.playerMoney, ClientHandle.PlayerMoney},
+                {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
+                {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
+                {(int)ServerPackets.moveCars, ClientHandle.MoveCar}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

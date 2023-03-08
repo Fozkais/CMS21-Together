@@ -21,10 +21,13 @@ namespace CMS21MP.DataHandle
         
         public static void WelcomeReceived()
         {
+            MelonLogger.Msg("PrepareToSendReceived");
             using (Packet _packet = new Packet((int)ClientPackets.welcomeReceived))
             {
                 _packet.Write(Client.instance.myId);
                 _packet.Write(ModGUI.instance.usernameField);
+                
+                MelonLogger.Msg("Sent welcomeReceived!");
                 
                 SendTCPData(_packet);
             }
@@ -65,10 +68,60 @@ namespace CMS21MP.DataHandle
                 _packet.Write(_item.Quality);
                 _packet.Write(_item.UID);
                 _packet.Write(status);
+                //_packet.Write(_item);
                 
-                MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}, Type:{status}");
                 SendTCPData(_packet);
             }
+            // MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}, Type:{status}");
+        }
+
+        public static void PlayerMoney(int _money, bool status)
+        {
+            using (Packet _packet = new Packet((int)ClientPackets.playerMoney))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(_money);
+                _packet.Write(status);
+                
+                SendTCPData(_packet);
+            }
+        }
+
+        public static void PlayerScene(string scene)
+        {
+            using (Packet _packet = new Packet((int)ClientPackets.playerScene))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(PlayerManager.players[Client.instance.myId].username);
+                _packet.Write(scene);
+                
+                SendTCPData(_packet);
+            }
+        }
+
+        public static void SpawnCars(carData data)
+        {
+            using(Packet _packet = new Packet((int)ClientPackets.spawnCars))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(data);
+
+                SendTCPData(_packet);
+            }
+            MelonLogger.Msg($"CL: Sending car Info! ID:[{data.carID}], LoaderID:[{data.carLoaderID}], Pos:[{data.carPosition}], status:[{data.status}]");
+        }
+
+        public static void MoveCar(int carPosition, int carLoaderID)
+        {
+            using(Packet _packet = new Packet((int)ClientPackets.moveCars))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(carPosition);
+                _packet.Write(carLoaderID);
+
+                SendTCPData(_packet);
+            }
+            MelonLogger.Msg("CL: Detected a moved car! sending new pos to server.");
         }
     }
     
