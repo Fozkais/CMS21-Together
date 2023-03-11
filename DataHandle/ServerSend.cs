@@ -189,12 +189,13 @@ namespace CMS21MP.DataHandle
             }
         }
 
-        public static void carPart(int fromClient, int carLoaderID, C_PartsData parts)
+        public static void carPart(int fromClient, int carLoaderID, List<C_PartScriptData> parts, int partType)
         {
             using (Packet _packet = new Packet((int)ServerPackets.car_part))
             {
                 _packet.Write(carLoaderID);
                 _packet.Write(parts);
+                _packet.Write(partType);
 
                 SendTCPDataToAll(fromClient, _packet);
             }

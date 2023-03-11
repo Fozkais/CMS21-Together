@@ -83,11 +83,8 @@ namespace CMS21MP
          LoggerInstance.Msg("Mod Initialized!");
       }
 
-      public override void
-         OnSceneWasLoaded(int buildindex,
-            string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
+      public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
       {
-
          if (playableSceneChecker())
          {
             localPlayer = GameObject.FindObjectOfType<FPSInputController>().gameObject;
