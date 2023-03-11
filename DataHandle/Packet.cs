@@ -251,7 +251,6 @@ namespace CMS21MP.DataHandle
         {
             if(obj == null)
                 return null;
-
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream();
             bf.Serialize(ms, obj);
@@ -495,7 +494,7 @@ namespace CMS21MP.DataHandle
 
             return obj;
         }
-
+        
         #endregion
 
         private bool disposed = false;

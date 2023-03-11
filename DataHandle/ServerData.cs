@@ -12,7 +12,9 @@ namespace CMS21MP.DataHandle
         public static Dictionary<int, List<Item>> AddItemQueue = new Dictionary<int, List<Item>>();
         public static Dictionary<int, List<Item>> RemoveItemQueue = new Dictionary<int, List<Item>>();
         public static Inventory serverInventory = new Inventory();
-        
+
+        public static List<carData> carList = new List<carData>();
+        public static List<carData> carListHandle = new List<carData>();
 
         public static int serverMoney = GlobalData.PlayerMoney;
 
@@ -44,6 +46,4 @@ namespace CMS21MP.DataHandle
                 }
             }
         }
-        
-    }
 }
