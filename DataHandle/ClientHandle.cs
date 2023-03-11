@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using CMS21MP.DataHandle;
@@ -10,7 +11,7 @@ using Object = UnityEngine.Object;
 
 namespace CMS21MP.ClientSide
 {
-    public class ClientHandle
+    public class ClientHandle : MonoBehaviour
     {
         public static void Welcome(Packet _packet)
         {
@@ -186,8 +187,12 @@ namespace CMS21MP.ClientSide
                 {
                     playerManagement.carHandler.Add(data);
                 }
+
+                Color carColor = new Color(data.carColor.r,data.carColor.g,data.carColor.b,data.carColor.a);
+
                 MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
                 MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
+                MainMod.carLoaders[data.carLoaderID].color = carColor;
                 MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID);
             }
             else
@@ -217,6 +222,120 @@ namespace CMS21MP.ClientSide
             }
             
         }
+        
+        public static void carParts(Packet _packet)
+        {
+            int _carLoaderID = _packet.ReadInt();
+            C_PartsData _carParts = _packet.ReadCarPart();
+            
+            MelonLogger.Msg("CL: Received a new carParts");
+
+            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            {
+                MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_name = _carParts.name;
+                MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_position =
+                    new Vector3(_carParts.positionX, _carParts.positionY, _carParts.positionZ);
+                MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_rotation = 
+                    new Vector3(_carParts.rotationX, _carParts.rotationY, _carParts.rotationZ);
+                MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_scale = _carParts.scale;
+                MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_reflection = _carParts.reflection;
+                
+                MelonLogger.Msg($"Parts[{_carParts.partID}] updated!, {_carParts.name}, -> {MainMod.carLoaders[_carLoaderID].Parts._items[_carParts.partID].p_name}");
+                
+                MainMod.carLoaders[_carLoaderID].SetParts();
+                MainMod.carLoaders[_carLoaderID].Update();
+                
+            }
+            
+        }
+
+        public static void bodyPart(Packet _packet)
+        {
+            int _carLoaderID = _packet.ReadInt();
+            C_carPartsData _bodyPart = _packet.ReadBodyPart();
+
+            MelonLogger.Msg($"CL: Received a new bodyPart! {_bodyPart.name}");
+            //MelonCoroutines.Start(delayUpdate(_bodyPart, _carLoaderID));
+              Color color = new Color(_bodyPart.colors.r, _bodyPart.colors.g, _bodyPart.colors.b, _bodyPart.colors.a);
+            
+            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            {
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name = _bodyPart.name;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Switched = _bodyPart.switched;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].InProgress = _bodyPart.inprogress;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Condition = _bodyPart.condition;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Unmounted = _bodyPart.unmounted;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].TunedID = _bodyPart.tunedID;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Color = color;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].PaintType = (PaintType)_bodyPart.paintType;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].StructureCondition = _bodyPart.conditionStructure;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConditionPaint = _bodyPart.conditionPaint;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Livery = _bodyPart.livery;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].LiveryStrength = _bodyPart.liveryStrength;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].OutsideRustEnabled = _bodyPart.outsaidRustEnabled;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].AdditionalString = _bodyPart.adtionalString;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConnectedParts.Clear();
+                    foreach (string attachedPart in _bodyPart.mountUnmountWith)
+                    {
+                        MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConnectedParts.Add(attachedPart);
+                    }
+
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Quality = _bodyPart.quality;
+                    
+                    MainMod.carLoaders[_carLoaderID].SetUnmountWithCarParts();
+                    MainMod.carLoaders[_carLoaderID].UpdateCarBodyParts();
+                    //MainMod.carLoaders[_carLoaderID].
+
+                    MelonLogger.Msg($"Parts[{_bodyPart.carPartID}] updated!, {_bodyPart.name}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name}, {_bodyPart.unmounted}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Unmounted}");
+            }
+            else
+            {
+                MelonLogger.Msg($"Loss of data from bodyPart ! {_bodyPart.name}");
+            }
+
+
+        }
+
+        static IEnumerator delayUpdate(C_carPartsData _bodyPart, int _carLoaderID)
+        {
+            yield return new WaitForSeconds(1);
+             Color color = new Color(_bodyPart.colors.r, _bodyPart.colors.g, _bodyPart.colors.b, _bodyPart.colors.a);
+            
+            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            {
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name = _bodyPart.name;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Switched = _bodyPart.switched;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].InProgress = _bodyPart.inprogress;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Condition = _bodyPart.condition;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Unmounted = _bodyPart.unmounted;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].TunedID = _bodyPart.tunedID;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Color = color;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].PaintType = (PaintType)_bodyPart.paintType;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].StructureCondition = _bodyPart.conditionStructure;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConditionPaint = _bodyPart.conditionPaint;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Livery = _bodyPart.livery;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].LiveryStrength = _bodyPart.liveryStrength;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].OutsideRustEnabled = _bodyPart.outsaidRustEnabled;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].AdditionalString = _bodyPart.adtionalString;
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConnectedParts.Clear();
+                    foreach (string attachedPart in _bodyPart.mountUnmountWith)
+                    {
+                        MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].ConnectedParts.Add(attachedPart);
+                    }
+
+                    MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Quality = _bodyPart.quality;
+                    
+                    MainMod.carLoaders[_carLoaderID].SetUnmountWithCarParts();
+                    MainMod.carLoaders[_carLoaderID].UpdateCarBodyParts();
+
+                    MelonLogger.Msg($"Parts[{_bodyPart.carPartID}] updated!, {_bodyPart.name}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name}, {_bodyPart.unmounted}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].Unmounted}");
+            }
+            else
+            {
+                MelonLogger.Msg($"Loss of data from bodyPart ! {_bodyPart.name}");
+            }
+        }
+       
 
     }
 }

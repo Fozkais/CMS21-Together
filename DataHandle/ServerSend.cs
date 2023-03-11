@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using MelonLoader;
@@ -185,6 +186,28 @@ namespace CMS21MP.DataHandle
                 _packet.Write(carLoaderID);
 
                 SendTCPDataToAll(clientID, _packet);
+            }
+        }
+
+        public static void carPart(int fromClient, int carLoaderID, C_PartsData parts)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.car_part))
+            {
+                _packet.Write(carLoaderID);
+                _packet.Write(parts);
+
+                SendTCPDataToAll(fromClient, _packet);
+            }
+        }
+
+        public static void bodyPart(int fromClient, int carLoaderID, C_carPartsData bodyParts)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.body_part))
+            {
+                _packet.Write(carLoaderID);
+                _packet.Write(bodyParts);
+
+                SendTCPDataToAll(fromClient, _packet);
             }
         }
     }

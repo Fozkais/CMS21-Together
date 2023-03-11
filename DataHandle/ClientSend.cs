@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CMS21MP.ClientSide;
 using Il2Cpp;
 using MelonLoader;
@@ -122,6 +123,30 @@ namespace CMS21MP.DataHandle
                 SendTCPData(_packet);
             }
             MelonLogger.Msg("CL: Detected a moved car! sending new pos to server.");
+        }
+        public static void carParts(int carLoaderID, C_PartsData parts)
+        {
+            using(Packet _packet = new Packet((int)ClientPackets.car_part))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(parts);
+                _packet.Write(carLoaderID);
+
+                SendTCPData(_packet);
+            }
+            MelonLogger.Msg("CL: sending carParts to Server!");
+        }
+        public static void bodyParts(int carLoaderID, C_carPartsData parts)
+        {
+            using(Packet _packet = new Packet((int)ClientPackets.body_part))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(parts);
+                _packet.Write(carLoaderID);
+
+                SendTCPData(_packet);
+            }
+            MelonLogger.Msg("CL: sending BodyParts to Server!");
         }
     }
     

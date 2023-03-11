@@ -150,7 +150,9 @@ namespace CMS21MP.ServerSide
                 {(int)ClientPackets.playerMoney, ServerHandle.PlayerMoney},
                 {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
                 {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
-                {(int)ClientPackets.moveCars, ServerHandle.MoveCar}
+                {(int)ClientPackets.moveCars, ServerHandle.MoveCar},
+                {(int)ClientPackets.car_part, ServerHandle.carParts},
+                {(int)ClientPackets.body_part, ServerHandle.bodyPart}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

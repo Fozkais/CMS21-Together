@@ -317,7 +317,9 @@ namespace CMS21MP.ClientSide
                 {(int)ServerPackets.playerMoney, ClientHandle.PlayerMoney},
                 {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
                 {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
-                {(int)ServerPackets.moveCars, ClientHandle.MoveCar}
+                {(int)ServerPackets.moveCars, ClientHandle.MoveCar},
+                {(int)ServerPackets.car_part, ClientHandle.carParts},
+                {(int)ServerPackets.body_part, ClientHandle.bodyPart}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

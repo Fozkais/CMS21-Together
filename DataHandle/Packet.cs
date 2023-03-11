@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
 using Il2Cpp;
 using MelonLoader;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace CMS21MP.DataHandle
@@ -22,7 +25,10 @@ namespace CMS21MP.DataHandle
         playerMoney,
         playerScene,
         spawnCars,
-        moveCars
+        moveCars,
+        // car part sync
+        car_part,
+        body_part
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -35,7 +41,10 @@ namespace CMS21MP.DataHandle
         playerMoney,
         playerScene,
         spawnCars,
-        moveCars
+        moveCars,
+        // car part sync
+        car_part,
+        body_part
     }
 
     public class Packet : IDisposable
@@ -199,34 +208,50 @@ namespace CMS21MP.DataHandle
 
         public void Write(CarLoader _value)
         {
-            byte[] array = ObjectoByteArray(_value);
+            byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);
         }
 
         public void Write(Item _value)
         {
-            byte[] array = ObjectoByteArray(_value);
+            byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);
         }
         
         public void Write(carData _value)
         {
-            byte[] array = ObjectoByteArray(_value);
+            byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);
         }
 
-        private byte[] ObjectoByteArray(object obj)
+        public void Write(C_PartsData _value)
         {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        public void Write(C_carPartsData _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        
+        private byte[] ObjectToByteArray(object obj)
+        {
+            if(obj == null)
+                return null;
+
             BinaryFormatter bf = new BinaryFormatter();
             MemoryStream ms = new MemoryStream();
             bf.Serialize(ms, obj);
 
             return ms.ToArray();
         }
-        
+
         #endregion
 
         #region Read Data
@@ -430,7 +455,20 @@ namespace CMS21MP.DataHandle
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
-            return (carData) ByteArrayToObject(array); // Convert the bytes array to Item
+            return (carData) ByteArrayToObject(array); // Convert the bytes array to carData
+        }
+        
+        public C_PartsData ReadCarPart(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (C_PartsData) ByteArrayToObject(array);
+        }
+        public C_carPartsData ReadBodyPart(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (C_carPartsData) ByteArrayToObject(array);// Convert the bytes array to a parts List
         }
         
         private object ByteArrayToObject(byte[] arrBytes)
@@ -443,6 +481,7 @@ namespace CMS21MP.DataHandle
 
             return obj;
         }
+
         #endregion
 
         private bool disposed = false;
@@ -467,5 +506,6 @@ namespace CMS21MP.DataHandle
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        
     }
 }
