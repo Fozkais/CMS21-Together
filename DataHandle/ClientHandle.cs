@@ -293,7 +293,44 @@ namespace CMS21MP.ClientSide
                 MelonLogger.Msg($"Loss of data from bodyPart ! {_bodyPart.name}");
             }
 
+            MelonLogger.Msg($"CL: Received new car info : ID[{data.carID}], carPos[{data.carPosition}], status[{data.status}");
+            
+            if (data.status)
+            {
+                if (!playerManagement.carHandler.Contains(data))
+                {
+                    playerManagement.carHandler.Add(data);
+                }
+                MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
+                MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
+                MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID);
+            }
+            else
+            {
+                if (playerManagement.carHandler.Contains(data))
+                {
+                    playerManagement.carHandler.Remove(data);
+                }
+                
+                MainMod.carLoaders[data.carLoaderID].DeleteCar();
+            }
+            
+        }
+        
+        public static void MoveCar(Packet _packet)
+        {
+            int _carPos = _packet.ReadInt();
+            int _carLoaderID = _packet.ReadInt();
+            
+            MelonLogger.Msg("CL: Received a new carPos, moving car...");
 
+            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            {
+                MainMod.carLoaders[_carLoaderID].placeNo = _carPos;
+                MainMod.carLoaders[_carLoaderID].PlaceAtPosition();
+                MainMod.carLoaders[_carLoaderID].ChangePosition(_carPos);
+            }
+            
         }
 
         static IEnumerator delayUpdate(C_carPartsData _bodyPart, int _carLoaderID)
@@ -336,6 +373,5 @@ namespace CMS21MP.ClientSide
             }
         }
        
-
     }
 }

@@ -32,7 +32,7 @@ namespace CMS21MP.ClientSide
         
         public static List<C_carPartsData> CarPartsHandler = new List<C_carPartsData>();
         public static List<C_carPartsData> CarPartsToHandle = new List<C_carPartsData>();
-        
+
         // Money
         public static int moneyHandler;
         public static int serverMoney;
@@ -50,7 +50,6 @@ namespace CMS21MP.ClientSide
             HandleCarRemoving();
 
             MoveCar();
-            
         }
 
         private void SendMoneyToServer()
