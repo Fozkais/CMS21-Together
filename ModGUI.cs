@@ -12,7 +12,7 @@ namespace CMS21MP.ClientSide
         public static ModGUI instance;
         public MainMod Mod;
 
-        public KeyCode MultiplayerGUIToggleKey = KeyCode.RightShift;
+        public KeyCode MultiplayerGUIToggleKey = KeyCode.PageDown;
         public bool isMultiplayerGUIShowed = false;
 
 

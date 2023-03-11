@@ -5,20 +5,26 @@ using UnityEngine;
 namespace CMS21MP.DataHandle
 {
     [Serializable]
-    public class C_PartsData
+    public class C_PartScriptData
     {
        // public GameObject p_handle;
        public int partID;
        public int carLoaderID;
-        public string name;
-        public float positionX;
-        public float positionY;
-        public float positionZ;
-        public float rotationX;
-        public float rotationY;
-        public float rotationZ;
-        public float scale;
-        public bool reflection;
+       public string carPartName;
+       public int s_indexer;
+
+       public string id;
+       public string tunedID;
+       public bool isExamined;
+       public bool isPainted;
+       public C_PaintData paintData;
+       public int paintType;
+       public C_Color color;
+       public int quality;
+       public float condition;
+       public float dust;
+       public C_Bolds bolts;
+       public bool unmounted;
     }
 
     [Serializable]
@@ -30,19 +36,25 @@ namespace CMS21MP.DataHandle
         public string name = string.Empty;
         public bool switched;
         public bool inprogress;
-        public float condition = 1f;
+        public float condition;
         public bool unmounted;
         public string tunedID = string.Empty;
+        public bool isTinted;
+        public C_Color TintColor;
         public C_Color colors;
         public int paintType;
+        public C_PaintData paintData;
         public float conditionStructure;
         public float conditionPaint;
         public string livery;
         public float liveryStrength;
         public bool outsaidRustEnabled;
-        public string adtionalString;
+        public float dent;
+        public string additionalString;
         public List<string> mountUnmountWith = new List<string>();
         public int quality;
+        public float Dust;
+        public float washFactor;
     }
     
     [Serializable]
@@ -80,5 +92,25 @@ namespace CMS21MP.DataHandle
             b = color.b;
             a = color.a;
         }
+    }
+
+    [Serializable]
+    public class C_PaintData
+    {
+        
+    }
+
+    [Serializable]
+    public class C_Bolds
+    {
+        
+    }
+
+
+    public enum partType
+    {
+        engine,
+        suspensions,
+        part
     }
 }

@@ -227,7 +227,14 @@ namespace CMS21MP.DataHandle
             Write(array);
         }
 
-        public void Write(C_PartsData _value)
+        public void Write(C_PartScriptData _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        
+        public void Write(List<C_PartScriptData> _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
@@ -457,12 +464,19 @@ namespace CMS21MP.DataHandle
             return (carData) ByteArrayToObject(array); // Convert the bytes array to carData
         }
         
-        public C_PartsData ReadCarPart(bool _moveReadPos = true)
+        public C_PartScriptData ReadCarPart(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
-            return (C_PartsData) ByteArrayToObject(array);
+            return (C_PartScriptData) ByteArrayToObject(array);
         }
+        public List<C_PartScriptData> ReadCarPartList(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (List<C_PartScriptData>) ByteArrayToObject(array);
+        }
+        
         public C_carPartsData ReadBodyPart(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
