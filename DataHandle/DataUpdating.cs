@@ -33,7 +33,6 @@ namespace CMS21MP.DataHandle
                             {
                                 ServerData.UpdateInventory();
                             }
-                            ServerData.UpdateCarList();
                         }
                     }
                     

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.DataHandle;
@@ -25,6 +26,12 @@ namespace CMS21MP.ClientSide
         
         public static List<carData> carHandler = new List<carData>();
         public static List<carData> carsToHandle = new List<carData>();
+
+        public static List<C_PartsData> PartsHandler = new List<C_PartsData>();
+        public static List<C_PartsData> PartsToHandle = new List<C_PartsData>();
+        
+        public static List<C_carPartsData> CarPartsHandler = new List<C_carPartsData>();
+        public static List<C_carPartsData> CarPartsToHandle = new List<C_carPartsData>();
 
         // Money
         public static int moneyHandler;
@@ -143,6 +150,7 @@ namespace CMS21MP.ClientSide
                         car.carLoaderID = i;
                         car.carPosition = carLoader.placeNo;
                         car.status = true;
+                        car.carColor = new C_Color(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
                         carsToHandle.Add(car);
                         //MelonLogger.Msg("CL: Added to ToHandle," + "Car ID: " + car.carID + " Car Loader ID: " +
                                          // car.carLoaderID + " Car Position: " + car.carPosition + " Car Status: " +
@@ -159,6 +167,8 @@ namespace CMS21MP.ClientSide
                 {
                     carHandler.Add(carsToHandle[i]);
                     ClientSend.SpawnCars(carsToHandle[i]);
+                    HandleCarParts(carsToHandle[i].carLoaderID);
+                    HandleBodyParts(carsToHandle[i].carLoaderID);
                     MelonLogger.Msg("CL: Added to Handler," + "Car ID: " + carsToHandle[i].carID + " Car Loader ID: " + carsToHandle[i].carLoaderID + " Car Status: " + carsToHandle[i].status);
                 }
             }
@@ -203,6 +213,131 @@ namespace CMS21MP.ClientSide
                     ClientSend.MoveCar(carData.carPosition, carData.carLoaderID);
                 } 
             }
+        }
+
+        private void HandleCarParts(int carLoaderID)
+        {
+            PartsToHandle.Clear();
+            int indexer = -1;
+
+            foreach (Part _part in MainMod.carLoaders[carLoaderID].Parts)
+            {
+                indexer++;
+                
+                C_PartsData partData = new C_PartsData();
+                partData.partID = indexer;
+                partData.carLoaderID = carLoaderID;
+                partData.positionX = _part.p_position.x;
+                partData.positionY = _part.p_position.y;
+                partData.positionZ = _part.p_position.z;
+                
+                partData.rotationX = _part.p_rotation.x;
+                partData.rotationY = _part.p_rotation.y;
+                partData.rotationZ = _part.p_rotation.z;
+                
+                partData.name = _part.p_name;
+                partData.reflection = _part.p_reflection;
+                partData.scale = _part.p_scale;
+
+                if (!partIsExistingList(partData, PartsToHandle))
+                {
+                    PartsToHandle.Add(partData);
+                }
+            }
+            
+            foreach (var part in PartsToHandle) 
+            {
+                if (!partIsExistingList(part, PartsHandler))
+                {
+                    PartsHandler.Add(part);
+                    //MelonLogger.Msg($"add partData to Handler, ID[{part.carLoaderID}]");
+                    ClientSend.carParts(part.carLoaderID, part);
+                }
+                
+            }
+        }
+
+        public bool partIsExistingList(C_PartsData partToHandle, List<C_PartsData> otherList)
+        {
+            for (int i = 0; i < otherList.Count; i++)
+            {
+                if (otherList[i].name == partToHandle.name && otherList[i].carLoaderID == partToHandle.carLoaderID)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        IEnumerator HandleAllCarParts(int carLoaderID)
+        {
+            yield return new WaitForSeconds(2);
+            HandleCarParts(carLoaderID);
+            HandleBodyParts(carLoaderID);
+        }
+        
+        private void HandleBodyParts(int carLoaderID)
+        {
+            CarPartsToHandle.Clear();
+            
+            int indexer = -1;
+            foreach (CarPart _part in MainMod.carLoaders[carLoaderID].carParts)
+            {
+                indexer++;
+                C_carPartsData partData = new C_carPartsData();
+                partData.carPartID = indexer;
+                partData.carLoaderID = carLoaderID;
+                partData.name = _part.name;
+                partData.switched =  _part.Switched;
+                partData.inprogress =  _part.Switched;
+                partData.condition =  _part.Condition;
+                partData.tunedID =_part.TunedID;
+                partData.colors = new C_Color( _part.Color);
+                partData.paintType = (int) _part.PaintType;
+                partData.conditionStructure =  _part.StructureCondition;
+                partData.conditionPaint =  _part.ConditionPaint;
+                partData.livery =  _part.Livery;
+                partData.liveryStrength =  _part.LiveryStrength;
+                partData.outsaidRustEnabled =  _part.OutsideRustEnabled;
+                partData.unmounted = _part.Unmounted;
+
+                foreach (String partAttached in  _part.ConnectedParts)
+                {
+                    partData.mountUnmountWith.Add(partAttached);
+                }
+
+                partData.quality = _part.Quality;
+                
+                if (!carPartIsExistingList(partData, CarPartsToHandle))
+                {
+                    CarPartsToHandle.Add(partData);
+                }
+                
+            }
+
+            
+            for (int i = 0; i < PartsToHandle.Count; i++)
+            {
+                if (!carPartIsExistingList(CarPartsToHandle[i], CarPartsHandler))
+                {
+                    //MelonLogger.Msg($"CL: Sending carPart to server!");
+                    CarPartsHandler.Add(CarPartsToHandle[i]);
+                    ClientSend.bodyParts(CarPartsToHandle[i].carLoaderID, CarPartsToHandle[i]);
+                }
+            }
+        }
+        
+        public bool carPartIsExistingList(C_carPartsData partToHandle, List<C_carPartsData> otherList)
+        {
+            for (int i = 0; i < otherList.Count; i++)
+            {
+                if (otherList[i].name == partToHandle.name && otherList[i].carLoaderID == partToHandle.carLoaderID && otherList[i].quality == partToHandle.quality)
+                {
+                    return true;
+                }
+            }
+            MelonLogger.Msg($"Rejected CarData: {partToHandle.name}");
+            return false;
         }
     }
 }
