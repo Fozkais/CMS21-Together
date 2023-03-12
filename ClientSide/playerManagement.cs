@@ -27,8 +27,8 @@ namespace CMS21MP.ClientSide
         public static List<carData> carHandler = new List<carData>();
         public static List<carData> carsToHandle = new List<carData>();
 
-        public static List<List<C_PartScriptData>> PartsHandler = new List<List<C_PartScriptData>>();
-        public static List<List<C_PartScriptData>> PartsToHandle = new List<List<C_PartScriptData>>();
+        public static List<C_PartScriptData> PartsHandler = new List<C_PartScriptData>();
+        public static List<C_PartScriptData> PartsToHandle = new List<C_PartScriptData>();
         
         public static List<C_carPartsData> CarPartsHandler = new List<C_carPartsData>();
         public static List<C_carPartsData> CarPartsToHandle = new List<C_carPartsData>();
@@ -61,7 +61,7 @@ namespace CMS21MP.ClientSide
         public IEnumerator delayCarUpdating()
         {
             hasFinishedUpdatingCar = false;
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1);
             if (MainMod.carLoaders.Length > 0)
             {
                 HandleCarParts();
@@ -245,7 +245,6 @@ namespace CMS21MP.ClientSide
                 foreach (Part _part in MainMod.carLoaders[car.carLoaderID].Parts)
                 {
                     indexer++;
-                    List<C_PartScriptData> tempList = new List<C_PartScriptData>();
                     var partObject = _part.p_handle;
                     List<PartScript> parts = partObject.GetComponentsInChildren<PartScript>().ToList();
                     foreach (PartScript part in parts)
@@ -266,22 +265,37 @@ namespace CMS21MP.ClientSide
                         carPart.condition = part.Condition;
                         carPart.dust = part.Dust;
                         //carPart.bolts = part.Bolts;
-                        
-                        tempList.Add(carPart);
-                    }
-                    MelonLogger.Msg($"CL: Adding carPart:{tempList[0].carPartName} to PartsToHandle!, with {tempList.Count} parts.");
-                    PartsToHandle.Add(tempList);
-                }
-            }
 
-            
-            for (int i = 0; i < PartsToHandle.Count; i++)
-            {
-                if (!ListIsExistingList(PartsToHandle[i], PartsHandler))
+                        PartsToHandle.Add(carPart);
+                    }
+
+                 //   MelonLogger.Msg(
+                       // $"CL: Adding carPart:{PartsToHandle[0].carPartName} to PartsToHandle!, with {PartsToHandle.Count} parts.");
+                }
+
+                for (int i = 0; i < PartsToHandle.Count; i++)
                 {
-                    //MelonLogger.Msg($"CL: Sending carPart to server!, with {PartsToHandle[i].Count} parts");
-                    PartsHandler.Add(PartsToHandle[i]);
-                    ClientSend.carParts(PartsToHandle[i][0].carLoaderID, PartsToHandle[i], partType.part);
+                    var itemA = PartsToHandle[i];
+                    bool itemExists =
+                        PartsHandler.Any(itemB => itemB.id == itemA.id && itemB.unmounted == itemA.unmounted);
+
+                    if (itemExists)
+                    {
+                        // Si l'élément existe déjà dans la liste, vérifie si les propriétés sont différentes.
+                        C_PartScriptData itemB = PartsHandler.First(item =>
+                            item.id == itemA.id && item.unmounted == itemA.unmounted);
+                        if (!itemB.Equals(itemA))
+                        {
+                            // Si les propriétés sont différentes, met à jour l'élément dans la liste.
+                            int index = PartsHandler.IndexOf(itemB);
+                            PartsHandler[index] = itemA;
+                            ClientSend.carParts(itemA.carLoaderID, itemA, partType.part, true);
+                        }
+                    }
+                    else
+                    {
+                        ClientSend.carParts(itemA.carLoaderID, itemA, partType.part, false);
+                    }
                 }
             }
         }
@@ -290,15 +304,14 @@ namespace CMS21MP.ClientSide
         {
             PartsToHandle.Clear();
             int indexer = -1;
-            indexer++;
 
             foreach (carData car in carHandler)
             {
-                List<C_PartScriptData> tempList = new List<C_PartScriptData>();
                 var partObject = MainMod.carLoaders[car.carLoaderID].e_engine_h;
                 List<PartScript> parts = partObject.GetComponentsInChildren<PartScript>().ToList();
                 foreach (PartScript part in parts)
                 {
+                    indexer++;
                     C_PartScriptData carPart = new C_PartScriptData();
                     carPart.carLoaderID = car.carLoaderID;
                     carPart.partID = indexer;
@@ -315,19 +328,31 @@ namespace CMS21MP.ClientSide
                     carPart.dust = part.Dust;
                     //carPart.bolts = part.mountObject;
                     
-                    tempList.Add(carPart);
+                    PartsToHandle.Add(carPart);
                 }
-                MelonLogger.Msg($"CL: Adding carPart:{tempList[0].carPartName} to PartsToHandle!, with {tempList.Count} parts.");
-                PartsToHandle.Add(tempList);
+               // MelonLogger.Msg($"CL: Adding carPart:{PartsToHandle[0].carPartName} to PartsToHandle!, with {PartsToHandle.Count} parts.");
             }
             
             for (int i = 0; i < PartsToHandle.Count; i++)
             {
-                if (!ListIsExistingList(PartsToHandle[i], PartsHandler))
+                var itemA = PartsToHandle[i];
+                bool itemExists = PartsHandler.Any(itemB => itemB.id == itemA.id && itemB.unmounted == itemA.unmounted);
+
+                if (itemExists)
                 {
-                    //MelonLogger.Msg($"CL: Sending carPart to server!, with {PartsToHandle[i].Count} parts");
-                    PartsHandler.Add(PartsToHandle[i]);
-                    ClientSend.carParts(PartsToHandle[i][0].carLoaderID, PartsToHandle[i], partType.engine);
+                    // Si l'élément existe déjà dans la liste, vérifie si les propriétés sont différentes.
+                    C_PartScriptData itemB = PartsHandler.First(item => item.id == itemA.id && item.unmounted == itemA.unmounted);
+                    if (!itemB.Equals(itemA))
+                    {
+                        // Si les propriétés sont différentes, met à jour l'élément dans la liste.
+                        int index = PartsHandler.IndexOf(itemB);
+                        PartsHandler[index] = itemA;
+                        ClientSend.carParts(itemA.carLoaderID, itemA, partType.engine, true );
+                    }
+                }
+                else
+                {
+                    ClientSend.carParts(itemA.carLoaderID, itemA, partType.engine, false);
                 }
             }
         }
@@ -338,7 +363,7 @@ namespace CMS21MP.ClientSide
              int s_indexer = -1;
              foreach (carData car in carHandler)
              {
-                 foreach (CarLoader carLoader in MainMod.carLoaders)
+                 for (var i = 0; i < MainMod.carLoaders.Length; i++)
                  {
                      List<GameObject> partObjects = new List<GameObject>();
                      partObjects.Add(MainMod.carLoaders[car.carLoaderID].s_frontCenter_h);
@@ -351,12 +376,11 @@ namespace CMS21MP.ClientSide
                      foreach (GameObject partObject in partObjects)
                      {
                          s_indexer++;
-                         List<C_PartScriptData> tempList = new List<C_PartScriptData>();
-                         
+
                          List<PartScript> parts = partObject.GetComponentsInChildren<PartScript>().ToList();
                          foreach (PartScript part in parts)
                          {
-                            indexer++;
+                             indexer++;
                              C_PartScriptData carPart = new C_PartScriptData();
                              carPart.carLoaderID = car.carLoaderID;
                              carPart.partID = indexer;
@@ -374,46 +398,48 @@ namespace CMS21MP.ClientSide
                              carPart.condition = part.Condition;
                              carPart.dust = part.Dust;
                              //carPart.bolts = part.mountObject;
-                            
-                             tempList.Add(carPart);
+
+                             PartsToHandle.Add(carPart);
                          }
-                         MelonLogger.Msg($"CL: Adding carPart:{tempList[0].carPartName} to PartsToHandle!, with {tempList.Count} parts.");
-                         PartsToHandle.Add(tempList);
+                         //MelonLogger.Msg($"CL: Adding carPart:{PartsToHandle[0].carPartName} to PartsToHandle!, with {PartsToHandle.Count} parts.");
                      }
                  }
-
              }
-
-
              
              for (int i = 0; i < PartsToHandle.Count; i++)
              {
-                 if (!ListIsExistingList(PartsToHandle[i], PartsHandler))
+                 var itemA = PartsToHandle[i];
+                 bool itemExists = PartsHandler.Any(itemB => itemB.id == itemA.id && itemB.unmounted == itemA.unmounted);
+
+                 if (itemExists)
                  {
-                     //MelonLogger.Msg($"CL: Sending carPart to server!, with {PartsToHandle[i].Count} parts");
-                     PartsHandler.Add(PartsToHandle[i]);
-                     ClientSend.carParts(PartsToHandle[i][0].carLoaderID, PartsToHandle[i], partType.suspensions);
+                     // Si l'élément existe déjà dans la liste, vérifie si les propriétés sont différentes.
+                     C_PartScriptData itemB = PartsHandler.First(item => item.id == itemA.id && item.unmounted == itemA.unmounted);
+                     if (!itemB.Equals(itemA))
+                     {
+                         // Si les propriétés sont différentes, met à jour l'élément dans la liste.
+                         int index = PartsHandler.IndexOf(itemB);
+                         PartsHandler[index] = itemA;
+                         ClientSend.carParts(itemA.carLoaderID, itemA, partType.suspensions, true);
+                     }
+                 }
+                 else
+                 {
+                     ClientSend.carParts(itemA.carLoaderID, itemA, partType.suspensions, false);
                  }
              }
          }
-        public bool ListIsExistingList(List<C_PartScriptData> listToHandle, List<List<C_PartScriptData>> otherList)
-        { 
-            return otherList.Any(other => listToHandle.All(item => 
-                other.Any(otherItem => item.unmounted == otherItem.unmounted && item.id == otherItem.id)));
-        }
 
-        public void HandleCarParts()
+         public void HandleCarParts()
         {
             CarPartsToHandle.Clear();
             
-            int indexer = -1;
             foreach (carData car in carHandler)
             {
                 foreach (CarPart _part in MainMod.carLoaders[car.carLoaderID].carParts)
                 {
-                    indexer++;
                     C_carPartsData partData = new C_carPartsData();
-                    partData.carPartID = indexer;
+                    partData.carPartID = CarPartsToHandle.Count;
                     partData.carLoaderID = car.carLoaderID;
                     partData.name = _part.name;
                     partData.switched = _part.Switched;
@@ -440,13 +466,9 @@ namespace CMS21MP.ClientSide
                     {
                         partData.mountUnmountWith.Add(partAttached);
                     }
-
                     partData.quality = _part.Quality;
-
-                    if (!carPartIsExistingList(partData, CarPartsToHandle))
-                    {
-                        CarPartsToHandle.Add(partData);
-                    }
+                    
+                    CarPartsToHandle.Add(partData);
                 }
             }
 
@@ -464,9 +486,9 @@ namespace CMS21MP.ClientSide
         
         public bool carPartIsExistingList(C_carPartsData partToHandle, List<C_carPartsData> otherList)
         {
-            for (int i = 0; i < otherList.Count; i++)
+            foreach (C_carPartsData carPartData in otherList)
             {
-                if (otherList[i].name == partToHandle.name && otherList[i].carLoaderID == partToHandle.carLoaderID && otherList[i].quality == partToHandle.quality && partToHandle.unmounted == otherList[i].unmounted)
+                if (carPartData.name == partToHandle.name && carPartData.carLoaderID == partToHandle.carLoaderID && carPartData.quality == partToHandle.quality && partToHandle.unmounted == carPartData.unmounted)
                 {
                     //MelonLogger.Msg($"Rejected CarData: {partToHandle.name}");
                     return true;

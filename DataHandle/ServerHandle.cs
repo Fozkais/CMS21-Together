@@ -142,14 +142,15 @@ namespace CMS21MP.DataHandle
 
         public static void carParts(int _fromClient, Packet _packet)
         {
-            MelonLogger.Msg("SV: Received new carParts! sending to players.");
+            //MelonLogger.Msg("SV: Received new carParts! sending to players.");
             
             _fromClient = _packet.ReadInt();
-            List<C_PartScriptData> carParts = _packet.ReadCarPartList();
+            C_PartScriptData carParts = _packet.ReadCarPart();
             int carLoaderID = _packet.ReadInt();
             int partType = _packet.ReadInt();
+            bool exist = _packet.ReadBool();
 
-            ServerSend.carPart(_fromClient, carLoaderID, carParts, partType);
+            ServerSend.carPart(_fromClient, carLoaderID, carParts, partType, exist);
         }
 
         public static void bodyPart(int _fromClient, Packet _packet)

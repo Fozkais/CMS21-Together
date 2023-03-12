@@ -124,7 +124,7 @@ namespace CMS21MP.DataHandle
             }
             MelonLogger.Msg("CL: Detected a moved car! sending new pos to server.");
         }
-        public static void carParts(int carLoaderID, List<C_PartScriptData> parts, partType type)
+        public static void carParts(int carLoaderID, C_PartScriptData parts, partType type, bool exist, int suspensionPart=0)
         {
             using(Packet _packet = new Packet((int)ClientPackets.car_part))
             {
@@ -132,10 +132,11 @@ namespace CMS21MP.DataHandle
                 _packet.Write(parts);
                 _packet.Write(carLoaderID);
                 _packet.Write((int)type);
+                _packet.Write(exist);
 
                 SendTCPData(_packet);
             }
-            MelonLogger.Msg("CL: sending carParts to Server!");
+            //MelonLogger.Msg("CL: sending carParts to Server!");
         }
         public static void bodyParts(int carLoaderID, C_carPartsData parts)
         {
