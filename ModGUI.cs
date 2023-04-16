@@ -16,7 +16,7 @@ namespace CMS21MP.ClientSide
         public bool isMultiplayerGUIShowed = false;
 
 
-        public string ipAdress = "192.168.1.94";
+        public string ipAdress = "192.168.1.95";
         public string usernameField = "player2";
 
         public Vector3 player2Pos;

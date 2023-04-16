@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using CMS21MP.ClientSide;
 using MelonLoader;
 using UnityEngine;
-using Object = System.Object;
 
 namespace CMS21MP.ClientSide
 {

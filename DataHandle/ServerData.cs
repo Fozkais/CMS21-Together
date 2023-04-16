@@ -27,7 +27,7 @@ namespace CMS21MP.DataHandle
                     for (int i = 0; i < element.Value.Count; i++)
                     {
                         serverInventory.items.Remove(element.Value[i]);
-                        ServerSend.PlayerInventory(element.Key,element.Value[i], false);
+                        ServerSend.PlayerInventory(element.Key, element.Value[i], false);
                         RemoveItemQueue[element.Key].Remove(element.Value[i]);
                     }
                 }
@@ -40,10 +40,11 @@ namespace CMS21MP.DataHandle
                     for (int i = 0; i < element.Value.Count; i++)
                     {
                         serverInventory.items.Add(element.Value[i]);
-                        ServerSend.PlayerInventory(element.Key,element.Value[i], true);
+                        ServerSend.PlayerInventory(element.Key, element.Value[i], true);
                         AddItemQueue[element.Key].Remove(element.Value[i]);
                     }
                 }
             }
         }
+    }
 }

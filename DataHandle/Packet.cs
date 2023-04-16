@@ -205,21 +205,6 @@ namespace CMS21MP.DataHandle
             Write(_value.z);
             Write(_value.w);
         }
-
-        public void Write(CarLoader _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-
-        public void Write(Item _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        
         public void Write(carData _value)
         {
             byte[] array = ObjectToByteArray(_value);
@@ -227,20 +212,19 @@ namespace CMS21MP.DataHandle
             Write(array);
         }
 
-        public void Write(C_PartScriptData _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        
-        public void Write(List<C_PartScriptData> _value)
+        public void Write(PartScriptData _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);
         }
         public void Write(C_carPartsData _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        public void Write(PartScriptInfo _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
@@ -442,20 +426,7 @@ namespace CMS21MP.DataHandle
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
         }
-
-        public CarLoader ReadCarLoader(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (CarLoader) ByteArrayToObject(array); // Convert the bytes array to CarLoader
-        }
         
-        public Item ReadItem(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (Item) ByteArrayToObject(array); // Convert the bytes array to Item
-        }
         
         public carData ReadCarData(bool _moveReadPos = true)
         {
@@ -464,24 +435,24 @@ namespace CMS21MP.DataHandle
             return (carData) ByteArrayToObject(array); // Convert the bytes array to carData
         }
         
-        public C_PartScriptData ReadCarPart(bool _moveReadPos = true)
+        public PartScriptData ReadCarPart(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
-            return (C_PartScriptData) ByteArrayToObject(array);
+            return (PartScriptData) ByteArrayToObject(array);
         }
-        public List<C_PartScriptData> ReadCarPartList(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (List<C_PartScriptData>) ByteArrayToObject(array);
-        }
-        
+
         public C_carPartsData ReadBodyPart(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
             return (C_carPartsData) ByteArrayToObject(array);// Convert the bytes array to a parts List
+        }
+        public PartScriptInfo ReadBPartScriptInfo(bool _moveReadPos = true)
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (PartScriptInfo) ByteArrayToObject(array);// Convert the bytes array to a parts List
         }
         
         private object ByteArrayToObject(byte[] arrBytes)

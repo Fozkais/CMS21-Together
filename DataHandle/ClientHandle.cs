@@ -2,15 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using CMS21MP.DataHandle;
+using System.Threading.Tasks;
+using CMS21MP.ClientSide;
+using CMS21MP.ClientSide.Functionnality;
 using Il2Cpp;
 using Il2CppSystem;
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
-namespace CMS21MP.ClientSide
+namespace CMS21MP.DataHandle
 {
     public class ClientHandle : MonoBehaviour
     {
@@ -32,7 +33,7 @@ namespace CMS21MP.ClientSide
             {
                 MainMod.localInventory.items.Clear();
                 GlobalData.PlayerMoney = _serverMoney;
-                playerManagement.moneyHandler = _serverMoney;
+                Stats_Handling.moneyHandler = _serverMoney;
             }
         }
 
@@ -103,21 +104,21 @@ namespace CMS21MP.ClientSide
 
             if (status)
             {
-                if (!playerManagement.ItemsUID.Contains(_itemUID) )
+                if (!Inventory_Handling.ItemsUID.Contains(_itemUID) )
                 {
                    // MelonLogger.Msg($"Adding Item with UID:{_itemUID}");
-                    playerManagement.InventoryHandler.Add(_item);
-                    playerManagement.ItemsUID.Add(_itemUID);
+                   Inventory_Handling.InventoryHandler.Add(_item);
+                   Inventory_Handling.ItemsUID.Add(_itemUID);
                     MainMod.localInventory.Add(_item);
                 }
             }
             else
             {
-                if (playerManagement.ItemsUID.Contains(_itemUID))
+                if (Inventory_Handling.ItemsUID.Contains(_itemUID))
                 {
                    // MelonLogger.Msg($"Removing Item with UID:{_itemUID}");
-                    playerManagement.InventoryHandler.Remove(_item);
-                    playerManagement.ItemsUID.Remove(_itemUID);
+                   Inventory_Handling.InventoryHandler.Remove(_item);
+                   Inventory_Handling.ItemsUID.Remove(_itemUID);
                     MainMod.localInventory.Delete(_item);
                 }
             }
@@ -133,10 +134,10 @@ namespace CMS21MP.ClientSide
                 Object.Destroy(GameObject.Find(PlayerManager.players[_id].username));
                 PlayerManager.players.Remove(_id);
             }
-            if(DataUpdating.MovUpdateQueue.ContainsKey(_id))
-                DataUpdating.MovUpdateQueue.Remove(_id);
-            if(DataUpdating.RotUpdateQueue.ContainsKey(_id))
-                DataUpdating.RotUpdateQueue.Remove(_id);
+            if(Movement_Handling.MovUpdateQueue.ContainsKey(_id))
+                Movement_Handling.MovUpdateQueue.Remove(_id);
+            if(Movement_Handling.RotUpdateQueue.ContainsKey(_id))
+                Movement_Handling.RotUpdateQueue.Remove(_id);
 
         }
 
@@ -148,13 +149,13 @@ namespace CMS21MP.ClientSide
             {
                 MelonLogger.Msg($"Adding Money!! +{money}");
                 GlobalData.AddPlayerMoney(money);
-                playerManagement.moneyHandler = GlobalData.PlayerMoney;
+                Stats_Handling.moneyHandler = GlobalData.PlayerMoney;
             }
             else
             {
                 MelonLogger.Msg($"Removing Money!! {money}");
                 GlobalData.AddPlayerMoney(money);
-                playerManagement.moneyHandler = GlobalData.PlayerMoney;
+                Stats_Handling.moneyHandler = GlobalData.PlayerMoney;
             }
         }
         public static void PlayerScene(Packet _packet)
@@ -165,15 +166,17 @@ namespace CMS21MP.ClientSide
             
             MelonLogger.Msg($"received new scene from {_username}, scene: {_scene}");
 
-            if (SceneManager.GetActiveScene().name == _scene && GameObject.Find($"{_username}") == null)
-            {
-                PlayerManager.instance.SpawnPlayer(_id, _username, new Vector3(0,0,0), new Quaternion(0,0,0,0));
-            }
-            else if(GameObject.Find($"{_username}") != null && _id != Client.instance.myId)
-            {
-                Object.Destroy(GameObject.Find($"{_username}"));
-                PlayerManager.players.Remove(_id);
-            }
+            PlayerManager.players[_id].activeScene = _scene;
+            
+            //if (SceneManager.GetActiveScene().name == _scene && GameObject.Find($"{_username}") == null)
+           // {
+              //  PlayerManager.instance.SpawnPlayer(_id, _username, new Vector3(0,0,0), new Quaternion(0,0,0,0));
+           // }
+           // else if(GameObject.Find($"{_username}") != null && _id != Client.instance.myId)
+           // {
+             //   Object.Destroy(GameObject.Find($"{_username}"));
+             //   PlayerManager.players.Remove(_id);
+          //  }
         }
 
         public static void SpawnCars(Packet _packet)
@@ -184,9 +187,9 @@ namespace CMS21MP.ClientSide
             
             if (data.status)
             {
-                if (!playerManagement.carHandler.Contains(data))
+                if (!CarSpawn_Handling.carHandler.Contains(data))
                 {
-                    playerManagement.carHandler.Add(data);
+                    CarSpawn_Handling.carHandler.Add(data);
                 }
 
                 Color carColor = new Color(data.carColor.r,data.carColor.g,data.carColor.b,data.carColor.a);
@@ -198,9 +201,9 @@ namespace CMS21MP.ClientSide
             }
             else
             {
-                if (playerManagement.carHandler.Contains(data))
+                if ( CarSpawn_Handling.carHandler.Contains(data))
                 {
-                    playerManagement.carHandler.Remove(data);
+                    CarSpawn_Handling.carHandler.Remove(data);
                 }
                 
                 MainMod.carLoaders[data.carLoaderID].DeleteCar();
@@ -223,411 +226,157 @@ namespace CMS21MP.ClientSide
             }
             
         }
-        
         public static void carParts(Packet _packet)
         {
-            int _carLoaderID = _packet.ReadInt();
-            C_PartScriptData _carParts = _packet.ReadCarPart();
-            partType partType = (partType)_packet.ReadInt();
-            bool exist = _packet.ReadBool();
-            
-            MelonLogger.Msg($"CL: Received a new carPart:{_carParts.carPartName}.");
-            if(partType == partType.part)
-                MelonCoroutines.Start(delayPartUpdate(_carParts, _carLoaderID, exist));
-            else if(partType == partType.engine)
-                MelonCoroutines.Start(delayEnginePartUpdate(_carParts, _carLoaderID, exist));
-            else if(partType == partType.suspensions)
-                MelonCoroutines.Start(delaySuspensionPartUpdate(_carParts, _carLoaderID, exist));
-                
-            playerManagement.PartsHandler.Add(_carParts);
-           
+            PartScriptInfo _part = _packet.ReadBPartScriptInfo();
+            MelonCoroutines.Start(delayPartUpdate(_part));
         }
 
-        static IEnumerator delayPartUpdate(C_PartScriptData _part, int _carLoaderID, bool exist)
+        public static void UpdatePart(PartScriptInfo _part)
         {
-            yield return new WaitForSeconds(1.5f);
-            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            if (!String.IsNullOrEmpty(MainMod.carLoaders[_part._carLoaderID].carToLoad))
             {
-                var PartInCl = MainMod.carLoaders[_carLoaderID].Parts._items[_part.partID];
-                var parts = PartInCl.p_handle.GetComponentsInChildren<PartScript>().ToList();
-                
-                foreach (PartScript part in parts)
+                if (_part._type == partType.part)
                 {
-                    if (part.id == _part.id)
-                    {
-                        Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                        if (part.tunedID != _part.tunedID)
-                            MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                        part.IsExamined = _part.isExamined;
-                        if (_part.unmounted == false)
-                        {
-                            part.IsPainted = _part.isPainted;
-                            if (_part.isPainted)
-                            {
-                                part.CurrentPaintType = (PaintType)_part.paintType;
-                                //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                part.SetColor(color);
-                                //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                            }
+                    //var PartInCl = MainMod.carLoaders[_part._carLoaderID].Parts._items[_part._partItemID];
+                    //var parts = PartInCl.p_handle.GetComponentsInChildren<PartScript>().ToList();
+                    
+                    partUpdate(MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID], _part);
+                    MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID]._UniqueID = _part._UniqueID;
 
-                            part.Quality = _part.quality;
-                            part.SetCondition(_part.condition);
-                            part.UpdateDust(_part.dust, true);
-                            // Handle Bolts
-                            
-                        }
-                        else
-                        {
-                            part.Quality = _part.quality;
-                            part.Condition = _part.condition;
-                            part.Dust = _part.dust;
-                            if (!part.IsUnmounted)
-                            {
-                                part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                            }
-                        }
-                        
-                    }
-                    MelonLogger.Msg($"Updated part:{part.id}!");
                 }
-            }
-
-        }
-        static IEnumerator delayEnginePartUpdate(C_PartScriptData _part, int _carLoaderID, bool exist)
-        {
-            yield return new WaitForSeconds(1.5f);
-            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
-            {
-
-                var PartInCl = MainMod.carLoaders[_carLoaderID].e_engine_h;
-                var parts = PartInCl.GetComponentsInChildren<PartScript>().ToList();
-
-                for (var i = 0; i < parts.Count; i++)
-                {
-                    var part = parts[i];
-                    if (part.id == _part.id && _part.partID == i)
-                    {
-                        Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-
-                        if (part.tunedID != _part.tunedID)
-                            MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                        part.IsExamined = _part.isExamined;
-                        if (_part.unmounted == false)
-                        {
-                            part.IsPainted = _part.isPainted;
-                            if (_part.isPainted)
-                            {
-                                part.CurrentPaintType = (PaintType)_part.paintType;
-                                //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                part.SetColor(color);
-                                //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                            }
-
-                            part.Quality = _part.quality;
-                            part.SetCondition(_part.condition);
-                            part.UpdateDust(_part.dust, true);
-                            // Handle Bolts
-                        }
-                        else
-                        {
-                            part.Quality = _part.quality;
-                            part.Condition = _part.condition;
-                            part.Dust = _part.dust;
-                            if (!part.IsUnmounted)
-                            {
-                                part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                            }
-                        }
-                    }
-
-                    MelonLogger.Msg($"Updated part:{part.id}!");
-                }
+                // else if (_part.type == partType.engine)
+                // {
+                //     var PartInCl = MainMod.carLoaders[_carLoaderID].e_engine_h;
+                //     var parts = PartInCl.GetComponentsInChildren<PartScript>().ToList();
+                //
+                //     for (var i = 0; i < parts.Count; i++)
+                //     {
+                //         var part = parts[i];
+                //         //partUpdate(part, _part, _carLoaderID);
+                //     } 
+                // }
+                // else if(_part.type == partType.suspensions)
+                // { 
+                //         List<PartScript> frontCenter = MainMod.carLoaders[_carLoaderID].s_frontCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 0
+                //     List<PartScript> frontLeft = MainMod.carLoaders[_carLoaderID].s_frontLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 1
+                //     List<PartScript> frontRight = MainMod.carLoaders[_carLoaderID].s_frontRight_h.GetComponentsInChildren<PartScript>().ToList(); // 2
+                //     List<PartScript> rearCenter = MainMod.carLoaders[_carLoaderID].s_rearCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 3
+                //     List<PartScript> rearLeft = MainMod.carLoaders[_carLoaderID].s_rearLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 4
+                //     List<PartScript> rearRight = MainMod.carLoaders[_carLoaderID].s_rearRight_h.GetComponentsInChildren<PartScript>().ToList(); // 5
+                //
+                //     if (_part.s_indexer == 0)
+                //     {
+                //         foreach (PartScript part in frontCenter)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                //     else if (_part.s_indexer == 1)
+                //     {
+                //         foreach (PartScript part in frontLeft)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                //     else if (_part.s_indexer == 2)
+                //     {
+                //         foreach (PartScript part in frontRight)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                //     else if (_part.s_indexer == 3)
+                //     {
+                //         foreach (PartScript part in rearCenter)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                //     else if (_part.s_indexer == 4)
+                //     {
+                //         foreach (PartScript part in rearLeft)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                //     else if (_part.s_indexer == 5)
+                //     {
+                //         foreach (PartScript part in rearRight)
+                //         {
+                //             partUpdate(part, _part, _carLoaderID);
+                //         }
+                //     }
+                // }
             }
         }
-        static IEnumerator delaySuspensionPartUpdate(C_PartScriptData _part, int _carLoaderID, bool exist)
+
+        public static void partUpdate(PartScript_Info Originalpart, PartScriptInfo Newpart)
         {
-            yield return new WaitForSeconds(1.5f);
-            if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+            MelonLogger.Msg($"handled new part: {Newpart._partScriptData.id}");
+            PartScript originalPart = Originalpart._partScript;
+            PartScriptData newPart = Newpart._partScriptData;
+
+            Color color = new Color(newPart.color.r, newPart.color.g, newPart.color.b, newPart.color.a);
+            if (originalPart.tunedID != newPart.tunedID)
+                MainMod.carLoaders[Newpart._carLoaderID].TunePart(originalPart.tunedID, newPart.tunedID);
+            originalPart.IsExamined = newPart.isExamined;
+            if (newPart.unmounted == false)
             {
+                originalPart.IsPainted = newPart.isPainted;
+                if (newPart.isPainted)
+                {
+                    originalPart.CurrentPaintType = (PaintType)newPart.paintType;
+                    originalPart.CurrentPaintData = new C_PaintData().ToGame(newPart.paintData);
+                    originalPart.SetColor(color);
+                    //if ((PaintType)_part.paintType == PaintType.Custom)
+                        //PaintHelper.SetCustomPaintType(part.gameObject, part.CurrentPaintData, false);
+                }
+
+                originalPart.Quality = newPart.quality;
+                originalPart.SetCondition(newPart.condition);
+                originalPart.UpdateDust(newPart.dust, true);
+                // Handle Bolts
                 
-                List<PartScript> frontCenter = MainMod.carLoaders[_carLoaderID].s_frontCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 0
-                List<PartScript> frontLeft = MainMod.carLoaders[_carLoaderID].s_frontLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 1
-                List<PartScript> frontRight = MainMod.carLoaders[_carLoaderID].s_frontRight_h.GetComponentsInChildren<PartScript>().ToList(); // 2
-                List<PartScript> rearCenter = MainMod.carLoaders[_carLoaderID].s_rearCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 3
-                List<PartScript> rearLeft = MainMod.carLoaders[_carLoaderID].s_rearLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 4
-                List<PartScript> rearRight = MainMod.carLoaders[_carLoaderID].s_rearRight_h.GetComponentsInChildren<PartScript>().ToList(); // 5
-
-                if (_part.s_indexer == 0)
+                //originalPart.ShowBySaveGame();
+                if (originalPart.IsUnmounted)
                 {
-                    foreach (PartScript part in frontCenter)
-                    {
-                        
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
+                    originalPart.ShowBySaveGame();
+                    originalPart.FastMount();
                 }
-                else if (_part.s_indexer == 1)
+                    
+            }
+            else
+            {
+                originalPart.Quality = newPart.quality;
+                originalPart.Condition = newPart.condition;
+                originalPart.Dust = newPart.dust;
+                if (originalPart.IsUnmounted == false)
                 {
-                    foreach (PartScript part in frontLeft)
-                    {
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
-                }
-                else if (_part.s_indexer == 2)
-                {
-                    foreach (PartScript part in frontRight)
-                    {
-                        
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
-                }
-                else if (_part.s_indexer == 3)
-                {
-                    foreach (PartScript part in rearCenter)
-                    {
-                        
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
-                }
-                else if (_part.s_indexer == 4)
-                {
-                    foreach (PartScript part in rearLeft)
-                    {
-                        
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
-                }
-                else if (_part.s_indexer == 5)
-                {
-                    foreach (PartScript part in rearRight)
-                    {
-                        
-                        if (part.id == _part.id)
-                        {
-                            Color color = new Color(_part.color.r, _part.color.g, _part.color.b, _part.color.a);
-                        
-                            if (part.tunedID != _part.tunedID)
-                                MainMod.carLoaders[_carLoaderID].TunePart(part.tunedID, _part.tunedID);
-                            part.IsExamined = _part.isExamined;
-                            if (_part.unmounted == false)
-                            {
-                                part.IsPainted = _part.isPainted;
-                                if (_part.isPainted)
-                                {
-                                    part.CurrentPaintType = (PaintType)_part.paintType;
-                                    //part.CurrentPaintData = _part.paintData; Not Handled Yet
-                                    part.SetColor(color);
-                                    //if ((PaintType)_part.paintType == PaintType.Custom)  Not Handled Yet
-                                    //PaintHelper.SetCustomPaintType(part.gameObject, _part.paintData, false);  Not Handled Yet
-                                }
-
-                                part.Quality = _part.quality;
-                                part.SetCondition(_part.condition);
-                                part.UpdateDust(_part.dust, true);
-                                // Handle Bolts
-                            
-                            }
-                            else
-                            {
-                                part.Quality = _part.quality;
-                                part.Condition = _part.condition;
-                                part.Dust = _part.dust;
-                                if (!part.IsUnmounted)
-                                {
-                                    part.HideBySavegame(false, MainMod.carLoaders[_carLoaderID]);
-                                }
-                            }
-                        }
-                        MelonLogger.Msg($"Updated part:{part.id}!");
-                    }
-                }
-                else
-                {
-                    MelonLogger.Msg($"Loss of data from Suspension part! {_part.s_indexer}, {_part.id}");
+                    originalPart.HideBySavegame(false, MainMod.carLoaders[Newpart._carLoaderID]);
                 }
             }
+        }
+
+        static IEnumerator delayPartUpdate(PartScriptInfo _part)
+        {
+            if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
+            {
+                CarPart_PreHandling.AddPartHandle_bis(_part._carLoaderID);
+                yield return new WaitForSeconds(3f);
+            }
+
+            if (!MPGameManager.PartsHandle.ContainsKey(_part._carLoaderID))
+            {
+                MPGameManager.PartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+            }
+            if (!MPGameManager.PartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+            {
+                MPGameManager.PartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+            }
+            MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
+
+            UpdatePart(_part);
         }
 
         public static void bodyPart(Packet _packet)
@@ -639,7 +388,7 @@ namespace CMS21MP.ClientSide
             MelonLogger.Msg($"CL: Received a new bodyPart! {_bodyPart.name}");
             MelonCoroutines.Start(delayCarPartUpdate(_bodyPart, _carLoaderID));
             
-            playerManagement.CarPartsHandler.Add(_bodyPart);
+            ExternalCarPart_Handling.CarPartsHandler.Add(_bodyPart);
         }
 
 
@@ -661,7 +410,7 @@ namespace CMS21MP.ClientSide
                     _part.TintColor = tintColor;
                     _part.Color = color;
                     _part.PaintType = (PaintType)_bodyPart.paintType;
-                    // _part.PaintData = _bodyPart.paintData;  Not Handled Yet.
+                    // _part.C_PaintData = _bodyPart.cPaintData;  Not Handled Yet.
                     _part.OutsideRustEnabled = _bodyPart.outsaidRustEnabled;
                     _part.AdditionalString = _bodyPart.additionalString;
                     _part.Quality = _bodyPart.quality;
@@ -676,7 +425,7 @@ namespace CMS21MP.ClientSide
                     
                     if (!_part.Unmounted && !_part.name.StartsWith("license_plate"))
                     {
-                        //MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, _bodyPart.paintData);   Not Handled Yet.
+                        //MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, _bodyPart.cPaintData);   Not Handled Yet.
                         MainMod.carLoaders[_carLoaderID].SetCarColorAndPaintType(_part, color, (PaintType)_bodyPart.paintType);
                     }
                     MainMod.carLoaders[_carLoaderID].SetCarLivery(_part, _bodyPart.livery, _bodyPart.liveryStrength);

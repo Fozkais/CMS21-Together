@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using MelonLoader;
@@ -29,13 +30,13 @@ namespace CMS21MP.DataHandle
             _fromclient = _packet.ReadInt();
             Vector3 position = _packet.ReadVector3();
 
-            if (DataUpdating.MovUpdateQueue.ContainsKey(_fromclient))
+            if (Movement_Handling.MovUpdateQueue.ContainsKey(_fromclient))
             {
-                DataUpdating.MovUpdateQueue[_fromclient].Add(position);
+                Movement_Handling.MovUpdateQueue[_fromclient].Add(position);
             }
             else
             {
-                DataUpdating.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
+                Movement_Handling.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
             }
         }
         public static void PlayerRotation(int _fromclient, Packet _packet)
@@ -43,13 +44,13 @@ namespace CMS21MP.DataHandle
             _fromclient = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            if (DataUpdating.RotUpdateQueue.ContainsKey(_fromclient))
+            if (Movement_Handling.RotUpdateQueue.ContainsKey(_fromclient))
             {
-                DataUpdating.RotUpdateQueue[_fromclient].Add(_rotation);
+                Movement_Handling.RotUpdateQueue[_fromclient].Add(_rotation);
             }
             else
             {
-                DataUpdating.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
+                Movement_Handling.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
             }
         }
 
@@ -95,7 +96,6 @@ namespace CMS21MP.DataHandle
                 }
             }
         }
-
         public static void PlayerMoney(int _fromClient, Packet _packet)
         {
             _fromClient = _packet.ReadInt();
@@ -145,12 +145,9 @@ namespace CMS21MP.DataHandle
             //MelonLogger.Msg("SV: Received new carParts! sending to players.");
             
             _fromClient = _packet.ReadInt();
-            C_PartScriptData carParts = _packet.ReadCarPart();
-            int carLoaderID = _packet.ReadInt();
-            int partType = _packet.ReadInt();
-            bool exist = _packet.ReadBool();
+            PartScriptInfo parts = _packet.ReadBPartScriptInfo();
 
-            ServerSend.carPart(_fromClient, carLoaderID, carParts, partType, exist);
+            ServerSend.carPart(_fromClient, parts);
         }
 
         public static void bodyPart(int _fromClient, Packet _packet)

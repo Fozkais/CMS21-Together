@@ -95,30 +95,45 @@ namespace CMS21MP
                localInventory = GameScript.Get().GetComponent<Inventory>();
             }
 
-            if (isConnected)
-            {
-               foreach (KeyValuePair<int, PlayerInfo> player in PlayerManager.players)
-               {
-                  if (GameObject.Find($"{player.Value.username}") == null)
-                  {
-                     PlayerManager.instance.SpawnPlayer(player.Value.id, player.Value.username, new Vector3(),
-                        new Quaternion());
-                  }
-               }
-            }
+            //if (isConnected)
+           // {
+             //  foreach (KeyValuePair<int, PlayerInfo> player in PlayerManager.players)
+              // {
+               //   if (GameObject.Find($"{player.Value.username}") == null)
+                 // {
+                  //   PlayerManager.instance.SpawnPlayer(player.Value.id, player.Value.username, new Vector3(),
+                  //      new Quaternion());
+                 // }
+              // }
+            //}
          }
       }
 
-      public override void
-         OnSceneWasInitialized(int buildindex,
-            string sceneName) // Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
+      public override void OnSceneWasInitialized(int buildindex, string sceneName) // Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
       {
          // MelonLogger.Msg("OnSceneWasInitialized: " + buildindex.ToString() + " | " + sceneName);
       }
 
       public override void OnUpdate() // Runs once per frame.
       {
-         DataUpdating.UpdateData();
+         if (MainMod.isConnected)
+         {
+            if (MainMod.playableSceneChecker())
+            {
+               if (MainMod.localPlayer != null)
+               {
+                  MainMod.localPlayer.GetComponent<MPGameManager>().InfoUpdate();
+                  if (MainMod.isHosting)
+                  {
+                     if (MainMod.playableSceneWithInventory())
+                     {
+                        ServerData.UpdateInventory();
+                     }
+                  }
+               }
+            }
+         }
+
          threadManager.UpdateThread();
       }
 
@@ -177,7 +192,7 @@ namespace CMS21MP
       {
          GameObject LplayerPrefab = GameObject.Find("First Person Controller");
          LplayerPrefab.AddComponent<PlayerInfo>();
-         LplayerPrefab.AddComponent<playerManagement>();
+         LplayerPrefab.AddComponent<MPGameManager>();
       }
 
       public void playerInit()
@@ -185,7 +200,7 @@ namespace CMS21MP
 
          GameObject LplayerPrefab = GameObject.Find("First Person Controller");
          LplayerPrefab.AddComponent<PlayerInfo>();
-         LplayerPrefab.AddComponent<playerManagement>();
+         LplayerPrefab.AddComponent<MPGameManager>();
 
          AssetBundle playerModel;
 
