@@ -167,16 +167,6 @@ namespace CMS21MP.DataHandle
             MelonLogger.Msg($"received new scene from {_username}, scene: {_scene}");
 
             PlayerManager.players[_id].activeScene = _scene;
-            
-            //if (SceneManager.GetActiveScene().name == _scene && GameObject.Find($"{_username}") == null)
-           // {
-              //  PlayerManager.instance.SpawnPlayer(_id, _username, new Vector3(0,0,0), new Quaternion(0,0,0,0));
-           // }
-           // else if(GameObject.Find($"{_username}") != null && _id != Client.instance.myId)
-           // {
-             //   Object.Destroy(GameObject.Find($"{_username}"));
-             //   PlayerManager.players.Remove(_id);
-          //  }
         }
 
         public static void SpawnCars(Packet _packet)
@@ -197,7 +187,7 @@ namespace CMS21MP.DataHandle
                 MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
                 MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
                 MainMod.carLoaders[data.carLoaderID].color = carColor;
-                MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID);
+                MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID, data.configNumber);
             }
             else
             {
@@ -238,76 +228,21 @@ namespace CMS21MP.DataHandle
             {
                 if (_part._type == partType.part)
                 {
-                    //var PartInCl = MainMod.carLoaders[_part._carLoaderID].Parts._items[_part._partItemID];
-                    //var parts = PartInCl.p_handle.GetComponentsInChildren<PartScript>().ToList();
-                    
+
                     partUpdate(MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID], _part);
                     MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID]._UniqueID = _part._UniqueID;
 
                 }
-                // else if (_part.type == partType.engine)
-                // {
-                //     var PartInCl = MainMod.carLoaders[_carLoaderID].e_engine_h;
-                //     var parts = PartInCl.GetComponentsInChildren<PartScript>().ToList();
-                //
-                //     for (var i = 0; i < parts.Count; i++)
-                //     {
-                //         var part = parts[i];
-                //         //partUpdate(part, _part, _carLoaderID);
-                //     } 
-                // }
-                // else if(_part.type == partType.suspensions)
-                // { 
-                //         List<PartScript> frontCenter = MainMod.carLoaders[_carLoaderID].s_frontCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 0
-                //     List<PartScript> frontLeft = MainMod.carLoaders[_carLoaderID].s_frontLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 1
-                //     List<PartScript> frontRight = MainMod.carLoaders[_carLoaderID].s_frontRight_h.GetComponentsInChildren<PartScript>().ToList(); // 2
-                //     List<PartScript> rearCenter = MainMod.carLoaders[_carLoaderID].s_rearCenter_h.GetComponentsInChildren<PartScript>().ToList(); // 3
-                //     List<PartScript> rearLeft = MainMod.carLoaders[_carLoaderID].s_rearLeft_h.GetComponentsInChildren<PartScript>().ToList(); // 4
-                //     List<PartScript> rearRight = MainMod.carLoaders[_carLoaderID].s_rearRight_h.GetComponentsInChildren<PartScript>().ToList(); // 5
-                //
-                //     if (_part.s_indexer == 0)
-                //     {
-                //         foreach (PartScript part in frontCenter)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                //     else if (_part.s_indexer == 1)
-                //     {
-                //         foreach (PartScript part in frontLeft)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                //     else if (_part.s_indexer == 2)
-                //     {
-                //         foreach (PartScript part in frontRight)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                //     else if (_part.s_indexer == 3)
-                //     {
-                //         foreach (PartScript part in rearCenter)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                //     else if (_part.s_indexer == 4)
-                //     {
-                //         foreach (PartScript part in rearLeft)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                //     else if (_part.s_indexer == 5)
-                //     {
-                //         foreach (PartScript part in rearRight)
-                //         {
-                //             partUpdate(part, _part, _carLoaderID);
-                //         }
-                //     }
-                // }
+                else if (_part._type == partType.engine)
+                {
+                    partUpdate(MPGameManager.OriginalEngineParts[_part._carLoaderID][_part._partCountID], _part);
+                    MPGameManager.OriginalEngineParts[_part._carLoaderID][_part._partCountID]._UniqueID = _part._UniqueID;
+                }
+                else if(_part._type == partType.suspensions)
+                { 
+                    partUpdate(MPGameManager.OriginalSuspensionParts[_part._carLoaderID][_part._partItemID][_part._partCountID], _part);
+                    MPGameManager.OriginalSuspensionParts[_part._carLoaderID][_part._partItemID][_part._partCountID]._UniqueID = _part._UniqueID;
+                }
             }
         }
 
@@ -360,21 +295,62 @@ namespace CMS21MP.DataHandle
 
         static IEnumerator delayPartUpdate(PartScriptInfo _part)
         {
-            if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
+            yield return new WaitForSeconds(2f);
+            
+            if (_part._type == partType.part)
             {
-                CarPart_PreHandling.AddPartHandle_bis(_part._carLoaderID);
-                yield return new WaitForSeconds(3f);
-            }
+                if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
+                {
+                    CarPart_PreHandling.AddPartHandle(_part._carLoaderID);
+                    yield return new WaitForSeconds(3f);
+                }
 
-            if (!MPGameManager.PartsHandle.ContainsKey(_part._carLoaderID))
-            {
-                MPGameManager.PartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+                if (!MPGameManager.PartsHandle.ContainsKey(_part._carLoaderID))
+                {
+                    MPGameManager.PartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+                }
+                if (!MPGameManager.PartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+                {
+                    MPGameManager.PartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+                }
+                MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
             }
-            if (!MPGameManager.PartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+            else if(_part._type == partType.engine)
             {
-                MPGameManager.PartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+                if (!MPGameManager.OriginalEngineParts.ContainsKey(_part._carLoaderID))
+                {
+                    CarPart_PreHandling.AddEnginePartHandle(_part._carLoaderID);
+                    yield return new WaitForSeconds(3f);
+                }
+
+                if (!MPGameManager.EnginePartsHandle.ContainsKey(_part._carLoaderID))
+                {
+                    MPGameManager.EnginePartsHandle.Add(_part._carLoaderID, new Dictionary<int, PartScriptInfo>());
+                }
+
+                if (!MPGameManager.EnginePartsHandle[_part._carLoaderID].ContainsKey(_part._partCountID))
+                {
+                    MPGameManager.EnginePartsHandle[_part._carLoaderID].Add(_part._partCountID, _part);
+                }
             }
-            MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
+            else if (_part._type == partType.suspensions)
+            {
+                if (!MPGameManager.OriginalSuspensionParts.ContainsKey(_part._carLoaderID))
+                {
+                    CarPart_PreHandling.AddSuspensionPartHandle(_part._carLoaderID);
+                    yield return new WaitForSeconds(3f);
+                }
+
+                if (!MPGameManager.SuspensionPartsHandle.ContainsKey(_part._carLoaderID))
+                {
+                    MPGameManager.SuspensionPartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+                }
+                if (!MPGameManager.SuspensionPartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+                {
+                    MPGameManager.SuspensionPartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+                }
+                MPGameManager.SuspensionPartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
+            }
 
             UpdatePart(_part);
         }

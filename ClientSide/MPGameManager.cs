@@ -16,11 +16,11 @@ namespace CMS21MP.ClientSide
         public static Dictionary<int,Dictionary<int, List<PartScript_Info>>> OriginalParts = new Dictionary<int,Dictionary<int, List<PartScript_Info>>>();
         public static Dictionary<int, Dictionary<int, List<PartScriptInfo>>> PartsHandle = new Dictionary<int, Dictionary<int, List<PartScriptInfo>>>();
         
-        public static Dictionary<int, Dictionary<int, PartScriptData>> EnginePartsHandler = new Dictionary<int,  Dictionary<int, PartScriptData>>();
-        public static Dictionary<int, List<PartScriptInfo>> EnginePartsHandle = new Dictionary<int, List<PartScriptInfo>>();
+        public static Dictionary<int, Dictionary<int, PartScript_Info>> OriginalEngineParts = new Dictionary<int, Dictionary<int, PartScript_Info>>();
+        public static Dictionary<int, Dictionary<int, PartScriptInfo>> EnginePartsHandle = new Dictionary<int, Dictionary<int, PartScriptInfo>>();
         
-        public static Dictionary<int, Dictionary<int, PartScript>> SuspensionPartsHandler = new Dictionary<int, Dictionary<int, PartScript>>();
-        public static Dictionary<int, List<PartScriptInfo>> SuspensionPartsHandle = new Dictionary<int, List<PartScriptInfo>>();
+        public static Dictionary<int,Dictionary<int, List<PartScript_Info>>> OriginalSuspensionParts = new Dictionary<int,Dictionary<int, List<PartScript_Info>>>();
+        public static Dictionary<int,Dictionary<int, List<PartScriptInfo>>> SuspensionPartsHandle = new Dictionary<int,Dictionary<int, List<PartScriptInfo>>>();
 
         public static bool hasFinishedUpdatingCar = true;
 

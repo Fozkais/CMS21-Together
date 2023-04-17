@@ -32,6 +32,7 @@ namespace CMS21MP.ClientSide.Functionnality
                         car.carLoaderID = i;
                         car.carPosition = carLoader.placeNo;
                         car.status = true;
+                        car.configNumber = carLoader.ConfigVersion;
                         car.carColor = new C_Color(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
                         car.fromServer = false;
                         carsToHandle.Add(car);
@@ -54,6 +55,7 @@ namespace CMS21MP.ClientSide.Functionnality
                     car.carID = carsToHandle[i].carID;
                     car.carLoaderID = i;
                     car.carPosition = carsToHandle[i].carPosition;
+                    car.configNumber = carsToHandle[i].configNumber;
                     car.status = true;
                     car.carColor = new C_Color(carsToHandle[i].carColor.r, carsToHandle[i].carColor.g, carsToHandle[i].carColor.b, carsToHandle[i].carColor.a);
                     car.fromServer = true;

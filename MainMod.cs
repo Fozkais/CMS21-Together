@@ -118,6 +118,7 @@ namespace CMS21MP
       {
          if (MainMod.isConnected)
          {
+            Application.runInBackground = true;
             if (MainMod.playableSceneChecker())
             {
                if (MainMod.localPlayer != null)
@@ -132,6 +133,10 @@ namespace CMS21MP
                   }
                }
             }
+         }
+         else
+         {
+            Application.runInBackground = false;
          }
 
          threadManager.UpdateThread();

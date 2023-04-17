@@ -1,35 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Testing Build 4 -- &#10;- New system for car Handling &#10;-- Knowed Issue --&#10;- Dont work. (Index Issue)">
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_PreHandling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/ExternalCarPart_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/Inventory_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/Movement_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/SceneSwaping_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/Stats_Handling.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Models/playermodel.model" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Models/playermodel.model.manifest" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/PlayerInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/PlayerInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/PlayerManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/PlayerManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/playerManagement.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_Handling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_Handling.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_PreHandling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart_PreHandling.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/DataUpdating.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModGUI.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +181,7 @@
       <workItem from="1679766565990" duration="1462000" />
       <workItem from="1679947206053" duration="1211000" />
       <workItem from="1680345604548" duration="14474000" />
-      <workItem from="1681484998859" duration="53963000" />
+      <workItem from="1681484998859" duration="63759000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -315,7 +295,14 @@
       <option name="project" value="LOCAL" />
       <updated>1675177565414</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling">
+      <created>1681671834157</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1681671834157</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -361,6 +348,7 @@
     <MESSAGE value="-- Early Update 5 --&#10;- Totaly new Inventory Management ( Testing) adding item with UID work&#10;-- Bug Fix --&#10;- All player can see others&#10;- Added UID to item Management&#10;- Reverted to ML6.0 for compatibility issue" />
     <MESSAGE value="-- Early Update 6 --&#10;- Finally fully Handle inventory &#10;(Adding / Removing Item)&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)" />
     <MESSAGE value="-- Testing Build 4 -- &#10;- New system for car Handling &#10;-- Knowed Issue --&#10;- Dont work. (Index Issue)" />
-    <option name="LAST_COMMIT_MESSAGE" value="-- Testing Build 4 -- &#10;- New system for car Handling &#10;-- Knowed Issue --&#10;- Dont work. (Index Issue)" />
+    <MESSAGE value="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling" />
+    <option name="LAST_COMMIT_MESSAGE" value="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling" />
   </component>
 </project>

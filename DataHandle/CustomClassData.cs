@@ -117,6 +117,7 @@ namespace CMS21MP.DataHandle
         public int carLoaderID;
         public string carID;
         public int carPosition;
+        public int configNumber;
         public bool fromServer;
 
         public C_Color carColor;
