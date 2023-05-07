@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,192 +13,192 @@ namespace CMS21MP.ClientSide.Functionnality
     {
         public static void HandleAllParts()
         {
+            ExternalCarPart_Handling.HandleCarParts();
             HandleParts();
             HandleEngineParts();
             HandleSuspensionParts();
+                
         }
         
 
         public async static void HandleParts()
         {
-            for (int i = 0; i < MPGameManager.OriginalParts.Count; i++) // Nombre de carLoaderID dans OriginalPart
+            var OriginalPartsCopy = MPGameManager.OriginalParts.ToList();
+            foreach (var car in OriginalPartsCopy)
             {
-                if (!CarSpawn_Handling.carHandler[i].fromServer)
+                if (!CarSpawn_Handling.CarHandle[car.Key].PartFromServer)
                 {
-                    var part = MPGameManager.OriginalParts[i]; // Toutes les pieces[i] ou i = carLoaderID
-                        
-                    for (int j = 0; j < part.Values.Count; j++) // Parcours des pieces pour i = carLoaderID
+                    var part = MPGameManager.OriginalParts[car.Key];
+                    foreach (var _part in part)
                     {
-                        for (int k = 0; k < part[j].Count; k++) // Parcours des sous-pieces pour i = carLoaderID, j = pieces, k = sous-pieces
+                        if (!MPGameManager.PartsHandle.ContainsKey(car.Key)) // Vérifie la présence de la clé i
                         {
-                            if(!MPGameManager.PartsHandle.ContainsKey(i))
-                                MPGameManager.PartsHandle.Add(i, new Dictionary<int, List<PartScriptInfo>>());
-                            if(!MPGameManager.PartsHandle[i].ContainsKey(j))
-                                MPGameManager.PartsHandle[i].Add(j, new List<PartScriptInfo>());
+                            MPGameManager.PartsHandle.Add(car.Key, new Dictionary<int, List<PartScriptInfo>>());
+                        }
 
-                            #region AddingToHandle
-                            
-                            if (!MPGameManager.PartsHandle[i][j].Exists(s => s._UniqueID == part[j][k]._UniqueID)) // Vérifie la préscense de la sous-piece[j] dans le handle
+                        if (!MPGameManager.PartsHandle[car.Key].ContainsKey(_part.Key)) // Vérifie la présence de la clé j
+                        {
+                            MPGameManager.PartsHandle[car.Key].Add(_part.Key, new List<PartScriptInfo>());
+                        }
+
+                        for (int k = 0; k < part[_part.Key].Count; k++)
+                        {
+                            if (!MPGameManager.PartsHandle[car.Key][_part.Key].Exists(s => s._UniqueID == part[_part.Key][k]._UniqueID))
                             {
-                                MelonLogger.Msg("New part Found ! sending new pieces");
-                                MPGameManager.PartsHandle[i][j].Add(part[j][k]._PartScriptInfo);
-                                ClientSend.carParts(part[j][k]._PartScriptInfo);
+                                MPGameManager.PartsHandle[car.Key][_part.Key].Add(part[_part.Key][k]._PartScriptInfo);
+                                ClientSend.carParts(part[_part.Key][k]._PartScriptInfo);
                             }
 
-                            // MPGameManager.PartsHandle[carID].BinarySearch(part[j]._PartScriptInfo) -> pour trouver l'index d'un élément dans une liste
-                            #endregion
-                            
-                            #region CheckForDifferences
-
-                            if (MPGameManager.PartsHandle[i][j].Exists(s => s._UniqueID == part[j][k]._UniqueID)) // Vérifie la préscense de la sous-piece[j][k] dans le handle
+                            if (MPGameManager.PartsHandle.ContainsKey(car.Key) && MPGameManager.PartsHandle[car.Key].ContainsKey(_part.Key) && k < MPGameManager.PartsHandle[car.Key][_part.Key].Count)
                             {
-                                int index = MPGameManager.PartsHandle[i][j].FindIndex(s => s._UniqueID == part[j][k]._UniqueID); 
-                                PartScriptInfo partInfo = MPGameManager.PartsHandle[i][j][index]; // sous piece a l'index [i][j][index]
-                                PartScriptData partToCompare = new PartScriptData(part[j][k]._partScript);  // sous-piece originalPart[i][j][k]
-                                if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                if (MPGameManager.PartsHandle[car.Key][_part.Key].Exists(s => s._UniqueID == part[_part.Key][k]._UniqueID))
                                 {
-                                    MelonLogger.Msg("Differences Found ! sending new pieces");
-                                    partInfo._partScriptData = partToCompare;
-                                    ClientSend.carParts(partInfo);
+                                    int index = MPGameManager.PartsHandle[car.Key][_part.Key].FindIndex(s => s._UniqueID == part[_part.Key][k]._UniqueID);
+                                    PartScriptInfo partInfo = MPGameManager.PartsHandle[car.Key][_part.Key][index];
+                                    PartScriptData partToCompare = new PartScriptData(part[_part.Key][k]._partScript);
+                                    if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                    {
+                                        partInfo._partScriptData = partToCompare;
+                                        ClientSend.carParts(partInfo);
+                                        MelonLogger.Msg("Differences Found ! sending new pieces");
+                                    }
                                 }
                             }
-
-                            #endregion
                         }
-                        
-
                     }
                 }
                 else
-                {
-                    await Task.Delay(4000);
-                    CarSpawn_Handling.carHandler[i].fromServer = false;
+                    {
+                        await Task.Delay(4000);
+                        CarSpawn_Handling.CarHandle[car.Key].PartFromServer = false;
+                    }
                 }
-            }
         }
-
-
-
         public async static void HandleEngineParts()
         {
-             for (int i = 0; i < MPGameManager.OriginalEngineParts.Count; i++) // Nombre de carLoaderID dans OriginalEngineParts
+            var OriginalEnginePartsCopy = MPGameManager.OriginalEngineParts.ToList();
+            foreach (var car in OriginalEnginePartsCopy)
             {
-                if (!CarSpawn_Handling.carHandler[i].fromServer)
-                {
-                    var part = MPGameManager.OriginalEngineParts[i]; // Toutes les pieces[i] ou i = carLoaderID
-                        
-                    for (int j = 0; j < part.Count; j++) // Parcours des pieces pour i = carLoaderID
+                if (!CarSpawn_Handling.CarHandle[car.Key].EngineFromServer)
                     {
-                        if(!MPGameManager.EnginePartsHandle.ContainsKey(i))
-                                MPGameManager.EnginePartsHandle.Add(i, new Dictionary<int, PartScriptInfo>());
+                        var part = MPGameManager.OriginalEngineParts[car.Key]; // Toutes les pieces[i] ou i = carLoaderID
 
-                        #region AddingToHandle
-                            
-                        if (!MPGameManager.EnginePartsHandle[i].Any(s => s.Value._UniqueID == part[j]._UniqueID)) // Vérifie la préscense de la sous-piece[j] dans le handle
-                            {
-                                MelonLogger.Msg("New part Found ! sending new pieces");
-                                MPGameManager.EnginePartsHandle[i].Add(j, part[j]._PartScriptInfo);
-                                ClientSend.carParts(part[j]._PartScriptInfo);
-                            }
-                            
-                            #endregion
-                            
-                            #region CheckForDifferences
+                        foreach (var _part in part)
+                        {
+                            if(!MPGameManager.EnginePartsHandle.ContainsKey(car.Key))
+                                    MPGameManager.EnginePartsHandle.Add(car.Key, new Dictionary<int, PartScriptInfo>());
 
-                            if (MPGameManager.EnginePartsHandle[i].Any(s => s.Value._UniqueID == part[j]._UniqueID)) // Vérifie la préscense de la sous-piece[j] dans le handle
+
+                            if (MPGameManager.EnginePartsHandle.ContainsKey(car.Key))
                             {
-                                int index = MPGameManager.EnginePartsHandle[i].FirstOrDefault(s => s.Value._UniqueID == part[j]._UniqueID).Key;
-                                PartScriptInfo partInfo = MPGameManager.EnginePartsHandle[i][j]; // sous piece a l'index [i][j][index]
-                                PartScriptData partToCompare = new PartScriptData(part[j]._partScript);  // sous-piece originalPart[i][j][k]
-                                if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                #region AddingToHandle
+                                if (!MPGameManager.EnginePartsHandle[car.Key].Any(s => s.Value._UniqueID == part[_part.Key]._UniqueID)) // Vérifie la non-préscense de la sous-piece[j] dans le handle
                                 {
-                                    MelonLogger.Msg("Differences Found ! sending new pieces");
-                                    partInfo._partScriptData = partToCompare;
-                                    ClientSend.carParts(partInfo);
-                                }
-                            }
+                                    //MelonLogger.Msg("New part Found ! sending new pieces");
+                                        if (!MPGameManager.EnginePartsHandle[car.Key].ContainsKey(_part.Key))
+                                        {
+                                            MPGameManager.EnginePartsHandle[car.Key].Add(_part.Key, part[_part.Key]._PartScriptInfo);
+                                            ClientSend.carParts(part[_part.Key]._PartScriptInfo);
+                                        }
+                                    }
+                                    
+                                    #endregion
+                                    
+                                    #region CheckForDifferences
 
-                            #endregion
+                                    if (MPGameManager.EnginePartsHandle[car.Key].Any(s => s.Value._UniqueID == part[_part.Key]._UniqueID)) // Vérifie la préscense de la sous-piece[j] dans le handle
+                                    {
+                                        PartScriptInfo partInfo = MPGameManager.EnginePartsHandle[car.Key][_part.Key]; // sous piece a l'index [i][j][index]
+                                        PartScriptData partToCompare = new PartScriptData(part[_part.Key]._partScript);  // sous-piece originalPart[i][j][k]
+                                        if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                        {
+                                            MelonLogger.Msg("Differences Found ! sending new pieces");
+                                            partInfo._partScriptData = partToCompare;
+                                            ClientSend.carParts(partInfo);
+                                        }
+                                    }
+
+                                    #endregion
+                                
+                            }
+                        }
+                    }
+                    else
+                    {
+                        await Task.Delay(4000);
+                        CarSpawn_Handling.CarHandle[car.Key].EngineFromServer = false;
                     }
                 }
-                else
-                {
-                    await Task.Delay(4000);
-                    CarSpawn_Handling.carHandler[i].fromServer = false;
-                }
-            }
         }
 
         public async static void HandleSuspensionParts()
         {
-            for (int i = 0; i < MPGameManager.OriginalSuspensionParts.Count; i++) // Nombre de carLoaderID dans OriginalPart
+
+            var OriginalSuspensionPartsCopy = MPGameManager.OriginalSuspensionParts.ToList();
+            foreach (var car in OriginalSuspensionPartsCopy)
             {
-                if (!CarSpawn_Handling.carHandler[i].fromServer)
-                {
-                    var part = MPGameManager.OriginalSuspensionParts[i]; // Toutes les pieces[i] ou i = carLoaderID
-                        
-                    for (int j = 0; j < part.Values.Count; j++) // Parcours des pieces pour i = carLoaderID
+                if (!CarSpawn_Handling.CarHandle[car.Key].SuspensionFromServer)
                     {
-                        for (int k = 0; k < part[j].Count; k++) // Parcours des sous-pieces pour i = carLoaderID, j = gameobject, k = pieces
+                        var part = MPGameManager.OriginalSuspensionParts[car.Key]; // Toutes les pieces[i] ou i = carLoaderID
+
+                        foreach (var _part in part)
                         {
-                            if(!MPGameManager.SuspensionPartsHandle.ContainsKey(i))
-                                MPGameManager.SuspensionPartsHandle.Add(i, new Dictionary<int, List<PartScriptInfo>>());
-                            if(!MPGameManager.SuspensionPartsHandle[i].ContainsKey(j))
-                                MPGameManager.SuspensionPartsHandle[i].Add(j, new List<PartScriptInfo>());
+                            if(!MPGameManager.SuspensionPartsHandle.ContainsKey(car.Key))
+                                MPGameManager.SuspensionPartsHandle.Add(car.Key, new Dictionary<int, List<PartScriptInfo>>());
 
-                            #region AddingToHandle
-                            
-                            if (!MPGameManager.SuspensionPartsHandle[i][j].Exists(s => s._UniqueID == part[j][k]._UniqueID)) // Vérifie la préscense de la sous-piece[j] dans le handle
+                            if(!MPGameManager.SuspensionPartsHandle[car.Key].ContainsKey(_part.Key))
+                                MPGameManager.SuspensionPartsHandle[car.Key].Add(_part.Key, new List<PartScriptInfo>());
+
+                            for (int k = 0; k < part[_part.Key].Count; k++) // Parcours des sous-pieces pour i = carLoaderID, j = piece, k = sous-pieces
                             {
-                                MelonLogger.Msg("New part Found ! sending new pieces");
-                                MPGameManager.SuspensionPartsHandle[i][j].Add(part[j][k]._PartScriptInfo);
-                                ClientSend.carParts(part[j][k]._PartScriptInfo);
-                            }
 
-                            // MPGameManager.PartsHandle[carID].BinarySearch(part[j]._PartScriptInfo) -> pour trouver l'index d'un élément dans une liste
-                            #endregion
-                            
-                            #region CheckForDifferences
-
-                            if (MPGameManager.SuspensionPartsHandle[i][j].Exists(s => s._UniqueID == part[j][k]._UniqueID)) // Vérifie la préscense de la sous-piece[j][k] dans le handle
-                            {
-                                int index = MPGameManager.SuspensionPartsHandle[i][j].FindIndex(s => s._UniqueID == part[j][k]._UniqueID); 
-                                PartScriptInfo partInfo = MPGameManager.SuspensionPartsHandle[i][j][index]; // sous piece a l'index [i][j][index]
-                                PartScriptData partToCompare = new PartScriptData(part[j][k]._partScript);  // sous-piece originalPart[i][j][k]
-                                if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                #region AddingToHandle
+                                
+                                if (!MPGameManager.SuspensionPartsHandle[car.Key][_part.Key].Exists(s => s._UniqueID == part[_part.Key][k]._UniqueID)) // Vérifie la non-préscense de la sous-piece[k] dans le handle
                                 {
-                                    MelonLogger.Msg("Differences Found ! sending new pieces");
-                                    partInfo._partScriptData = partToCompare;
-                                    ClientSend.carParts(partInfo);
+                                    //MelonLogger.Msg("New part Found ! sending new pieces");
+                                    MPGameManager.SuspensionPartsHandle[car.Key][_part.Key].Add(part[_part.Key][k]._PartScriptInfo);
+                                    ClientSend.carParts(part[_part.Key][k]._PartScriptInfo);
                                 }
+
+                                // MPGameManager.PartsHandle[carID].BinarySearch(part[j]._PartScriptInfo) -> pour trouver l'index d'un élément dans une liste
+                                #endregion
+                                
+                                #region CheckForDifferences
+
+                                if (MPGameManager.SuspensionPartsHandle[car.Key][_part.Key].Exists(s => s._UniqueID == part[_part.Key][k]._UniqueID)) // Vérifie la préscense de la sous-piece[j][k] dans le handle
+                                {
+                                    int index = MPGameManager.SuspensionPartsHandle[car.Key][_part.Key].FindIndex(s => s._UniqueID == part[_part.Key][k]._UniqueID); 
+                                    PartScriptInfo partInfo = MPGameManager.SuspensionPartsHandle[car.Key][_part.Key][index]; // sous piece a l'index [i][j][index]
+                                    PartScriptData partToCompare = new PartScriptData(part[_part.Key][k]._partScript);  // sous-piece originalPart[i][j][k]
+                                    if (HasDifferences(partToCompare, partInfo._partScriptData))
+                                    {
+                                        MelonLogger.Msg("Differences Found ! sending new pieces");
+                                        partInfo._partScriptData = partToCompare;
+                                        ClientSend.carParts(partInfo);
+                                    }
+                                }
+
+                                #endregion
                             }
+                            
 
-                            #endregion
                         }
-                        
-
+                    }
+                    else
+                    {
+                        await Task.Delay(4000);
+                        CarSpawn_Handling.CarHandle[car.Key].SuspensionFromServer = false;
                     }
                 }
-                else
-                {
-                    await Task.Delay(4000);
-                    CarSpawn_Handling.carHandler[i].fromServer = false;
-                }
-            }
         }
         
         public static bool HasDifferences(PartScriptData original, PartScriptData handle)
         {
             bool hasDifferences = false;
-            //if (original.color != handle.color)
+          //  if (original.color != handle.color)
               //  hasDifferences = true;
-           // if (original.quality != handle.quality)
-               // hasDifferences = true;
-            //if (original.condition != handle.condition)
-              //  hasDifferences = true;
-            //if (original.dust != handle.dust)
-              //  hasDifferences = true;
-            if ( original.unmounted != handle.unmounted)
+              if ( original.unmounted != handle.unmounted)
                 hasDifferences = true;
                 
             return hasDifferences;

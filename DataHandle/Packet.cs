@@ -10,6 +10,7 @@ using MelonLoader;
 using Newtonsoft.Json;
 using UnityEngine;
 
+
 namespace CMS21MP.DataHandle
 {
     /// <summary>Sent from server to client.</summary>
@@ -27,6 +28,7 @@ namespace CMS21MP.DataHandle
         spawnCars,
         moveCars,
         // car part sync
+        initialCarPart,
         car_part,
         body_part
     }
@@ -43,6 +45,7 @@ namespace CMS21MP.DataHandle
         spawnCars,
         moveCars,
         // car part sync
+        initialCarPart,
         car_part,
         body_part
     }
@@ -218,13 +221,19 @@ namespace CMS21MP.DataHandle
             Write(array.Length);
             Write(array);
         }
-        public void Write(C_carPartsData _value)
+        public void Write(carPartsData _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);
         }
         public void Write(PartScriptInfo _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        public void Write(List<PartScriptInfo> _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
@@ -441,18 +450,25 @@ namespace CMS21MP.DataHandle
             byte[] array = ReadBytes(lenght); // Return the bytes
             return (PartScriptData) ByteArrayToObject(array);
         }
+        
 
-        public C_carPartsData ReadBodyPart(bool _moveReadPos = true)
+        public carPartsData ReadBodyPart(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
-            return (C_carPartsData) ByteArrayToObject(array);// Convert the bytes array to a parts List
+            return (carPartsData) ByteArrayToObject(array);// Convert the bytes array to a parts List
         }
-        public PartScriptInfo ReadBPartScriptInfo(bool _moveReadPos = true)
+        public PartScriptInfo ReadPartScriptInfo(bool _moveReadPos = true)
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
             return (PartScriptInfo) ByteArrayToObject(array);// Convert the bytes array to a parts List
+        }
+        public List<PartScriptInfo> ReadPartScriptInfoList()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (List<PartScriptInfo>) ByteArrayToObject(array);
         }
         
         private object ByteArrayToObject(byte[] arrBytes)

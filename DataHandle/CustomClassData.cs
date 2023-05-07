@@ -38,11 +38,12 @@ namespace CMS21MP.DataHandle
         }
     }
     [Serializable]
-    public class C_carPartsData
+    public class carPartsData
     {
-        // public GameObject handle;
-       public int carPartID;
-       public int carLoaderID;
+        public Guid UniqueID;
+        
+        public int carPartID;
+        public int carLoaderID;
         public string name = string.Empty;
         public bool switched;
         public bool inprogress;
@@ -65,6 +66,58 @@ namespace CMS21MP.DataHandle
         public int quality;
         public float Dust;
         public float washFactor;
+        public carPartsData(CarPart _part, int _carPartID, int _carLoaderID, Guid _UniqueID)
+        {
+            this.UniqueID = _UniqueID;
+            
+            this.carPartID = _carPartID;
+            this.carLoaderID = _carLoaderID;
+            this.name = _part.name;
+            this.switched = _part.Switched;
+            this.inprogress = _part.Switched;
+            this.condition = _part.Condition;
+            this.unmounted = _part.Unmounted;
+            this.tunedID = _part.TunedID;
+            this.isTinted = _part.IsTinted;
+            this.TintColor = new C_Color(_part.TintColor);
+            this.colors = new C_Color(_part.Color);
+            this.paintType = (int)_part.PaintType;
+            this.paintData = new C_PaintData().FromGame(_part.PaintData);
+            this.conditionStructure = _part.StructureCondition;
+            this.conditionPaint = _part.ConditionPaint;
+            this.livery = _part.Livery;
+            this.liveryStrength = _part.LiveryStrength;
+            this.outsaidRustEnabled = _part.OutsideRustEnabled;
+            this.dent = _part.Dent;
+            this.additionalString = _part.AdditionalString;
+            this.Dust = _part.Dust;
+            this.washFactor = _part.WashFactor;
+
+            foreach (String partAttached in _part.ConnectedParts)
+            {
+                this.mountUnmountWith.Add(partAttached);
+            }
+            this.quality = _part.Quality;
+        }
+    }
+
+    [Serializable]
+    public class carPartsData_info
+    {
+        public carPartsData _CarPartsData;
+        public int _carLoaderID;
+        public Guid _UniqueID;
+        public int _partCountID;
+        public CarPart _originalPart;
+
+        public carPartsData_info(CarPart originalPart, int carLoaderID, int partCountID)
+        {
+            this._carLoaderID = carLoaderID;
+            this._partCountID = partCountID;
+            this._originalPart = originalPart;
+            this._UniqueID = Guid.NewGuid();
+            this._CarPartsData = new carPartsData(this._originalPart, this._partCountID, this._carLoaderID, this._UniqueID);
+        }
     }
 
     [Serializable]
@@ -110,6 +163,8 @@ namespace CMS21MP.DataHandle
     [Serializable]
     public class carData
     {
+
+        public Guid _UniqueID;
         public int clientID;
         public bool status;
         public bool isReady;
@@ -118,9 +173,42 @@ namespace CMS21MP.DataHandle
         public string carID;
         public int carPosition;
         public int configNumber;
-        public bool fromServer;
+        public bool CarPartFromServer;
+        public bool PartFromServer;
+        public bool SuspensionFromServer;
+        public bool EngineFromServer;
 
         public C_Color carColor;
+
+        public carData(CarLoader carLoader, int index)
+        {
+            this.carLoaderID = index;
+            this.carID = carLoader.carToLoad;
+            this.carPosition = carLoader.placeNo;
+            this.configNumber = carLoader.ConfigVersion;
+            this.carColor = new C_Color(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
+            this._UniqueID = Guid.NewGuid();
+            this.status = true;
+            this.CarPartFromServer = false;
+            this.PartFromServer = false;
+            this.SuspensionFromServer = false;
+            this.EngineFromServer = false;
+        }
+
+        public carData(carData car)
+        {
+            this.carLoaderID = car.carLoaderID;
+            this.carID = car.carID;
+            this.carPosition = car.carPosition;
+            this.configNumber = car.configNumber;
+            this.carColor = car.carColor;
+            car.CarPartFromServer = true;
+            car.PartFromServer = true;
+            car.EngineFromServer = true;
+            car.SuspensionFromServer = true;
+            car.status = true;
+            this._UniqueID = car._UniqueID;
+        }
     }
 
     [Serializable]
@@ -131,6 +219,10 @@ namespace CMS21MP.DataHandle
         public float b;
         public float a;
 
+        public C_Color()
+        {
+        }
+        
         public C_Color(float _r, float _g, float _b, float _a)
         {
             r = _r;

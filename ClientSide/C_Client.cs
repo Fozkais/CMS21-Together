@@ -89,7 +89,7 @@ namespace CMS21MP.ClientSide
                 {
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
                 }
-                catch (ObjectDisposedException ex)
+                catch (SocketException ex)
                 {
                     MelonLogger.Msg($"Failed to connect to server. Error: {ex}");
                 }
@@ -317,6 +317,7 @@ namespace CMS21MP.ClientSide
                 {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
                 {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
                 {(int)ServerPackets.moveCars, ClientHandle.MoveCar},
+                {(int)ServerPackets.initialCarPart, ClientHandle.carParts},
                 {(int)ServerPackets.car_part, ClientHandle.carParts},
                 {(int)ServerPackets.body_part, ClientHandle.bodyPart}
             };

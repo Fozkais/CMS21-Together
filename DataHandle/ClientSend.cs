@@ -109,7 +109,7 @@ namespace CMS21MP.DataHandle
 
                 SendTCPData(_packet);
             }
-            MelonLogger.Msg($"CL: Sending car Info! ID:[{data.carID}], LoaderID:[{data.carLoaderID}], Pos:[{data.carPosition}], status:[{data.status}]");
+           // MelonLogger.Msg($"CL: Sending car Info! ID:[{data.carID}], LoaderID:[{data.carLoaderID}], Pos:[{data.carPosition}], status:[{data.status}]");
         }
 
         public static void MoveCar(int carPosition, int carLoaderID)
@@ -124,28 +124,44 @@ namespace CMS21MP.DataHandle
             }
             MelonLogger.Msg("CL: Detected a moved car! sending new pos to server.");
         }
-        public static void carParts(PartScriptInfo part)
+
+        public static void initialCarParts(List<PartScriptInfo> parts)
         {
-            using(Packet _packet = new Packet((int)ClientPackets.car_part))
+            using(Packet _packet = new Packet((int)ClientPackets.initialCarPart))
             {
                 _packet.Write(Client.instance.myId);
-                _packet.Write(part);
+                _packet.Write(true);
+                _packet.Write(parts);
 
                 SendTCPData(_packet);
             }
-            MelonLogger.Msg("CL: sending Part to Server!");
+            MelonLogger.Msg("CL: Sending part list");
         }
-        public static void bodyParts(int carLoaderID, C_carPartsData parts)
+        public static void carParts(PartScriptInfo part)
+        {
+            if (ClientHandle.lastPartReceived != part)
+            {
+                using(Packet _packet = new Packet((int)ClientPackets.car_part))
+                {
+                    _packet.Write(Client.instance.myId);
+                    _packet.Write(false);
+                    _packet.Write(part);
+
+                    SendTCPData(_packet);
+                }
+            }
+            //MelonLogger.Msg("CL: sending Part to Server!");
+        }
+        public static void bodyParts(carPartsData parts)
         {
             using(Packet _packet = new Packet((int)ClientPackets.body_part))
             {
                 _packet.Write(Client.instance.myId);
                 _packet.Write(parts);
-                _packet.Write(carLoaderID);
 
                 SendTCPData(_packet);
             }
-            MelonLogger.Msg($"CL: sending BodyPart:{parts.carPartID},  to Server!");
+            //MelonLogger.Msg($"CL: sending BodyPart:{parts.carPartID},  to Server!");
         }
     }
     

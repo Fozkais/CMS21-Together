@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using CMS21MP.DataHandle;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21MP.ClientSide.Functionnality
@@ -19,7 +18,7 @@ namespace CMS21MP.ClientSide.Functionnality
             UpdatePlayerMovement();
             UpdatePlayerRotation();
         }
-        
+
         public static void SendPositionToServer()
         {
             Vector3 playerPos = MainMod.localPlayer.transform.position;
@@ -31,6 +30,7 @@ namespace CMS21MP.ClientSide.Functionnality
                 ClientSend.PlayerMovement(newPlayerPos);
             }
         }
+
         public static void SendRotationToServer()
         {
             Quaternion playerRot = MainMod.localPlayer.transform.rotation;
@@ -38,6 +38,8 @@ namespace CMS21MP.ClientSide.Functionnality
             {
                 lastRot = playerRot;
                 ClientSend.PlayerRotation(playerRot);
+
+                
             }
         }
         

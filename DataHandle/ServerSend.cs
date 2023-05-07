@@ -188,26 +188,40 @@ namespace CMS21MP.DataHandle
                 SendTCPDataToAll(clientID, _packet);
             }
         }
-
-        public static void carPart(int fromClient, PartScriptInfo parts)
+        
+        public static void initialcarPart(int fromClient, bool partType, List<PartScriptInfo> parts)
         {
-            using (Packet _packet = new Packet((int)ServerPackets.car_part))
+            using (Packet _packet = new Packet((int)ServerPackets.initialCarPart))
             {
+                _packet.Write(partType);
                 _packet.Write(parts);
 
                 SendTCPDataToAll(fromClient, _packet);
             }
+            //MelonLogger.Msg("SV: Sending new Part to player !");
         }
 
-        public static void bodyPart(int fromClient, int carLoaderID, C_carPartsData bodyParts)
+        public static void carPart(int fromClient, bool partType, PartScriptInfo part)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.car_part))
+            {
+                _packet.Write(partType);
+                _packet.Write(part);
+
+                SendTCPDataToAll(fromClient, _packet);
+            }
+            //MelonLogger.Msg("SV: Sending new Part to player !");
+        }
+
+        public static void bodyPart(int fromClient, carPartsData bodyParts)
         {
             using (Packet _packet = new Packet((int)ServerPackets.body_part))
             {
-                _packet.Write(carLoaderID);
                 _packet.Write(bodyParts);
 
                 SendTCPDataToAll(fromClient, _packet);
             }
+            //MelonLogger.Msg("SV: Sending new BodyPart to player !");
         }
     }
 }

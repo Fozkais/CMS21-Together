@@ -139,25 +139,35 @@ namespace CMS21MP.DataHandle
             //ServerData.carListHandle[carLoaderID].carPosition = carPosition;
             ServerSend.MoveCar(_fromClient, carPosition, carLoaderID);
         }
+        
 
         public static void carParts(int _fromClient, Packet _packet)
         {
             //MelonLogger.Msg("SV: Received new carParts! sending to players.");
             
             _fromClient = _packet.ReadInt();
-            PartScriptInfo parts = _packet.ReadBPartScriptInfo();
+            bool partType = _packet.ReadBool();
+            if (!partType)
+            {
+                PartScriptInfo part = _packet.ReadPartScriptInfo();
+                ServerSend.carPart(_fromClient, partType, part);
+            }
+            else
+            {
+                List<PartScriptInfo> parts = _packet.ReadPartScriptInfoList();
+                ServerSend.initialcarPart(_fromClient, partType, parts);
+            }
 
-            ServerSend.carPart(_fromClient, parts);
+            //MelonLogger.Msg("SV: Received new Part! sending to players.");
         }
 
         public static void bodyPart(int _fromClient, Packet _packet)
         {
             _fromClient = _packet.ReadInt();
-            C_carPartsData bodyParts = _packet.ReadBodyPart();
-            int carLoaderID = _packet.ReadInt();
+            carPartsData bodyParts = _packet.ReadBodyPart();
 
-            ServerSend.bodyPart(_fromClient, carLoaderID, bodyParts);
-            MelonLogger.Msg("SV: Received new bodyPart! sending to players.");
+           // MelonLogger.Msg("SV: Received new bodyPart! sending to players.");
+            ServerSend.bodyPart(_fromClient, bodyParts);
         }
     }
 }

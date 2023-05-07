@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace CMS21MP.ClientSide
             Movement_Handling.HandleMovement();
             Inventory_Handling.HandleInventory();
             Stats_Handling.HandleStats();
-            CarSpawn_Handling.HandleCar();
+            CarSpawn_Handling.HandleCarSpawn();
             SceneSwaping_Handling.UpdatePlayerScene();
 
             if(hasFinishedUpdatingCar)
@@ -42,19 +43,28 @@ namespace CMS21MP.ClientSide
         {
             hasFinishedUpdatingCar = false;
             yield return new WaitForSeconds(1);
-            CarPart_PreHandling.AddAllPartToHandle();
-            ExternalCarPart_Handling.HandleCarParts();
-            CarPart_Handling.HandleAllParts();
+
+            try
+            {
+                CarPart_Handling.HandleAllParts();
+            }
+            catch (KeyNotFoundException e)
+            {
+                MelonLogger.Msg($"Caught KeyNotFoundException: {e.Message}. Retrying coroutine...");
+                MelonCoroutines.Start(delayCarUpdating()); // réexécute la coroutine
+                yield break; // arrête l'exécution de cette instance de la coroutine
+            }
+
             hasFinishedUpdatingCar = true;
         }
         public void MoveCar()
         {
-            foreach (carData carData in  CarSpawn_Handling.carHandler)
+            foreach (KeyValuePair<int , carData> carData in  CarSpawn_Handling.CarHandle)
             {
-                if (carData.carPosition != MainMod.carLoaders[carData.carLoaderID].placeNo)
+                if (carData.Value.carPosition != MainMod.carLoaders[carData.Value.carLoaderID].placeNo)
                 {
-                    carData.carPosition = MainMod.carLoaders[carData.carLoaderID].placeNo;
-                    ClientSend.MoveCar(carData.carPosition, carData.carLoaderID);
+                    carData.Value.carPosition = MainMod.carLoaders[carData.Value.carLoaderID].placeNo;
+                    ClientSend.MoveCar(carData.Value.carPosition, carData.Value.carLoaderID);
                 } 
             }
         }

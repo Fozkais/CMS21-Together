@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CMS21MP.DataHandle;
 using Il2Cpp;
 using MelonLoader;
@@ -9,83 +10,87 @@ namespace CMS21MP.ClientSide.Functionnality
 {
     public static class CarPart_PreHandling
     {
-        public static void AddAllPartToHandle()
+        public static void AddAllPartToHandleAlt(int carKey)
         {
-            for (var i = 0; i < CarSpawn_Handling.carHandler.Count; i++)
+            if (!ExternalCarPart_Handling.OriginalCarParts.ContainsKey(carKey))
             {
-                if (!MPGameManager.OriginalParts.ContainsKey( CarSpawn_Handling.carHandler[i].carLoaderID))
-                {
-                    AddPartHandle(i);
-                }
-                if (!MPGameManager.EnginePartsHandle.ContainsKey( CarSpawn_Handling.carHandler[i].carLoaderID))
-                {
-                    AddEnginePartHandle(i);
-                }
-                if (!MPGameManager.SuspensionPartsHandle.ContainsKey( CarSpawn_Handling.carHandler[i].carLoaderID))
-                {
-                    AddSuspensionPartHandle(i);
-                }
+                ExternalCarPart_Handling.PreHandleCarParts(carKey);
+            }
+            if (!MPGameManager.OriginalParts.ContainsKey(carKey))
+            {
+                AddPartHandle(carKey);
+            }
+            if (!MPGameManager.EnginePartsHandle.ContainsKey(carKey))
+            {
+                AddEnginePartHandle(carKey);
+            }
+            if (!MPGameManager.SuspensionPartsHandle.ContainsKey(carKey))
+            {
+                AddSuspensionPartHandle(carKey);
             }
         }
         
-        public static void AddPartHandle(int carHandlerID)
+        public async static void AddPartHandle(int carHandlerID)
         {
-            int carLoaderID = CarSpawn_Handling.carHandler[carHandlerID].carLoaderID; // carLoaderID
-            for (int i = 0; i <  MainMod.carLoaders[carLoaderID].Parts.Count; i++) // toute les pieces de la carLoaderID
+            await Task.Delay(2000);
+
+            int carLoaderID = CarSpawn_Handling.CarHandle[carHandlerID].carLoaderID; // carLoaderID
+            for (int i = 0; i < MainMod.carLoaders[carLoaderID].Parts.Count; i++) // toute les pieces de la carLoaderID
             {
                 var part_object = MainMod.carLoaders[carLoaderID].Parts._items[i].p_handle; // GameObject de la piece[i]
                 var _parts = part_object.GetComponentsInChildren<PartScript>().ToList(); // Toute les sous pieces de la piece[i]
                 for (int j = 0; j < _parts.Count; j++)  // Parcours les sous-pieces de la piece[i] avec l'index[j]
                 {
-                    if (!MPGameManager.OriginalParts.ContainsKey(carLoaderID))
+                    if (!MPGameManager.OriginalParts.ContainsKey(carHandlerID))
                     {
-                        MPGameManager.OriginalParts.Add(carLoaderID, new Dictionary<int, List<PartScript_Info>>());
+                        MPGameManager.OriginalParts.Add(carHandlerID, new Dictionary<int, List<PartScript_Info>>());
                     }
 
-                    if (!MPGameManager.OriginalParts[carLoaderID].ContainsKey(i))
+                    if (!MPGameManager.OriginalParts[carHandlerID].ContainsKey(i))
                     {
-                        MPGameManager.OriginalParts[carLoaderID].Add(i, new List<PartScript_Info>());
+                        MPGameManager.OriginalParts[carHandlerID].Add(i, new List<PartScript_Info>());
                     }
-                    
-                    MPGameManager.OriginalParts[carLoaderID][i]
+
+                    MPGameManager.OriginalParts[carHandlerID][i]
                         .Add(new PartScript_Info(partType.part, _parts[j], carLoaderID, i, j)); // Ajoute la sous-piece[j] dans la liste d'index [carLoaderID][i]
-                    MelonLogger.Msg("Added PartScript_Info to OriginalParts");
+                    //MelonLogger.Msg("Added PartScript_Info to OriginalParts");
                 }
-
-                //CarSpawn_Handling.carHandler[carHandlerID].isReady = true;
             }
+            MelonLogger.Msg($"Finished Prehandling part for carLoader[{carLoaderID}]");
         }
         
 
-        public static void AddEnginePartHandle(int carHandlerID)
+        public async static void AddEnginePartHandle(int carHandlerID)
         {
-            int carLoaderID = CarSpawn_Handling.carHandler[carHandlerID].carLoaderID; // carLoaderID
-            var enginePartObject = MainMod.carLoaders[carLoaderID].e_engine_h; // Récupère le gameobject du engine
-            List<PartScript> engineParts = enginePartObject.GetComponentsInChildren<PartScript>().ToList();
+            await Task.Delay(2000);
             
-            for (int i = 0; i <  engineParts.Count; i++) // toute les pieces du moteur de carLoaderID
-            {
-                if (!MPGameManager.OriginalEngineParts.ContainsKey(carLoaderID))
+                int carLoaderID = CarSpawn_Handling.CarHandle[carHandlerID].carLoaderID; // carLoaderID
+                var enginePartObject = MainMod.carLoaders[carLoaderID].e_engine_h; // Récupère le gameobject du engine
+                List<PartScript> engineParts = enginePartObject.GetComponentsInChildren<PartScript>().ToList();
+
+                if (!MPGameManager.OriginalEngineParts.ContainsKey(carHandlerID))
                 {
-                    MPGameManager.OriginalEngineParts.Add(carLoaderID, new Dictionary<int, PartScript_Info>());
+                    MPGameManager.OriginalEngineParts.Add(carHandlerID, new Dictionary<int, PartScript_Info>());
                 }
 
-                if (!MPGameManager.OriginalEngineParts[carLoaderID].ContainsKey(i))
+                for (int i = 0; i < engineParts.Count; i++) // toutes les pièces du moteur de carLoaderID
                 {
-                    MPGameManager.OriginalEngineParts[carLoaderID]
-                        .Add(i, new PartScript_Info(partType.engine, engineParts[i], carLoaderID, 0, i)); // Ajoute la sous-piece[j] dans la liste d'index [carLoaderID][i]
+                    if (!MPGameManager.OriginalEngineParts[carHandlerID].ContainsKey(i))
+                    {
+                        MPGameManager.OriginalEngineParts[carHandlerID]
+                            .Add(i, new PartScript_Info(partType.engine, engineParts[i], carLoaderID, 0, i)); // Ajoute la sous-piece[j] dans la liste d'index [carLoaderID][i]
+                        //MelonLogger.Msg("Added PartScript_Info to OriginalEngineParts");
+                    }
                 }
-                MelonLogger.Msg("Added PartScript_Info to OriginalEngineParts");
-
-               // CarSpawn_Handling.carHandler[carHandlerID].isReady = true;
-            }
+                MelonLogger.Msg($"Finished Prehandling engine for carLoader[{carLoaderID}]");
         }
         
 
-        public static void AddSuspensionPartHandle(int carHandlerID)
+        public async static void AddSuspensionPartHandle(int carHandlerID)
         {
-            int carLoaderID = CarSpawn_Handling.carHandler[carHandlerID].carLoaderID; // carLoaderID
-            
+            await Task.Delay(2000);
+
+            int carLoaderID = CarSpawn_Handling.CarHandle[carHandlerID].carLoaderID; // carLoaderID
             List<GameObject> suspensionPartObjects = new List<GameObject>();
             suspensionPartObjects.Add(MainMod.carLoaders[carLoaderID].s_frontCenter_h);
             suspensionPartObjects.Add(MainMod.carLoaders[carLoaderID].s_frontLeft_h);
@@ -93,28 +98,30 @@ namespace CMS21MP.ClientSide.Functionnality
             suspensionPartObjects.Add(MainMod.carLoaders[carLoaderID].s_rearCenter_h);
             suspensionPartObjects.Add(MainMod.carLoaders[carLoaderID].s_rearLeft_h);
             suspensionPartObjects.Add(MainMod.carLoaders[carLoaderID].s_rearRight_h);
-            
-            for (int i = 0; i <  suspensionPartObjects.Count; i++) // tout les gameobject "suspension" pour carLoaderID
+    
+            for (int i = 0; i < suspensionPartObjects.Count; i++) // tout les gameobject "suspension" pour carLoaderID
             {
-                var partInObject = suspensionPartObjects[i].GetComponentsInChildren<PartScript>().ToList(); // Toute les piece du gameobject[i]
+                if (suspensionPartObjects[i] == null) continue; // Vérifie si l'élément de la liste est null
+    
+                var partInObject = suspensionPartObjects[i].GetComponentsInChildren<PartScript>().ToList(); // Toutes les pieces du gameobject[i]
                 for (int j = 0; j < partInObject.Count; j++)  // Parcours les sous-pieces de la piece[i] avec l'index[j]
                 {
-                    if (!MPGameManager.OriginalSuspensionParts.ContainsKey(carLoaderID))
+                    if (!MPGameManager.OriginalSuspensionParts.ContainsKey(carHandlerID))
                     {
-                        MPGameManager.OriginalSuspensionParts.Add(carLoaderID, new Dictionary<int, List<PartScript_Info>>());
+                        MPGameManager.OriginalSuspensionParts.Add(carHandlerID, new Dictionary<int, List<PartScript_Info>>());
                     }
-                    if (!MPGameManager.OriginalSuspensionParts[carLoaderID].ContainsKey(i))
+                    if (!MPGameManager.OriginalSuspensionParts[carHandlerID].ContainsKey(i))
                     {
-                        MPGameManager.OriginalSuspensionParts[carLoaderID].Add(i, new List<PartScript_Info>());
+                        MPGameManager.OriginalSuspensionParts[carHandlerID].Add(i, new List<PartScript_Info>());
                     }
-                    
-                    MPGameManager.OriginalSuspensionParts[carLoaderID][i]
-                        .Add(new PartScript_Info(partType.suspensions, partInObject[j], carLoaderID, i, j)); // Ajoute la piece[j] dans la liste d'index [carLoaderID][i]
-                    MelonLogger.Msg("Added PartScript_Info to OriginalSuspensionsParts");
+                    if (!MPGameManager.OriginalSuspensionParts[carHandlerID][i].Any(part => part._partScript == partInObject[j]))
+                    {
+                        MPGameManager.OriginalSuspensionParts[carHandlerID][i].Add(new PartScript_Info(partType.suspensions, partInObject[j], carLoaderID, i, j)); // Ajoute la piece[j] dans la liste d'index [carLoaderID][i]
+                    }
                 }
-
-                //CarSpawn_Handling.carHandler[carHandlerID].isReady = true;
             }
+    
+            MelonLogger.Msg($"Finished Prehandling suspension for carLoader[{carLoaderID}]");
         }
     }
 }

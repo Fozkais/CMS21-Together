@@ -36,6 +36,7 @@ namespace CMS21MP.ServerSide
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
             MelonLogger.Msg($"Server started on port {Port}.");
+            MainMod.isHosting = true;
         }
 
         public static void Stop()
@@ -151,6 +152,7 @@ namespace CMS21MP.ServerSide
                 {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
                 {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
                 {(int)ClientPackets.moveCars, ServerHandle.MoveCar},
+                {(int)ClientPackets.initialCarPart, ServerHandle.carParts},
                 {(int)ClientPackets.car_part, ServerHandle.carParts},
                 {(int)ClientPackets.body_part, ServerHandle.bodyPart}
             };

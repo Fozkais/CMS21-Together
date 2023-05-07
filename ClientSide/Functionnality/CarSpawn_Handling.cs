@@ -1,100 +1,68 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using CMS21MP.DataHandle;
+using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
     public static class CarSpawn_Handling
     {
-        public static List<carData> carHandler = new List<carData>();
-        public static List<carData> carsToHandle = new List<carData>();
+        public static Dictionary<int, carData> CarHandle = new Dictionary<int, carData>();
+        public static bool HasFinishedUpdatingPre, HasFinishedUpdatingHand;
+
+        public static void HandleCarSpawn()
+        {
+            HandleCar();
+        }
 
         public static void HandleCar()
         {
-            CarChecker();
-            CarSpawning();
-            CarRemoving();
-        }
-        
-        public static void CarChecker()
-        {
-            carsToHandle.Clear();
-            for (var i = 0; i < MainMod.carLoaders.Length; i++)
+            Dictionary<int, CarLoader> hasCar = new Dictionary<int, CarLoader>();
+            for (int i = 0; i < MainMod.carLoaders.Length; i++)
             {
                 var carLoader = MainMod.carLoaders[i];
-                if (!String.IsNullOrEmpty(carLoader.carToLoad))
+                if (!String.IsNullOrEmpty(carLoader.carToLoad) && carLoader.placeNo != -1) // y a t'il un véhicule chargé ?
                 {
-                    if (carLoader.placeNo != -1)
-                    {
-                        carData car = new carData();
-                        car.carID = carLoader.carToLoad;
-                        car.carLoaderID = i;
-                        car.carPosition = carLoader.placeNo;
-                        car.status = true;
-                        car.configNumber = carLoader.ConfigVersion;
-                        car.carColor = new C_Color(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
-                        car.fromServer = false;
-                        carsToHandle.Add(car);
-                        //MelonLogger.Msg("CL: Added to ToHandle," + "Car ID: " + car.carID + " Car Loader ID: " +
-                                         // car.carLoaderID + " Car Position: " + car.carPosition + " Car Status: " +
-                                         // car.status);
-                    }
+                    hasCar.Add(i, MainMod.carLoaders[i]);
                 }
             }
-        }
-        public static void CarSpawning()
-        {
-            for (int i = 0; i < carsToHandle.Count; i++)
-            {
-                if(!isExistingList(carsToHandle[i], carHandler))
-                {
-                    carHandler.Add(carsToHandle[i]);
-                    
-                    carData car = new carData();
-                    car.carID = carsToHandle[i].carID;
-                    car.carLoaderID = i;
-                    car.carPosition = carsToHandle[i].carPosition;
-                    car.configNumber = carsToHandle[i].configNumber;
-                    car.status = true;
-                    car.carColor = new C_Color(carsToHandle[i].carColor.r, carsToHandle[i].carColor.g, carsToHandle[i].carColor.b, carsToHandle[i].carColor.a);
-                    car.fromServer = true;
 
-                    ClientSend.SpawnCars(car);
-                   // HandleParts(carsToHandle[i].carLoaderID);
-                   // HandleCarParts(carsToHandle[i].carLoaderID);
-                    //HandleEngineParts(carsToHandle[i].carLoaderID);
-                   // HandleSuspensionParts(carsToHandle[i].carLoaderID);
-                    MelonLogger.Msg("CL: Added to Handler," + "Car ID: " + carsToHandle[i].carID + " Car Loader ID: " + carsToHandle[i].carLoaderID + " Car Status: " + carsToHandle[i].status);
+            foreach (KeyValuePair<int ,CarLoader> car in hasCar) // Ajouter les véhicule qui ne sont pas handled
+            {
+                if (!CarHandle.ContainsKey(car.Key))
+                {
+                    CarHandle.Add(car.Key, new carData(car.Value, car.Key));
+                    CarPart_PreHandling.AddAllPartToHandleAlt(car.Key);
+                    ClientSend.SpawnCars(new carData(car.Value, car.Key));
+                }
+            }
+
+            foreach (KeyValuePair<int, carData> car in CarHandle.ToList()) // Supprimer les véhicule qui ne sont plus sur la scène
+            {
+                if (!hasCar.ContainsKey(car.Key))
+                {
+                    RemoveCar(car.Key);
+                    CarHandle.Remove(car.Key);
+                    car.Value.status = false;
+                    ClientSend.SpawnCars(car.Value);
                 }
             }
         }
-        public static void CarRemoving()
+
+        public static void RemoveCar(int carKey)
         {
-            for (int i = 0; i < carHandler.Count; i++)
-            {
-                carData car = carHandler[i];
-                if (!isExistingList(car, carsToHandle))
-                {
-                    car.status = false;
-                    ClientSend.SpawnCars(car);
-                    
-                    MelonLogger.Msg("CL: Removed from Handler, " + "Car ID: " + car.carID + " Car Loader ID: " + car.carLoaderID + " Car Status: " + car.status);
-                    carHandler.Remove(car);
-                }
-            }
-        }
-        
-        public static bool isExistingList(carData carToHandle, List<carData> otherList)
-        {
-            foreach (carData car in otherList)
-            {
-                if(car.carID == carToHandle.carID && car.carLoaderID == carToHandle.carLoaderID)
-                {
-                    return true;
-                }
-            }
-            return false;
+            MPGameManager.OriginalParts.Remove(carKey);
+            MPGameManager.OriginalEngineParts.Remove(carKey);
+            MPGameManager.OriginalSuspensionParts.Remove(carKey);
+            ExternalCarPart_Handling.OriginalCarParts.Remove(carKey);
+            
+            MPGameManager.PartsHandle.Remove(carKey);
+            MPGameManager.EnginePartsHandle.Remove(carKey);
+            MPGameManager.SuspensionPartsHandle.Remove(carKey);
+            ExternalCarPart_Handling.CarPartsHandle.Remove(carKey);
         }
     }
 }

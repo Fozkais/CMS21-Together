@@ -9,11 +9,11 @@ using CMS21MP.ServerSide;
 using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Client = CMS21MP.ClientSide.Client;
-using Object = UnityEngine.Object;
 
 namespace CMS21MP
 {
@@ -27,10 +27,11 @@ namespace CMS21MP
 
       public ThreadManager threadManager;
 
+      public static bool SteamMode = false;
       public static bool isHosting = false;
       public static bool isConnected = false;
       public static int playerConnected;
-      public static int maxPlayer;
+      public static int maxPlayer = 4;
 
       public static GameObject localPlayer;
       public static Inventory localInventory;
@@ -61,7 +62,7 @@ namespace CMS21MP
 
       public override void OnInitializeMelon() // Runs during Game Initialization.
       {
-
+         
       }
 
       public override void OnLateInitializeMelon() // Runs after Game has finished starting.
@@ -138,7 +139,7 @@ namespace CMS21MP
          {
             Application.runInBackground = false;
          }
-
+         
          threadManager.UpdateThread();
       }
 
@@ -208,8 +209,11 @@ namespace CMS21MP
          LplayerPrefab.AddComponent<MPGameManager>();
 
          AssetBundle playerModel;
+         AssetBundle playerTexture;
 
          playerModel = AssetBundle.LoadFromFile(@"Mods\cms21mp\playermodel");
+         playerTexture = AssetBundle.LoadFromFile(@"Mods\cms21mp\playertexture");
+         
          if (playerModel == null)
          {
             MelonLogger.Msg("Cant load playerModel bundle!");
@@ -217,14 +221,19 @@ namespace CMS21MP
          else
          {
 
-            var mesh = playerModel.LoadAsset<GameObject>("playermodel").GetComponentInChildren<SkinnedMeshRenderer>()
-               .sharedMesh;
-            Texture mainTexture = playerModel.LoadAsset<Texture>("mainTexture");
-            Texture normalTexture = playerModel.LoadAsset<Texture>("Normal");
-            Material playerMaterial = new Material(Shader.Find("HDRP/Lit"));
-            playerMaterial.mainTexture = mainTexture;
-            playerMaterial.shaderKeywords = new string[1] { "_NORMALMAP" };
-            playerMaterial.SetTexture("_BumpMap", normalTexture);
+            var mesh = playerModel.LoadAsset<GameObject>("playermodel").GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
+            if (playerTexture != null)
+            {
+               Texture mainTexture = playerTexture.LoadAsset<Texture>("rp_nathan_animated_003_dif");
+               mainTexture.filterMode = FilterMode.Point;
+               Material playerMaterial = new Material(Shader.Find("HDRP/Lit"));
+               playerMaterial.mainTexture = mainTexture;
+               playerMat = playerMaterial;
+            }
+            else
+            {
+               MelonLogger.Msg("Can't load playerTexture !");
+            }
 
 
             GameObject model = new GameObject();
@@ -233,7 +242,7 @@ namespace CMS21MP
             model.GetComponent<MeshFilter>().mesh = mesh;
             model.GetComponent<MeshRenderer>().material = playerMat;
 
-            model.name = "playerPrefab";
+            model.name = "playerModel";
             model.AddComponent<PlayerInfo>();
             model.transform.localScale = new Vector3(1f, 1f, 1f);
             model.transform.position = new Vector3(0, -10, 0);
@@ -243,6 +252,7 @@ namespace CMS21MP
 
             isPrefabSet = true;
             playerModel.Unload(false);
+            playerTexture.Unload(false);
             MelonLogger.Msg("ModelCreated SuccesFully");
 
          }

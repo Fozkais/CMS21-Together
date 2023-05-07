@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -21,6 +23,7 @@ namespace CMS21MP.ClientSide
 
         public Vector3 player2Pos;
         public string player2Position;
+        
 
 
         public void Initialize()
@@ -70,18 +73,31 @@ namespace CMS21MP.ClientSide
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
                     {
-                        if (!MainMod.isConnected && !MainMod.isHosting)
+                        if (!MainMod.SteamMode)
                         {
-                            Server.Start(4,7777);
-                            MainMod.isHosting = true;
-                            
-                            if (!MainMod.isPrefabSet)
+                            if (!MainMod.isConnected && !MainMod.isHosting)
                             {
-                                Mod.playerInit();
+                                Server.Start(4,7777);
+
+                                if (!MainMod.isPrefabSet)
+                                {
+                                    Mod.playerInit();
+                                }
+                                Mod.client.ip = "127.0.0.1";
+                                usernameField = "player";
+                                Mod.client.ConnectToServer();
                             }
-                            Mod.client.ip = "127.0.0.1";
-                            usernameField = "player";
-                            Mod.client.ConnectToServer();
+                        }
+                        else
+                        {
+                            if (!MainMod.isConnected && !MainMod.isHosting)
+                            {
+                                if (!MainMod.isPrefabSet)
+                                {
+                                    Mod.playerInit();
+                                }
+                                
+                            }
                         }
                     }
                     else
@@ -93,19 +109,22 @@ namespace CMS21MP.ClientSide
                 ipAdress = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 130, panelSizeX - 20, 25), ipAdress);
                 usernameField = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 160, panelSizeX - 20, 25), usernameField);
                 GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 185, panelSizeX - 20, 25),"Slots : "+ MainMod.playerConnected.ToString()+"/"+MainMod.maxPlayer.ToString());
-                
-                if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
+
+                    if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
                 {
-                    Client.instance.Disconnect();
-                    foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
+                    if (!MainMod.SteamMode)
                     {
-                        Destroy(element.Value.gameObject);
-                    }
-                    PlayerManager.players.Clear();
-                    if (MainMod.isHosting)
-                    {
-                        Server.Stop();
-                        MainMod.isHosting = false;
+                        Client.instance.Disconnect();
+                        foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
+                        {
+                            Destroy(element.Value.gameObject);
+                        }
+                        PlayerManager.players.Clear();
+                        if (MainMod.isHosting)
+                        {
+                            Server.Stop();
+                            MainMod.isHosting = false;
+                        }
                     }
                 }
                 if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))
@@ -118,6 +137,13 @@ namespace CMS21MP.ClientSide
                         MainMod.isHosting = false;
                     }
                 }
+
+               // if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 300, (panelSizeX / 2) - 20, 35), "SteamAPI"))
+                //{
+                  //  MainMod.SteamMode = MainMod.SteamMode ? false : true;
+                //}
+
+                //GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 300, (panelSizeX / 2), 35), "CarPreHandle :" + CarPart_PreHandling.preHandleFinished);
             }
         }
 
