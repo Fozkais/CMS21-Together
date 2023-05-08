@@ -68,6 +68,17 @@ namespace CMS21MP.ClientSide
                 } 
             }
         }
+
+
+
+
+        public static void HandleServerReset()
+        {
+            ServerData.serverInventory.items.Clear();
+            ServerData.AddItemQueue.Clear();
+            ServerData.RemoveItemQueue.Clear();
+            ServerData.serverMoney = 0;
+        }
         
     }
 }

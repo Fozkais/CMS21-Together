@@ -22,13 +22,11 @@ namespace CMS21MP.DataHandle
         
         public static void WelcomeReceived()
         {
-            MelonLogger.Msg("PrepareToSendReceived");
             using (Packet _packet = new Packet((int)ClientPackets.welcomeReceived))
             {
                 _packet.Write(Client.instance.myId);
                 _packet.Write(ModGUI.instance.usernameField);
                 
-                MelonLogger.Msg("Sent welcomeReceived!");
                 
                 SendTCPData(_packet);
             }
@@ -123,19 +121,6 @@ namespace CMS21MP.DataHandle
                 SendTCPData(_packet);
             }
             MelonLogger.Msg("CL: Detected a moved car! sending new pos to server.");
-        }
-
-        public static void initialCarParts(List<PartScriptInfo> parts)
-        {
-            using(Packet _packet = new Packet((int)ClientPackets.initialCarPart))
-            {
-                _packet.Write(Client.instance.myId);
-                _packet.Write(true);
-                _packet.Write(parts);
-
-                SendTCPData(_packet);
-            }
-            MelonLogger.Msg("CL: Sending part list");
         }
         public static void carParts(PartScriptInfo part)
         {

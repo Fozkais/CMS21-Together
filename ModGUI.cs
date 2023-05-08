@@ -77,7 +77,7 @@ namespace CMS21MP.ClientSide
                         {
                             if (!MainMod.isConnected && !MainMod.isHosting)
                             {
-                                Server.Start(4,7777);
+                                Server.Start(MainMod.maxPlayer,7777);
 
                                 if (!MainMod.isPrefabSet)
                                 {
@@ -117,8 +117,18 @@ namespace CMS21MP.ClientSide
                         Client.instance.Disconnect();
                         foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
                         {
-                            Destroy(element.Value.gameObject);
+                            if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
+                            {
+                                Destroy(element.Value.gameObject);
+                            }
+                            else
+                            {
+                                Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
+                                Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
+                            }
                         }
+
+                        MainMod.isPrefabSet = false;
                         PlayerManager.players.Clear();
                         if (MainMod.isHosting)
                         {
@@ -133,8 +143,6 @@ namespace CMS21MP.ClientSide
                     {
                         Client.instance.Disconnect();
                         Server.Stop();
-
-                        MainMod.isHosting = false;
                     }
                 }
 

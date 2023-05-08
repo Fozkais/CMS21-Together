@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
+using System.Threading;
+using CMS21MP.ClientSide;
 using CMS21MP.DataHandle;
 
 namespace CMS21MP.ServerSide
@@ -19,6 +21,7 @@ namespace CMS21MP.ServerSide
 
         public static TcpListener tcpListener;
         private static UdpClient udpListener;
+        private static bool _isStopping = false;
 
         public static void Start(int _maxPlayers, int _port)
         {
@@ -27,6 +30,7 @@ namespace CMS21MP.ServerSide
 
             MelonLogger.Msg("Starting server...");
             InitializeServerData();
+            _isStopping = false;
 
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
@@ -41,29 +45,27 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
-            try
-            {
-                tcpListener.Stop();
-                udpListener.Close();
-                
-                foreach (KeyValuePair<int, Client> tcpClient in clients)
-                {
-                    tcpClient.Value.tcp.socket.GetStream().Close();
-                    tcpClient.Value.tcp.socket.Close();
-                }
-                clients.Clear();
-                
-                tcpListener.Server.Dispose();
-                udpListener.Dispose();
-            }
-            catch (Exception e)
-            {
-                MelonLogger.Msg($"Error while closing server! : {e}");
-            }
+            MainMod.isHosting = false;
+            _isStopping = true;
+
+            MPGameManager.HandleServerReset();
+            
+            tcpListener.Stop();
+            udpListener.Close();
+            
+            
+            clients.Clear();
+            packetHandlers.Clear();
+            
+            ClientSide.Client.packetHandlers.Clear();
+            MelonLogger.Msg("Server Closed.");
+
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)
         {
+            if (_isStopping) return;
+            
             TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
             MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
@@ -82,6 +84,7 @@ namespace CMS21MP.ServerSide
         
         private static void UDPReceiveCallback(IAsyncResult _result)
         {
+            if (_isStopping) return;
             try
             {
                 IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, 0);

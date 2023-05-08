@@ -9,6 +9,7 @@ using Il2Cpp;
 using Il2CppSystem;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace CMS21MP.DataHandle
@@ -138,6 +139,8 @@ namespace CMS21MP.DataHandle
                 Movement_Handling.MovUpdateQueue.Remove(_id);
             if(Movement_Handling.RotUpdateQueue.ContainsKey(_id))
                 Movement_Handling.RotUpdateQueue.Remove(_id);
+
+            MainMod.playerConnected -= 1;
 
         }
 

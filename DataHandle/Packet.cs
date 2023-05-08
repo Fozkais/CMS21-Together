@@ -37,6 +37,7 @@ namespace CMS21MP.DataHandle
     public enum ClientPackets
     {
         welcomeReceived = 1,
+        disconnect,
         playerMovement,
         playerRotation,
         playerInventory,

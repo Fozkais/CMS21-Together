@@ -22,9 +22,9 @@ namespace CMS21MP.ClientSide
 
         public bool isConnected;
 
-        private delegate void PacketHandler(Packet _packet);
+        public delegate void PacketHandler(Packet _packet);
 
-        private static Dictionary<int, PacketHandler> packetHandlers;
+        public static Dictionary<int, PacketHandler> packetHandlers;
 
         public ThreadManager threadManager;
 
@@ -131,7 +131,7 @@ namespace CMS21MP.ClientSide
                 }
                 catch (Exception e)
                 {
-                    MelonLogger.Msg($"Error caused Disconnection! : {e}");
+                    //MelonLogger.Msg($"Error caused Disconnection! : {e}");
                     Disconnect();
                 }
             }
@@ -271,7 +271,7 @@ namespace CMS21MP.ClientSide
                     }
                     catch
                     {
-                        MelonLogger.Msg("Error caused Disconnection");
+                        //MelonLogger.Msg("Error caused Disconnection");
                         Disconnect();
                     }
                 }
