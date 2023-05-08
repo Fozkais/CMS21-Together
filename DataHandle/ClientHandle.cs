@@ -26,8 +26,7 @@ namespace CMS21MP.DataHandle
             Client.instance.myId = _myId;
             ClientSend.WelcomeReceived();
             //ClientSend.PlayerScene(SceneManager.GetActiveScene().name);
-
-            Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
+            
             MainMod.isConnected = true;
 
             if (!MainMod.isHosting)
@@ -185,11 +184,9 @@ namespace CMS21MP.DataHandle
                     CarSpawn_Handling.CarHandle.Add(data.carLoaderID, data);
                 }
 
-                Color carColor = new Color(data.carColor.r,data.carColor.g,data.carColor.b,data.carColor.a);
-
                 MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
                 MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
-                MainMod.carLoaders[data.carLoaderID].color = carColor;
+                MainMod.carLoaders[data.carLoaderID].color = data.carColor.ToGame(data.carColor);
                 MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID, data.configNumber);
 
                 await Task.Delay(1000);

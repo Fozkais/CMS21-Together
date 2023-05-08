@@ -17,6 +17,7 @@ namespace CMS21MP.DataHandle
     public enum ServerPackets
     {
         welcome = 1,
+        keepAlive,
         spawnPlayer,
         playerPosition,
         playerRotation,
@@ -37,7 +38,7 @@ namespace CMS21MP.DataHandle
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        disconnect,
+        keepAlive,
         playerMovement,
         playerRotation,
         playerInventory,

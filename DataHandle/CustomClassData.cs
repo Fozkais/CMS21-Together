@@ -180,7 +180,7 @@ namespace CMS21MP.DataHandle
 
         public C_Color carColor;
 
-        public carData(CarLoader carLoader, int index)
+        public carData(CarLoader carLoader, int index, bool fromServer)
         {
             this.carLoaderID = index;
             this.carID = carLoader.carToLoad;
@@ -189,26 +189,11 @@ namespace CMS21MP.DataHandle
             this.carColor = new C_Color(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
             this._UniqueID = Guid.NewGuid();
             this.status = true;
-            this.CarPartFromServer = false;
-            this.PartFromServer = false;
-            this.SuspensionFromServer = false;
-            this.EngineFromServer = false;
-        }
-
-        public carData(carData car)
-        {
-            this.carLoaderID = car.carLoaderID;
-            this.carID = car.carID;
-            this.carPosition = car.carPosition;
-            this.configNumber = car.configNumber;
-            this.carColor = car.carColor;
-            car.CarPartFromServer = true;
-            car.PartFromServer = true;
-            car.EngineFromServer = true;
-            car.SuspensionFromServer = true;
-            car.status = true;
-            this._UniqueID = car._UniqueID;
-        }
+            this.CarPartFromServer = fromServer;
+            this.PartFromServer = fromServer;
+            this.SuspensionFromServer = fromServer;
+            this.EngineFromServer = fromServer;
+            }
     }
 
     [Serializable]

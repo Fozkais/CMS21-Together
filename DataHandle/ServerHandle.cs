@@ -12,7 +12,10 @@ namespace CMS21MP.DataHandle
         public static void WelcomeReceived(int _fromClient, Packet _packet)
         {
             int _clientIdCheck = _packet.ReadInt();
+            string msg = _packet.ReadString();
             string _username = _packet.ReadString();
+            
+            MelonLogger.Msg($"ID:[{_clientIdCheck}] " + msg);
         
             MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint}" +
                             $"connected succesfully and is now player{_fromClient}.");
@@ -23,6 +26,11 @@ namespace CMS21MP.DataHandle
                                   $" the wrong client ID ({_clientIdCheck})!");
             }
             Server.clients[_fromClient].SendIntoGame(_username);
+        }
+
+        public static void KeepAlive(int _fromClient, Packet _packet)
+        {
+            int clientId = _packet.ReadInt();
         }
 
         public static void PlayerMovement(int _fromclient, Packet _packet)

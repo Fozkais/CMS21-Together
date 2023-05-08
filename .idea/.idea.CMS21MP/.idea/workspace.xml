@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed.">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModGUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/SV_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/SV_Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,6 +77,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e34f7cc7fc5d488b9f6a2332f2cb50895fdc00/76/fadad8b9/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ecf9bf01fdbd4cbe858a5d6ed9d441f740800/30/b00f8920/ClassInjector.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/Documents/Bureau/Dev/UnityProjects/CMS21MP/Assets/Scripts/bundlesLoader.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/Functionnality/CarPart_Handling.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/Functionnality/CarPart_Handling.cs" root0="SKIP_HIGHLIGHTING" />
@@ -193,7 +197,7 @@
       <workItem from="1682848410022" duration="13927000" />
       <workItem from="1682974320922" duration="2965000" />
       <workItem from="1683114532613" duration="8797000" />
-      <workItem from="1683481690478" duration="17869000" />
+      <workItem from="1683481690478" duration="25051000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -328,7 +332,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683498673469</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed">
+      <created>1683548361680</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1683548361680</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -377,7 +388,8 @@
     <MESSAGE value="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling" />
     <MESSAGE value="-- Pre-Beta 1 --&#10;- Fully Handle EnginePart &#10;- Fully Handle SuspensionPart&#10;-- Knowed bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fixed --&#10;- Insane freeze when loading seem fixed?" />
     <MESSAGE value="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed." />
-    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed." />
+    <MESSAGE value="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed" />
+    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

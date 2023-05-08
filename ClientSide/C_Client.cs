@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System;
+using System.Threading.Tasks;
 using CMS21MP.DataHandle;
 using MelonLoader;
 
@@ -49,21 +50,28 @@ namespace CMS21MP.ClientSide
         {
             Disconnect();
         }
-        
+
 
         public void ConnectToServer()
         {
             InitializeClientData();
 
             isConnected = true;
-    
+
             try
             {
                 tcp.Connect();
             }
-            catch (ObjectDisposedException ex)
+            catch (Exception ex) // Capturer toutes les exceptions possibles
             {
-                MelonLogger.Msg($"Failed to connect to server. Error: {ex}");
+                MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
+                isConnected = false; // Marquer la connexion comme échouée
+            }
+
+            if (!isConnected)
+            {
+                // Traiter les erreurs de connexion ici
+                packetHandlers.Clear();
             }
         }
 
@@ -77,39 +85,45 @@ namespace CMS21MP.ClientSide
 
             public void Connect()
             {
-                socket = new TcpClient
-                {
-                    ReceiveBufferSize = dataBufferSize,
-                    SendBufferSize = dataBufferSize
-                };
-    
-                receiveBuffer = new byte[dataBufferSize];
-    
                 try
                 {
+                    socket = new TcpClient
+                    {
+                        ReceiveBufferSize = dataBufferSize,
+                        SendBufferSize = dataBufferSize
+                    };
+
+                    receiveBuffer = new byte[dataBufferSize];
+
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
                 }
-                catch (SocketException ex)
+                catch (Exception ex) // Capturer toutes les exceptions possibles
                 {
-                    MelonLogger.Msg($"Failed to connect to server. Error: {ex}");
+                    MelonLogger.Msg($"Error detected [connect] ! Failed to connect to server. Error: {ex}");
                 }
             }
 
             private void ConnectCallback(IAsyncResult _result)
             {
-                socket.EndConnect(_result);
+                try
+                {
+                    socket.EndConnect(_result);
 
-                if (!socket.Connected)
-                { 
-                    MelonLogger.Msg("Cannot Connect to Server!");
-                    return;
+                    if (!socket.Connected)
+                    {
+                        MelonLogger.Msg("Cannot Connect to Server!");
+                        return;
+                    }
+
+                    stream = socket.GetStream();
+                    receivedData = new Packet();
+
+                    stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-
-                stream = socket.GetStream();
-                receivedData = new Packet();
-
-                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
-
+                catch (Exception ex) // Capturer toutes les exceptions possibles
+                {
+                    MelonLogger.Msg($"An error occurred while connecting to the server, check your internet or the ip of the server.");
+                }
             }
 
             private void ReceiveCallback(IAsyncResult _result)
@@ -263,16 +277,18 @@ namespace CMS21MP.ClientSide
 
                         if (_data.Length < 4)
                         {
+                            MelonLogger.Msg("UDP connect error , forced to disconnect");
                             instance.Disconnect();
                             return;
                         }
 
                         HandleData(_data);
                     }
-                    catch
+                    catch (Exception e)
                     {
-                        //MelonLogger.Msg("Error caused Disconnection");
                         Disconnect();
+                        MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
+                        Client.instance.ConnectToServer();
                     }
                 }
 

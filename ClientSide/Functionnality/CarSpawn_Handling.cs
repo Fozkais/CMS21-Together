@@ -34,9 +34,9 @@ namespace CMS21MP.ClientSide.Functionnality
             {
                 if (!CarHandle.ContainsKey(car.Key))
                 {
-                    CarHandle.Add(car.Key, new carData(car.Value, car.Key));
+                    CarHandle.Add(car.Key, new carData(car.Value, car.Key, false));
                     CarPart_PreHandling.AddAllPartToHandleAlt(car.Key);
-                    ClientSend.SpawnCars(new carData(car.Value, car.Key));
+                    ClientSend.SpawnCars(new carData(car.Value, car.Key, true));
                 }
             }
 

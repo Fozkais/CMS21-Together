@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using CMS21MP.ClientSide;
 using Il2Cpp;
 using MelonLoader;
@@ -25,12 +27,29 @@ namespace CMS21MP.DataHandle
             using (Packet _packet = new Packet((int)ClientPackets.welcomeReceived))
             {
                 _packet.Write(Client.instance.myId);
+                _packet.Write("Client received welcome.");
                 _packet.Write(ModGUI.instance.usernameField);
                 
                 
                 SendTCPData(_packet);
             }
-            
+            Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
+        }
+        
+        private static async void KeepAlive()
+        {
+            while (MainMod.isConnected)
+            {
+                await Task.Delay(5000);
+                if (MainMod.isConnected)
+                {
+                    using (Packet _packet = new Packet((int)ClientPackets.keepAlive))
+                    {
+                        _packet.Write(Client.instance.myId);
+                        SendTCPData(_packet);
+                    }
+                }
+            }
         }
 
         public static void PlayerMovement(Vector3 _position)

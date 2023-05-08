@@ -47,11 +47,10 @@ namespace CMS21MP.ServerSide
         {
             MainMod.isHosting = false;
             _isStopping = true;
-
             MPGameManager.HandleServerReset();
-            
-            tcpListener.Stop();
+
             udpListener.Close();
+            tcpListener.Stop();
             
             
             clients.Clear();

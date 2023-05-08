@@ -64,7 +64,7 @@ namespace CMS21MP.ServerSide
                         connected += 1;
                     }
                 }
-                ServerSend.PlayerConnected(connected, Server.MaxPlayers);
+                ServerSend.PlayerConnected(connected,  Server.MaxPlayers);
             }
 
             public void SendData(Packet _packet)
