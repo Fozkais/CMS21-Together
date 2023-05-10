@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

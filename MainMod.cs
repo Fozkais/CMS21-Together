@@ -9,7 +9,6 @@ using CMS21MP.ServerSide;
 using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;

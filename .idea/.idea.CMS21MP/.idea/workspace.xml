@@ -1,18 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.AssemblyReference.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.CopyComplete" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.CoreCompileInputs.cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.FileListAbsolute.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn_Handling.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/SV_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/SV_Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModGUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/packages.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,59 +43,16 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/22acffaf17204fca9d7e3aa900b3dae5901a00/bd/09bc3533/020000B2.il" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/1e/bbf00464/GameInventory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/32/45542c80/MountObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/34/63becf30/GlobalData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/5b/54650290/Inventory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/5c/0b61254e/CarDebug.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/79/476c8e83/BaseItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/af/4c387b19/CarLoader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/b9/b18795b3/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/db/e8ef76de/Item.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/dd/9104a9c3/GameScript.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/f1/56a7e855/CarPart.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/f3/a50be9ad/PaintData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/22acffaf17204fca9d7e3aa900b3dae5901a00/fa/12473d40/Part.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/453d513c226c40ae8a617306200b4a6e2a0c00/a5/cc81ae8e/Resources.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4586612f24c74a8f8c997b4e4f3d7fcb2a0c00/b5/92772676/MonoBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4586612f24c74a8f8c997b4e4f3d7fcb2a0c00/c0/49a44c03/Object.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/538932529cc14f0c8a7b35d360f672c2908800/27/593c0e5c/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/538932529cc14f0c8a7b35d360f672c2908800/90/ab3d94f5/CarPart.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6425afb6ac6a429aaf770255d2f7de579ca00/0a/3e0b2302/RegisterTypeInIl2Cpp.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6425afb6ac6a429aaf770255d2f7de579ca00/f3/83ed3793/UnhollowerSupport.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/69ac9ada730f46698fd47d1b273dba76c0e00/32/a42932c6/MelonBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/898512ddb9b74303996c5d2e8d378f73364548/da/2275d9bc/TcpClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/908f8bca7f3649909af9c6824762362b364758/c7/aa7ea69d/TcpListener.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/908f8bca7f3649909af9c6824762362b364758/fa/a4556390/TcpClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/948325ed335040ba877f962ccfed26f4901600/01/54a2fa52/Singleton`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/948325ed335040ba877f962ccfed26f4901600/6e/c71427c6/GameInventory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/cb/0d4556ea/SteamMatchmaking.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bac0332814894a46973b0919314ce7082a1000/41/b5d9559d/MonoBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bac0332814894a46973b0919314ce7082a1000/68/b05239ac/Component.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bac0332814894a46973b0919314ce7082a1000/c9/e54b0462/Color.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/bac0332814894a46973b0919314ce7082a1000/eb/92c9fb72/Object.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cab4cd4941104705846e3433671ecd5052e590/6f/f8377fc7/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cab4cd4941104705846e3433671ecd5052e590/a3/49be7ac2/List`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cab4cd4941104705846e3433671ecd5052e590/e7/0c73254b/Object.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e34f7cc7fc5d488b9f6a2332f2cb50895fdc00/16/27ce0037/Object.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e34f7cc7fc5d488b9f6a2332f2cb50895fdc00/76/fadad8b9/List`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ecf9bf01fdbd4cbe858a5d6ed9d441f740800/30/b00f8920/ClassInjector.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$USER_HOME$/Documents/Bureau/Dev/UnityProjects/CMS21MP/Assets/Scripts/bundlesLoader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/Functionnality/CarPart_Handling.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://E:/Modding/CMS21/CMS21MP/ClientSide/Functionnality/CarPart_Handling.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/MPGameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://E:/Modding/CMS21/CMS21MP/ModGUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="Toolset" />
   </component>
   <component name="ProjectId" id="2IrvJxQ1hX3124YNnPPa3Vd2X0K" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -107,20 +69,25 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.tools",
+    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
     "vue.rearranger.settings.migration": "true"
   },
   "keyToStringList": {
     "rider.external.source.directories": [
-      "C:\\Users\\brand\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\DecompilerCache",
-      "C:\\Users\\brand\\AppData\\Roaming\\JetBrains\\Rider2022.3\\resharper-host\\SourcesCache",
-      "C:\\Users\\brand\\AppData\\Local\\Symbols\\src"
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src"
     ]
   }
 }]]></component>
   <component name="RunManager">
-    <configuration name="db" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
       <option name="pid" />
@@ -198,6 +165,8 @@
       <workItem from="1682974320922" duration="2965000" />
       <workItem from="1683114532613" duration="8797000" />
       <workItem from="1683481690478" duration="25051000" />
+      <workItem from="1683570515700" duration="1308000" />
+      <workItem from="1683571919243" duration="80000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
