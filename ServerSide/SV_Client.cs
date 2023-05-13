@@ -89,7 +89,10 @@ namespace CMS21MP.ServerSide
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        Server.clients[id].Disconnect(id);
+                        if (Server.clients.ContainsKey(id))
+                        {
+                            Server.clients[id].Disconnect(id);
+                        }
                         return;
                     }
 
@@ -102,7 +105,10 @@ namespace CMS21MP.ServerSide
                 catch (Exception _ex)
                 {
                     MelonLogger.Msg($"Error receiving TCP data: {_ex}");
-                    Server.clients[id].Disconnect(id);
+                    if (Server.clients.ContainsKey(id))
+                    {
+                        Server.clients[id].Disconnect(id);
+                    }
                 }
             }
             private bool HandleData(byte[] _data)

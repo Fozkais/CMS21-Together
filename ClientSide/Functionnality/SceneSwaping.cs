@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class SceneSwaping_Handling
+    public static class SceneSwaping
     {
         
         public static void UpdatePlayerScene()

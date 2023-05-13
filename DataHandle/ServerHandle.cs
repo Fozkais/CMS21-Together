@@ -38,13 +38,13 @@ namespace CMS21MP.DataHandle
             _fromclient = _packet.ReadInt();
             Vector3 position = _packet.ReadVector3();
 
-            if (Movement_Handling.MovUpdateQueue.ContainsKey(_fromclient))
+            if (Movement.MovUpdateQueue.ContainsKey(_fromclient))
             {
-                Movement_Handling.MovUpdateQueue[_fromclient].Add(position);
+                Movement.MovUpdateQueue[_fromclient].Add(position);
             }
             else
             {
-                Movement_Handling.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
+                Movement.MovUpdateQueue.Add(_fromclient, new List<Vector3>{position});
             }
         }
         public static void PlayerRotation(int _fromclient, Packet _packet)
@@ -52,56 +52,76 @@ namespace CMS21MP.DataHandle
             _fromclient = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            if (Movement_Handling.RotUpdateQueue.ContainsKey(_fromclient))
+            if (Movement.RotUpdateQueue.ContainsKey(_fromclient))
             {
-                Movement_Handling.RotUpdateQueue[_fromclient].Add(_rotation);
+                Movement.RotUpdateQueue[_fromclient].Add(_rotation);
             }
             else
             {
-                Movement_Handling.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
+                Movement.RotUpdateQueue.Add(_fromclient, new List<Quaternion>{_rotation});
             }
         }
 
-        public static void PlayerInventory(int _fromClient, Packet _packet)
+        public static void ReceivedModItem(int _fromClient, Packet _packet)
         {
             _fromClient = _packet.ReadInt();
-            string _itemID = _packet.ReadString();
-            float _itemCondition = _packet.ReadFloat();
-            int _itemQuality = _packet.ReadInt();
-            long _itemUID = _packet.ReadLong();
+            ModItem _item = _packet.ReadModItem();
             bool status = _packet.ReadBool();
-
-            Item item = new Item();
-            item.ID = _itemID;
-            item.Condition = _itemCondition;
-            item.Quality = _itemQuality;
-            item.UID = _itemUID;
             
-            
-           // Item item = _packet.ReadItem();
-           // MelonLogger.Msg($"SV: Received ItemFromClient[{_fromClient}], ID:{item.ID}, UID:{item.UID}, Type:{status}");
 
             if (status)
             {
-                if (ServerData.AddItemQueue.ContainsKey(_fromClient))
+                if (ServerData.ItemAddQueue.ContainsKey(_fromClient))
                 {
-                    ServerData.AddItemQueue[_fromClient].Add(item);
+                    ServerData.ItemAddQueue[_fromClient].Add(_item);
                 }
                 else
                 {
-                    ServerData.AddItemQueue.Add(_fromClient, new List<Item>(){item});
+                    ServerData.ItemAddQueue.Add(_fromClient, new List<ModItem>(){_item});
                 }
             }
             else
             {
-                if (ServerData.RemoveItemQueue.ContainsKey(_fromClient))
+                if (ServerData.ItemRemoveQueue.ContainsKey(_fromClient))
                 {
-                    ServerData.RemoveItemQueue[_fromClient].Add(item);
+                    ServerData.ItemRemoveQueue[_fromClient].Add(_item);
                 }
                 else
                 {
-                    ServerData.RemoveItemQueue.Add(_fromClient, new List<Item>(){item});
+                    ServerData.ItemRemoveQueue.Add(_fromClient, new List<ModItem>(){_item});
                 }
+            }
+        }
+        
+        public static void ReceivedGroupItem(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            ModItemGroup _item = _packet.ReadModItemGroup();
+            bool status = _packet.ReadBool();
+            
+
+            if (status)
+            {
+                if (ServerData.GroupItemAddQueue.ContainsKey(_fromClient))
+                {
+                    ServerData.GroupItemAddQueue[_fromClient].Add(_item);
+                }
+                else
+                {
+                    ServerData.GroupItemAddQueue.Add(_fromClient, new List<ModItemGroup>(){_item});
+                }
+            }
+            else
+            {
+                if (ServerData.GroupItemRemoveQueue.ContainsKey(_fromClient))
+                {
+                    ServerData.GroupItemRemoveQueue[_fromClient].Add(_item);
+                }
+                else
+                {
+                    ServerData.GroupItemRemoveQueue.Add(_fromClient, new List<ModItemGroup>(){_item});
+                }
+                
             }
         }
         public static void PlayerMoney(int _fromClient, Packet _packet)
@@ -177,5 +197,16 @@ namespace CMS21MP.DataHandle
            // MelonLogger.Msg("SV: Received new bodyPart! sending to players.");
             ServerSend.bodyPart(_fromClient, bodyParts);
         }
+
+
+        public static void lifterState(int _fromClient, Packet _packet)
+        {
+            _fromClient = _packet.ReadInt();
+            CarLifterState lifterState = _packet.ReadCarLifterState();
+            int carLoaderID = _packet.ReadInt();
+
+            ServerSend.LifterPos(_fromClient, lifterState, carLoaderID);
+        }
+        
     }
 }

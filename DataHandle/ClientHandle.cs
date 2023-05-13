@@ -10,6 +10,8 @@ using Il2CppSystem;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CarPart = Il2Cpp.CarPart;
+using Inventory = CMS21MP.ClientSide.Functionnality.Inventory;
 using Object = UnityEngine.Object;
 
 namespace CMS21MP.DataHandle
@@ -33,7 +35,7 @@ namespace CMS21MP.DataHandle
             {
                 MainMod.localInventory.items.Clear();
                 GlobalData.PlayerMoney = _serverMoney;
-                Stats_Handling.moneyHandler = _serverMoney;
+                Stats.moneyHandler = _serverMoney;
             }
         }
 
@@ -66,7 +68,7 @@ namespace CMS21MP.DataHandle
             Vector3 _position = _packet.ReadVector3();
 
            // MelonLogger.Msg($"received new pos for player{_id} !");
-           if (PlayerManager.players.ContainsKey(_id) && GameObject.Find($"{PlayerManager.players[_id].username}") != null)
+           if (PlayerManager.players.ContainsKey(_id) && GameObject.Find(PlayerManager.players[_id].username) != null)
            {
                PlayerManager.players[_id].transform.position = _position;
            }
@@ -78,68 +80,118 @@ namespace CMS21MP.DataHandle
             
             if (PlayerManager.players.ContainsKey(_id))
             {
-                if (GameObject.Find($"{PlayerManager.players[_id].username}") != null)
+                if (GameObject.Find(PlayerManager.players[_id].username) != null)
                 {
                     PlayerManager.players[_id].transform.rotation = _rotation;
                 }
             }
         }
 
-        public static void PlayerInventory(Packet _packet)
+        public static void ItemReceive(Packet _packet)
         {
             int _playerId = _packet.ReadInt();
-            string _itemID = _packet.ReadString();
-            float _itemCondition = _packet.ReadFloat();
-            int _itemQuality = _packet.ReadInt();
-            long _itemUID = _packet.ReadLong();
+            ModItem _Moditem = _packet.ReadModItem();
             bool status = _packet.ReadBool();
 
+            ModItem item = new ModItem();
             Item _item = new Item();
-            _item.ID = _itemID;
-            _item.Condition = _itemCondition;
-            _item.Quality = _itemQuality;
-            _item.UID = _itemUID;
+            item.ToGame(_Moditem, _item);
             
            // MelonLogger.Msg($"Received ItemFromServer, ID:{_itemID}, UID:{_itemUID}, Type:{status}");
 
             if (status)
             {
-                if (!Inventory_Handling.ItemsUID.Contains(_itemUID) )
+                if (!Inventory.ItemsUID.Contains(_item.UID) )
                 {
                    // MelonLogger.Msg($"Adding Item with UID:{_itemUID}");
-                   Inventory_Handling.InventoryHandler.Add(_item);
-                   Inventory_Handling.ItemsUID.Add(_itemUID);
+                   Inventory.ItemsHandler.Add(_item);
+                   Inventory.ItemsUID.Add(_item.UID);
                     MainMod.localInventory.Add(_item);
                 }
             }
             else
             {
-                if (Inventory_Handling.ItemsUID.Contains(_itemUID))
+                if (Inventory.ItemsUID.Contains(_item.UID))
                 {
                    // MelonLogger.Msg($"Removing Item with UID:{_itemUID}");
-                   Inventory_Handling.InventoryHandler.Remove(_item);
-                   Inventory_Handling.ItemsUID.Remove(_itemUID);
+                   Inventory.ItemsHandler.Remove(_item);
+                   Inventory.ItemsUID.Remove(_item.UID);
                     MainMod.localInventory.Delete(_item);
                 }
             }
             
+        }
+        
+        public static void GroupItemReceive(Packet _packet)
+        {
+            int _playerId = _packet.ReadInt();
+            ModItemGroup _Moditem = _packet.ReadModItemGroup();
+            bool status = _packet.ReadBool();
+
+            ModItemGroup itemGroup = new ModItemGroup();
+            GroupItem _item = new GroupItem(); 
+            itemGroup.ToGame(_Moditem, _item);
+            
+            if (status)
+            {
+                if (!Inventory.ItemsUID.Contains(_item.UID) )
+                {
+                    // MelonLogger.Msg($"Adding Item with UID:{_itemUID}");
+                    Inventory.GroupItemsHandler.Add(_item);
+                    Inventory.ItemsUID.Add(_item.UID);
+                    MainMod.localInventory.AddGroup(_item);
+                }
+            }
+            else
+            {
+                if (Inventory.ItemsUID.Contains(_item.UID))
+                {
+                    // MelonLogger.Msg($"Removing Item with UID:{_itemUID}");
+                    Inventory.GroupItemsHandler.Remove(_item);
+                    Inventory.ItemsUID.Remove(_item.UID);
+                    MainMod.localInventory.DeleteGroup(_item.UID);
+                }
+            }
         }
 
         public static void PlayerDisconnect(Packet _packet)
         {
             int _id = _packet.ReadInt();
 
-            if (PlayerManager.players.ContainsKey(_id) && GameObject.Find(PlayerManager.players[_id].username) != null)
+            if (Client.instance.myId != _id)
             {
-                Object.Destroy(GameObject.Find(PlayerManager.players[_id].username));
-                PlayerManager.players.Remove(_id);
-            }
-            if(Movement_Handling.MovUpdateQueue.ContainsKey(_id))
-                Movement_Handling.MovUpdateQueue.Remove(_id);
-            if(Movement_Handling.RotUpdateQueue.ContainsKey(_id))
-                Movement_Handling.RotUpdateQueue.Remove(_id);
+                if (PlayerManager.players.ContainsKey(_id) && GameObject.Find(PlayerManager.players[_id].username) != null)
+                {
+                    Object.Destroy(GameObject.Find(PlayerManager.players[_id].username));
+                    PlayerManager.players.Remove(_id);
+                }
+                if(Movement.MovUpdateQueue.ContainsKey(_id))
+                    Movement.MovUpdateQueue.Remove(_id);
+                if(Movement.RotUpdateQueue.ContainsKey(_id))
+                    Movement.RotUpdateQueue.Remove(_id);
 
-            MainMod.playerConnected -= 1;
+                MainMod.playerConnected -= 1;
+            }
+            else
+            {
+                Client.instance.Disconnect();
+                foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
+                {
+                    if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
+                    {
+                        Destroy(element.Value.gameObject);
+                    }
+                    else
+                    {
+                        Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
+                        Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
+                    }
+                }
+
+                MainMod.isPrefabSet = false;
+                PlayerManager.players.Clear();
+            }
+
 
         }
 
@@ -151,13 +203,13 @@ namespace CMS21MP.DataHandle
             {
                 MelonLogger.Msg($"Adding Money!! +{money}");
                 GlobalData.AddPlayerMoney(money);
-                Stats_Handling.moneyHandler = GlobalData.PlayerMoney;
+                Stats.moneyHandler = GlobalData.PlayerMoney;
             }
             else
             {
                 MelonLogger.Msg($"Removing Money!! {money}");
                 GlobalData.AddPlayerMoney(money);
-                Stats_Handling.moneyHandler = GlobalData.PlayerMoney;
+                Stats.moneyHandler = GlobalData.PlayerMoney;
             }
         }
         public static void PlayerScene(Packet _packet)
@@ -179,25 +231,25 @@ namespace CMS21MP.DataHandle
             
             if (data.status)
             {
-                if (!CarSpawn_Handling.CarHandle.ContainsKey(data.carLoaderID))
+                if (!CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
                 {
-                    CarSpawn_Handling.CarHandle.Add(data.carLoaderID, data);
+                    CarSpawn.CarHandle.Add(data.carLoaderID, data);
                 }
 
                 MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
                 MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
-                MainMod.carLoaders[data.carLoaderID].color = data.carColor.ToGame(data.carColor);
+                MainMod.carLoaders[data.carLoaderID].color = new ModColor().Convert(data.carColor);
                 MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID, data.configNumber);
 
                 await Task.Delay(1000);
-                CarPart_PreHandling.AddAllPartToHandleAlt(data.carLoaderID);
+                PreCarPart.AddAllPartToHandleAlt(data.carLoaderID);
             }
             else
             {
-                if (CarSpawn_Handling.CarHandle.ContainsKey(data.carLoaderID))
+                if (CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
                 {
-                    CarSpawn_Handling.CarHandle.Remove(data.carLoaderID);
-                    CarSpawn_Handling.RemoveCar(data.carLoaderID);
+                    CarSpawn.CarHandle.Remove(data.carLoaderID);
+                    CarSpawn.RemoveCar(data.carLoaderID);
                 }
                 
                 
@@ -211,7 +263,7 @@ namespace CMS21MP.DataHandle
             int _carPos = _packet.ReadInt();
             int _carLoaderID = _packet.ReadInt();
             
-            MelonLogger.Msg("CL: Received a new carPos, moving car...");
+           // MelonLogger.Msg("CL: Received a new carPos, moving car...");
 
             if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
             {
@@ -221,15 +273,13 @@ namespace CMS21MP.DataHandle
             }
             
         }
-
-        public static PartScriptInfo lastPartReceived;
+        
         public static void carParts(Packet _packet)
         {
             bool partType = _packet.ReadBool();
             if (!partType)
             {
                 PartScriptInfo _part = _packet.ReadPartScriptInfo();
-                lastPartReceived = _part;
                 MelonCoroutines.Start(delayPartUpdate(_part));
                 
             }
@@ -252,30 +302,40 @@ namespace CMS21MP.DataHandle
                 {
 
                     MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID]._UniqueID = _part._UniqueID;
+                    MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID][_part._partCountID] = _part;
                     partUpdate(MPGameManager.OriginalParts[_part._carLoaderID][_part._partItemID][_part._partCountID], _part);
 
                 }
                 else if (_part._type == partType.engine)
                 {
                     MPGameManager.OriginalEngineParts[_part._carLoaderID][_part._partCountID]._UniqueID = _part._UniqueID;
+                    MPGameManager.EnginePartsHandle[_part._carLoaderID][_part._partCountID] = _part;
                     partUpdate(MPGameManager.OriginalEngineParts[_part._carLoaderID][_part._partCountID], _part);
                 }
                 else if(_part._type == partType.suspensions)
                 { 
                     MPGameManager.OriginalSuspensionParts[_part._carLoaderID][_part._partItemID][_part._partCountID]._UniqueID = _part._UniqueID;
+                    MPGameManager.SuspensionPartsHandle[_part._carLoaderID][_part._partItemID][_part._partCountID] = _part;
                     partUpdate(MPGameManager.OriginalSuspensionParts[_part._carLoaderID][_part._partItemID][_part._partCountID], _part);
                 }
             }
         }
 
-        public static void partUpdate(PartScript_Info Originalpart, PartScriptInfo Newpart)
+        public static void partUpdate(ModPartScript_Info Originalpart, PartScriptInfo Newpart)
         {
-            MelonLogger.Msg($"handled new part: {Newpart._partScriptData.id}");
+          //  MelonLogger.Msg($"handled new part: {Newpart._partScriptData.id}");
             PartScript originalPart = Originalpart._partScript;
             PartScriptData newPart = Newpart._partScriptData;
-            
-            if (originalPart.tunedID != newPart.tunedID && MainMod.carLoaders[Newpart._carLoaderID] != null)
-                MainMod.carLoaders[Newpart._carLoaderID].TunePart(originalPart.tunedID, newPart.tunedID);
+
+            if (MainMod.carLoaders[Newpart._carLoaderID] != null)
+            {
+                if (!String.IsNullOrEmpty(newPart.tunedID))
+                {
+                    originalPart.tunedID = newPart.tunedID;
+                    // if (originalPart.tunedID != newPart.tunedID)
+                    // MainMod.carLoaders[Newpart._carLoaderID].TunePart(originalPart.tunedID, newPart.tunedID); 
+                }
+            }
             originalPart.IsExamined = newPart.isExamined;
             if (newPart.unmounted == false)
             {
@@ -283,8 +343,8 @@ namespace CMS21MP.DataHandle
                 if (newPart.isPainted)
                 {
                     originalPart.CurrentPaintType = (PaintType)newPart.paintType;
-                    originalPart.CurrentPaintData = new C_PaintData().ToGame(newPart.paintData);
-                    originalPart.SetColor(new C_Color().ToGame(newPart.color));
+                    originalPart.CurrentPaintData = new ModPaintData().Convert(newPart.paintData);
+                    originalPart.SetColor(new ModColor().Convert(newPart.color));
                     if ((PaintType)newPart.paintType == PaintType.Custom)
                         PaintHelper.SetCustomPaintType(originalPart.gameObject, originalPart.CurrentPaintData, false);
                 }
@@ -300,7 +360,6 @@ namespace CMS21MP.DataHandle
                     originalPart.ShowMountAnimation();
                     originalPart.FastMount();
                 }
-                    
             }
             else
             {
@@ -312,17 +371,21 @@ namespace CMS21MP.DataHandle
                     originalPart.HideBySavegame(false, MainMod.carLoaders[Newpart._carLoaderID]);
                 }
             }
+            originalPart.Update();
         }
 
         static IEnumerator delayPartUpdate(PartScriptInfo _part)
         {
-            yield return new WaitForSeconds(2f);
+            if(!CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingEngine || 
+               !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingPart || 
+               !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingSuspension)
+                yield return new WaitForSeconds(2f);
             
             if (_part._type == partType.part)
             {
                 if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
                 {
-                    CarPart_PreHandling.AddPartHandle(_part._carLoaderID);
+                    PreCarPart.AddPartHandle(_part._carLoaderID);
                     yield return new WaitForSeconds(3f);
                 }
 
@@ -340,7 +403,7 @@ namespace CMS21MP.DataHandle
             {
                 if (!MPGameManager.OriginalEngineParts.ContainsKey(_part._carLoaderID))
                 {
-                    CarPart_PreHandling.AddEnginePartHandle(_part._carLoaderID);
+                    PreCarPart.AddEnginePartHandle(_part._carLoaderID);
                     yield return new WaitForSeconds(3f);
                 }
 
@@ -358,7 +421,7 @@ namespace CMS21MP.DataHandle
             {
                 if (!MPGameManager.OriginalSuspensionParts.ContainsKey(_part._carLoaderID))
                 {
-                    CarPart_PreHandling.AddSuspensionPartHandle(_part._carLoaderID);
+                    PreCarPart.AddSuspensionPartHandle(_part._carLoaderID);
                     yield return new WaitForSeconds(3f);
                 }
 
@@ -380,7 +443,7 @@ namespace CMS21MP.DataHandle
         {
             carPartsData _bodyPart = _packet.ReadBodyPart();
             
-            MelonLogger.Msg($"CL: Received a new bodyPart! {_bodyPart.name}");
+            //MelonLogger.Msg($"CL: Received a new bodyPart! {_bodyPart.name}");
             MelonCoroutines.Start(delayCarPartUpdate(_bodyPart, _bodyPart.carLoaderID));
             
         }
@@ -388,35 +451,37 @@ namespace CMS21MP.DataHandle
 
         static IEnumerator delayCarPartUpdate(carPartsData _bodyPart, int _carLoaderID)
         {
-            yield return new WaitForSeconds(1.5f);
+            if(!CarSpawn.CarHandle[_carLoaderID].FinishedPreHandlingCarPart)
+                yield return new WaitForSeconds(1.5f);
             
             if (!MPGameManager.OriginalEngineParts.ContainsKey(_bodyPart.carLoaderID))
             {
-                ExternalCarPart_Handling.PreHandleCarParts(_bodyPart.carLoaderID);
+                ExternalCarPart.PreHandleCarParts(_bodyPart.carLoaderID);
                 yield return new WaitForSeconds(3f);
             }
 
-            if (!ExternalCarPart_Handling.CarPartsHandle.ContainsKey(_bodyPart.carLoaderID))
+            if (!ExternalCarPart.CarPartsHandle.ContainsKey(_bodyPart.carLoaderID))
             {
-                ExternalCarPart_Handling.CarPartsHandle.Add(_bodyPart.carLoaderID, new Dictionary<int, carPartsData>());
+                ExternalCarPart.CarPartsHandle.Add(_bodyPart.carLoaderID, new Dictionary<int, carPartsData>());
             }
 
-            if (!ExternalCarPart_Handling.CarPartsHandle[_bodyPart.carLoaderID].ContainsKey(_bodyPart.carPartID))
+            if (!ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID].ContainsKey(_bodyPart.carPartID))
             {
-                ExternalCarPart_Handling.CarPartsHandle[_bodyPart.carLoaderID].Add(_bodyPart.carPartID, _bodyPart);
+                ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID].Add(_bodyPart.carPartID, _bodyPart);
             }
             
-            ExternalCarPart_Handling.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._UniqueID = _bodyPart.UniqueID;
+            ExternalCarPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._UniqueID = _bodyPart.UniqueID;
+            ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID][_bodyPart.carPartID] = _bodyPart;
             
             if (MainMod.carLoaders != null && MainMod.carLoaders[_carLoaderID] != null)
             {
                 
                 if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
                 {
-                    Color color = new Color(_bodyPart.colors.r, _bodyPart.colors.g, _bodyPart.colors.b, _bodyPart.colors.a);
-                    Color tintColor = new Color(_bodyPart.TintColor.r, _bodyPart.TintColor.g, _bodyPart.TintColor.b, _bodyPart.TintColor.a);
+                    Color color = new ModColor().Convert(_bodyPart.colors);
+                    Color tintColor = new ModColor().Convert(_bodyPart.TintColor);
 
-                    CarPart _part = ExternalCarPart_Handling.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._originalPart;
+                    CarPart _part = ExternalCarPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._originalPart;
 
                     _part.IsTinted = _bodyPart.isTinted;
                     _part.TintColor = tintColor;
@@ -436,8 +501,8 @@ namespace CMS21MP.DataHandle
                     
                     if (!_part.Unmounted && !_part.name.StartsWith("license_plate"))
                     {
-                        MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, new C_PaintData().ToGame(_bodyPart.paintData));  
-                        MainMod.carLoaders[_carLoaderID].SetCarColorAndPaintType(_part, color, (PaintType)_bodyPart.paintType);
+                        //MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, new ModPaintData().Convert(_bodyPart.paintData));  
+                       // MainMod.carLoaders[_carLoaderID].SetCarColorAndPaintType(_part, color, (PaintType)_bodyPart.paintType);
                     }
                     MainMod.carLoaders[_carLoaderID].SetCarLivery(_part, _bodyPart.livery, _bodyPart.liveryStrength);
                     
@@ -465,6 +530,42 @@ namespace CMS21MP.DataHandle
                 }
             }
 
+        }
+
+        public static void lifterPos(Packet _packet)
+        {
+            CarLifterState _state = _packet.ReadCarLifterState();
+            int _carLoaderID = _packet.ReadInt();
+
+            MelonLogger.Msg($"received new Pos to Server : {_state.ToString()}");
+            var carLifterState = MainMod.carLoaders[_carLoaderID].lifter.currentState;
+            var carLifter = MainMod.carLoaders[_carLoaderID].lifter;
+            if (carLifterState == CarLifterState.Up && _state == CarLifterState.OnFloor)
+            {
+                carLifter.Action(1);
+                carLifter.Action(1);
+            }
+            else if (carLifterState == CarLifterState.Up && _state == CarLifterState.Middle)
+            {
+                carLifter.Action(1);
+            }
+            else if (carLifterState == CarLifterState.Middle && _state == CarLifterState.Up)
+            {
+                carLifter.Action(0);
+            }
+            else if (carLifterState == CarLifterState.Middle && _state == CarLifterState.OnFloor)
+            {
+                carLifter.Action(1);
+            }
+            else if (carLifterState == CarLifterState.OnFloor && _state == CarLifterState.Up)
+            {
+                carLifter.Action(0);
+                carLifter.Action(0);
+            }
+            else if (carLifterState == CarLifterState.OnFloor && _state == CarLifterState.Middle)
+            {
+                carLifter.Action(0);
+            }
         }
         
     }

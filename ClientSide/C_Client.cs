@@ -328,14 +328,16 @@ namespace CMS21MP.ClientSide
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
                 { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected},
                 {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect},
-                {(int)ServerPackets.playerInventory, ClientHandle.PlayerInventory},
+                {(int)ServerPackets.items, ClientHandle.ItemReceive},
+                {(int)ServerPackets.groupItems, ClientHandle.GroupItemReceive},
                 {(int)ServerPackets.playerMoney, ClientHandle.PlayerMoney},
                 {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
                 {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
                 {(int)ServerPackets.moveCars, ClientHandle.MoveCar},
                 {(int)ServerPackets.initialCarPart, ClientHandle.carParts},
                 {(int)ServerPackets.car_part, ClientHandle.carParts},
-                {(int)ServerPackets.body_part, ClientHandle.bodyPart}
+                {(int)ServerPackets.body_part, ClientHandle.bodyPart},
+                {(int)ServerPackets.lifterState, ClientHandle.lifterPos}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

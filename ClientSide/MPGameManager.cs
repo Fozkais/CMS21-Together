@@ -7,6 +7,8 @@ using CMS21MP.DataHandle;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
+using CarPart = CMS21MP.ClientSide.Functionnality.CarPart;
+using Inventory = CMS21MP.ClientSide.Functionnality.Inventory;
 
 namespace CMS21MP.ClientSide
 {
@@ -14,24 +16,24 @@ namespace CMS21MP.ClientSide
     public class MPGameManager : MonoBehaviour
     {
         
-        public static Dictionary<int,Dictionary<int, List<PartScript_Info>>> OriginalParts = new Dictionary<int,Dictionary<int, List<PartScript_Info>>>();
+        public static Dictionary<int,Dictionary<int, List<ModPartScript_Info>>> OriginalParts = new Dictionary<int,Dictionary<int, List<ModPartScript_Info>>>();
         public static Dictionary<int, Dictionary<int, List<PartScriptInfo>>> PartsHandle = new Dictionary<int, Dictionary<int, List<PartScriptInfo>>>();
         
-        public static Dictionary<int, Dictionary<int, PartScript_Info>> OriginalEngineParts = new Dictionary<int, Dictionary<int, PartScript_Info>>();
+        public static Dictionary<int, Dictionary<int, ModPartScript_Info>> OriginalEngineParts = new Dictionary<int, Dictionary<int, ModPartScript_Info>>();
         public static Dictionary<int, Dictionary<int, PartScriptInfo>> EnginePartsHandle = new Dictionary<int, Dictionary<int, PartScriptInfo>>();
         
-        public static Dictionary<int,Dictionary<int, List<PartScript_Info>>> OriginalSuspensionParts = new Dictionary<int,Dictionary<int, List<PartScript_Info>>>();
+        public static Dictionary<int,Dictionary<int, List<ModPartScript_Info>>> OriginalSuspensionParts = new Dictionary<int,Dictionary<int, List<ModPartScript_Info>>>();
         public static Dictionary<int,Dictionary<int, List<PartScriptInfo>>> SuspensionPartsHandle = new Dictionary<int,Dictionary<int, List<PartScriptInfo>>>();
 
         public static bool hasFinishedUpdatingCar = true;
 
         public void InfoUpdate()
         {
-            Movement_Handling.HandleMovement();
-            Inventory_Handling.HandleInventory();
-            Stats_Handling.HandleStats();
-            CarSpawn_Handling.HandleCarSpawn();
-            SceneSwaping_Handling.UpdatePlayerScene();
+            Movement.HandleMovement();
+            Inventory.HandleInventory();
+            Stats.HandleStats();
+            CarSpawn.HandleCarSpawn();
+            SceneSwaping.UpdatePlayerScene();
 
             if(hasFinishedUpdatingCar)
                 MelonCoroutines.Start(delayCarUpdating());
@@ -46,7 +48,7 @@ namespace CMS21MP.ClientSide
 
             try
             {
-                CarPart_Handling.HandleAllParts();
+                CarPart.HandleAllParts();
             }
             catch (KeyNotFoundException e)
             {
@@ -59,7 +61,7 @@ namespace CMS21MP.ClientSide
         }
         public void MoveCar()
         {
-            foreach (KeyValuePair<int , carData> carData in  CarSpawn_Handling.CarHandle)
+            foreach (KeyValuePair<int , carData> carData in  CarSpawn.CarHandle)
             {
                 if (carData.Value.carPosition != MainMod.carLoaders[carData.Value.carLoaderID].placeNo)
                 {
@@ -74,9 +76,10 @@ namespace CMS21MP.ClientSide
 
         public static void HandleServerReset()
         {
+            CarSpawn.CarHandle.Clear();
             ServerData.serverInventory.items.Clear();
-            ServerData.AddItemQueue.Clear();
-            ServerData.RemoveItemQueue.Clear();
+            ServerData.ItemAddQueue.Clear();
+            ServerData.ItemRemoveQueue.Clear();
             ServerData.serverMoney = 0;
         }
         

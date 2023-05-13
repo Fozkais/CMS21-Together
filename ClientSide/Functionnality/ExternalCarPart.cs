@@ -8,7 +8,7 @@ using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class ExternalCarPart_Handling
+    public static class ExternalCarPart
     {
         public static Dictionary<int, Dictionary<int, carPartsData_info>> OriginalCarParts = new Dictionary<int, Dictionary<int, carPartsData_info>>();
         public static Dictionary<int, Dictionary<int, carPartsData>> CarPartsHandle = new Dictionary<int, Dictionary<int, carPartsData>>();
@@ -17,7 +17,7 @@ namespace CMS21MP.ClientSide.Functionnality
         {
             await Task.Delay(2000);
 
-            carData carData = CarSpawn_Handling.CarHandle[carHandlerID]; //
+            carData carData = CarSpawn.CarHandle[carHandlerID]; //
             if (carData != null)
             {
                 int carLoaderID = carData.carLoaderID;//
@@ -38,9 +38,10 @@ namespace CMS21MP.ClientSide.Functionnality
                 }
                 else
                 {
-                    MelonLogger.Warning($"PreHandleCarParts: carLoaderID {carLoaderID} is out of range for MainMod.carLoaders.");
+                   // MelonLogger.Warning($"PreHandleCarParts: carLoaderID {carLoaderID} is out of range for MainMod.carLoaders.");
                 }
-                MelonLogger.Msg($"Finished Prehandling bodyPart for carLoader[{carLoaderID}]");
+               // MelonLogger.Msg($"Finished Prehandling bodyPart for carLoader[{carLoaderID}]");
+               CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingCarPart = true;
             }
             else
             {
@@ -55,9 +56,9 @@ namespace CMS21MP.ClientSide.Functionnality
             
             foreach (KeyValuePair<int, Dictionary<int, carPartsData_info>> car in OriginalCarPartsCopy)
             {
-                if (CarSpawn_Handling.CarHandle.ContainsKey(car.Key))
+                if (CarSpawn.CarHandle.ContainsKey(car.Key))
                 {
-                    if (!CarSpawn_Handling.CarHandle[car.Key].CarPartFromServer)
+                    if (!CarSpawn.CarHandle[car.Key].CarPartFromServer)
                     {
                         var parts = car.Value;
 
@@ -96,7 +97,7 @@ namespace CMS21MP.ClientSide.Functionnality
                     else
                     {
                         await Task.Delay(4000);
-                        CarSpawn_Handling.CarHandle[car.Key].CarPartFromServer = false; 
+                        CarSpawn.CarHandle[car.Key].CarPartFromServer = false; 
                     }
                 }
                 else

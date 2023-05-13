@@ -12,8 +12,7 @@ namespace CMS21MP.ClientSide
     {
         public static ModGUI instance;
         public MainMod Mod;
-
-        public KeyCode MultiplayerGUIToggleKey = KeyCode.PageDown;
+        
         public bool isMultiplayerGUIShowed = false;
 
 
@@ -48,7 +47,7 @@ namespace CMS21MP.ClientSide
                 float panelOffsetY = 25;
 
 
-                GUI.Box(new Rect(panelOffsetX, panelOffsetY, panelSizeX, panelSizeY), "Multiplayer GUI");
+                GUI.Box(new Rect(panelOffsetX, panelOffsetY, panelSizeX, panelSizeY), "Multiplayer Mod " + MainMod.MOD_VERSION);
                 if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 50, panelSizeX - 20, 35), "Connect"))
                 {
                     if (SceneManager.GetActiveScene().name == "garage")
@@ -141,6 +140,20 @@ namespace CMS21MP.ClientSide
                     if (MainMod.isHosting)
                     {
                         Client.instance.Disconnect();
+                        foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
+                        {
+                            if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
+                            {
+                                Destroy(element.Value.gameObject);
+                            }
+                            else
+                            {
+                                Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
+                                Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
+                            }
+                        }
+                        MainMod.isPrefabSet = false;
+                        PlayerManager.players.Clear();
                         Server.Stop();
                     }
                 }
@@ -156,15 +169,15 @@ namespace CMS21MP.ClientSide
 
         public void GuiOnUpdate()
         {
-            if (Input.GetKeyDown(MultiplayerGUIToggleKey) && !isMultiplayerGUIShowed)
+            if (Input.GetKeyDown(MainMod.MOD_GUI_KEY) && !isMultiplayerGUIShowed)
             {
                 isMultiplayerGUIShowed = true;
-                MelonLogger.Msg("Multiplayer GUI Loaded!");
+                //MelonLogger.Msg("Multiplayer GUI Loaded!");
             }
-            else if (Input.GetKeyDown(MultiplayerGUIToggleKey) && isMultiplayerGUIShowed)
+            else if (Input.GetKeyDown(MainMod.MOD_GUI_KEY) && isMultiplayerGUIShowed)
             {
                 isMultiplayerGUIShowed = false;
-                MelonLogger.Msg("Multiplayer GUI Unloaded!");
+                //MelonLogger.Msg("Multiplayer GUI Unloaded!");
             }
         }
     }

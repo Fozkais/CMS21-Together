@@ -18,6 +18,11 @@ namespace CMS21MP
 {
    public class MainMod : MelonMod
    {
+      
+      public const string MOD_VERSION = "Pre-Release 0.2";
+      public const string ASSEMBLY_MOD_VERSION = "0.2";
+      public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
+      
       public static PlayerManager gameManager;
       public Client client;
       public ModGUI modGUI;
@@ -124,11 +129,13 @@ namespace CMS21MP
                if (MainMod.localPlayer != null)
                {
                   MainMod.localPlayer.GetComponent<MPGameManager>().InfoUpdate();
+                  
                   if (MainMod.isHosting)
                   {
                      if (MainMod.playableSceneWithInventory())
                      {
-                        ServerData.UpdateInventory();
+                        ServerData.UpdateItems();
+                        ServerData.UpdateGroupItems();
                      }
                   }
                }
@@ -200,6 +207,7 @@ namespace CMS21MP
          LplayerPrefab.AddComponent<MPGameManager>();
       }
 
+      // ReSharper disable Unity.PerformanceAnalysis
       public void playerInit()
       {
 
@@ -225,7 +233,7 @@ namespace CMS21MP
             {
                Texture mainTexture = playerTexture.LoadAsset<Texture>("rp_nathan_animated_003_dif");
                mainTexture.filterMode = FilterMode.Point;
-               Material playerMaterial = new Material(Shader.Find("HDRP/Lit"));
+               Material playerMaterial = new Material(Shader.Find("HDRP/Unlit"));
                playerMaterial.mainTexture = mainTexture;
                playerMat = playerMaterial;
             }
@@ -243,7 +251,7 @@ namespace CMS21MP
 
             model.name = "playerModel";
             model.AddComponent<PlayerInfo>();
-            model.transform.localScale = new Vector3(1f, 1f, 1f);
+            model.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
             model.transform.position = new Vector3(0, -10, 0);
             model.transform.rotation = new Quaternion(0, 180, 0, 0);
 

@@ -8,7 +8,7 @@ using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class CarSpawn_Handling
+    public static class CarSpawn
     {
         public static Dictionary<int, carData> CarHandle = new Dictionary<int, carData>();
         public static bool HasFinishedUpdatingPre, HasFinishedUpdatingHand;
@@ -35,7 +35,7 @@ namespace CMS21MP.ClientSide.Functionnality
                 if (!CarHandle.ContainsKey(car.Key))
                 {
                     CarHandle.Add(car.Key, new carData(car.Value, car.Key, false));
-                    CarPart_PreHandling.AddAllPartToHandleAlt(car.Key);
+                    PreCarPart.AddAllPartToHandleAlt(car.Key);
                     ClientSend.SpawnCars(new carData(car.Value, car.Key, true));
                 }
             }
@@ -57,12 +57,12 @@ namespace CMS21MP.ClientSide.Functionnality
             MPGameManager.OriginalParts.Remove(carKey);
             MPGameManager.OriginalEngineParts.Remove(carKey);
             MPGameManager.OriginalSuspensionParts.Remove(carKey);
-            ExternalCarPart_Handling.OriginalCarParts.Remove(carKey);
+            ExternalCarPart.OriginalCarParts.Remove(carKey);
             
             MPGameManager.PartsHandle.Remove(carKey);
             MPGameManager.EnginePartsHandle.Remove(carKey);
             MPGameManager.SuspensionPartsHandle.Remove(carKey);
-            ExternalCarPart_Handling.CarPartsHandle.Remove(carKey);
+            ExternalCarPart.CarPartsHandle.Remove(carKey);
         }
     }
 }

@@ -76,21 +76,28 @@ namespace CMS21MP.DataHandle
             }
         }
 
-        public static void PlayerInventory(Item _item, bool status)
+        public static void SendItem(ModItem _item, bool status)
         {
-            using (Packet _packet = new Packet((int)ClientPackets.playerInventory))
+            using (Packet _packet = new Packet((int)ClientPackets.items))
             {
                 _packet.Write(Client.instance.myId);
-                _packet.Write(_item.ID);
-                _packet.Write(_item.Condition);
-                _packet.Write(_item.Quality);
-                _packet.Write(_item.UID);
+                _packet.Write(_item);
                 _packet.Write(status);
-                //_packet.Write(_item);
-                
+
                 SendTCPData(_packet);
             }
-            // MelonLogger.Msg($"Sending New Item! : ItemID: {_item.ID}, ItemUID: {_item.UID}, Type:{status}");
+        }
+
+        public static void SendGroupItem(ModItemGroup item, bool status)
+        {
+            using (Packet _packet = new Packet((int)ClientPackets.groupItems))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(item);
+                _packet.Write(status);
+
+                SendTCPData(_packet);
+            }
         }
 
         public static void PlayerMoney(int _money, bool status)
@@ -143,9 +150,7 @@ namespace CMS21MP.DataHandle
         }
         public static void carParts(PartScriptInfo part)
         {
-            if (ClientHandle.lastPartReceived != part)
-            {
-                using(Packet _packet = new Packet((int)ClientPackets.car_part))
+            using(Packet _packet = new Packet((int)ClientPackets.car_part))
                 {
                     _packet.Write(Client.instance.myId);
                     _packet.Write(false);
@@ -153,7 +158,6 @@ namespace CMS21MP.DataHandle
 
                     SendTCPData(_packet);
                 }
-            }
             //MelonLogger.Msg("CL: sending Part to Server!");
         }
         public static void bodyParts(carPartsData parts)
@@ -166,6 +170,19 @@ namespace CMS21MP.DataHandle
                 SendTCPData(_packet);
             }
             //MelonLogger.Msg($"CL: sending BodyPart:{parts.carPartID},  to Server!");
+        }
+
+        public static void LifterPos(CarLifterState lifterState, int carLoaderID)
+        {
+            using(Packet _packet = new Packet((int)ClientPackets.lifterState))
+            {
+                _packet.Write(Client.instance.myId);
+                _packet.Write(lifterState);
+                _packet.Write(carLoaderID);
+
+                SendTCPData(_packet);
+                MelonLogger.Msg($"Sending new Pos to Server : {lifterState.ToString()}");
+            }
         }
     }
     

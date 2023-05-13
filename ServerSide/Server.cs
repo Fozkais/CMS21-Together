@@ -49,6 +49,12 @@ namespace CMS21MP.ServerSide
             _isStopping = true;
             MPGameManager.HandleServerReset();
 
+            foreach (var client in clients)
+            {
+                ServerSend.PlayerDisconnect(client.Value.id);
+            }
+            
+
             udpListener.Close();
             tcpListener.Stop();
             
@@ -149,14 +155,16 @@ namespace CMS21MP.ServerSide
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
                 {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
-                {(int)ClientPackets.playerInventory, ServerHandle.PlayerInventory},
+                {(int)ClientPackets.items, ServerHandle.ReceivedModItem},
+                {(int)ClientPackets.groupItems, ServerHandle.ReceivedGroupItem},
                 {(int)ClientPackets.playerMoney, ServerHandle.PlayerMoney},
                 {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
                 {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
                 {(int)ClientPackets.moveCars, ServerHandle.MoveCar},
                 {(int)ClientPackets.initialCarPart, ServerHandle.carParts},
                 {(int)ClientPackets.car_part, ServerHandle.carParts},
-                {(int)ClientPackets.body_part, ServerHandle.bodyPart}
+                {(int)ClientPackets.body_part, ServerHandle.bodyPart},
+                {(int)ClientPackets.lifterState, ServerHandle.lifterState}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

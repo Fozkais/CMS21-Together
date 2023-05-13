@@ -33,14 +33,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\C_Client.cs" />
-    <Compile Include="ClientSide\Functionnality\CarPart_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\CarPart_PreHandling.cs" />
-    <Compile Include="ClientSide\Functionnality\CarSpawn_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\ExternalCarPart_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\SceneSwaping_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\Inventory_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\Movement_Handling.cs" />
-    <Compile Include="ClientSide\Functionnality\Stats_Handling.cs" />
+    <Compile Include="ClientSide\Functionnality\CarPart.cs" />
+    <Compile Include="ClientSide\Functionnality\PreCarPart.cs" />
+    <Compile Include="ClientSide\Functionnality\CarSpawn.cs" />
+    <Compile Include="ClientSide\Functionnality\ExternalCarPart.cs" />
+    <Compile Include="ClientSide\Functionnality\GarageInteration.cs" />
+    <Compile Include="ClientSide\Functionnality\SceneSwaping.cs" />
+    <Compile Include="ClientSide\Functionnality\Inventory.cs" />
+    <Compile Include="ClientSide\Functionnality\Movement.cs" />
+    <Compile Include="ClientSide\Functionnality\Stats.cs" />
     <Compile Include="ClientSide\PlayerManager.cs" />
     <Compile Include="ClientSide\MPGameManager.cs" />
     <Compile Include="ClientSide\PlayerInfo.cs" />

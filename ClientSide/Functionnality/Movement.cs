@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class Movement_Handling
+    public static class Movement
     {
         public static Dictionary<int, List<Vector3>> MovUpdateQueue = new Dictionary<int, List<Vector3>>();
         public static Dictionary<int, List<Quaternion>> RotUpdateQueue = new Dictionary<int, List<Quaternion>>();
@@ -26,7 +26,7 @@ namespace CMS21MP.ClientSide.Functionnality
             if (Vector3.Distance(playerPos, lastPos) > .05f)
             {
                 lastPos = playerPos;
-                Vector3 newPlayerPos = new Vector3(playerPos.x, playerPos.y - .8f, playerPos.z);
+                Vector3 newPlayerPos = new Vector3(playerPos.x, playerPos.y - .7f, playerPos.z);
                 ClientSend.PlayerMovement(newPlayerPos);
             }
         }

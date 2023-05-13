@@ -23,7 +23,8 @@ namespace CMS21MP.DataHandle
         playerRotation,
         playerConnected,
         playerDisconnect,
-        playerInventory,
+        items,
+        groupItems,
         playerMoney,
         playerScene,
         spawnCars,
@@ -31,7 +32,9 @@ namespace CMS21MP.DataHandle
         // car part sync
         initialCarPart,
         car_part,
-        body_part
+        body_part,
+        // garageInteraction
+        lifterState
     }
 
     /// <summary>Sent from client to server.</summary>
@@ -41,7 +44,8 @@ namespace CMS21MP.DataHandle
         keepAlive,
         playerMovement,
         playerRotation,
-        playerInventory,
+        items,
+        groupItems,
         playerMoney,
         playerScene,
         spawnCars,
@@ -49,7 +53,9 @@ namespace CMS21MP.DataHandle
         // car part sync
         initialCarPart,
         car_part,
-        body_part
+        body_part,
+        // garageInteraction
+        lifterState
     }
 
     public class Packet : IDisposable
@@ -241,6 +247,26 @@ namespace CMS21MP.DataHandle
             Write(array.Length);
             Write(array);
         }
+
+        public void Write(CarLifterState _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        public void Write(ModItem _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        public void Write(ModItemGroup _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
+        
         
         private byte[] ObjectToByteArray(object obj)
         {
@@ -471,6 +497,25 @@ namespace CMS21MP.DataHandle
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
             return (List<PartScriptInfo>) ByteArrayToObject(array);
+        }
+
+        public CarLifterState ReadCarLifterState()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (CarLifterState) ByteArrayToObject(array);
+        }
+        public ModItem ReadModItem()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (ModItem) ByteArrayToObject(array);
+        }
+        public ModItemGroup ReadModItemGroup()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (ModItemGroup) ByteArrayToObject(array);
         }
         
         private object ByteArrayToObject(byte[] arrBytes)

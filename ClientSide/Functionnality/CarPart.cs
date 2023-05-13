@@ -9,15 +9,16 @@ using UnityEngine;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class CarPart_Handling
+    public static class CarPart
     {
         public static void HandleAllParts()
         {
-            ExternalCarPart_Handling.HandleCarParts();
+            ExternalCarPart.HandleCarParts();
             HandleParts();
             HandleEngineParts();
             HandleSuspensionParts();
-                
+            
+            GarageInteration.LifterSync();
         }
         
 
@@ -26,7 +27,7 @@ namespace CMS21MP.ClientSide.Functionnality
             var OriginalPartsCopy = MPGameManager.OriginalParts.ToList();
             foreach (var car in OriginalPartsCopy)
             {
-                if (!CarSpawn_Handling.CarHandle[car.Key].PartFromServer)
+                if (!CarSpawn.CarHandle[car.Key].PartFromServer)
                 {
                     var part = MPGameManager.OriginalParts[car.Key];
                     foreach (var _part in part)
@@ -70,7 +71,7 @@ namespace CMS21MP.ClientSide.Functionnality
                 else
                     {
                         await Task.Delay(4000);
-                        CarSpawn_Handling.CarHandle[car.Key].PartFromServer = false;
+                        CarSpawn.CarHandle[car.Key].PartFromServer = false;
                     }
                 }
         }
@@ -79,7 +80,7 @@ namespace CMS21MP.ClientSide.Functionnality
             var OriginalEnginePartsCopy = MPGameManager.OriginalEngineParts.ToList();
             foreach (var car in OriginalEnginePartsCopy)
             {
-                if (!CarSpawn_Handling.CarHandle[car.Key].EngineFromServer)
+                if (!CarSpawn.CarHandle[car.Key].EngineFromServer)
                     {
                         var part = MPGameManager.OriginalEngineParts[car.Key]; // Toutes les pieces[i] ou i = carLoaderID
 
@@ -126,7 +127,7 @@ namespace CMS21MP.ClientSide.Functionnality
                     else
                     {
                         await Task.Delay(4000);
-                        CarSpawn_Handling.CarHandle[car.Key].EngineFromServer = false;
+                        CarSpawn.CarHandle[car.Key].EngineFromServer = false;
                     }
                 }
         }
@@ -137,7 +138,7 @@ namespace CMS21MP.ClientSide.Functionnality
             var OriginalSuspensionPartsCopy = MPGameManager.OriginalSuspensionParts.ToList();
             foreach (var car in OriginalSuspensionPartsCopy)
             {
-                if (!CarSpawn_Handling.CarHandle[car.Key].SuspensionFromServer)
+                if (!CarSpawn.CarHandle[car.Key].SuspensionFromServer)
                     {
                         var part = MPGameManager.OriginalSuspensionParts[car.Key]; // Toutes les pieces[i] ou i = carLoaderID
 
@@ -188,7 +189,7 @@ namespace CMS21MP.ClientSide.Functionnality
                     else
                     {
                         await Task.Delay(4000);
-                        CarSpawn_Handling.CarHandle[car.Key].SuspensionFromServer = false;
+                        CarSpawn.CarHandle[car.Key].SuspensionFromServer = false;
                     }
                 }
         }

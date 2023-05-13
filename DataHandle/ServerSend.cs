@@ -137,18 +137,27 @@ namespace CMS21MP.DataHandle
 
         }
 
-        public static void PlayerInventory(int clientID,Item item, bool status)
+        public static void SendItem(int clientID,ModItem item, bool status)
         {
-            using (Packet _packet = new Packet((int)ServerPackets.playerInventory))
+            using (Packet _packet = new Packet((int)ServerPackets.items))
             {
                 _packet.Write(clientID);
-                _packet.Write(item.ID);
-                _packet.Write(item.Condition);
-                _packet.Write(item.Quality);
-                _packet.Write(item.UID);
+                _packet.Write(item);
                 _packet.Write(status);
                 
                // MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
+                SendTCPDataToAll(clientID,_packet);
+            }
+        }
+        public static void SendGroupItem(int clientID,ModItemGroup item, bool status)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.groupItems))
+            {
+                _packet.Write(clientID);
+                _packet.Write(item);
+                _packet.Write(status);
+                
+                // MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
                 SendTCPDataToAll(clientID,_packet);
             }
         }
@@ -219,7 +228,7 @@ namespace CMS21MP.DataHandle
 
                 SendTCPDataToAll(fromClient, _packet);
             }
-            MelonLogger.Msg("SV: Sending new Part to players !");
+            //MelonLogger.Msg("SV: Sending new Part to players !");
         }
 
         public static void bodyPart(int fromClient, carPartsData bodyParts)
@@ -231,6 +240,17 @@ namespace CMS21MP.DataHandle
                 SendTCPDataToAll(fromClient, _packet);
             }
             //MelonLogger.Msg("SV: Sending new BodyPart to player !");
+        }
+
+        public static void LifterPos(int fromClient, CarLifterState lifterState, int carLoaderID)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.lifterState))
+            {
+                _packet.Write(lifterState);
+                _packet.Write(carLoaderID);
+
+                SendTCPDataToAll(fromClient, _packet);
+            }
         }
     }
 }

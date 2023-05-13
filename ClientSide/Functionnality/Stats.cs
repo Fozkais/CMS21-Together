@@ -4,7 +4,7 @@ using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class Stats_Handling
+    public static class Stats
     {
         // Money
         public static int moneyHandler;
