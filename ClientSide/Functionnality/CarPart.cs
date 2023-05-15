@@ -18,7 +18,7 @@ namespace CMS21MP.ClientSide.Functionnality
             HandleEngineParts();
             HandleSuspensionParts();
             
-            GarageInteration.LifterSync();
+            GarageInteraction.LifterSync();
         }
         
 

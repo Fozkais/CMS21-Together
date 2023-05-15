@@ -29,27 +29,12 @@ namespace CMS21MP.DataHandle
                 _packet.Write(Client.instance.myId);
                 _packet.Write("Client received welcome.");
                 _packet.Write(ModGUI.instance.usernameField);
+                _packet.Write(MainMod.DLC.hasDLC);
                 
                 
                 SendTCPData(_packet);
             }
             Client.instance.udp.Connect(((IPEndPoint)Client.instance.tcp.socket.Client.LocalEndPoint).Port);
-        }
-        
-        private static async void KeepAlive()
-        {
-            while (MainMod.isConnected)
-            {
-                await Task.Delay(5000);
-                if (MainMod.isConnected)
-                {
-                    using (Packet _packet = new Packet((int)ClientPackets.keepAlive))
-                    {
-                        _packet.Write(Client.instance.myId);
-                        SendTCPData(_packet);
-                    }
-                }
-            }
         }
 
         public static void PlayerMovement(Vector3 _position)

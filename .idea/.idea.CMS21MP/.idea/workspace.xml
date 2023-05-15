@@ -4,20 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.AssemblyReference.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.CopyComplete" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.CoreCompileInputs.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.csproj.FileListAbsolute.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.dll" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/obj/Debug/CMS21MP.pdb" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)">
+      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/DLCSupport.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/GarageInteration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/GarageInteraction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModGUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/packages.config" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,6 +28,7 @@
   <component name="ChangesViewManager" show_ignored="true" />
   <component name="Git.Settings">
     <option name="PUSH_AUTO_UPDATE" value="true" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -43,7 +45,23 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4b76c3e709534801a173f34a1d6b3dfc522790/97/d5a5327c/KeyValuePair`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/46/5261f8ce/Item.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/7c/04ae1fb7/WheelData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/8f/7f236cd4/DLC.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/a7/ab693f08/InteractiveObject.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/be/0f9f9f53/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/df/69d5f767/MountObject.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/43/48fc3d2a/DlcInstalled_t.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Functionnality/CarPart.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/MPGameManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/Packet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ServerHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModGUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -52,7 +70,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="Toolset" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectId" id="2IrvJxQ1hX3124YNnPPa3Vd2X0K" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -62,30 +80,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;MainMod&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
-      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
-      "C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
       <option name="allowRunningInParallel" value="false" />
@@ -167,6 +186,7 @@
       <workItem from="1683481690478" duration="25051000" />
       <workItem from="1683570515700" duration="1308000" />
       <workItem from="1683571919243" duration="80000" />
+      <workItem from="1684066502239" duration="15337000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -308,7 +328,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683548361680</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)">
+      <created>1684014233884</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1684014233884</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -358,7 +385,8 @@
     <MESSAGE value="-- Pre-Beta 1 --&#10;- Fully Handle EnginePart &#10;- Fully Handle SuspensionPart&#10;-- Knowed bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fixed --&#10;- Insane freeze when loading seem fixed?" />
     <MESSAGE value="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed." />
     <MESSAGE value="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed" />
-    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed" />
+    <MESSAGE value="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)" />
+    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

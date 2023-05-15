@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using MelonLoader;
@@ -80,6 +81,15 @@ namespace CMS21MP.DataHandle
             }
         }
 
+        public static void DLC(ReadOnlyDictionary<string, bool> dlcDifferences, int clientID)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.dlc))
+            {
+                _packet.Write(dlcDifferences);
+
+                SendTCPData(clientID, _packet);
+            }
+        }
         public static void SpawnPlayer(int _toClient, Player _player)
         {
             using (Packet _packet = new Packet((int)ServerPackets.spawnPlayer))
@@ -252,5 +262,6 @@ namespace CMS21MP.DataHandle
                 SendTCPDataToAll(fromClient, _packet);
             }
         }
+
     }
 }

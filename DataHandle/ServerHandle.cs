@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using Il2Cpp;
@@ -14,18 +15,42 @@ namespace CMS21MP.DataHandle
             int _clientIdCheck = _packet.ReadInt();
             string msg = _packet.ReadString();
             string _username = _packet.ReadString();
-            
-            MelonLogger.Msg($"ID:[{_clientIdCheck}] " + msg);
-        
-            MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint}" +
-                            $"connected succesfully and is now player{_fromClient}.");
+            ReadOnlyDictionary<string, bool> _dlc = _packet.ReadDLCState();
 
-            if (_fromClient != _clientIdCheck)
+            Dictionary<string, bool> _DLCDif = new Dictionary<string, bool>();
+            ReadOnlyDictionary<string, bool> _DLCDifferences;
+            foreach (KeyValuePair<string, bool> dlc in _dlc)
             {
-                MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed" +
-                                  $" the wrong client ID ({_clientIdCheck})!");
+                if (!dlc.Value && MainMod.DLC.hasDLC[dlc.Key])
+                {
+                    _DLCDif.Add(dlc.Key, false);
+                }
+                else if (dlc.Value && !MainMod.DLC.hasDLC[dlc.Key])
+                {
+                    _DLCDif.Add(dlc.Key, true);
+                }
             }
-            Server.clients[_fromClient].SendIntoGame(_username);
+
+            if (_DLCDif.Count > 0)
+            {
+                _DLCDifferences = new ReadOnlyDictionary<string, bool>(_DLCDif);
+                ServerSend.DLC(_DLCDifferences, _clientIdCheck);
+            }
+            else
+            {
+                MelonLogger.Msg($"ID:[{_clientIdCheck}] " + msg);
+            
+                MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint}" +
+                                $"connected succesfully and is now player{_fromClient}.");
+
+                if (_fromClient != _clientIdCheck)
+                {
+                    MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed" +
+                                      $" the wrong client ID ({_clientIdCheck})!");
+                }
+                Server.clients[_fromClient].SendIntoGame(_username);
+            }
+
         }
 
         public static void KeepAlive(int _fromClient, Packet _packet)

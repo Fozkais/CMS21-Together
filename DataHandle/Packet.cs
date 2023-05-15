@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -17,7 +18,7 @@ namespace CMS21MP.DataHandle
     public enum ServerPackets
     {
         welcome = 1,
-        keepAlive,
+        dlc,
         spawnPlayer,
         playerPosition,
         playerRotation,
@@ -41,7 +42,7 @@ namespace CMS21MP.DataHandle
     public enum ClientPackets
     {
         welcomeReceived = 1,
-        keepAlive,
+        dlc,
         playerMovement,
         playerRotation,
         items,
@@ -267,7 +268,19 @@ namespace CMS21MP.DataHandle
             Write(array);
         }
         
+        public void Write(ReadOnlyDictionary<string, bool> _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
         
+        public void Write(List<string> _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
+        }
         private byte[] ObjectToByteArray(object obj)
         {
             if(obj == null)
@@ -517,7 +530,21 @@ namespace CMS21MP.DataHandle
             byte[] array = ReadBytes(lenght); // Return the bytes
             return (ModItemGroup) ByteArrayToObject(array);
         }
+
+        public ReadOnlyDictionary<string, bool> ReadDLCState()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (ReadOnlyDictionary<string, bool>) ByteArrayToObject(array);
+        }
         
+        public List<string> ReadDLCDifferences()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (List<string>) ByteArrayToObject(array);
+        }
+
         private object ByteArrayToObject(byte[] arrBytes)
         {
             MemoryStream memStream = new MemoryStream();

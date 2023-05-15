@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System;
 using System.Threading.Tasks;
 using CMS21MP.DataHandle;
+using CMS21MP.ServerSide;
 using MelonLoader;
 
 
@@ -22,6 +23,7 @@ namespace CMS21MP.ClientSide
         public UDP udp;
 
         public bool isConnected;
+        public static bool forceDisconnected;
 
         public delegate void PacketHandler(Packet _packet);
 
@@ -286,9 +288,17 @@ namespace CMS21MP.ClientSide
                     }
                     catch (Exception e)
                     {
-                        Disconnect();
-                        MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
-                        Client.instance.ConnectToServer();
+                        if (!forceDisconnected)
+                        {
+                            Disconnect();
+                            MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
+                            Client.instance.ConnectToServer();
+                        }
+                        else
+                        {
+                            Disconnect();
+                            forceDisconnected = false;
+                        }
                     }
                 }
 
@@ -305,7 +315,15 @@ namespace CMS21MP.ClientSide
                         using (Packet _packet = new Packet(_data))
                         {
                             int _packetId = _packet.ReadInt();
-                            packetHandlers[_packetId](_packet);
+
+                            if (packetHandlers.TryGetValue(_packetId, out var handler))
+                            {
+                                handler(_packet);
+                            }
+                            else
+                            {
+                                MelonLogger.Msg($"Packet with id {_packetId} not found in packetHandlers dictionary.");
+                            }
                         }
                     });
                 }
@@ -323,6 +341,7 @@ namespace CMS21MP.ClientSide
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)ServerPackets.welcome, ClientHandle.Welcome },
+                { (int)ServerPackets.dlc, ClientHandle.DLC },
                 { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
@@ -344,6 +363,31 @@ namespace CMS21MP.ClientSide
         
         public void Disconnect()
         {
+            forceDisconnected = true;
+            if (!MainMod.SteamMode)
+            {
+                foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
+                {
+                    if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
+                    {
+                        Destroy(element.Value.gameObject);
+                    }
+                    else
+                    {
+                        Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
+                        Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
+                    }
+                }
+
+                MainMod.isPrefabSet = false;
+                PlayerManager.players.Clear();
+                if (MainMod.isHosting)
+                {
+                    Server.Stop();
+                    MainMod.isHosting = false;
+                }
+            }
+            
             if (isConnected)
             {
                 isConnected = false;

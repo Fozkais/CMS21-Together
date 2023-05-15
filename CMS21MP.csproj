@@ -34,10 +34,11 @@
   <ItemGroup>
     <Compile Include="ClientSide\C_Client.cs" />
     <Compile Include="ClientSide\Functionnality\CarPart.cs" />
+    <Compile Include="ClientSide\Functionnality\DLCSupport.cs" />
     <Compile Include="ClientSide\Functionnality\PreCarPart.cs" />
     <Compile Include="ClientSide\Functionnality\CarSpawn.cs" />
     <Compile Include="ClientSide\Functionnality\ExternalCarPart.cs" />
-    <Compile Include="ClientSide\Functionnality\GarageInteration.cs" />
+    <Compile Include="ClientSide\Functionnality\GarageInteraction.cs" />
     <Compile Include="ClientSide\Functionnality\SceneSwaping.cs" />
     <Compile Include="ClientSide\Functionnality\Inventory.cs" />
     <Compile Include="ClientSide\Functionnality\Movement.cs" />
@@ -81,6 +82,9 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\UserLibs\Steamworks.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
@@ -99,6 +103,9 @@
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

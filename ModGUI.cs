@@ -108,32 +108,9 @@ namespace CMS21MP.ClientSide
                 usernameField = GUI.TextField(new Rect(panelOffsetX + 10, panelOffsetY + 160, panelSizeX - 20, 25), usernameField);
                 GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 185, panelSizeX - 20, 25),"Slots : "+ MainMod.playerConnected.ToString()+"/"+MainMod.maxPlayer.ToString());
 
-                    if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
+                if (GUI.Button(new Rect(panelOffsetX + 10, panelOffsetY + 245, (panelSizeX / 2), 35), "Disconnect"))
                 {
-                    if (!MainMod.SteamMode)
-                    {
-                        Client.instance.Disconnect();
-                        foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
-                        {
-                            if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
-                            {
-                                Destroy(element.Value.gameObject);
-                            }
-                            else
-                            {
-                                Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
-                                Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
-                            }
-                        }
-
-                        MainMod.isPrefabSet = false;
-                        PlayerManager.players.Clear();
-                        if (MainMod.isHosting)
-                        {
-                            Server.Stop();
-                            MainMod.isHosting = false;
-                        }
-                    }
+                   Client.instance.Disconnect();
                 }
                 if (GUI.Button(new Rect(panelOffsetX + (panelSizeX / 2) + 10, panelOffsetY + 245, (panelSizeX / 2) - 20, 35), "Stop Server"))
                 {

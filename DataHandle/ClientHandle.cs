@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -34,8 +35,27 @@ namespace CMS21MP.DataHandle
             if (!MainMod.isHosting)
             {
                 MainMod.localInventory.items.Clear();
+                MainMod.localInventory.groups.Clear();
                 GlobalData.PlayerMoney = _serverMoney;
                 Stats.moneyHandler = _serverMoney;
+            }
+        }
+
+        public static void DLC(Packet _packet)
+        {
+            ReadOnlyDictionary<string, bool> _dlc = _packet.ReadDLCState();
+            Client.instance.Disconnect();
+            Client.forceDisconnected = true;
+            foreach (KeyValuePair<string, bool> dlc in _dlc)
+            {
+                if (dlc.Value)
+                {
+                    MelonLogger.Msg($"{dlc.Value} need to be removed");
+                }
+                else
+                {
+                    MelonLogger.Msg($"{dlc.Value} need to be installed");
+                }
             }
         }
 

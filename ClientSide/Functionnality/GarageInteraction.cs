@@ -5,7 +5,7 @@ using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class GarageInteration
+    public static class GarageInteraction
     {
         public static void LifterSync()
         {

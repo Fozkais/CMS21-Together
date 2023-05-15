@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using CMS21MP.ClientSide;
+using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.DataHandle;
 using CMS21MP.ServerSide;
 using Il2Cpp;
@@ -13,19 +14,21 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using Client = CMS21MP.ClientSide.Client;
+using Inventory = Il2Cpp.Inventory;
 
 namespace CMS21MP
 {
    public class MainMod : MelonMod
    {
       
-      public const string MOD_VERSION = "Pre-Release 0.2";
-      public const string ASSEMBLY_MOD_VERSION = "0.2";
+      public const string MOD_VERSION = "Pre-Release 0.3";
+      public const string ASSEMBLY_MOD_VERSION = "0.3";
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
       public static PlayerManager gameManager;
       public Client client;
       public ModGUI modGUI;
+      public static DLCSupport DLC;
 
       public static bool isPrefabSet;
 
@@ -85,6 +88,10 @@ namespace CMS21MP
          gameManager.Initialize();
          gameManager._mainMod = this;
 
+         DLC = new DLCSupport();
+         DLC.Initialize();
+         
+
          LoggerInstance.Msg("Mod Initialized!");
       }
 
@@ -121,6 +128,12 @@ namespace CMS21MP
 
       public override void OnUpdate() // Runs once per frame.
       {
+         if (!DLC.DLCListSet && SceneManager.GetActiveScene().name == "Menu")
+         {
+            DLC.CheckDLC();
+         }
+         
+         
          if (MainMod.isConnected)
          {
             Application.runInBackground = true;
