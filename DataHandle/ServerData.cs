@@ -34,7 +34,7 @@ namespace CMS21MP.DataHandle
                         {
                             item.ToGame(element.Value[i], newItem);
                             serverInventory.items.Remove(newItem);
-                            ServerSend.SendItem(element.Key, element.Value[i], false);
+                            ServerSend.SendItem(element.Key, element.Value[i], false, 0);
                             ItemRemoveQueue[element.Key].Remove(element.Value[i]);
                         }
                     }
@@ -53,7 +53,7 @@ namespace CMS21MP.DataHandle
                         {
                             item.ToGame(element.Value[i], newItem);
                             serverInventory.items.Add(newItem);
-                            ServerSend.SendItem(element.Key, element.Value[i], true);
+                            ServerSend.SendItem(element.Key, element.Value[i], true, 0);
                             ItemAddQueue[element.Key].Remove(element.Value[i]);
                         }
                     }
@@ -74,7 +74,7 @@ namespace CMS21MP.DataHandle
                         {
                             modItemGroup.ToGame(element.Value[i], groupItem);
                             serverInventory.groups.Remove(groupItem);
-                            ServerSend.SendGroupItem(element.Key, element.Value[i], false);
+                            ServerSend.SendGroupItem(element.Key, element.Value[i], false, 0);
                             GroupItemRemoveQueue[element.Key].Remove(element.Value[i]);
                         }
                     }
@@ -93,7 +93,7 @@ namespace CMS21MP.DataHandle
                         {
                             modItemGroup.ToGame(element.Value[i], groupItem);
                             serverInventory.groups.Add(groupItem);
-                            ServerSend.SendGroupItem(element.Key, element.Value[i], true);
+                            ServerSend.SendGroupItem(element.Key, element.Value[i], true, 0);
                             GroupItemAddQueue[element.Key].Remove(element.Value[i]);
                         }
                     }

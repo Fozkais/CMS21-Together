@@ -21,9 +21,10 @@ namespace CMS21MP
    public class MainMod : MelonMod
    {
       
-      public const string MOD_VERSION = "Pre-Release 0.3";
-      public const string ASSEMBLY_MOD_VERSION = "0.3";
+      public const string ASSEMBLY_MOD_VERSION = "0.4";
+      public const string MOD_VERSION = "Pre-Release " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
+      protected const KeyCode DLC_ListReset = KeyCode.F10;
       
       public static PlayerManager gameManager;
       public Client client;
@@ -48,8 +49,7 @@ namespace CMS21MP
       public GameObject playerPrefab;
       public static bool playableSceneChecker()
       {
-         if (SceneManager.GetActiveScene().name == "garage" || SceneManager.GetActiveScene().name == "Junkyard" ||
-             SceneManager.GetActiveScene().name == "Auto_salon")
+         if (SceneManager.GetActiveScene().name == "garage" || SceneManager.GetActiveScene().name == "Junkyard" || SceneManager.GetActiveScene().name == "Auto_salon")
          {
             return true;
          }
@@ -185,6 +185,13 @@ namespace CMS21MP
          }
 
          modGUI.GuiOnUpdate();
+         if (SceneManager.GetActiveScene().name == "Menu")
+         {
+            if (Input.GetKeyDown(DLC_ListReset))
+            {
+               DLC.CheckDLC();
+            }
+         }
       }
 
       public override void OnGUI() // Can run multiple times per frame. Mostly used for Unity's IMGUI.
@@ -264,7 +271,7 @@ namespace CMS21MP
 
             model.name = "playerModel";
             model.AddComponent<PlayerInfo>();
-            model.transform.localScale = new Vector3(0.95f, 0.95f, 0.95f);
+            model.transform.localScale = new Vector3(0.90f, 0.90f, 0.90f);
             model.transform.position = new Vector3(0, -10, 0);
             model.transform.rotation = new Quaternion(0, 180, 0, 0);
 

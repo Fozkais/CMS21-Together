@@ -12,9 +12,9 @@ namespace CMS21MP.ClientSide.Functionnality
     {
         public static void AddAllPartToHandleAlt(int carKey)
         {
-            if (!ExternalCarPart.OriginalCarParts.ContainsKey(carKey))
+            if (!BodyPart.OriginalCarParts.ContainsKey(carKey))
             {
-                ExternalCarPart.PreHandleCarParts(carKey);
+                BodyPart.PreHandleBodyParts(carKey);
             }
             if (!MPGameManager.OriginalParts.ContainsKey(carKey))
             {
@@ -55,7 +55,6 @@ namespace CMS21MP.ClientSide.Functionnality
                     //MelonLogger.Msg("Added PartScript_Info to OriginalParts");
                 }
             }
-            MelonLogger.Msg($"Finished Prehandling part for carLoader[{carLoaderID}]");
             CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingPart = true;
         }
         
@@ -83,9 +82,7 @@ namespace CMS21MP.ClientSide.Functionnality
                             //MelonLogger.Msg("Added PartScript_Info to OriginalEngineParts");
                         }
                     }
-                    MelonLogger.Msg($"Finished Prehandling engine for carLoader[{carLoaderID}]");
                     CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingEngine = true;
-                    
         }
         
 
@@ -123,8 +120,7 @@ namespace CMS21MP.ClientSide.Functionnality
                     }
                 }
             }
-    
-            MelonLogger.Msg($"Finished Prehandling suspension for carLoader[{carLoaderID}]");
+            
             CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingSuspension = true;
         }
     }

@@ -28,6 +28,10 @@ namespace CMS21MP.DataHandle
             MelonLogger.Msg($"Message from Server:{_msg}");
             Client.instance.myId = _myId;
             ClientSend.WelcomeReceived();
+            if (_myId != 1)
+            {
+                ClientSend.AskData(_myId);
+            }
             //ClientSend.PlayerScene(SceneManager.GetActiveScene().name);
             
             MainMod.isConnected = true;
@@ -37,13 +41,78 @@ namespace CMS21MP.DataHandle
                 MainMod.localInventory.items.Clear();
                 MainMod.localInventory.groups.Clear();
                 GlobalData.PlayerMoney = _serverMoney;
-                Stats.moneyHandler = _serverMoney;
+                ClientSide.Functionnality.Stats.moneyHandler = _serverMoney;
             }
+        }
+
+        public async static void SendData(Packet _packet)
+        {
+            int ClientAsking = _packet.ReadInt();
+            MelonLogger.Msg($"User:{ClientAsking} asked data.");
+            
+            foreach (Item item in Inventory.currentItems)
+            {
+                ClientSend.SendItem(new ModItem(item), true, ClientAsking);
+            }
+            foreach (GroupItem item in Inventory.currentGroupItems)
+            {
+                ClientSend.SendGroupItem(new ModItemGroup(item, Inventory.currentGroupItems.IndexOf(item)), true, ClientAsking);
+            }
+
+            foreach (KeyValuePair<int, carData> car in CarSpawn.CarHandle)
+            {
+                ClientSend.SpawnCars(car.Value, ClientAsking);
+            }
+
+            await Task.Delay(1000);
+
+            foreach (KeyValuePair<int, Dictionary<int, List<PartScriptInfo>>> parts in MPGameManager.PartsHandle)
+            {
+                foreach (List<PartScriptInfo> part in parts.Value.Values)
+                {
+                    foreach (PartScriptInfo _part in part)
+                    {
+                        ClientSend.carParts(_part, ClientAsking);
+                    }
+                }
+            }
+            foreach (KeyValuePair<int, Dictionary<int, PartScriptInfo>> parts in MPGameManager.EnginePartsHandle)
+            {
+                foreach (PartScriptInfo _part in parts.Value.Values)
+                {
+                    ClientSend.carParts(_part, ClientAsking);
+                }
+            }
+            foreach (KeyValuePair<int, Dictionary<int, List<PartScriptInfo>>> parts in MPGameManager.SuspensionPartsHandle)
+            {
+                foreach (List<PartScriptInfo> part in parts.Value.Values)
+                {
+                    foreach (PartScriptInfo _part in part)
+                    {
+                        ClientSend.carParts(_part, ClientAsking);
+                    }
+                }
+            }
+            foreach (KeyValuePair<int, Dictionary<int, carPartsData>> parts in BodyPart.CarPartsHandle)
+            {
+                foreach (carPartsData part in parts.Value.Values)
+                {
+                    ClientSend.bodyParts(part, ClientAsking);
+                }
+            }
+        }
+
+        public static void versionMismatch(Packet _packet)
+        {
+            string version = _packet.ReadString();
+            Client.instance.Disconnect();
+            Client.forceDisconnected = true;
+            MelonLogger.Msg($"Host uses version:{version} installed:{MainMod.ASSEMBLY_MOD_VERSION}");
         }
 
         public static void DLC(Packet _packet)
         {
-            ReadOnlyDictionary<string, bool> _dlc = _packet.ReadDLCState();
+            Dictionary<string, bool> _dlc = _packet.ReadDLCState();
             Client.instance.Disconnect();
             Client.forceDisconnected = true;
             foreach (KeyValuePair<string, bool> dlc in _dlc)
@@ -215,30 +284,61 @@ namespace CMS21MP.DataHandle
 
         }
 
-        public static void PlayerMoney(Packet _packet)
+        public static void Stats(Packet _packet)
         {
-            int money = _packet.ReadInt();
+            int stats = _packet.ReadInt();
             bool status = _packet.ReadBool();
+            int type = _packet.ReadInt();
             if (status)
             {
-                MelonLogger.Msg($"Adding Money!! +{money}");
-                GlobalData.AddPlayerMoney(money);
-                Stats.moneyHandler = GlobalData.PlayerMoney;
+                if (type == 0)
+                {
+                    MelonLogger.Msg($"Adding Money!! +{stats}");
+                    GlobalData.AddPlayerMoney(stats);
+                    ClientSide.Functionnality.Stats.moneyHandler = GlobalData.PlayerMoney;
+                }
+                else if (type == 1)
+                {
+                    MelonLogger.Msg($"Adding Scrap!! +{stats}");
+                    GlobalData.AddPlayerScraps(stats);
+                    ClientSide.Functionnality.Stats.scrapHandler = GlobalData.PlayerScraps;
+                }
+                else if (type == 2)
+                {
+                    MelonLogger.Msg($"Adding Exp!! +{stats}");
+                    GlobalData.AddPlayerExp(stats);
+                    ClientSide.Functionnality.Stats.ExperienceHandler = GlobalData.PlayerExp;
+                }
+                    
             }
             else
             {
-                MelonLogger.Msg($"Removing Money!! {money}");
-                GlobalData.AddPlayerMoney(money);
-                Stats.moneyHandler = GlobalData.PlayerMoney;
+                if (type == 0)
+                {
+                    MelonLogger.Msg($"Removing Money!! -{stats}");
+                    GlobalData.AddPlayerMoney(stats);
+                    ClientSide.Functionnality.Stats.moneyHandler = GlobalData.PlayerMoney;
+                }
+                else if (type == 1)
+                {
+                    MelonLogger.Msg($"Removing Scrap!! -{stats}");
+                    GlobalData.AddPlayerScraps(stats);
+                    ClientSide.Functionnality.Stats.scrapHandler = GlobalData.PlayerScraps;
+                }
+                else if (type == 2)
+                {
+                    MelonLogger.Msg($"Removing Exp!! -{stats}");
+                    GlobalData.AddPlayerExp(stats);
+                    ClientSide.Functionnality.Stats.ExperienceHandler = GlobalData.PlayerExp;
+                }
             }
         }
         public static void PlayerScene(Packet _packet)
         {
             int _id = _packet.ReadInt();
-            string _username = _packet.ReadString();
             string _scene = _packet.ReadString();
             
-            MelonLogger.Msg($"received new scene from {_username}, scene: {_scene}");
+            MelonLogger.Msg($"received new scene: {_scene}");
 
             PlayerManager.players[_id].activeScene = _scene;
         }
@@ -247,35 +347,38 @@ namespace CMS21MP.DataHandle
         {
             carData data = _packet.ReadCarData();
 
-            MelonLogger.Msg($"CL: Received new car info : ID[{data.carID}], carPos[{data.carPosition}], status[{data.status}");
-            
-            if (data.status)
-            {
-                if (!CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
-                {
-                    CarSpawn.CarHandle.Add(data.carLoaderID, data);
-                }
+            MelonLogger.Msg($"CL: Received new car info : ID[{data.carID}], carPos[{data.carPosition}], status[{data.status}, scene[{data.Scene}]");
 
-                MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
-                MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
-                MainMod.carLoaders[data.carLoaderID].color = new ModColor().Convert(data.carColor);
-                MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID, data.configNumber);
-
-                await Task.Delay(1000);
-                PreCarPart.AddAllPartToHandleAlt(data.carLoaderID);
-            }
-            else
+            if (data.Scene == SceneManager.GetActiveScene().name)
             {
-                if (CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
+                if (data.status)
                 {
-                    CarSpawn.CarHandle.Remove(data.carLoaderID);
-                    CarSpawn.RemoveCar(data.carLoaderID);
+                    if (!CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
+                    {
+                        CarSpawn.CarHandle.Add(data.carLoaderID, data);
+
+                        MainMod.carLoaders[data.carLoaderID].placeNo = data.carPosition;
+                        MainMod.carLoaders[data.carLoaderID].PlaceAtPosition();
+                        MainMod.carLoaders[data.carLoaderID].color = new ModColor().Convert(data.carColor);
+                        MainMod.carLoaders[data.carLoaderID].SetFactoryColor(new ModColor().Convert(data.carColor));
+                        MainMod.carLoaders[data.carLoaderID].gameObject.GetComponentInChildren<CarDebug>().LoadCar(data.carID, data.configNumber);
+
+                        await Task.Delay(1000);
+                        PreCarPart.AddAllPartToHandleAlt(data.carLoaderID);
+                    }
                 }
-                
-                
-                MainMod.carLoaders[data.carLoaderID].DeleteCar();
+                else
+                {
+                    if (CarSpawn.CarHandle.ContainsKey(data.carLoaderID))
+                    {
+                        CarSpawn.CarHandle.Remove(data.carLoaderID);
+                        CarSpawn.RemoveCar(data.carLoaderID);
+                    }
+                    
+                    
+                    MainMod.carLoaders[data.carLoaderID].DeleteCar();
+                }
             }
-            
         }
         
         public static void MoveCar(Packet _packet)
@@ -293,25 +396,11 @@ namespace CMS21MP.DataHandle
             }
             
         }
-        
+
         public static void carParts(Packet _packet)
         {
-            bool partType = _packet.ReadBool();
-            if (!partType)
-            {
-                PartScriptInfo _part = _packet.ReadPartScriptInfo();
-                MelonCoroutines.Start(delayPartUpdate(_part));
-                
-            }
-            else
-            {
-                MelonLogger.Msg("Received PartList");
-                List<PartScriptInfo> _parts = _packet.ReadPartScriptInfoList();
-                foreach (PartScriptInfo part in _parts)
-                {
-                    MelonCoroutines.Start(delayPartUpdate(part));
-                }
-            }
+            PartScriptInfo _part = _packet.ReadPartScriptInfo();
+            MelonCoroutines.Start(delayPartUpdate(_part));
         }
 
         public static void UpdatePart(PartScriptInfo _part)
@@ -380,6 +469,15 @@ namespace CMS21MP.DataHandle
                     originalPart.ShowMountAnimation();
                     originalPart.FastMount();
                 }
+                
+                //Wheel Handle
+                var wheelData = MainMod.carLoaders[Newpart._carLoaderID].WheelsData;
+                for (int i = 0; i < MainMod.carLoaders[Newpart._carLoaderID].WheelsData.Wheels.Count; i++)
+                {
+                    MainMod.carLoaders[Newpart._carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
+                    MainMod.carLoaders[Newpart._carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                }
+                MainMod.carLoaders[Newpart._carLoaderID].SetWheelSizes();
             }
             else
             {
@@ -396,67 +494,84 @@ namespace CMS21MP.DataHandle
 
         static IEnumerator delayPartUpdate(PartScriptInfo _part)
         {
-            if(!CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingEngine || 
-               !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingPart || 
-               !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingSuspension)
+            if (!CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingEngine || !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingPart || !CarSpawn.CarHandle[_part._carLoaderID].FinishedPreHandlingSuspension)
+            {
+                PreCarPart.AddPartHandle(_part._carLoaderID);
+                PreCarPart.AddEnginePartHandle(_part._carLoaderID);
+                PreCarPart.AddSuspensionPartHandle(_part._carLoaderID);
                 yield return new WaitForSeconds(2f);
+                MelonCoroutines.Start(delayPartUpdate(_part));
+            }
+            else
+            {
+                if (_part._type == partType.part)
+                {
+                    if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
+                    {
+                        PreCarPart.AddPartHandle(_part._carLoaderID);
+                        yield return new WaitForSeconds(3f);
+                    }
+                    else
+                    {
+                        if (!MPGameManager.PartsHandle.ContainsKey(_part._carLoaderID))
+                        {
+                            MPGameManager.PartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+                        }
+                        if (!MPGameManager.PartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+                        {
+                            MPGameManager.PartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+                        }
+                        MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
+                        UpdatePart(_part);
+                    }
+
+                }
+                else if(_part._type == partType.engine)
+                {
+                    if (!MPGameManager.OriginalEngineParts.ContainsKey(_part._carLoaderID))
+                    {
+                        PreCarPart.AddEnginePartHandle(_part._carLoaderID);
+                        yield return new WaitForSeconds(3f);
+                    }
+                    else
+                    {
+                        if (!MPGameManager.EnginePartsHandle.ContainsKey(_part._carLoaderID))
+                        {
+                            MPGameManager.EnginePartsHandle.Add(_part._carLoaderID, new Dictionary<int, PartScriptInfo>());
+                        }
+
+                        if (!MPGameManager.EnginePartsHandle[_part._carLoaderID].ContainsKey(_part._partCountID))
+                        {
+                            MPGameManager.EnginePartsHandle[_part._carLoaderID].Add(_part._partCountID, _part);
+                        }
+                        UpdatePart(_part);
+                    }
+
+                }
+                else if (_part._type == partType.suspensions)
+                {
+                    if (!MPGameManager.OriginalSuspensionParts.ContainsKey(_part._carLoaderID))
+                    {
+                        PreCarPart.AddSuspensionPartHandle(_part._carLoaderID);
+                        yield return new WaitForSeconds(3f);
+                    }
+                    else
+                    {
+                        if (!MPGameManager.SuspensionPartsHandle.ContainsKey(_part._carLoaderID))
+                        {
+                            MPGameManager.SuspensionPartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
+                        }
+                        if (!MPGameManager.SuspensionPartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
+                        {
+                            MPGameManager.SuspensionPartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
+                        }
+                        MPGameManager.SuspensionPartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
+                        UpdatePart(_part);
+                    }
+
+                }
+            }
             
-            if (_part._type == partType.part)
-            {
-                if (!MPGameManager.OriginalParts.ContainsKey(_part._carLoaderID))
-                {
-                    PreCarPart.AddPartHandle(_part._carLoaderID);
-                    yield return new WaitForSeconds(3f);
-                }
-
-                if (!MPGameManager.PartsHandle.ContainsKey(_part._carLoaderID))
-                {
-                    MPGameManager.PartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
-                }
-                if (!MPGameManager.PartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
-                {
-                    MPGameManager.PartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
-                }
-                MPGameManager.PartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
-            }
-            else if(_part._type == partType.engine)
-            {
-                if (!MPGameManager.OriginalEngineParts.ContainsKey(_part._carLoaderID))
-                {
-                    PreCarPart.AddEnginePartHandle(_part._carLoaderID);
-                    yield return new WaitForSeconds(3f);
-                }
-
-                if (!MPGameManager.EnginePartsHandle.ContainsKey(_part._carLoaderID))
-                {
-                    MPGameManager.EnginePartsHandle.Add(_part._carLoaderID, new Dictionary<int, PartScriptInfo>());
-                }
-
-                if (!MPGameManager.EnginePartsHandle[_part._carLoaderID].ContainsKey(_part._partCountID))
-                {
-                    MPGameManager.EnginePartsHandle[_part._carLoaderID].Add(_part._partCountID, _part);
-                }
-            }
-            else if (_part._type == partType.suspensions)
-            {
-                if (!MPGameManager.OriginalSuspensionParts.ContainsKey(_part._carLoaderID))
-                {
-                    PreCarPart.AddSuspensionPartHandle(_part._carLoaderID);
-                    yield return new WaitForSeconds(3f);
-                }
-
-                if (!MPGameManager.SuspensionPartsHandle.ContainsKey(_part._carLoaderID))
-                {
-                    MPGameManager.SuspensionPartsHandle.Add(_part._carLoaderID, new Dictionary<int, List<PartScriptInfo>>());
-                }
-                if (!MPGameManager.SuspensionPartsHandle[_part._carLoaderID].ContainsKey(_part._partItemID))
-                {
-                    MPGameManager.SuspensionPartsHandle[_part._carLoaderID].Add(_part._partItemID, new List<PartScriptInfo>());
-                }
-                MPGameManager.SuspensionPartsHandle[_part._carLoaderID][_part._partItemID].Add(_part);
-            }
-
-            UpdatePart(_part);
         }
 
         public static void bodyPart(Packet _packet)
@@ -471,85 +586,89 @@ namespace CMS21MP.DataHandle
 
         static IEnumerator delayCarPartUpdate(carPartsData _bodyPart, int _carLoaderID)
         {
-            if(!CarSpawn.CarHandle[_carLoaderID].FinishedPreHandlingCarPart)
+            if (!CarSpawn.CarHandle[_carLoaderID].FinishedPreHandlingCarPart)
+            {
                 yield return new WaitForSeconds(1.5f);
-            
-            if (!MPGameManager.OriginalEngineParts.ContainsKey(_bodyPart.carLoaderID))
-            {
-                ExternalCarPart.PreHandleCarParts(_bodyPart.carLoaderID);
-                yield return new WaitForSeconds(3f);
+                MelonCoroutines.Start(delayCarPartUpdate(_bodyPart, _carLoaderID));
             }
+            else
+            {
+                if (!MPGameManager.OriginalEngineParts.ContainsKey(_bodyPart.carLoaderID))
+                {
+                    BodyPart.PreHandleBodyParts(_bodyPart.carLoaderID);
+                    yield return new WaitForSeconds(3f);
+                }
 
-            if (!ExternalCarPart.CarPartsHandle.ContainsKey(_bodyPart.carLoaderID))
-            {
-                ExternalCarPart.CarPartsHandle.Add(_bodyPart.carLoaderID, new Dictionary<int, carPartsData>());
-            }
+                if (!BodyPart.CarPartsHandle.ContainsKey(_bodyPart.carLoaderID))
+                {
+                    BodyPart.CarPartsHandle.Add(_bodyPart.carLoaderID, new Dictionary<int, carPartsData>());
+                }
 
-            if (!ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID].ContainsKey(_bodyPart.carPartID))
-            {
-                ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID].Add(_bodyPart.carPartID, _bodyPart);
-            }
-            
-            ExternalCarPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._UniqueID = _bodyPart.UniqueID;
-            ExternalCarPart.CarPartsHandle[_bodyPart.carLoaderID][_bodyPart.carPartID] = _bodyPart;
-            
-            if (MainMod.carLoaders != null && MainMod.carLoaders[_carLoaderID] != null)
-            {
+                if (!BodyPart.CarPartsHandle[_bodyPart.carLoaderID].ContainsKey(_bodyPart.carPartID))
+                {
+                    BodyPart.CarPartsHandle[_bodyPart.carLoaderID].Add(_bodyPart.carPartID, _bodyPart);
+                }
                 
-                if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
+                BodyPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._UniqueID = _bodyPart.UniqueID;
+                BodyPart.CarPartsHandle[_bodyPart.carLoaderID][_bodyPart.carPartID] = _bodyPart;
+                
+                if (MainMod.carLoaders != null && MainMod.carLoaders[_carLoaderID] != null)
                 {
-                    Color color = new ModColor().Convert(_bodyPart.colors);
-                    Color tintColor = new ModColor().Convert(_bodyPart.TintColor);
-
-                    CarPart _part = ExternalCarPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._originalPart;
-
-                    _part.IsTinted = _bodyPart.isTinted;
-                    _part.TintColor = tintColor;
-                    _part.Color = color;
-                    _part.PaintType = (PaintType)_bodyPart.paintType;
-                    _part.OutsideRustEnabled = _bodyPart.outsaidRustEnabled;
-                    _part.AdditionalString = _bodyPart.additionalString;
-                    _part.Quality = _bodyPart.quality;
-                    _part.WashFactor = _bodyPart.washFactor;
                     
-                    if(_part.TunedID != _bodyPart.tunedID)
-                        MainMod.carLoaders[_carLoaderID].TunePart(_part.name, _bodyPart.tunedID);
-                    
-                    MainMod.carLoaders[_carLoaderID].SetDent(_part, _bodyPart.dent);
-                    MainMod.carLoaders[_carLoaderID].EnableDust(_part, _bodyPart.Dust);
-                    MainMod.carLoaders[_carLoaderID].SetCondition(_part, _bodyPart.condition);
-                    
-                    if (!_part.Unmounted && !_part.name.StartsWith("license_plate"))
+                    if (!String.IsNullOrEmpty(MainMod.carLoaders[_carLoaderID].carToLoad))
                     {
-                        //MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, new ModPaintData().Convert(_bodyPart.paintData));  
-                       // MainMod.carLoaders[_carLoaderID].SetCarColorAndPaintType(_part, color, (PaintType)_bodyPart.paintType);
+                        Color color = new ModColor().Convert(_bodyPart.colors);
+                        Color tintColor = new ModColor().Convert(_bodyPart.TintColor);
+
+                        CarPart _part = BodyPart.OriginalCarParts[_bodyPart.carLoaderID][_bodyPart.carPartID]._originalPart;
+
+                        _part.IsTinted = _bodyPart.isTinted;
+                        _part.TintColor = tintColor;
+                        _part.Color = color;
+                        _part.PaintType = (PaintType)_bodyPart.paintType;
+                        _part.OutsideRustEnabled = _bodyPart.outsaidRustEnabled;
+                        _part.AdditionalString = _bodyPart.additionalString;
+                        _part.Quality = _bodyPart.quality;
+                        _part.WashFactor = _bodyPart.washFactor;
+                        
+                        if(_part.TunedID != _bodyPart.tunedID)
+                            MainMod.carLoaders[_carLoaderID].TunePart(_part.name, _bodyPart.tunedID);
+                        
+                        MainMod.carLoaders[_carLoaderID].SetDent(_part, _bodyPart.dent);
+                        MainMod.carLoaders[_carLoaderID].EnableDust(_part, _bodyPart.Dust);
+                        MainMod.carLoaders[_carLoaderID].SetCondition(_part, _bodyPart.condition);
+                        
+                        if (!_part.Unmounted && !_part.name.StartsWith("license_plate"))
+                        {
+                            //MainMod.carLoaders[_carLoaderID].SetCustomCarPaintType(_part, new ModPaintData().Convert(_bodyPart.paintData));  
+                           // MainMod.carLoaders[_carLoaderID].SetCarColorAndPaintType(_part, color, (PaintType)_bodyPart.paintType);
+                        }
+                        MainMod.carLoaders[_carLoaderID].SetCarLivery(_part, _bodyPart.livery, _bodyPart.liveryStrength);
+                        
+                        if(!_part.Unmounted && _bodyPart.unmounted)
+                            MainMod.carLoaders[_carLoaderID].TakeOffCarPartFromSave(_bodyPart.name);
+                        if (_part.Unmounted && !_bodyPart.unmounted)
+                        {
+                            MainMod.carLoaders[_carLoaderID].TakeOnCarPartFromSave(_bodyPart.name);
+                        }
+                                          
+                                     
+                        
+                        if (_part.Switched != _bodyPart.switched)
+                            MainMod.carLoaders[_carLoaderID].SwitchCarPart(_part, false, _bodyPart.switched);
+
+
+                        if(_bodyPart.isTinted)
+                            PaintHelper.SetWindowProperties(_part.handle, (int)(_bodyPart.TintColor.a * 255), _part.TintColor);
+                        
+                        //MelonLogger.Msg($"Parts[{_bodyPart.carPartID}] updated!, {_bodyPart.name}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name}, {_bodyPart.unmounted}");
                     }
-                    MainMod.carLoaders[_carLoaderID].SetCarLivery(_part, _bodyPart.livery, _bodyPart.liveryStrength);
-                    
-                    if(!_part.Unmounted && _bodyPart.unmounted)
-                        MainMod.carLoaders[_carLoaderID].TakeOffCarPartFromSave(_bodyPart.name);
-                    if (_part.Unmounted && !_bodyPart.unmounted)
+                    else
                     {
-                        MainMod.carLoaders[_carLoaderID].TakeOnCarPartFromSave(_bodyPart.name);
+                        MelonLogger.Msg($"Loss of data from bodyPart ! {_bodyPart.name} on car with CarLoaderID{_carLoaderID}");
                     }
-                                      
-                                 
-                    
-                    if (_part.Switched != _bodyPart.switched)
-                        MainMod.carLoaders[_carLoaderID].SwitchCarPart(_part, false, _bodyPart.switched);
-
-
-                    if(_bodyPart.isTinted)
-                        PaintHelper.SetWindowProperties(_part.handle, (int)(_bodyPart.TintColor.a * 255), _part.TintColor);
-                    
-                    //MelonLogger.Msg($"Parts[{_bodyPart.carPartID}] updated!, {_bodyPart.name}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name}, {_bodyPart.unmounted}");
-                }
-                else
-                {
-                    MelonLogger.Msg($"Loss of data from bodyPart ! {_bodyPart.name} on car with CarLoaderID{_carLoaderID}");
                 }
             }
-
         }
 
         public static void lifterPos(Packet _packet)

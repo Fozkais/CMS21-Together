@@ -26,7 +26,7 @@ namespace CMS21MP.ClientSide.Functionnality
             if (Vector3.Distance(playerPos, lastPos) > .05f)
             {
                 lastPos = playerPos;
-                Vector3 newPlayerPos = new Vector3(playerPos.x, playerPos.y - .8f, playerPos.z);
+                Vector3 newPlayerPos = new Vector3(playerPos.x, playerPos.y - .81f, playerPos.z);
                 ClientSend.PlayerMovement(newPlayerPos);
             }
         }

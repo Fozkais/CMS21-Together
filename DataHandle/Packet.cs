@@ -7,8 +7,6 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 using Il2Cpp;
-using MelonLoader;
-using Newtonsoft.Json;
 using UnityEngine;
 
 
@@ -19,6 +17,8 @@ namespace CMS21MP.DataHandle
     {
         welcome = 1,
         dlc,
+        versionMismatch,
+        askData,
         spawnPlayer,
         playerPosition,
         playerRotation,
@@ -26,7 +26,7 @@ namespace CMS21MP.DataHandle
         playerDisconnect,
         items,
         groupItems,
-        playerMoney,
+        stats,
         playerScene,
         spawnCars,
         moveCars,
@@ -43,11 +43,13 @@ namespace CMS21MP.DataHandle
     {
         welcomeReceived = 1,
         dlc,
+        versionMismatch,
+        askData,
         playerMovement,
         playerRotation,
         items,
         groupItems,
-        playerMoney,
+        stats,
         playerScene,
         spawnCars,
         moveCars,
@@ -268,7 +270,7 @@ namespace CMS21MP.DataHandle
             Write(array);
         }
         
-        public void Write(ReadOnlyDictionary<string, bool> _value)
+        public void Write(Dictionary<string, bool> _value)
         {
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
@@ -531,18 +533,11 @@ namespace CMS21MP.DataHandle
             return (ModItemGroup) ByteArrayToObject(array);
         }
 
-        public ReadOnlyDictionary<string, bool> ReadDLCState()
+        public Dictionary<string, bool> ReadDLCState()
         {
             int lenght = ReadInt(); // Get the length of the byte array
             byte[] array = ReadBytes(lenght); // Return the bytes
-            return (ReadOnlyDictionary<string, bool>) ByteArrayToObject(array);
-        }
-        
-        public List<string> ReadDLCDifferences()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (List<string>) ByteArrayToObject(array);
+            return (Dictionary<string, bool>) ByteArrayToObject(array);
         }
 
         private object ByteArrayToObject(byte[] arrBytes)

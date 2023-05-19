@@ -11,7 +11,6 @@ namespace CMS21MP.ClientSide.Functionnality
     public static class CarSpawn
     {
         public static Dictionary<int, carData> CarHandle = new Dictionary<int, carData>();
-        public static bool HasFinishedUpdatingPre, HasFinishedUpdatingHand;
 
         public static void HandleCarSpawn()
         {
@@ -57,12 +56,12 @@ namespace CMS21MP.ClientSide.Functionnality
             MPGameManager.OriginalParts.Remove(carKey);
             MPGameManager.OriginalEngineParts.Remove(carKey);
             MPGameManager.OriginalSuspensionParts.Remove(carKey);
-            ExternalCarPart.OriginalCarParts.Remove(carKey);
+            BodyPart.OriginalCarParts.Remove(carKey);
             
             MPGameManager.PartsHandle.Remove(carKey);
             MPGameManager.EnginePartsHandle.Remove(carKey);
             MPGameManager.SuspensionPartsHandle.Remove(carKey);
-            ExternalCarPart.CarPartsHandle.Remove(carKey);
+            BodyPart.CarPartsHandle.Remove(carKey);
         }
     }
 }

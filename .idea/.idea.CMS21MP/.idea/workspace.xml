@@ -4,21 +4,160 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)">
-      <change afterPath="$PROJECT_DIR$/ClientSide/Functionnality/DLCSupport.cs" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/GarageInteration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/GarageInteraction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/DLCSupport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/DLCSupport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/ExternalCarPart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/BodyPart.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/Movement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/PreCarPart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/PreCarPart.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/Stats.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Functionnality/Stats.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModGUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages.config" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/.signature.p7s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/HarmonyLogo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/LICENSE" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/Lib.Harmony.2.2.2.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net35/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net35/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net45/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net45/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net472/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net472/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net48/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net48/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net5.0/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net5.0/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net6.0/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/net6.0/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/netcoreapp3.0/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/netcoreapp3.0/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/netcoreapp3.1/0Harmony.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Lib.Harmony.2.2.2/lib/netcoreapp3.1/0Harmony.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/.signature.p7s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/LICENSE.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/Newtonsoft.Json.13.0.3.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net20/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net20/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net35/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net35/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net40/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net40/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net45/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net45/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net6.0/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/net6.0/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard1.0/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard1.0/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard1.3/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard1.3/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard2.0/Newtonsoft.Json.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/lib/netstandard2.0/Newtonsoft.Json.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/Newtonsoft.Json.13.0.3/packageIcon.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/.signature.p7s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/System.Net.Sockets.4.3.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ThirdPartyNotices.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/dotnet_library_license.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/MonoAndroid10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/MonoTouch10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/net46/System.Net.Sockets.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/xamarinios10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/xamarinmac20/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/xamarintvos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/lib/xamarinwatchos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/MonoAndroid10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/MonoTouch10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/net46/System.Net.Sockets.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/System.Net.Sockets.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/de/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/es/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/fr/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/it/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/ja/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/ko/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/ru/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/zh-hans/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/netstandard1.3/zh-hant/System.Net.Sockets.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/xamarinios10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/xamarinmac20/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/xamarintvos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Net.Sockets.4.3.0/ref/xamarinwatchos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/.signature.p7s" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/System.Xml.XmlSerializer.4.3.0.nupkg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ThirdPartyNotices.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/dotnet_library_license.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/MonoAndroid10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/MonoTouch10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/net45/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/netcore50/System.Xml.XmlSerializer.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/netstandard1.3/System.Xml.XmlSerializer.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/portable-net45+win8+wp8+wpa81/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/win8/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/wp80/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/wpa81/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/xamarinios10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/xamarinmac20/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/xamarintvos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/lib/xamarinwatchos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/MonoAndroid10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/MonoTouch10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/net45/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/System.Xml.XmlSerializer.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/de/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/es/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/fr/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/it/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/ja/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/ko/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/ru/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/zh-hans/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netcore50/zh-hant/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/System.Xml.XmlSerializer.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/de/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/es/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/fr/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/it/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/ja/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/ko/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/ru/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/zh-hans/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.0/zh-hant/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/System.Xml.XmlSerializer.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/de/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/es/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/fr/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/it/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/ja/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/ko/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/ru/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/zh-hans/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/netstandard1.3/zh-hant/System.Xml.XmlSerializer.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/portable-net45+win8+wp8+wpa81/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/win8/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/wp80/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/wpa81/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/xamarinios10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/xamarinmac20/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/xamarintvos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/ref/xamarinwatchos10/_._" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/packages/System.Xml.XmlSerializer.4.3.0/runtimes/aot/lib/netcore50/System.Xml.XmlSerializer.dll" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +185,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4b76c3e709534801a173f34a1d6b3dfc522790/97/d5a5327c/KeyValuePair`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/3e/1a84a1a6/MountObjectData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/46/5261f8ce/Item.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/7c/04ae1fb7/WheelData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/8f/7f236cd4/DLC.cs" root0="SKIP_HIGHLIGHTING" />
@@ -54,14 +194,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/df/69d5f767/MountObject.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/43/48fc3d2a/DlcInstalled_t.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Functionnality/CarPart.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/MPGameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/Packet.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ServerHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModGUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -70,7 +203,7 @@
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2IrvJxQ1hX3124YNnPPa3Vd2X0K" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -94,7 +227,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.C#&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;SolutionBuilderGeneralOptionsPage&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
   &quot;keyToStringList&quot;: {
@@ -186,7 +319,12 @@
       <workItem from="1683481690478" duration="25051000" />
       <workItem from="1683570515700" duration="1308000" />
       <workItem from="1683571919243" duration="80000" />
-      <workItem from="1684066502239" duration="15337000" />
+      <workItem from="1684066502239" duration="17526000" />
+      <workItem from="1684258297814" duration="18781000" />
+      <workItem from="1684443745730" duration="429000" />
+      <workItem from="1684444335215" duration="2043000" />
+      <workItem from="1684490855186" duration="10019000" />
+      <workItem from="1684515032627" duration="935000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -335,7 +473,14 @@
       <option name="project" value="LOCAL" />
       <updated>1684014233884</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="-- Pre-Release 0.3 --&#10;- Implemented DLC Checkup&#10;- Bit of refactoring&#10;- Adjustement to playerModel size/pos&#10;-- Bug Fix --&#10;- Client wheren't deconected when server closed">
+      <created>1684160060253</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1684160060253</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -386,7 +531,8 @@
     <MESSAGE value="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed." />
     <MESSAGE value="-- Pre-Release 0 Bug Fix 1--&#10;- No Addition &#10;-- Bug Fix --&#10;- Server slot now Update Properly&#10;- Disconnecting now no longer broke the mod &#10;- Host can now stop/start without crash&#10;-- Knowed Bug -- &#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed" />
     <MESSAGE value="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)" />
-    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)" />
+    <MESSAGE value="-- Pre-Release 0.3 --&#10;- Implemented DLC Checkup&#10;- Bit of refactoring&#10;- Adjustement to playerModel size/pos&#10;-- Bug Fix --&#10;- Client wheren't deconected when server closed" />
+    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0.3 --&#10;- Implemented DLC Checkup&#10;- Bit of refactoring&#10;- Adjustement to playerModel size/pos&#10;-- Bug Fix --&#10;- Client wheren't deconected when server closed" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

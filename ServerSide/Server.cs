@@ -153,11 +153,12 @@ namespace CMS21MP.ServerSide
             packetHandlers = new Dictionary<int, packetHandler>()
             {
                 {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
+                {(int)ClientPackets.askData, ServerHandle.AskData},
                 {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
                 {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
                 {(int)ClientPackets.items, ServerHandle.ReceivedModItem},
                 {(int)ClientPackets.groupItems, ServerHandle.ReceivedGroupItem},
-                {(int)ClientPackets.playerMoney, ServerHandle.PlayerMoney},
+                {(int)ClientPackets.stats, ServerHandle.Stats},
                 {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
                 {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
                 {(int)ClientPackets.moveCars, ServerHandle.MoveCar},

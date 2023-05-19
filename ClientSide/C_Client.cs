@@ -342,6 +342,8 @@ namespace CMS21MP.ClientSide
             {
                 { (int)ServerPackets.welcome, ClientHandle.Welcome },
                 { (int)ServerPackets.dlc, ClientHandle.DLC },
+                { (int)ServerPackets.versionMismatch, ClientHandle.versionMismatch },
+                { (int)ServerPackets.askData, ClientHandle.SendData },
                 { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
                 { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
@@ -349,7 +351,7 @@ namespace CMS21MP.ClientSide
                 {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect},
                 {(int)ServerPackets.items, ClientHandle.ItemReceive},
                 {(int)ServerPackets.groupItems, ClientHandle.GroupItemReceive},
-                {(int)ServerPackets.playerMoney, ClientHandle.PlayerMoney},
+                {(int)ServerPackets.stats, ClientHandle.Stats},
                 {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
                 {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
                 {(int)ServerPackets.moveCars, ClientHandle.MoveCar},

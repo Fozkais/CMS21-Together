@@ -37,7 +37,7 @@
     <Compile Include="ClientSide\Functionnality\DLCSupport.cs" />
     <Compile Include="ClientSide\Functionnality\PreCarPart.cs" />
     <Compile Include="ClientSide\Functionnality\CarSpawn.cs" />
-    <Compile Include="ClientSide\Functionnality\ExternalCarPart.cs" />
+    <Compile Include="ClientSide\Functionnality\BodyPart.cs" />
     <Compile Include="ClientSide\Functionnality\GarageInteraction.cs" />
     <Compile Include="ClientSide\Functionnality\SceneSwaping.cs" />
     <Compile Include="ClientSide\Functionnality\Inventory.cs" />
@@ -63,7 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp-firstpass">
@@ -78,17 +77,10 @@
     <Reference Include="MelonLoader">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\MelonLoader.dll</HintPath>
     </Reference>
-    <Reference Include="mscorlib" />
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Steamworks.NET">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\UserLibs\Steamworks.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Net.Sockets, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Net.Sockets.4.3.0\lib\net46\System.Net.Sockets.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
     </Reference>
@@ -107,17 +99,6 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="System">
-      <Guid>{BEE4BFEC-6683-3E67-9167-3C0CBC68F40A}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

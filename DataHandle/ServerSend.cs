@@ -81,7 +81,7 @@ namespace CMS21MP.DataHandle
             }
         }
 
-        public static void DLC(ReadOnlyDictionary<string, bool> dlcDifferences, int clientID)
+        public static void DLC(Dictionary<string, bool> dlcDifferences, int clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.dlc))
             {
@@ -147,7 +147,7 @@ namespace CMS21MP.DataHandle
 
         }
 
-        public static void SendItem(int clientID,ModItem item, bool status)
+        public static void SendItem(int clientID,ModItem item, bool status, int _clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.items))
             {
@@ -156,10 +156,17 @@ namespace CMS21MP.DataHandle
                 _packet.Write(status);
                 
                // MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
-                SendTCPDataToAll(clientID,_packet);
+               if (_clientID == 0)
+               {
+                   SendTCPDataToAll(clientID,_packet);
+               }
+               else
+               {
+                   SendTCPData(_clientID, _packet);
+               }
             }
         }
-        public static void SendGroupItem(int clientID,ModItemGroup item, bool status)
+        public static void SendGroupItem(int clientID,ModItemGroup item, bool status, int _clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.groupItems))
             {
@@ -168,40 +175,54 @@ namespace CMS21MP.DataHandle
                 _packet.Write(status);
                 
                 // MelonLogger.Msg($"SV : Sending item info! ID:{item.ID}, UID:{item.UID}, Type:{status}");
-                SendTCPDataToAll(clientID,_packet);
+                if (_clientID == 0)
+                {
+                    SendTCPDataToAll(clientID,_packet);
+                }
+                else
+                {
+                    SendTCPData(_clientID, _packet);
+                }
             }
         }
 
-        public static void PlayerMoney(int clientID, int money, bool status)
+        public static void Stats(int clientID, int stat, bool status, int type)
         {
-            using (Packet _packet = new Packet((int)ServerPackets.playerMoney))
+            using (Packet _packet = new Packet((int)ServerPackets.stats))
             {
-                _packet.Write(money);
+                _packet.Write(stat);
                 _packet.Write(status);
+                _packet.Write(type);
                 
                 SendTCPDataToAll(clientID, _packet);
             }
         }
 
-        public static void PlayerScene(int clientID, string username, string scene)
+        public static void PlayerScene(int clientID, string scene)
         {
             using (Packet _packet = new Packet((int)ServerPackets.playerScene))
             {
                 _packet.Write(clientID);
-                _packet.Write(username);
                 _packet.Write(scene);
 
                 SendTCPDataToAll(clientID, _packet);
             }
         }
 
-        public static void SpawnCars(int fromClient, carData data)
+        public static void SpawnCars(int fromClient, carData data, int _clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.spawnCars))
             {
                 _packet.Write(data);
 
-                SendTCPDataToAll(fromClient, _packet);
+                if (_clientID == 0)
+                {
+                    SendTCPDataToAll(fromClient,_packet);
+                }
+                else
+                {
+                    SendTCPData(_clientID, _packet);
+                }
             }
         }
 
@@ -216,38 +237,39 @@ namespace CMS21MP.DataHandle
             }
             MelonLogger.Msg("Sended new car pos to all");
         }
-        
-        public static void initialcarPart(int fromClient, bool partType, List<PartScriptInfo> parts)
-        {
-            using (Packet _packet = new Packet((int)ServerPackets.initialCarPart))
-            {
-                _packet.Write(partType);
-                _packet.Write(parts);
 
-                SendTCPDataToAll(fromClient, _packet);
-            }
-            //MelonLogger.Msg("SV: Sending new Part to player !");
-        }
-
-        public static void carPart(int fromClient, bool partType, PartScriptInfo part)
+        public static void carPart(int fromClient, PartScriptInfo part, int _clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.car_part))
             {
-                _packet.Write(partType);
                 _packet.Write(part);
 
-                SendTCPDataToAll(fromClient, _packet);
+                if (_clientID == 0)
+                {
+                    SendTCPDataToAll(fromClient,_packet);
+                }
+                else
+                {
+                    SendTCPData(_clientID, _packet);
+                }
             }
             //MelonLogger.Msg("SV: Sending new Part to players !");
         }
 
-        public static void bodyPart(int fromClient, carPartsData bodyParts)
+        public static void bodyPart(int fromClient, carPartsData bodyParts, int _clientID)
         {
             using (Packet _packet = new Packet((int)ServerPackets.body_part))
             {
                 _packet.Write(bodyParts);
 
-                SendTCPDataToAll(fromClient, _packet);
+                if (_clientID == 0)
+                {
+                    SendTCPDataToAll(fromClient,_packet);
+                }
+                else
+                {
+                    SendTCPData(_clientID, _packet);
+                }
             }
             //MelonLogger.Msg("SV: Sending new BodyPart to player !");
         }
@@ -263,5 +285,24 @@ namespace CMS21MP.DataHandle
             }
         }
 
+        public static void AskData(int fromClient)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.askData))
+            {
+                _packet.Write(fromClient);
+
+                SendTCPData(1, _packet);
+            }
+        }
+
+        public static void VersionMismatch(int clientID, string assemblyModVersion)
+        {
+            using (Packet _packet = new Packet((int)ServerPackets.versionMismatch))
+            {
+                _packet.Write(assemblyModVersion);
+
+                SendTCPData(clientID, _packet);
+            }
+        }
     }
 }

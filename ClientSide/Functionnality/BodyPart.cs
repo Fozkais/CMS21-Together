@@ -8,12 +8,12 @@ using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
-    public static class ExternalCarPart
+    public static class BodyPart
     {
         public static Dictionary<int, Dictionary<int, carPartsData_info>> OriginalCarParts = new Dictionary<int, Dictionary<int, carPartsData_info>>();
         public static Dictionary<int, Dictionary<int, carPartsData>> CarPartsHandle = new Dictionary<int, Dictionary<int, carPartsData>>();
 
-        public async static void PreHandleCarParts(int carHandlerID)
+        public async static void PreHandleBodyParts(int carHandlerID)
         {
             await Task.Delay(2000);
 
@@ -46,58 +46,64 @@ namespace CMS21MP.ClientSide.Functionnality
             else
             {
                 await Task.Delay(2000);
-                PreHandleCarParts(carHandlerID);
+                PreHandleBodyParts(carHandlerID);
             }
         }
 
-        public async static void HandleCarParts()
+        public async static void HandleBodyParts()
         {
             var OriginalCarPartsCopy = OriginalCarParts.ToList();
             
             foreach (KeyValuePair<int, Dictionary<int, carPartsData_info>> car in OriginalCarPartsCopy)
             {
-                if (CarSpawn.CarHandle.ContainsKey(car.Key))
+                if (CarSpawn.CarHandle[car.Key].FinishedPreHandlingCarPart)
                 {
-                    if (!CarSpawn.CarHandle[car.Key].CarPartFromServer)
+                    if (CarSpawn.CarHandle.ContainsKey(car.Key))
                     {
-                        var parts = car.Value;
-
-                        foreach (var part in parts)
+                        if (!CarSpawn.CarHandle[car.Key].CarPartFromServer)
                         {
-                            if(!CarPartsHandle.ContainsKey(car.Key))
-                                CarPartsHandle.Add(car.Key, new Dictionary<int, carPartsData>());
+                            var parts = car.Value;
 
-                            #region addToHandle
-
-                            if (!CarPartsHandle[car.Key].ContainsKey(part.Key))
+                            foreach (var part in parts)
                             {
-                                CarPartsHandle[car.Key].Add(part.Key, parts[part.Key]._CarPartsData);
-                                ClientSend.bodyParts(CarPartsHandle[car.Key][part.Key]);
-                            }
-                    
-                            #endregion
+                                if (!CarPartsHandle.ContainsKey(car.Key))
+                                    CarPartsHandle.Add(car.Key, new Dictionary<int, carPartsData>());
 
-                            #region CheckForDifferences
+                                #region addToHandle
 
-                            if (CarPartsHandle.ContainsKey(car.Key) && CarPartsHandle[car.Key].ContainsKey(part.Key))
-                            {
-                                carPartsData handled = CarPartsHandle[car.Key][part.Key];
-                                carPartsData original = new carPartsData(parts[part.Key]._originalPart, parts[part.Key]._partCountID, parts[part.Key]._carLoaderID, parts[part.Key]._UniqueID);
-                                if (HasDifferences(original, handled))
+                                if (!CarPartsHandle[car.Key].ContainsKey(part.Key))
                                 {
-                                    MelonLogger.Msg("Differences Found , sending updatedPart");
-                                    CarPartsHandle[car.Key][part.Key] = original;
+                                    CarPartsHandle[car.Key].Add(part.Key, parts[part.Key]._CarPartsData);
                                     ClientSend.bodyParts(CarPartsHandle[car.Key][part.Key]);
                                 }
+
+                                #endregion
+
+                                #region CheckForDifferences
+
+                                if (CarPartsHandle.ContainsKey(car.Key) &&
+                                    CarPartsHandle[car.Key].ContainsKey(part.Key))
+                                {
+                                    carPartsData handled = CarPartsHandle[car.Key][part.Key];
+                                    carPartsData original = new carPartsData(parts[part.Key]._originalPart,
+                                        parts[part.Key]._partCountID, parts[part.Key]._carLoaderID,
+                                        parts[part.Key]._UniqueID);
+                                    if (HasDifferences(original, handled))
+                                    {
+                                        MelonLogger.Msg("Differences Found , sending updatedPart");
+                                        CarPartsHandle[car.Key][part.Key] = original;
+                                        ClientSend.bodyParts(CarPartsHandle[car.Key][part.Key]);
+                                    }
+                                }
+
+                                #endregion
                             }
-                    
-                            #endregion
                         }
-                    }
-                    else
-                    {
-                        await Task.Delay(4000);
-                        CarSpawn.CarHandle[car.Key].CarPartFromServer = false; 
+                        else
+                        {
+                            await Task.Delay(4000);
+                            CarSpawn.CarHandle[car.Key].CarPartFromServer = false;
+                        }
                     }
                 }
                 else

@@ -4,6 +4,7 @@ using Il2Cpp;
 using Il2CppCMS.Containers;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CMS21MP.DataHandle
 {
@@ -194,11 +195,10 @@ namespace CMS21MP.DataHandle
     [Serializable]
     public class carData
     {
-
-        public Guid _UniqueID;
         public int clientID;
         public bool status;
         public bool isReady;
+        public string Scene;
 
         public bool isOnLifter;
         public CarLifterState LifterState;
@@ -221,17 +221,21 @@ namespace CMS21MP.DataHandle
 
         public carData(CarLoader carLoader, int index, bool fromServer)
         {
+            this.Scene = SceneManager.GetActiveScene().name;
             this.carLoaderID = index;
             this.carID = carLoader.carToLoad;
             this.carPosition = carLoader.placeNo;
             this.configNumber = carLoader.ConfigVersion;
             this.carColor = new ModColor(carLoader.color.r, carLoader.color.g, carLoader.color.b, carLoader.color.a);
-            this._UniqueID = Guid.NewGuid();
             this.status = true;
             this.CarPartFromServer = fromServer;
             this.PartFromServer = fromServer;
             this.SuspensionFromServer = fromServer;
             this.EngineFromServer = fromServer;
+            this.FinishedPreHandlingPart = false;
+            this.FinishedPreHandlingEngine = false;
+            this.FinishedPreHandlingSuspension = false;
+            this.FinishedPreHandlingCarPart = false;
         }
     }
 
@@ -429,7 +433,7 @@ namespace CMS21MP.DataHandle
             original.Livery = item.Livery;
             original.LiveryStrength = item.LiveryStrength;
             //this.LPData = item.LPData; TODO: Handle class
-            //this.MountObjectData = item.MountObjectData; TODO: Handle class
+            //original.MountObjectData = item.MountObjectData; TODO: Handle class
             original.NormalID = item.NormalID;
             original.OutsideRustEnabled = item.OutsideRustEnabled;
             original.PaintData = new ModPaintData().Convert(item.PaintData);
