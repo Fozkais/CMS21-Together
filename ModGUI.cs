@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using MelonLoader;
@@ -21,6 +22,7 @@ namespace CMS21MP.ClientSide
 
         public Vector3 player2Pos;
         public string player2Position;
+        
         
 
 
@@ -142,6 +144,7 @@ namespace CMS21MP.ClientSide
 
                 //GUI.Label(new Rect(panelOffsetX + 10, panelOffsetY + 300, (panelSizeX / 2), 35), "CarPreHandle :" + CarPart_PreHandling.preHandleFinished);
             }
+            PreferencesManager.SavePreferences();
         }
 
         public void GuiOnUpdate()

@@ -1,13 +1,8 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using Il2Cpp;
-using Il2CppCMS.MainMenu.Logic;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
@@ -45,10 +40,10 @@ namespace CMS21MP.ClientSide.Functionnality
             }
 
 
-            foreach (KeyValuePair<string, bool> dlc in hasDLC)
-            {
-                MelonLogger.Msg($"DLC: {dlc.Key} | Owned: {dlc.Value}");
-            }
+           // foreach (KeyValuePair<string, bool> dlc in hasDLC)
+           // {
+              //  MelonLogger.Msg($"DLC: {dlc.Key} | Owned: {dlc.Value}");
+            //}
         }
     }
 }

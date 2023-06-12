@@ -3,7 +3,6 @@ using UnityEngine;
 using System.Net;
 using System.Net.Sockets;
 using System;
-using System.Threading.Tasks;
 using CMS21MP.DataHandle;
 using CMS21MP.ServerSide;
 using MelonLoader;
@@ -122,7 +121,7 @@ namespace CMS21MP.ClientSide
 
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-                catch (Exception ex) // Capturer toutes les exceptions possibles
+                catch // Capturer toutes les exceptions possibles
                 {
                     MelonLogger.Msg($"An error occurred while connecting to the server, check your internet or the ip of the server.");
                 }
@@ -145,7 +144,7 @@ namespace CMS21MP.ClientSide
                     receivedData.Reset(HandleData(_data));
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
-                catch (Exception e)
+                catch
                 {
                     //MelonLogger.Msg($"Error caused Disconnection! : {e}");
                     Disconnect();
@@ -286,7 +285,7 @@ namespace CMS21MP.ClientSide
 
                         HandleData(_data);
                     }
-                    catch (Exception e)
+                    catch 
                     {
                         if (!forceDisconnected)
                         {

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using CMS21MP.DataHandle;
-using Il2Cpp;
-using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {

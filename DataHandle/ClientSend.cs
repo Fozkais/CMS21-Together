@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Net;
-using System.Threading.Tasks;
 using CMS21MP.ClientSide;
 using Il2Cpp;
 using MelonLoader;
@@ -42,7 +40,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.playerMovement))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(_position);
 
                 // MelonLogger.Msg($"Sending playerPos to server!");
@@ -54,7 +51,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.playerRotation))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(_rotation);
 
                 // MelonLogger.Msg($"Sending playerPos to server!");
@@ -66,7 +62,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.items))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(_item);
                 _packet.Write(status);
                 _packet.Write(toClient);
@@ -79,7 +74,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.groupItems))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(item);
                 _packet.Write(status);
                 _packet.Write(tocClient);
@@ -92,7 +86,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.stats))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(stat);
                 _packet.Write(status);
                 _packet.Write(type);
@@ -105,7 +98,6 @@ namespace CMS21MP.DataHandle
         {
             using (Packet _packet = new Packet((int)ClientPackets.playerScene))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(scene);
                 
                 SendTCPData(_packet);
@@ -116,7 +108,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.spawnCars))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(data);
                 _packet.Write(ClientID);
 
@@ -129,7 +120,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.moveCars))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(carPosition);
                 _packet.Write(carLoaderID);
 
@@ -141,7 +131,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.car_part))
                 {
-                    _packet.Write(Client.instance.myId);
                     _packet.Write(part);
                     _packet.Write(ClientID);
 
@@ -153,7 +142,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.body_part))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(parts);
                 _packet.Write(ClientID);
 
@@ -166,7 +154,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.lifterState))
             {
-                _packet.Write(Client.instance.myId);
                 _packet.Write(lifterState);
                 _packet.Write(carLoaderID);
 
@@ -179,8 +166,6 @@ namespace CMS21MP.DataHandle
         {
             using(Packet _packet = new Packet((int)ClientPackets.askData))
             {
-                _packet.Write(Client.instance.myId);
-
                 SendTCPData(_packet);
             }
         }

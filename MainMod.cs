@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.DataHandle;
+using CMS21MP.DataHandle.CL_Handle;
 using CMS21MP.ServerSide;
 using Il2Cpp;
 using Il2CppInterop.Runtime.Injection;
@@ -21,7 +23,7 @@ namespace CMS21MP
    public class MainMod : MelonMod
    {
       
-      public const string ASSEMBLY_MOD_VERSION = "0.4";
+      public const string ASSEMBLY_MOD_VERSION = "0.5.0";
       public const string MOD_VERSION = "Pre-Release " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       protected const KeyCode DLC_ListReset = KeyCode.F10;
@@ -93,6 +95,7 @@ namespace CMS21MP
          
 
          LoggerInstance.Msg("Mod Initialized!");
+         PreferencesManager.LoadPreferences();
       }
 
       public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
@@ -141,7 +144,8 @@ namespace CMS21MP
             {
                if (MainMod.localPlayer != null)
                {
-                  MainMod.localPlayer.GetComponent<MPGameManager>().InfoUpdate();
+                  if(!MPGameManager.isUpdateRunning)
+                     localPlayer.GetComponent<MPGameManager>().InfoUpdate();
                   
                   if (MainMod.isHosting)
                   {
@@ -151,8 +155,12 @@ namespace CMS21MP
                         ServerData.UpdateGroupItems();
                      }
                   }
+                  
                }
+               if(!CarPartHandle.isRunning) 
+                  CarPartHandle.delayUpdatePart();
             }
+            
          }
          else
          {

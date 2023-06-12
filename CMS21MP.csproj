@@ -46,8 +46,14 @@
     <Compile Include="ClientSide\PlayerManager.cs" />
     <Compile Include="ClientSide\MPGameManager.cs" />
     <Compile Include="ClientSide\PlayerInfo.cs" />
+    <Compile Include="ClientSide\PreferencesManager.cs" />
     <Compile Include="DataHandle\ClientHandle.cs" />
     <Compile Include="DataHandle\ClientSend.cs" />
+    <Compile Include="DataHandle\CL_Handle\BodyPartHandle.cs" />
+    <Compile Include="DataHandle\CL_Handle\CarPartHandle.cs" />
+    <Compile Include="DataHandle\CL_Handle\GarageInteractionHandle.cs" />
+    <Compile Include="DataHandle\CL_Handle\InventoryHandle.cs" />
+    <Compile Include="DataHandle\CL_Handle\StatsHandle.cs" />
     <Compile Include="DataHandle\CustomClassData.cs" />
     <Compile Include="DataHandle\Packet.cs" />
     <Compile Include="DataHandle\ServerData.cs" />
@@ -76,9 +82,6 @@
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\MelonLoader.dll</HintPath>
-    </Reference>
-    <Reference Include="Steamworks.NET">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\UserLibs\Steamworks.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">

@@ -3,60 +3,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CMS21MP.DataHandle;
-using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21MP.ClientSide.Functionnality
 {
     public static class BodyPart
     {
-        public static Dictionary<int, Dictionary<int, carPartsData_info>> OriginalCarParts = new Dictionary<int, Dictionary<int, carPartsData_info>>();
-        public static Dictionary<int, Dictionary<int, carPartsData>> CarPartsHandle = new Dictionary<int, Dictionary<int, carPartsData>>();
+        public static Dictionary<int, Dictionary<int, carPartsData_info>> OriginalBodyParts = new Dictionary<int, Dictionary<int, carPartsData_info>>();
+        public static Dictionary<int, Dictionary<int, carPartsData>> BodyPartsHandle = new Dictionary<int, Dictionary<int, carPartsData>>();
+        
+        private static object lockObject = new object();
 
-        public async static void PreHandleBodyParts(int carHandlerID)
+        public static async Task PreHandleBodyParts(int carHandlerID)
         {
-            await Task.Delay(2000);
-
-            carData carData = CarSpawn.CarHandle[carHandlerID]; //
-            if (carData != null)
+            lock (lockObject)
             {
-                int carLoaderID = carData.carLoaderID;//
-                if (carLoaderID < MainMod.carLoaders.Length)
+                carData carData = CarSpawn.CarHandle[carHandlerID];
+                int carLoaderID = carData.carLoaderID;
+
+                int counter = 0;
+                
+                for (int i = 0; i < MainMod.carLoaders[carLoaderID].carParts.Count; i++)
                 {
-                    for (int i = 0; i < MainMod.carLoaders[carLoaderID].carParts.Count; i++)//
+                    carPartsData_info part = new carPartsData_info(MainMod.carLoaders[carLoaderID].carParts._items[i],
+                        carLoaderID, i);
+                    if (!OriginalBodyParts.ContainsKey(carHandlerID))
                     {
-                        carPartsData_info part = new carPartsData_info(MainMod.carLoaders[carLoaderID].carParts._items[i], carLoaderID, i);
-                        if (!OriginalCarParts.ContainsKey(carHandlerID))
-                        {
-                            OriginalCarParts.Add(carHandlerID, new Dictionary<int, carPartsData_info>());//
-                        }
-                        if (!OriginalCarParts[carHandlerID].ContainsKey(i))
-                        {
-                            OriginalCarParts[carHandlerID].Add(i, part);
-                        }
+                        OriginalBodyParts.Add(carHandlerID, new Dictionary<int, carPartsData_info>());
+                    }
+
+                    if (!OriginalBodyParts[carHandlerID].ContainsKey(counter))
+                    {
+                        OriginalBodyParts[carHandlerID].Add(counter, new carPartsData_info(MainMod.carLoaders[carLoaderID].carParts._items[i], carLoaderID, counter));
+                    }
+                    else
+                    {
+                        counter++;
+                        i--;
                     }
                 }
-                else
-                {
-                   // MelonLogger.Warning($"PreHandleCarParts: carLoaderID {carLoaderID} is out of range for MainMod.carLoaders.");
-                }
-               // MelonLogger.Msg($"Finished Prehandling bodyPart for carLoader[{carLoaderID}]");
-               CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingCarPart = true;
+                CarSpawn.CarHandle[carLoaderID].FinishedPreHandlingBodyPart = true;
             }
-            else
-            {
-                await Task.Delay(2000);
-                PreHandleBodyParts(carHandlerID);
-            }
+            await Task.CompletedTask;
         }
-
-        public async static void HandleBodyParts()
+        
+        public async static Task HandleBodyParts()
         {
-            var OriginalCarPartsCopy = OriginalCarParts.ToList();
+            var OriginalCarPartsCopy = OriginalBodyParts.ToList();
             
             foreach (KeyValuePair<int, Dictionary<int, carPartsData_info>> car in OriginalCarPartsCopy)
             {
-                if (CarSpawn.CarHandle[car.Key].FinishedPreHandlingCarPart)
+                if (CarSpawn.CarHandle[car.Key].FinishedPreHandlingBodyPart)
                 {
                     if (CarSpawn.CarHandle.ContainsKey(car.Key))
                     {
@@ -66,33 +63,33 @@ namespace CMS21MP.ClientSide.Functionnality
 
                             foreach (var part in parts)
                             {
-                                if (!CarPartsHandle.ContainsKey(car.Key))
-                                    CarPartsHandle.Add(car.Key, new Dictionary<int, carPartsData>());
+                                if (!BodyPartsHandle.ContainsKey(car.Key))
+                                    BodyPartsHandle.Add(car.Key, new Dictionary<int, carPartsData>());
 
                                 #region addToHandle
 
-                                if (!CarPartsHandle[car.Key].ContainsKey(part.Key))
+                                if (!BodyPartsHandle[car.Key].ContainsKey(part.Key))
                                 {
-                                    CarPartsHandle[car.Key].Add(part.Key, parts[part.Key]._CarPartsData);
-                                    ClientSend.bodyParts(CarPartsHandle[car.Key][part.Key]);
+                                    BodyPartsHandle[car.Key].Add(part.Key, parts[part.Key]._CarPartsData);
+                                    ClientSend.bodyParts(BodyPartsHandle[car.Key][part.Key]);
                                 }
 
                                 #endregion
 
                                 #region CheckForDifferences
 
-                                if (CarPartsHandle.ContainsKey(car.Key) &&
-                                    CarPartsHandle[car.Key].ContainsKey(part.Key))
+                                if (BodyPartsHandle.ContainsKey(car.Key) &&
+                                    BodyPartsHandle[car.Key].ContainsKey(part.Key))
                                 {
-                                    carPartsData handled = CarPartsHandle[car.Key][part.Key];
+                                    carPartsData handled = BodyPartsHandle[car.Key][part.Key];
                                     carPartsData original = new carPartsData(parts[part.Key]._originalPart,
                                         parts[part.Key]._partCountID, parts[part.Key]._carLoaderID,
                                         parts[part.Key]._UniqueID);
                                     if (HasDifferences(original, handled))
                                     {
                                         MelonLogger.Msg("Differences Found , sending updatedPart");
-                                        CarPartsHandle[car.Key][part.Key] = original;
-                                        ClientSend.bodyParts(CarPartsHandle[car.Key][part.Key]);
+                                        BodyPartsHandle[car.Key][part.Key] = original;
+                                        ClientSend.bodyParts(BodyPartsHandle[car.Key][part.Key]);
                                     }
                                 }
 
@@ -106,25 +103,7 @@ namespace CMS21MP.ClientSide.Functionnality
                         }
                     }
                 }
-                else
-                {
-                    MelonLogger.Msg($"Dont contain key {car.Key}");
-                }
-
             }
-        }
-        
-        public static bool carPartIsExistingList(carPartsData partToHandle, List<carPartsData> otherList)
-        {
-            foreach (carPartsData carPartData in otherList)
-            {
-                if (carPartData.name == partToHandle.name && carPartData.carLoaderID == partToHandle.carLoaderID && carPartData.quality == partToHandle.quality && partToHandle.unmounted == carPartData.unmounted)
-                {
-                    //MelonLogger.Msg($"Rejected CarData: {partToHandle.name}");
-                    return true;
-                }
-            }
-            return false;
         }
 
         public static bool HasDifferences(carPartsData original,carPartsData handled)
@@ -134,10 +113,6 @@ namespace CMS21MP.ClientSide.Functionnality
                 hasDif = true;
             if (original.switched != handled.switched)
                 hasDif = true;
-            //else if (original.colors != handled.colors)
-               // hasDif = true;
-           /// else if (original.paintType != handled.paintType)
-               // hasDif = true;
 
             return hasDif;
         }

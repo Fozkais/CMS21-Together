@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.ServerSide;
 using Il2Cpp;
@@ -12,64 +11,64 @@ namespace CMS21MP.DataHandle
     {
         public static void WelcomeReceived(int _fromClient, Packet _packet)
         {
-            int _clientIdCheck = _packet.ReadInt();
-            string msg = _packet.ReadString();
-            string _username = _packet.ReadString();
-            Dictionary<string, bool> _dlc = _packet.ReadDLCState();
-            string modVersion = _packet.ReadString();
-
-            if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
-                ServerSend.VersionMismatch(_clientIdCheck, MainMod.ASSEMBLY_MOD_VERSION);
-
-            Dictionary<string, bool> _DLCDif = new Dictionary<string, bool>();
-            Dictionary<string, bool> _DLCDifferences;
-            foreach (KeyValuePair<string, bool> dlc in _dlc)
+            try
             {
-                if (!dlc.Value && MainMod.DLC.hasDLC[dlc.Key])
+                int _clientIdCheck = _packet.ReadInt();
+                string msg = _packet.ReadString();
+                string _username = _packet.ReadString();
+                Dictionary<string, bool> _dlc = _packet.ReadDLCState();
+                string modVersion = _packet.ReadString();
+
+                if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
+                    ServerSend.VersionMismatch(_clientIdCheck, MainMod.ASSEMBLY_MOD_VERSION);
+
+                Dictionary<string, bool> _DLCDif = new Dictionary<string, bool>();
+                Dictionary<string, bool> _DLCDifferences;
+                foreach (KeyValuePair<string, bool> dlc in _dlc)
                 {
-                    _DLCDif.Add(dlc.Key, false);
+                    if (!dlc.Value && MainMod.DLC.hasDLC[dlc.Key])
+                    {
+                        _DLCDif.Add(dlc.Key, false);
+                    }
+                    else if (dlc.Value && !MainMod.DLC.hasDLC[dlc.Key])
+                    {
+                        _DLCDif.Add(dlc.Key, true);
+                    }
                 }
-                else if (dlc.Value && !MainMod.DLC.hasDLC[dlc.Key])
+
+                if (_DLCDif.Count > 0)
                 {
-                    _DLCDif.Add(dlc.Key, true);
+                    _DLCDifferences = new Dictionary<string, bool>(_DLCDif);
+                    ServerSend.DLC(_DLCDifferences, _clientIdCheck);
+                }
+                else
+                {
+                    MelonLogger.Msg($"ID:[{_clientIdCheck}] " + msg);
+                
+                    MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint}" +
+                                    $"connected succesfully and is now player{_fromClient}.");
+
+                    if (_fromClient != _clientIdCheck)
+                    {
+                        MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed" +
+                                          $" the wrong client ID ({_clientIdCheck})!");
+                    }
+                    Server.clients[_fromClient].SendIntoGame(_username);
                 }
             }
-
-            if (_DLCDif.Count > 0)
+            catch
             {
-                _DLCDifferences = new Dictionary<string, bool>(_DLCDif);
-                ServerSend.DLC(_DLCDifferences, _clientIdCheck);
+                // ignore
             }
-            else
-            {
-                MelonLogger.Msg($"ID:[{_clientIdCheck}] " + msg);
-            
-                MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint}" +
-                                $"connected succesfully and is now player{_fromClient}.");
-
-                if (_fromClient != _clientIdCheck)
-                {
-                    MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed" +
-                                      $" the wrong client ID ({_clientIdCheck})!");
-                }
-                Server.clients[_fromClient].SendIntoGame(_username);
-            }
-
-        }
-
-        public static void KeepAlive(int _fromClient, Packet _packet)
-        {
-            int clientId = _packet.ReadInt();
         }
 
         public static void PlayerMovement(int _fromclient, Packet _packet)
         {
-            _fromclient = _packet.ReadInt();
             Vector3 position = _packet.ReadVector3();
 
-            if (Movement.MovUpdateQueue.ContainsKey(_fromclient))
+            if (Movement.MovUpdateQueue.TryGetValue(_fromclient, out var value))
             {
-                Movement.MovUpdateQueue[_fromclient].Add(position);
+                value.Add(position);
             }
             else
             {
@@ -78,12 +77,11 @@ namespace CMS21MP.DataHandle
         }
         public static void PlayerRotation(int _fromclient, Packet _packet)
         {
-            _fromclient = _packet.ReadInt();
             Quaternion _rotation = _packet.ReadQuaternion();
 
-            if (Movement.RotUpdateQueue.ContainsKey(_fromclient))
+            if (Movement.RotUpdateQueue.TryGetValue(_fromclient, out var value))
             {
-                Movement.RotUpdateQueue[_fromclient].Add(_rotation);
+                value.Add(_rotation);
             }
             else
             {
@@ -93,7 +91,6 @@ namespace CMS21MP.DataHandle
 
         public static void ReceivedModItem(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             ModItem _item = _packet.ReadModItem();
             bool status = _packet.ReadBool();
             int clientID = _packet.ReadInt();
@@ -103,9 +100,9 @@ namespace CMS21MP.DataHandle
             {
                 if (status)
                 {
-                    if (ServerData.ItemAddQueue.ContainsKey(_fromClient))
+                    if (ServerData.ItemAddQueue.TryGetValue(_fromClient, out var value))
                     {
-                        ServerData.ItemAddQueue[_fromClient].Add(_item);
+                        value.Add(_item);
                     }
                     else
                     {
@@ -114,9 +111,9 @@ namespace CMS21MP.DataHandle
                 }
                 else
                 {
-                    if (ServerData.ItemRemoveQueue.ContainsKey(_fromClient))
+                    if (ServerData.ItemRemoveQueue.TryGetValue(_fromClient, out var value))
                     {
-                        ServerData.ItemRemoveQueue[_fromClient].Add(_item);
+                        value.Add(_item);
                     }
                     else
                     {
@@ -132,7 +129,6 @@ namespace CMS21MP.DataHandle
         
         public static void ReceivedGroupItem(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             ModItemGroup _item = _packet.ReadModItemGroup();
             bool status = _packet.ReadBool();
             int clientID = _packet.ReadInt();
@@ -142,9 +138,9 @@ namespace CMS21MP.DataHandle
             {
                 if (status)
                 {
-                    if (ServerData.GroupItemAddQueue.ContainsKey(_fromClient))
+                    if (ServerData.GroupItemAddQueue.TryGetValue(_fromClient, out var value))
                     {
-                        ServerData.GroupItemAddQueue[_fromClient].Add(_item);
+                        value.Add(_item);
                     }
                     else
                     {
@@ -153,9 +149,9 @@ namespace CMS21MP.DataHandle
                 }
                 else
                 {
-                    if (ServerData.GroupItemRemoveQueue.ContainsKey(_fromClient))
+                    if (ServerData.GroupItemRemoveQueue.TryGetValue(_fromClient, out var value))
                     {
-                        ServerData.GroupItemRemoveQueue[_fromClient].Add(_item);
+                        value.Add(_item);
                     }
                     else
                     {
@@ -172,7 +168,6 @@ namespace CMS21MP.DataHandle
         }
         public static void Stats(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             int _money =  _packet.ReadInt();
             bool status = _packet.ReadBool();
             int _type = _packet.ReadInt();
@@ -181,7 +176,6 @@ namespace CMS21MP.DataHandle
         }
         public static void PlayerScene(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             string _scene = _packet.ReadString();
             
             MelonLogger.Msg($"SV : Received scene: {_scene} from client with ID:{_fromClient} !");
@@ -189,8 +183,7 @@ namespace CMS21MP.DataHandle
         }
 
         public static void SpawnCars(int _fromClient, Packet _packet)
-        { 
-            _fromClient = _packet.ReadInt();
+        {
             carData data = _packet.ReadCarData();
             int clientID = _packet.ReadInt();
 
@@ -201,7 +194,6 @@ namespace CMS21MP.DataHandle
         
         public static void MoveCar(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             int carPosition = _packet.ReadInt();
             int carLoaderID = _packet.ReadInt();
             
@@ -216,7 +208,6 @@ namespace CMS21MP.DataHandle
         {
             //MelonLogger.Msg("SV: Received new carParts! sending to players.");
             
-            _fromClient = _packet.ReadInt();
             PartScriptInfo part = _packet.ReadPartScriptInfo();
             int clientID = _packet.ReadInt();
             
@@ -227,7 +218,6 @@ namespace CMS21MP.DataHandle
 
         public static void bodyPart(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             carPartsData bodyParts = _packet.ReadBodyPart();
             int clientID = _packet.ReadInt();
 
@@ -238,7 +228,6 @@ namespace CMS21MP.DataHandle
 
         public static void lifterState(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             CarLifterState lifterState = _packet.ReadCarLifterState();
             int carLoaderID = _packet.ReadInt();
 
@@ -247,7 +236,6 @@ namespace CMS21MP.DataHandle
 
         public static void AskData(int _fromClient, Packet _packet)
         {
-            _fromClient = _packet.ReadInt();
             ServerSend.AskData(_fromClient);
         }
         

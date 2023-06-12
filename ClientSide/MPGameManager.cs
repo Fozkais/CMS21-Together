@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CMS21MP.ClientSide.Functionnality;
 using CMS21MP.DataHandle;
 using Il2Cpp;
@@ -25,39 +26,19 @@ namespace CMS21MP.ClientSide
         public static Dictionary<int,Dictionary<int, List<ModPartScript_Info>>> OriginalSuspensionParts = new Dictionary<int,Dictionary<int, List<ModPartScript_Info>>>();
         public static Dictionary<int,Dictionary<int, List<PartScriptInfo>>> SuspensionPartsHandle = new Dictionary<int,Dictionary<int, List<PartScriptInfo>>>();
 
-        public static bool hasFinishedUpdatingCar = true;
+        public static bool isUpdateRunning;
 
-        public void InfoUpdate()
+        public async Task InfoUpdate()
         {
+            isUpdateRunning = true;
             Movement.HandleMovement();
             Inventory.HandleInventory();
-            Stats.HandleStats();
-            CarSpawn.HandleCarSpawn();
             SceneSwaping.UpdatePlayerScene();
-
-            if(hasFinishedUpdatingCar)
-                MelonCoroutines.Start(delayCarUpdating());
-            
+            Stats.HandleStats();
             MoveCar();
-            
-        }
-        public IEnumerator delayCarUpdating()
-        {
-            hasFinishedUpdatingCar = false;
-            yield return new WaitForSeconds(1);
-
-            try
-            {
-                CarPart.HandleAllParts();
-            }
-            catch (KeyNotFoundException e)
-            {
-                MelonLogger.Msg($"Caught KeyNotFoundException: {e.Message}. Retrying coroutine...");
-                MelonCoroutines.Start(delayCarUpdating()); // réexécute la coroutine
-                yield break; // arrête l'exécution de cette instance de la coroutine
-            }
-
-            hasFinishedUpdatingCar = true;
+            await CarSpawn.HandleCarSpawn();
+            await CarPart.HandleAllParts();
+            isUpdateRunning = false;
         }
         public void MoveCar()
         {
@@ -70,9 +51,6 @@ namespace CMS21MP.ClientSide
                 } 
             }
         }
-
-
-
 
         public static void HandleServerReset()
         {

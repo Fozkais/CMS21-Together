@@ -215,7 +215,7 @@ namespace CMS21MP.DataHandle
         public bool FinishedPreHandlingPart;
         public bool FinishedPreHandlingEngine;
         public bool FinishedPreHandlingSuspension;
-        public bool FinishedPreHandlingCarPart;
+        public bool FinishedPreHandlingBodyPart;
 
         public ModColor carColor;
 
@@ -235,7 +235,7 @@ namespace CMS21MP.DataHandle
             this.FinishedPreHandlingPart = false;
             this.FinishedPreHandlingEngine = false;
             this.FinishedPreHandlingSuspension = false;
-            this.FinishedPreHandlingCarPart = false;
+            this.FinishedPreHandlingBodyPart = false;
         }
     }
 
