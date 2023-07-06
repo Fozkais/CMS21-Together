@@ -6,18 +6,19 @@ using System;
 using CMS21MP.DataHandle;
 using CMS21MP.ServerSide;
 using MelonLoader;
+using UnityEngine.Serialization;
 
 
 namespace CMS21MP.ClientSide
 {
     public class Client : MonoBehaviour
     {
-        public static Client instance;
+        public static Client Instance;
         public static int dataBufferSize = 4096;
 
         public string ip = "127.0.0.1";
-        public int port = 7777;
-        public int myId = 0;
+        public int port;
+        public int Id;
         public TCP tcp;
         public UDP udp;
 
@@ -26,17 +27,17 @@ namespace CMS21MP.ClientSide
 
         public delegate void PacketHandler(Packet _packet);
 
-        public static Dictionary<int, PacketHandler> packetHandlers;
+        public static Dictionary<int, PacketHandler> PacketHandlers;
 
         public ThreadManager threadManager;
 
         public void Initialize()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
             }
-            else if (instance != this)
+            else if (Instance != this)
             {
                 MelonLogger.Msg("Instance already exists, destroying object!");
                 Destroy(this);
@@ -53,9 +54,11 @@ namespace CMS21MP.ClientSide
         }
 
 
-        public void ConnectToServer()
+        public void ConnectToServer(string _ipAdress)
         {
             InitializeClientData();
+            Instance.ip = _ipAdress;
+            Instance.port = MainMod.PORT;
 
             isConnected = true;
 
@@ -72,7 +75,7 @@ namespace CMS21MP.ClientSide
             if (!isConnected)
             {
                 // Traiter les erreurs de connexion ici
-                packetHandlers.Clear();
+                PacketHandlers.Clear();
             }
         }
 
@@ -96,7 +99,7 @@ namespace CMS21MP.ClientSide
 
                     receiveBuffer = new byte[dataBufferSize];
 
-                    socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
+                    socket.BeginConnect(Instance.ip, Instance.port, ConnectCallback, socket);
                 }
                 catch (Exception ex) // Capturer toutes les exceptions possibles
                 {
@@ -134,7 +137,7 @@ namespace CMS21MP.ClientSide
                     int _byteLength = stream.EndRead(_result);
                     if (_byteLength <= 0)
                     {
-                        instance.Disconnect();
+                        Instance.Disconnect();
                         return;
                     }
 
@@ -173,7 +176,7 @@ namespace CMS21MP.ClientSide
                         using (Packet _packet = new Packet(_packetBytes))
                         {
                             int _packetId = _packet.ReadInt();
-                            packetHandlers[_packetId](_packet);
+                            PacketHandlers[_packetId](_packet);
                         }
                     });
                     _packetLenght = 0;
@@ -215,7 +218,7 @@ namespace CMS21MP.ClientSide
 
             private void Disconnect()
             {
-                instance.Disconnect();
+                Instance.Disconnect();
 
                 stream = null;
                 receivedData = null;
@@ -231,7 +234,7 @@ namespace CMS21MP.ClientSide
 
                 public UDP()
                 {
-                    endPoint = new IPEndPoint(IPAddress.Parse(instance.ip), instance.port);
+                    endPoint = new IPEndPoint(IPAddress.Parse(Instance.ip), Instance.port);
                 }
                 public void Connect(int localPort)
                 {
@@ -242,7 +245,7 @@ namespace CMS21MP.ClientSide
                     }
                     catch
                     {
-                        endPoint = new IPEndPoint(IPAddress.Parse(instance.ip), instance.port);
+                        endPoint = new IPEndPoint(IPAddress.Parse(Instance.ip), Instance.port);
                         socket.Connect(endPoint);
                     }
                     socket.BeginReceive(ReceiveCallback, null);
@@ -257,7 +260,7 @@ namespace CMS21MP.ClientSide
                 {
                     try
                     {
-                        _packet.InsertInt(instance.myId);
+                        _packet.InsertInt(Instance.Id);
                         if (socket != null)
                         {
                             socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
@@ -279,7 +282,7 @@ namespace CMS21MP.ClientSide
                         if (_data.Length < 4)
                         {
                             MelonLogger.Msg("UDP connect error , forced to disconnect");
-                            instance.Disconnect();
+                            Instance.Disconnect();
                             return;
                         }
 
@@ -291,7 +294,7 @@ namespace CMS21MP.ClientSide
                         {
                             Disconnect();
                             MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
-                            Client.instance.ConnectToServer();
+                            Client.Instance.ConnectToServer(Instance.ip);
                         }
                         else
                         {
@@ -315,7 +318,7 @@ namespace CMS21MP.ClientSide
                         {
                             int _packetId = _packet.ReadInt();
 
-                            if (packetHandlers.TryGetValue(_packetId, out var handler))
+                            if (PacketHandlers.TryGetValue(_packetId, out var handler))
                             {
                                 handler(_packet);
                             }
@@ -329,7 +332,7 @@ namespace CMS21MP.ClientSide
 
                 private void Disconnect()
                 {
-                    instance.Disconnect();
+                    Instance.Disconnect();
                     endPoint = null;
                     socket = null;
                 }
@@ -337,27 +340,9 @@ namespace CMS21MP.ClientSide
 
         private void InitializeClientData()
         {
-            packetHandlers = new Dictionary<int, PacketHandler>()
+            PacketHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ServerPackets.welcome, ClientHandle.Welcome },
-                { (int)ServerPackets.dlc, ClientHandle.DLC },
-                { (int)ServerPackets.versionMismatch, ClientHandle.versionMismatch },
-                { (int)ServerPackets.askData, ClientHandle.SendData },
-                { (int)ServerPackets.spawnPlayer, ClientHandle.SpawnPlayer },
-                { (int)ServerPackets.playerPosition, ClientHandle.PlayerPosition },
-                { (int)ServerPackets.playerRotation, ClientHandle.PlayerRotation },
-                { (int)ServerPackets.playerConnected, ClientHandle.PlayerConnected},
-                {(int)ServerPackets.playerDisconnect, ClientHandle.PlayerDisconnect},
-                {(int)ServerPackets.items, ClientHandle.ItemReceive},
-                {(int)ServerPackets.groupItems, ClientHandle.GroupItemReceive},
-                {(int)ServerPackets.stats, ClientHandle.Stats},
-                {(int)ServerPackets.playerScene, ClientHandle.PlayerScene},
-                {(int)ServerPackets.spawnCars, ClientHandle.SpawnCars},
-                {(int)ServerPackets.moveCars, ClientHandle.MoveCar},
-                {(int)ServerPackets.initialCarPart, ClientHandle.carParts},
-                {(int)ServerPackets.car_part, ClientHandle.carParts},
-                {(int)ServerPackets.body_part, ClientHandle.bodyPart},
-                {(int)ServerPackets.lifterState, ClientHandle.lifterPos}
+                { (int)PacketTypes.welcome, ClientHandle.Welcome },
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -365,37 +350,13 @@ namespace CMS21MP.ClientSide
         public void Disconnect()
         {
             forceDisconnected = true;
-            if (!MainMod.SteamMode)
-            {
-                foreach (KeyValuePair<int, PlayerInfo> element in PlayerManager.players)
-                {
-                    if (element.Value != MainMod.localPlayer.GetComponent<PlayerInfo>())
-                    {
-                        Destroy(element.Value.gameObject);
-                    }
-                    else
-                    {
-                        Destroy(MainMod.localPlayer.GetComponent<PlayerInfo>());
-                        Destroy(MainMod.localPlayer.GetComponent<MPGameManager>());
-                    }
-                }
-
-                MainMod.isPrefabSet = false;
-                PlayerManager.players.Clear();
-                if (MainMod.isHosting)
-                {
-                    Server.Stop();
-                    MainMod.isHosting = false;
-                }
-            }
             
             if (isConnected)
             {
                 isConnected = false;
                 tcp.socket.Close();
                 udp.socket.Close();
-
-                MainMod.isConnected = false;
+                
                 MelonLogger.Msg("Disconnected from server.");
             }
         }

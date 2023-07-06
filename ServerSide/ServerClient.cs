@@ -7,7 +7,7 @@ using MelonLoader;
 
 namespace CMS21MP.ServerSide
 {
-    public class Client
+    public class ServerClient
     {
         public static int dataBufferSize = 4096;
 
@@ -18,7 +18,7 @@ namespace CMS21MP.ServerSide
         public TCP tcp;
         public UDP udp;
 
-        public Client(int _clientId)
+        public ServerClient(int _clientId)
         {
             id = _clientId;
             tcp = new TCP(id);
@@ -64,7 +64,6 @@ namespace CMS21MP.ServerSide
                         connected += 1;
                     }
                 }
-                ServerSend.PlayerConnected(connected,  Server.MaxPlayers);
             }
 
             public void SendData(Packet _packet)
@@ -210,22 +209,21 @@ namespace CMS21MP.ServerSide
         public void SendIntoGame(string _playerName)
         {
             player = new Player(id, _playerName, new Vector3(0, 0, 0));
-            foreach (Client _client in Server.clients.Values)
+            foreach (ServerClient _client in Server.clients.Values)
             {
                 if (_client.player != null)
                 {
                     if (_client.id != id)
                     {
-                        ServerSend.SpawnPlayer(id, _client.player);
+                        /*ServerSend.SpawnPlayer(id, _client.player); TODO: Send spawn packet */ 
                     }
-                    ServerSend.SpawnPlayer(_client.id, player); 
+                    /*ServerSend.SpawnPlayer(_client.id, player); */
                 }
             }
         }
 
         private void Disconnect(int id)
         {
-            ServerSend.PlayerDisconnect(id);
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
             player = null;
@@ -234,15 +232,14 @@ namespace CMS21MP.ServerSide
             udp.Disconnect();
             
 
-            int connected = 0;
+            /*int connected = 0;
             for (int i = 1; i <= Server.MaxPlayers; i++)
             {
-                if (Server.clients[i].tcp.socket != null)
+                if (Server.clients[i].tcp.socket != null) TODO: is this needed?
                 {
                     connected += 1;
                 }
-            }
-            ServerSend.PlayerConnected(connected, Server.MaxPlayers);
+            }*/
         }
     }
 }

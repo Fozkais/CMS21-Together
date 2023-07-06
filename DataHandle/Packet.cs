@@ -13,52 +13,12 @@ using UnityEngine;
 namespace CMS21MP.DataHandle
 {
     /// <summary>Sent from server to client.</summary>
-    public enum ServerPackets
-    {
-        welcome = 1,
-        dlc,
-        versionMismatch,
-        askData,
-        spawnPlayer,
-        playerPosition,
-        playerRotation,
-        playerConnected,
-        playerDisconnect,
-        items,
-        groupItems,
-        stats,
-        playerScene,
-        spawnCars,
-        moveCars,
-        // car part sync
-        initialCarPart,
-        car_part,
-        body_part,
-        // garageInteraction
-        lifterState
-    }
 
     /// <summary>Sent from client to server.</summary>
-    public enum ClientPackets
+    public enum PacketTypes
     {
-        welcomeReceived = 1,
-        dlc,
-        versionMismatch,
-        askData,
-        playerMovement,
-        playerRotation,
-        items,
-        groupItems,
-        stats,
-        playerScene,
-        spawnCars,
-        moveCars,
-        // car part sync
-        initialCarPart,
-        car_part,
-        body_part,
-        // garageInteraction
-        lifterState
+        welcome = 1,
+
     }
 
     public class Packet : IDisposable
@@ -218,70 +178,6 @@ namespace CMS21MP.DataHandle
             Write(_value.y);
             Write(_value.z);
             Write(_value.w);
-        }
-        public void Write(carData _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-
-        public void Write(PartScriptData _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        public void Write(carPartsData _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        public void Write(PartScriptInfo _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        public void Write(List<PartScriptInfo> _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-
-        public void Write(CarLifterState _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        public void Write(ModItem _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        public void Write(ModItemGroup _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        
-        public void Write(Dictionary<string, bool> _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
-        }
-        
-        public void Write(List<string> _value)
-        {
-            byte[] array = ObjectToByteArray(_value);
-            Write(array.Length);
-            Write(array);
         }
         private byte[] ObjectToByteArray(object obj)
         {
@@ -477,67 +373,6 @@ namespace CMS21MP.DataHandle
         public Quaternion ReadQuaternion(bool _moveReadPos = true)
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
-        }
-        
-        
-        public carData ReadCarData(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (carData) ByteArrayToObject(array); // Convert the bytes array to carData
-        }
-        
-        public PartScriptData ReadCarPart(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (PartScriptData) ByteArrayToObject(array);
-        }
-        
-
-        public carPartsData ReadBodyPart(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (carPartsData) ByteArrayToObject(array);// Convert the bytes array to a parts List
-        }
-        public PartScriptInfo ReadPartScriptInfo(bool _moveReadPos = true)
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (PartScriptInfo) ByteArrayToObject(array);// Convert the bytes array to a parts List
-        }
-        public List<PartScriptInfo> ReadPartScriptInfoList()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (List<PartScriptInfo>) ByteArrayToObject(array);
-        }
-
-        public CarLifterState ReadCarLifterState()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (CarLifterState) ByteArrayToObject(array);
-        }
-        public ModItem ReadModItem()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (ModItem) ByteArrayToObject(array);
-        }
-        public ModItemGroup ReadModItemGroup()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (ModItemGroup) ByteArrayToObject(array);
-        }
-
-        public Dictionary<string, bool> ReadDLCState()
-        {
-            int lenght = ReadInt(); // Get the length of the byte array
-            byte[] array = ReadBytes(lenght); // Return the bytes
-            return (Dictionary<string, bool>) ByteArrayToObject(array);
         }
 
         private object ByteArrayToObject(byte[] arrBytes)

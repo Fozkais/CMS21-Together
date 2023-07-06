@@ -13,7 +13,7 @@ namespace CMS21MP.ServerSide
     {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
-        public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
+        public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
 
         public delegate void packetHandler(int _fromClient, Packet _packet);
 
@@ -23,10 +23,10 @@ namespace CMS21MP.ServerSide
         private static UdpClient udpListener;
         private static bool _isStopping = false;
 
-        public static void Start(int _maxPlayers, int _port)
+        public static void Start()
         {
-            MaxPlayers = _maxPlayers;
-            Port = _port;
+            MaxPlayers = MainMod.MAX_PLAYER;
+            Port = MainMod.PORT;
 
             MelonLogger.Msg("Starting server...");
             InitializeServerData();
@@ -40,18 +40,17 @@ namespace CMS21MP.ServerSide
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
             MelonLogger.Msg($"Server started on port {Port}.");
-            MainMod.isHosting = true;
+            MainMod.isServer = true;
         }
 
         public static void Stop()
         {
-            MainMod.isHosting = false;
+            MainMod.isServer = false;
             _isStopping = true;
-            MPGameManager.HandleServerReset();
 
             foreach (var client in clients)
             {
-                ServerSend.PlayerDisconnect(client.Value.id);
+                /*ServerSend.PlayerDisconnect(client.Value.id); TODO: send disconnect packet*/
             }
             
 
@@ -62,7 +61,7 @@ namespace CMS21MP.ServerSide
             clients.Clear();
             packetHandlers.Clear();
             
-            ClientSide.Client.packetHandlers.Clear();
+            ClientSide.Client.PacketHandlers.Clear();
             MelonLogger.Msg("Server Closed.");
 
         }
@@ -147,25 +146,12 @@ namespace CMS21MP.ServerSide
         {
             for (int i = 1; i <= MaxPlayers; i++)
             {
-                clients.Add(i, new Client(i));
+                clients.Add(i, new ServerClient(i));
             }
 
             packetHandlers = new Dictionary<int, packetHandler>()
             {
-                {(int)ClientPackets.welcomeReceived, ServerHandle.WelcomeReceived},
-                {(int)ClientPackets.askData, ServerHandle.AskData},
-                {(int)ClientPackets.playerMovement, ServerHandle.PlayerMovement},
-                {(int)ClientPackets.playerRotation, ServerHandle.PlayerRotation},
-                {(int)ClientPackets.items, ServerHandle.ReceivedModItem},
-                {(int)ClientPackets.groupItems, ServerHandle.ReceivedGroupItem},
-                {(int)ClientPackets.stats, ServerHandle.Stats},
-                {(int)ClientPackets.playerScene, ServerHandle.PlayerScene},
-                {(int)ClientPackets.spawnCars, ServerHandle.SpawnCars},
-                {(int)ClientPackets.moveCars, ServerHandle.MoveCar},
-                {(int)ClientPackets.initialCarPart, ServerHandle.carParts},
-                {(int)ClientPackets.car_part, ServerHandle.carParts},
-                {(int)ClientPackets.body_part, ServerHandle.bodyPart},
-                {(int)ClientPackets.lifterState, ServerHandle.lifterState}
+                {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
             };
             MelonLogger.Msg("Initialized Packets!");
         }

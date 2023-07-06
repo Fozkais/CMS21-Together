@@ -26,7 +26,7 @@ namespace CMS21MP.ClientSide
                     if (!string.IsNullOrEmpty(ipAdress))
                     {
                         // Utiliser la valeur lue comme adresse IP
-                        ModGUI.instance.ipAdress = ipAdress;
+                        ModUI.Instance.ipAddress = ipAdress;
                     }
 
                     // La deuxième ligne correspond au nom d'utilisateur
@@ -34,7 +34,7 @@ namespace CMS21MP.ClientSide
                     if (!string.IsNullOrEmpty(username))
                     {
                         // Utiliser la valeur lue comme nom d'utilisateur
-                        ModGUI.instance.usernameField = username;
+                        ModUI.Instance.username = username;
                     }
                 }
                 MelonLogger.Msg("Loaded Preferences Succesfully !");
@@ -44,8 +44,8 @@ namespace CMS21MP.ClientSide
                 // Le fichier de préférences n'existe pas
 
                 // Utiliser les valeurs par défaut
-                ModGUI.instance.ipAdress = DefaultIPAdress;
-                ModGUI.instance.usernameField = DefaultUsername;
+                ModUI.Instance.ipAddress = DefaultIPAdress;
+                ModUI.Instance.username = DefaultUsername;
             }
         }
 
@@ -54,8 +54,8 @@ namespace CMS21MP.ClientSide
             // Créer le contenu du fichier de préférences
             string[] preferences = new string[]
             {
-                ModGUI.instance.ipAdress,
-                ModGUI.instance.usernameField
+                ModUI.Instance.ipAddress,
+                ModUI.Instance.username
             };
 
             // Écrire le contenu dans le fichier
