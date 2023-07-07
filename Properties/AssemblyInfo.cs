@@ -6,12 +6,12 @@ using MelonLoader;
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: MelonInfo(typeof(MainMod), "CMS21MP", MainMod.ASSEMBLY_MOD_VERSION, "Fozkais")]
-[assembly: AssemblyTitle("CMS21MP")]
+[assembly: MelonInfo(typeof(MainMod), "TogetherMod", MainMod.ASSEMBLY_MOD_VERSION, "Fozkais")]
+[assembly: AssemblyTitle("TogetherMod")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("CMS21MP")]
+[assembly: AssemblyProduct("TogetherMod")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

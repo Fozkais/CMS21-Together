@@ -1,26 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using System.Xml.Serialization;
-using Il2Cpp;
 using UnityEngine;
 
-
-namespace CMS21MP.DataHandle
+namespace CMS21MP.SharedData
 {
-    /// <summary>Sent from server to client.</summary>
-
-    /// <summary>Sent from client to server.</summary>
-    public enum PacketTypes
-    {
-        welcome = 1,
-
-    }
-
     public class Packet : IDisposable
     {
         private List<byte> buffer;
@@ -178,6 +164,13 @@ namespace CMS21MP.DataHandle
             Write(_value.y);
             Write(_value.z);
             Write(_value.w);
+        }
+
+        public void Write<T>(T _value)
+        {
+            byte[] array = ObjectToByteArray(_value);
+            Write(array.Length);
+            Write(array);
         }
         private byte[] ObjectToByteArray(object obj)
         {
@@ -373,6 +366,13 @@ namespace CMS21MP.DataHandle
         public Quaternion ReadQuaternion(bool _moveReadPos = true)
         {
             return new Quaternion(ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos), ReadFloat(_moveReadPos));
+        }
+        
+        public T Read<T>()
+        {
+            int lenght = ReadInt(); // Get the length of the byte array
+            byte[] array = ReadBytes(lenght); // Return the bytes
+            return (T) ByteArrayToObject(array);
         }
 
         private object ByteArrayToObject(byte[] arrBytes)

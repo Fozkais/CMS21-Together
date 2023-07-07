@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
-using System.Threading;
-using CMS21MP.ClientSide;
-using CMS21MP.DataHandle;
+using CMS21MP.ServerSide.DataHandle;
+using CMS21MP.SharedData;
 
 namespace CMS21MP.ServerSide
 {
@@ -39,7 +38,7 @@ namespace CMS21MP.ServerSide
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
-            MelonLogger.Msg($"Server started on port {Port}.");
+            MelonLogger.Msg($"Server started successfully !");
             MainMod.isServer = true;
         }
 
@@ -50,7 +49,7 @@ namespace CMS21MP.ServerSide
 
             foreach (var client in clients)
             {
-                /*ServerSend.PlayerDisconnect(client.Value.id); TODO: send disconnect packet*/
+                ServerSend.DisconnectClient(client.Value.id, "Server is shutting down.");
             }
             
 
@@ -89,6 +88,7 @@ namespace CMS21MP.ServerSide
         private static void UDPReceiveCallback(IAsyncResult _result)
         {
             if (_isStopping) return;
+
             try
             {
                 IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
@@ -96,29 +96,16 @@ namespace CMS21MP.ServerSide
                 udpListener.BeginReceive(UDPReceiveCallback, null);
 
                 if (_data.Length < 4)
-                {
                     return;
-                }
 
                 using (Packet _packet = new Packet(_data))
                 {
                     int _clientId = _packet.ReadInt();
 
                     if (_clientId == 0)
-                    {
                         return;
-                    }
 
-                    if (clients[_clientId].udp.endPoint == null)
-                    {
-                        clients[_clientId].udp.Connect(_clientEndPoint);
-                        return;
-                    }
-
-                    if (clients[_clientId].udp.endPoint.ToString() == _clientEndPoint.ToString())
-                    {
-                        clients[_clientId].udp.HandleData(_packet);
-                    }
+                    clients[_clientId].udp.HandleData(_packet);
                 }
             }
             catch (Exception _ex)
@@ -152,6 +139,7 @@ namespace CMS21MP.ServerSide
             packetHandlers = new Dictionary<int, packetHandler>()
             {
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
+                {(int)PacketTypes.readyState, ServerHandle.ReadyState}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

@@ -32,19 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ClientSide\C_Client.cs" />
-    <Compile Include="ClientSide\PreferencesManager.cs" />
-    <Compile Include="DataHandle\ClientHandle.cs" />
-    <Compile Include="DataHandle\ClientSend.cs" />
-    <Compile Include="DataHandle\Packet.cs" />
-    <Compile Include="DataHandle\ServerHandle.cs" />
-    <Compile Include="DataHandle\ServerSend.cs" />
+    <Compile Include="ClientSide\Client.cs" />
+    <Compile Include="ClientSide\DataHandle\ClientHandle.cs" />
+    <Compile Include="ClientSide\DataHandle\ClientSend.cs" />
+    <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Transport\ClientTCP.cs" />
+    <Compile Include="ClientSide\Transport\ClientUDP.cs" />
+    <Compile Include="SharedData\Packet.cs" />
     <Compile Include="MainMod.cs" />
     <Compile Include="ModUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSide\DataHandle\ServerHandle.cs" />
+    <Compile Include="ServerSide\DataHandle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Player.cs" />
     <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\Transport\ServerTCP.cs" />
+    <Compile Include="ServerSide\Transport\ServerUDP.cs" />
+    <Compile Include="SharedData\PacketTypes.cs" />
+    <Compile Include="SharedData\PreferencesManager.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,7 +105,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="DataHandle\CL_Handle\" />
+    <Folder Include="CustomData\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

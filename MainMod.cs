@@ -1,4 +1,5 @@
 ﻿using CMS21MP.ClientSide;
+using CMS21MP.SharedData;
 using MelonLoader;
 using UnityEngine;
 using Client = CMS21MP.ClientSide.Client;
@@ -28,7 +29,6 @@ namespace CMS21MP
 
       public override void OnLateInitializeMelon() // Runs after Game has finished starting.
       {
-
          threadManager = new ThreadManager();
 
          modGUI = new ModUI();
@@ -36,7 +36,6 @@ namespace CMS21MP
 
          client = new Client();
          client.Initialize();
-
 
          LoggerInstance.Msg("Mod Initialized!");
          PreferencesManager.LoadPreferences();

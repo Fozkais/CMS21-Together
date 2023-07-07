@@ -1,11 +1,7 @@
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using CMS21MP.ServerSide;
-using Il2Cpp;
-using MelonLoader;
-using UnityEngine;
+using CMS21MP.SharedData;
 
-namespace CMS21MP.DataHandle
+namespace CMS21MP.ServerSide.DataHandle
 {
     public class ServerSend
     {
@@ -78,6 +74,37 @@ namespace CMS21MP.DataHandle
                 SendUDPData(_toClient, _packet);
             }
         }
+
+        public static void DisconnectClient(int id, string _msg)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.disconnect))
+            {
+                _packet.Write(_msg);
+
+                SendTCPData(id, _packet);
+            }
+        }
         
+        public static void SendReadyState(int _fromClient,bool _ready, int _id)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.readyState))
+            {
+                _packet.Write(_ready);
+                _packet.Write(_id);
+
+                SendTCPDataToAll(_fromClient, _packet);
+            }
+        }
+
+        public static void SendPlayersInfo(Player info) 
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.playerInfo))
+            {
+                _packet.Write(info);
+                // TODO: Handle Disconnection (remove player from dict)
+
+                SendTCPDataToAll(_packet);
+            }
+        }
     }
 }

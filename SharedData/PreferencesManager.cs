@@ -1,11 +1,11 @@
 using System.IO;
 using MelonLoader;
 
-namespace CMS21MP.ClientSide
+namespace CMS21MP.SharedData
 {
     public static class PreferencesManager
     {
-        private const string PreferencesFileName = @"Mods\cms21mp\preferences.txt";
+        private const string PreferencesFileName = @"Mods\togheterMod\preferences.txt";
         private const string DefaultIPAdress = "127.0.0.1";
         private const string DefaultUsername = "player";
 

@@ -5,41 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/CMS21Together.sln.DotSettings.user" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/SharedData/PacketTypes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/discord.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/projectSettingsUpdater.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/C_Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/BodyPart.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarPart.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/CarSpawn.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/DLCSupport.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/GarageInteraction.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/Inventory.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/Movement.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/PreCarPart.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/SceneSwaping.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Functionnality/Stats.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/MPGameManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/PlayerInfo.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/PlayerManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/PreferencesManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CL_Handle/BodyPartHandle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CL_Handle/CarPartHandle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CL_Handle/GarageInteractionHandle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CL_Handle/InventoryHandle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CL_Handle/StatsHandle.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/CustomClassData.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/Packet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerData.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataHandle/ServerSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS21MP.sln" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21Together.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/C_Client.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ClientHandle.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/Packet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModGUI.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/SV_Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Properties/AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Properties/AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Player.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/ServerClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerClient.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,8 +87,10 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/fe/b461e8ef/SteamNetworkingSockets.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/9f46c266303142c4a7881481b5632aed908800/88/8da40647/Assembly-CSharp-firstpass.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/C_Client.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/C_Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -241,7 +237,9 @@
       <workItem from="1687956487282" duration="2703000" />
       <workItem from="1687972117565" duration="3594000" />
       <workItem from="1688644730560" duration="53000" />
-      <workItem from="1688644799178" duration="2938000" />
+      <workItem from="1688644799178" duration="10174000" />
+      <workItem from="1688674906514" duration="2269000" />
+      <workItem from="1688741529733" duration="8454000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -404,7 +402,14 @@
       <option name="project" value="LOCAL" />
       <updated>1686579140932</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="New UI / CustomSave">
+      <created>1688647940389</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1688647940389</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -483,7 +488,8 @@
     <MESSAGE value="-- Pre-Release 0.2 --&#10;- Refacto Inventory System&#10;- Implemented GroupItem&#10;- Implemented WheelData&#10;- Improved part Sync speed (2sec-&gt;~0.3sec)&#10;- Implemented CarLifter Sync&#10;-- Bug Fix --&#10;- GroupItem wont synced&#10;- Rust not syncronizing&#10;- Part State Lag (mounted?, Opened?)&#10;-- Knowed Bug --&#10;- Disconnecting broke again&#10;- Stop Host broke again&#10;- Changing scene make vehicle despawn&#10;- Car tire is offset from the rim ( increase over time)" />
     <MESSAGE value="-- Pre-Release 0.3 --&#10;- Implemented DLC Checkup&#10;- Bit of refactoring&#10;- Adjustement to playerModel size/pos&#10;-- Bug Fix --&#10;- Client wheren't deconected when server closed" />
     <MESSAGE value="-- Pre-Release 0.5 --&#10;- introduced basic saving system&#10;- Huge refactor of ClientHandle&#10;- Huge rewrite of CarHandling system&#10;- Adjustement to model size&#10;-- Knowed bug -- &#10;- Stop host still broken&#10;- CarHandle make game crash." />
-    <option name="LAST_COMMIT_MESSAGE" value="-- Pre-Release 0.5 --&#10;- introduced basic saving system&#10;- Huge refactor of ClientHandle&#10;- Huge rewrite of CarHandling system&#10;- Adjustement to model size&#10;-- Knowed bug -- &#10;- Stop host still broken&#10;- CarHandle make game crash." />
+    <MESSAGE value="New UI / CustomSave" />
+    <option name="LAST_COMMIT_MESSAGE" value="New UI / CustomSave" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
