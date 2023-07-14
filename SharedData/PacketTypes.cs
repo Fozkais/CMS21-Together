@@ -5,6 +5,7 @@ namespace CMS21MP.SharedData
         welcome = 1,
         disconnect,
         readyState,
-        playerInfo
+        playerInfo,
+        startGame
     }
 }

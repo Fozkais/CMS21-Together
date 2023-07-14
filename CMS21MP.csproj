@@ -38,6 +38,7 @@
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
+    <Compile Include="SharedData\DeepCopy.cs" />
     <Compile Include="SharedData\Packet.cs" />
     <Compile Include="MainMod.cs" />
     <Compile Include="ModUI.cs" />
@@ -51,12 +52,17 @@
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
     <Compile Include="SharedData\PacketTypes.cs" />
     <Compile Include="SharedData\PreferencesManager.cs" />
+    <Compile Include="SharedData\SaveSystem.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\0Harmony.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
@@ -68,6 +74,10 @@
     </Reference>
     <Reference Include="MelonLoader">
       <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\MelonLoader.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
+using CMS21MP.ClientSide;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
 
@@ -20,7 +21,7 @@ namespace CMS21MP.ServerSide
 
         public static TcpListener tcpListener;
         private static UdpClient udpListener;
-        private static bool _isStopping = false;
+        private static bool _isStopping;
 
         public static void Start()
         {
@@ -40,18 +41,14 @@ namespace CMS21MP.ServerSide
 
             MelonLogger.Msg($"Server started successfully !");
             MainMod.isServer = true;
+            
+            Client.Instance.ConnectToServer("127.0.0.1");
         }
 
         public static void Stop()
         {
             MainMod.isServer = false;
             _isStopping = true;
-
-            foreach (var client in clients)
-            {
-                ServerSend.DisconnectClient(client.Value.id, "Server is shutting down.");
-            }
-            
 
             udpListener.Close();
             tcpListener.Stop();
@@ -60,7 +57,7 @@ namespace CMS21MP.ServerSide
             clients.Clear();
             packetHandlers.Clear();
             
-            ClientSide.Client.PacketHandlers.Clear();
+            Client.PacketHandlers.Clear();
             MelonLogger.Msg("Server Closed.");
 
         }

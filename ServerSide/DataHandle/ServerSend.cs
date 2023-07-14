@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CMS21MP.ClientSide;
 using CMS21MP.SharedData;
 
 namespace CMS21MP.ServerSide.DataHandle
@@ -104,6 +105,14 @@ namespace CMS21MP.ServerSide.DataHandle
                 // TODO: Handle Disconnection (remove player from dict)
 
                 SendTCPDataToAll(_packet);
+            }
+        }
+
+        public static void StartGame()
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.startGame))
+            {
+                SendTCPDataToAll(Client.Instance.Id, _packet);
             }
         }
     }

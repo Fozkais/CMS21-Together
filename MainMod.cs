@@ -1,4 +1,5 @@
 ﻿using CMS21MP.ClientSide;
+using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using MelonLoader;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace CMS21MP
 {
    public class MainMod : MelonMod
    {
-      public const int MAX_SAVE_COUNT = 17;
+      public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
       public const string ASSEMBLY_MOD_VERSION = "0.1.0";
@@ -29,6 +30,8 @@ namespace CMS21MP
 
       public override void OnLateInitializeMelon() // Runs after Game has finished starting.
       {
+         SaveSystem.InitializeSave();
+         
          threadManager = new ThreadManager();
 
          modGUI = new ModUI();
@@ -39,11 +42,25 @@ namespace CMS21MP
 
          LoggerInstance.Msg("Mod Initialized!");
          PreferencesManager.LoadPreferences();
+         //PreferencesManager.LoadAllModSaves();
       }
 
       public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
       {
-        
+         // MelonLogger.Msg("OnSceneWasLoaded: " + buildindex.ToString() + " | " + sceneName
+
+         #region MultiplayerState
+
+            if(sceneName == "Menu" && client.isConnected && !isServer)
+            {
+               Client.Instance.Disconnect();
+            }
+            if(sceneName == "Menu" && isServer)
+            {
+               Server.Stop();
+            }
+
+         #endregion
       }
 
       public override void OnSceneWasInitialized(int buildindex, string sceneName) // Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
@@ -80,6 +97,7 @@ namespace CMS21MP
       public override void OnApplicationQuit() // Runs when the Game is told to Close.
       {
          Client.Instance.ClientOnApplicationQuit();
+         PreferencesManager.SaveAllModSaves();
       }
 
       public override void OnPreferencesSaved() // Runs when Melon Preferences get saved.

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
@@ -7,12 +6,10 @@ using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
-using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppSystem.IO;
+using Il2CppCMS.Tutorial;
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace CMS21MP
 {
@@ -27,10 +24,7 @@ namespace CMS21MP
         public bool showHostInterface;
         public bool saveExists; // Example: save files exist
 
-        private Dictionary<string, ProfileData> saves = new Dictionary<string, ProfileData>();
-
-        private Il2CppReferenceArray<ProfileData> profileDatas =
-            new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
+        private int saveToLoadIndex;
 
         private GUIStyle labelStyle;
         private GUIStyle textStyle;
@@ -89,22 +83,42 @@ namespace CMS21MP
             // Rendu de l'interface principale et de l'interface de l'hôte
             InitializeStyles();
 
-            if (showMainInterface)
+            if (SceneManager.GetActiveScene().name == "Menu")
             {
-                RenderMainInterface();
+                if (!MainMod.isServer || !Client.Instance.isConnected)
+                {
+                    if (showMainInterface)
+                    {
+                        RenderMainInterface();
+                    }
+
+                    // Rendu de l'interface de l'hôte attachée à l'interface principale
+                    if (showHostInterface)
+                    {
+                        // Met à jour la position de l'interface de l'hôte en fonction de l'interface principale
+                        Rect hostWindowRect = new Rect(windowRect.position + hostInterfaceOffset, new Vector2(220, 300));
+                        // Rendu de l'interface de l'hôte
+                        RenderHostInterface(hostWindowRect);
+                    }
+
+                    if (showLobbyInterface)
+                        RenderLobbyInterface();
+                }
+                else
+                {
+                    if (showMainInterface)
+                        RenderLobbyInterface();
+                }
+            }
+            else
+            {
+                if (MainMod.isServer || Client.Instance.isConnected)
+                {
+                    if (showMainInterface)
+                        RenderLobbyInterface();
+                }
             }
 
-            // Rendu de l'interface de l'hôte attachée à l'interface principale
-            if (showHostInterface)
-            {
-                // Met à jour la position de l'interface de l'hôte en fonction de l'interface principale
-                Rect hostWindowRect = new Rect(windowRect.position + hostInterfaceOffset, new Vector2(220, 300));
-                // Rendu de l'interface de l'hôte
-                RenderHostInterface(hostWindowRect);
-            }
-
-            if (showLobbyInterface)
-                RenderLobbyInterface();
         }
 
         private Texture2D CreateRoundedBackgroundTexture(Color color, float alpha, float cornerRadius)
@@ -195,22 +209,21 @@ namespace CMS21MP
             GUI.Box(new Rect(windowRect.x - 5, windowRect.y, windowRect.width, windowRect.height), "", backgroundStyle);
             GUILayout.BeginArea(windowRect);
 
-
             GUILayout.Label(MainMod.MOD_VERSION, labelStyle, GUILayout.Width(190), GUILayout.Height(40));
 
             GUILayout.Label("Username:", textStyle);
-            username = GUILayout.TextField(username, textFieldStyle, GUILayout.Width(190));
+            ModUI.Instance.username = GUILayout.TextField(ModUI.Instance.username, textFieldStyle, GUILayout.Width(190));
 
             GUILayout.Label("IP Address:", textStyle);
-            ipAddress = GUILayout.TextField(ipAddress, textFieldStyle, GUILayout.Width(190));
+            ModUI.Instance.ipAddress = GUILayout.TextField(ModUI.Instance.ipAddress, textFieldStyle, GUILayout.Width(190));
 
             GUILayout.Space(20);
 
             if (GUILayout.Button("Join Server", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
-                if (username != "" && ipAddress != "")
+                if (!string.IsNullOrEmpty(ModUI.Instance.username) && !string.IsNullOrEmpty(ModUI.Instance.ipAddress))
                 {
-                    Client.Instance.ConnectToServer(ipAddress);
+                    Client.Instance.ConnectToServer(ModUI.Instance.ipAddress);
                     ShowLobbyInterface();
                 }
             }
@@ -218,10 +231,11 @@ namespace CMS21MP
             if (GUILayout.Button("Host Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
                 showHostInterface = true;
+                PreferencesManager.LoadAllModSaves();
             }
 
             GUILayout.EndArea();
-            
+
             PreferencesManager.SavePreferences();
         }
 
@@ -230,7 +244,6 @@ namespace CMS21MP
             GUI.Box(new Rect(hostWindowRect.x - 5, hostWindowRect.y, hostWindowRect.width, hostWindowRect.height), "",
                 backgroundStyle);
             GUILayout.BeginArea(hostWindowRect);
-
 
             GUILayout.Label("Save Management", labelStyle);
 
@@ -245,25 +258,26 @@ namespace CMS21MP
 
             if (GUILayout.Button("New Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
-                if (!saves.ContainsKey(save_name) & saves.Count < MainMod.MAX_SAVE_COUNT)
+                bool isNameAlreadyExists = SaveSystem.ModSaves.Any(save => save.Name == save_name);
+
+                if (isNameAlreadyExists)
                 {
-                    BinaryWriter writer = new BinaryWriter();
-                    ProfileData saveData = new ProfileData();
-
-                    saveData.Init();
-                    saveData.WriteSaveHeader(writer);
-                    saveData.WriteSaveVersion(writer);
-
-                    saves.Add(save_name, saveData);
-
-                    for (int i = 0; i <= 3; i++) // Add vanillaSave
-                        profileDatas[i] = Singleton<GameManager>.Instance.GameDataManager.ProfileData[i];
-
-                    profileDatas[3 + saves.Count] = saveData;
-                    Singleton<GameManager>.Instance.GameDataManager.ProfileData =
-                        profileDatas; // Set back new ProfileData
+                    Debug.Log("Save with the same name already exists.");
+                }
+                else
+                {
+                    for (int index = 4; index < SaveSystem.ModSaves.Count; index++)
+                    {
+                        var save = SaveSystem.ModSaves[index];
+                        if (save.Name == "EmptySave")
+                        {
+                            SaveSystem.LoadSave(index, save_name);
+                            break;
+                        }
+                    }
                 }
             }
+
 
             GUILayout.Space(5);
 
@@ -272,46 +286,51 @@ namespace CMS21MP
 
             GUILayout.Space(10);
 
-            if (saves.Count == 0)
+            if (!SaveSystem.ModSaves.Any(save => save.Name != "EmptySave"))
             {
                 GUILayout.Label("No Save", labelStyle);
             }
             else
             {
-                float scrollViewHeight = Mathf.Min(saves.Count * (buttonHeight + 20), maxScrollViewHeight);
+                float scrollViewHeight = Mathf.Min(SaveSystem.ModSaves.Count * (buttonHeight + 20), maxScrollViewHeight);
 
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(220),
                     GUILayout.Height(scrollViewHeight));
 
-                string[] keys = saves.Keys.ToArray();
-                for (int i = 0; i < saves.Count; i++)
+                foreach (var data in SaveSystem.ModSaves)
                 {
+                    int saveIndex = data.saveIndex;
+                    ModSaveData modSaveData = data;
 
-                    GUILayout.BeginHorizontal();
-
-                    if (GUILayout.Button("X", GUILayout.Width(25), GUILayout.Height(buttonHeight)))
+                    if (modSaveData.Name != "EmptySave")
                     {
-                        // Actions à effectuer lors du clic sur le bouton de suppression
-                        RemoveSave(i);
-                        break;
-                    }
+                        GUILayout.BeginHorizontal();
 
-                    if (GUILayout.Button(keys[i], buttonStyle, GUILayout.Width(160), GUILayout.Height(buttonHeight)))
-                    {
-                        Server.Start();
-                        Client.Instance.ConnectToServer("127.0.0.1");
-                        
-                        ShowLobbyInterface();
-                        Singleton<GameManager>.Instance.ProfileManager.selectedProfile = 3 + i + 1;
-                        Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
-                        Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(keys[i]);
-                        Singleton<GameManager>.Instance.ProfileManager.Save();
-                        Singleton<GameManager>.Instance.ProfileManager.Load();
-                    }
+                        if (GUILayout.Button("X", GUILayout.Width(25), GUILayout.Height(buttonHeight)))
+                        {
+                            // Actions à effectuer lors du clic sur le bouton de suppression
+                            SaveSystem.RemoveSave(saveIndex);
+                            break;
+                        }
 
-                    GUILayout.EndHorizontal();
+                        if (GUILayout.Button(modSaveData.Name, buttonStyle, GUILayout.Width(160), GUILayout.Height(buttonHeight)))
+                        {
+                            if(!MainMod.isServer)
+                                Server.Start();
+                            else
+                            {
+                                Server.Stop();
+                                Server.Start();
+                            }
+
+                            ShowLobbyInterface();
+                            
+                            saveToLoadIndex = SaveSystem.LoadSave(saveIndex, modSaveData.Name);
+                        }
+
+                        GUILayout.EndHorizontal();
+                    }
                 }
-
 
                 GUILayout.EndScrollView();
             }
@@ -321,13 +340,18 @@ namespace CMS21MP
             GUILayout.EndArea();
         }
 
+
         private void RenderLobbyInterface()
         {
-            Rect lobbyWindowRect = new Rect(Screen.width / 2f - 100, Screen.height / 2f - 100, 400, 400);
-            GUI.Box(
-                new Rect(lobbyWindowRect.x - 5, lobbyWindowRect.y, lobbyWindowRect.width + 5, lobbyWindowRect.height),
-                "", backgroundStyle);
+            Rect lobbyWindowRect;
+            
+            if (MainMod.isServer || Client.Instance.isConnected)
+                lobbyWindowRect = new Rect(Screen.width / 2f - 100, Screen.height / 2f - 100, 400, 400);
+            else
+                lobbyWindowRect = windowRect;
 
+            
+            GUI.Box(new Rect(lobbyWindowRect.x - 5, lobbyWindowRect.y, lobbyWindowRect.width + 5, lobbyWindowRect.height), "", backgroundStyle);
             GUILayout.BeginArea(lobbyWindowRect);
 
 
@@ -370,11 +394,13 @@ namespace CMS21MP
                                 }
                             }
 
-                            if (GUILayout.Button("Kick", buttonStyle, GUILayout.Width(60),
-                                    GUILayout.Height(buttonHeight)))
+                            if (player.id != Client.Instance.Id)
                             {
-                                ServerSend.DisconnectClient(player.id, "You've been kicked from the server.");
-                                Server.clients[i].Disconnect(Server.clients[i].id);
+                                if (GUILayout.Button("Kick", buttonStyle, GUILayout.Width(60), GUILayout.Height(buttonHeight)))
+                                {
+                                   // ServerSend.DisconnectClient(player.id, "You've been kicked from the server."); TODO: Usefull ?
+                                    Server.clients[i].Disconnect(Server.clients[i].id);
+                                }
                             }
 
                             GUILayout.EndHorizontal();
@@ -396,7 +422,8 @@ namespace CMS21MP
                         }
                     }
     
-                    StartGame();
+                    StartGame(saveToLoadIndex);
+                    SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
                     showLobbyInterface = false;
                 }
 
@@ -474,21 +501,17 @@ namespace CMS21MP
 
         private void ShowLobbyInterface()
         {
-            showMainInterface = false;
+            showMainInterface = true;
             showHostInterface = false;
             showLobbyInterface = true;
         }
         
-        private void StartGame()
+        private void StartGame(int index)
         {
-            Singleton<GameManager>.Instance.GameDataManager.LoadProfile();
-            Singleton<GameManager>.Instance.GameDataManager.LoadInstant();
-            SceneManager.LoadScene("garage");
-        }
-
-        private void RemoveSave(int index)
-        {
-            // TODO: Implement save deletion
+            showMainInterface = false;
+            showLobbyInterface = false;
+            SaveSystem.StartGame(index);
+            ServerSend.StartGame();
         }
 
         public void showGui()

@@ -68,7 +68,7 @@ namespace CMS21MP.ClientSide
             catch (Exception ex) // Capturer toutes les exceptions possibles
             {
                 MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
-                isConnected = false; // Marquer la connexion comme échouée
+                Client.Instance.Disconnect();
             }
 
             if (!isConnected)
@@ -85,7 +85,8 @@ namespace CMS21MP.ClientSide
                 { (int)PacketTypes.welcome, ClientHandle.Welcome },
                 { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
                 { (int)PacketTypes.readyState, ClientHandle.ReadyState },
-                { (int)PacketTypes.playerInfo, ClientHandle.PlayersInfo }
+                { (int)PacketTypes.playerInfo, ClientHandle.PlayersInfo },
+                { (int)PacketTypes.startGame, ClientHandle.StartGame }
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -95,8 +96,10 @@ namespace CMS21MP.ClientSide
             if (isConnected)
             {
                 isConnected = false;
-                tcp.socket.Close();
-                udp.socket.Close();
+                if(tcp.socket != null)
+                    tcp.socket.Close();
+                if (udp.socket != null)
+                    udp.socket.Close();
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
