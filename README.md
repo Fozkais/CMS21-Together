@@ -7,7 +7,7 @@
   <h3 align="center">CMS21 Together</h3>
 
   <p align="center">
-    An Work in progress multiplayer mod for Car Mechanic Simulator 2021
+    A work in progress multiplayer mod for Car Mechanic Simulator 2021
     <br/>
     <br/>
     <a href="https://github.com/Fozkais/CMS21-Together/issues">Report Bug</a>
