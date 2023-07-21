@@ -4,7 +4,7 @@
     <img src="https://cdn.discordapp.com/icons/1076513862897119232/1150ebb5d3f306736e1a1cd080465b82.webp?size=96" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">ReadME Generator</h3>
+  <h3 align="center">CMS21 Together</h3>
 
   <p align="center">
     An Work in progress multiplayer mod for Car Mechanic Simulator 2021
@@ -53,7 +53,7 @@ You can join the project Discord if you want to talk or ask for help :
 https://discord.gg/rMz4tGbrc6
 ## License
 
-Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS21-Together/blob/main/LICENSE.md) for more information.
+Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS21-Together/blob/MainMod/LICENSE) for more information.
 
 ## Authors
 
