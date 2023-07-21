@@ -10,7 +10,7 @@
     A work in progress multiplayer mod for Car Mechanic Simulator 2021
     <br/>
     <br/>
-    <a href="https://github.com/Fozkais/CMS21-Together/issues">Report Bug</a>
+    <a href="https://discord.gg/rxnXWGCES9">Report Bug</a>
   </p>
 </p>
 
@@ -44,9 +44,13 @@ Who never dreamed playing CMS with some friends?  Since RDG devs dont want to ad
 * Add Mod Support : ❌
 
 **the following "Roadmap" does not mean it's included in the project but that i have already done work on it at some point**
+<br/>
 ✅: Done / Implemented
+<br/>
 🚧: W.I.P / Currently worked on
+<br/>
 ❌: To Do / Missing
+<br/>
 ⏸️: "Paused" / it's been worked on, but for the moment it's not.
 
 You can join the project Discord if you want to talk or ask for help : 
