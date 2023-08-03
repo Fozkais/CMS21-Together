@@ -63,3 +63,4 @@ Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS2
 ## Authors
 
 * **Fozkais** - *indie game dev* - [Fozkais](https://github.com/Fozkais)
+*  **Meitzi** - *Huge Contributor* - [MetziQ](https://www.nexusmods.com/carmechanicsimulator2021/users/151281813)
