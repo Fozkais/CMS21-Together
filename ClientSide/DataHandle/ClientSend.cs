@@ -1,5 +1,7 @@
 using System.Net;
 using CMS21MP.SharedData;
+using MelonLoader;
+using UnityEngine;
 
 namespace CMS21MP.ClientSide.DataHandle
 {
@@ -8,13 +10,19 @@ namespace CMS21MP.ClientSide.DataHandle
         private static void SendTCPData(Packet _packet)
         {
             _packet.WriteLength();
-            Client.Instance.tcp.SendData(_packet);
+         //   if(MainMod.usingSteamAPI)
+             //   PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
+          //  else
+                Client.Instance.tcp.SendData(_packet);
         }
         
         private static void SendUDPData(Packet _packet)
         {
             _packet.WriteLength();
-            Client.Instance.udp.SendData(_packet);
+            //if(MainMod.usingSteamAPI)
+           //     PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
+          //  else
+                Client.Instance.udp.SendData(_packet);
         }
         
         #region Lobby and connection
@@ -28,7 +36,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     
                     SendTCPData(_packet);
                 }
-               // Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+                Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
             }
 
             public static void SendReadyState(bool b, int number)
@@ -51,6 +59,32 @@ namespace CMS21MP.ClientSide.DataHandle
                     SendTCPData(_packet);
                 }
             }
+        #endregion
+
+        #region Movement and Rotation
+
+        public static void SendPosition(Vector3Serializable position)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
+            {
+                _packet.Write(position);
+                
+                SendTCPData(_packet);
+            }
+            MelonLogger.Msg("Send position to server");
+        }
+        
+        public static void SendRotation(QuaternionSerializable rotation)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.playerRotation))
+            {
+                _packet.Write(rotation);
+                
+                SendTCPData(_packet);
+            }
+        }
+
+
         #endregion
         
     }

@@ -46,7 +46,8 @@ namespace CMS21MP.ClientSide.Transport
                     MelonLogger.Msg("Cannot Connect to Server!");
                     return;
                 }
-
+                
+                ModUI.Instance.ShowLobbyInterface();
                 stream = socket.GetStream();
                 receivedData = new Packet();
 
@@ -144,7 +145,7 @@ namespace CMS21MP.ClientSide.Transport
             }
         }
 
-        private void Disconnect()
+        public void Disconnect()
         {
             ClientSend.Disconnect(Client.Instance.Id);
 

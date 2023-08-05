@@ -1,9 +1,13 @@
 using System;
+using System.Collections;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.SharedData;
+using Il2CppSystem.Threading.Tasks;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21MP.ClientSide.Transport
 {
@@ -24,26 +28,20 @@ namespace CMS21MP.ClientSide.Transport
         {
             socket.Connect(endPoint);
         }
-        catch (SocketException ex)
+        catch
         {
-            MelonLogger.Msg($"Error connecting via UDP: {ex.Message}, forced to disconnect");
-            Disconnect();
-            return;
+            endPoint = new IPEndPoint(IPAddress.Parse(Client.Instance.ip), Client.Instance.port);
+            socket.Connect(endPoint);
         }
-
-        try
+        socket.BeginReceive(ReceiveCallback, null);
+        
+        using (Packet packet = new Packet())
         {
-            socket.BeginReceive(ReceiveCallback, null);
-            using (Packet packet = new Packet())
-            {
-                SendData(packet);
-            }
+            SendData(packet);
         }
-        catch (SocketException ex)
-        {
-            MelonLogger.Msg($"Error starting UDP receive: {ex.Message}, forced to disconnect");
-            Disconnect();
-        }
+        
+        if(IsConnected())
+            MelonLogger.Msg("UDP connected");
     }
 
     public bool IsConnected()
@@ -63,7 +61,7 @@ namespace CMS21MP.ClientSide.Transport
         }
         catch (SocketException ex)
         {
-            MelonLogger.Msg($"Error sending data to server via UDP: {ex.Message}");
+            MelonLogger.Msg($"Error sending data to server via UDP: {ex}");
         }
     }
 
@@ -85,43 +83,46 @@ namespace CMS21MP.ClientSide.Transport
         }
         catch (SocketException ex)
         {
-            MelonLogger.Msg($"Error receiving UDP data: {ex.Message}, forced to disconnect");
-            Disconnect();
+            MelonLogger.Msg("error while receiving data from server via UDP: ");
+            //MelonCoroutines.Start(ResetConnection());
         }
+    }
+
+    private IEnumerator ResetConnection()
+    {
+        MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
+        yield return new WaitForSeconds(1f);
+        Disconnect();
+        Client.Instance.tcp.Disconnect();
+        yield return new WaitForSeconds(0.5f);
+        Client.Instance.Disconnect();
+        Client.Instance.ConnectToServer(Client.Instance.ip);
     }
 
     private void HandleData(byte[] _data)
     {
-        try
+        using (Packet _packet = new Packet(_data))
+        {
+            int _packetLength = _packet.ReadInt();
+            _data = _packet.ReadBytes(_packetLength);
+        }
+
+        ThreadManager.ExecuteOnMainThread(() =>
         {
             using (Packet _packet = new Packet(_data))
             {
-                int _packetLength = _packet.ReadInt();
-                _data = _packet.ReadBytes(_packetLength);
-            }
+                int _packetId = _packet.ReadInt();
 
-            ThreadManager.ExecuteOnMainThread(() =>
-            {
-                using (Packet _packet = new Packet(_data))
+                if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
                 {
-                    int _packetId = _packet.ReadInt();
-
-                    if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
-                    {
-                        handler(_packet);
-                    }
-                    else
-                    {
-                        MelonLogger.Msg($"Packet with id {_packetId} not found in packetHandlers dictionary.");
-                    }
+                    handler(_packet);
                 }
-            });
-        }
-        catch (Exception ex)
-        {
-            MelonLogger.Msg($"Error handling data via UDP: {ex.Message}, forced to disconnect");
-            Disconnect();
-        }
+                else
+                {
+                    MelonLogger.Msg($"Packet with id {_packetId} not found in packetHandlers dictionary.");
+                }
+            }
+        });
     }
 
     private void Disconnect()

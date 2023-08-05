@@ -10,6 +10,8 @@
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005C0Harmony_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005CIl2CppInterop_002ERuntime_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005Cnet6_005CMelonLoader_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CFacepunch_002ESteamworks_002EPosix_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CFacepunch_002ESteamworks_002EWin64_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005Csteam_005Fapi64_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CProgram_0020Files_0020_0028x86_0029_005CSteam_005Csteamapps_005Ccommon_005CCar_0020Mechanic_0020Simulator_00202021_005CUserLibs_005CSteamworks_002ENET_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=D_003A_005CGames_005CCar_0020Mechanic_0020Simulator_00202021_005CMelonLoader_005CIl2CppAssemblies_005CAssembly_002DCSharp_002Dfirstpass_002Edll/@EntryIndexedValue">True</s:Boolean>
@@ -110,6 +112,7 @@
   &lt;Assembly Path="D:\Games\Car Mechanic Simulator 2021\MelonLoader\MelonLoader.dll" /&gt;&#xD;
   &lt;Assembly Path="E:\Modding\CMS21\CMS21MP\bin\Debug\UnityEngine.AssetBundleModule.dll" /&gt;&#xD;
   &lt;Assembly Path="E:\Modding\CMS21\CMS21MP\bin\Debug\UnityEngine.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\UserLibs\Steamworks.NET.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/Hierarchy/Build/BuildTool/CustomBuildToolPath/@EntryValue">E:\JetBrains Rider 2023.1.1\tools\MSBuild\Current\Bin\MSBuild.exe</s:String>
 	<s:Int64 x:Key="/Default/Environment/Hierarchy/Build/BuildTool/MsbuildVersion/@EntryValue">1114112</s:Int64></wpf:ResourceDictionary>

@@ -45,6 +45,12 @@ namespace CMS21MP.ServerSide
             Client.Instance.ConnectToServer("127.0.0.1");
         }
 
+        public static void StartSteamServer()
+        {
+            InitializeServerData();
+            MainMod.isServer = true;
+        }
+
         public static void Stop()
         {
             MainMod.isServer = false;
@@ -75,6 +81,11 @@ namespace CMS21MP.ServerSide
                 if (clients[i].tcp.socket == null)
                 {
                     clients[i].tcp.Connect(_client);
+                    // Récupérer son endpoint TCP
+                    IPEndPoint tcpEndpoint = (IPEndPoint)_client.Client.RemoteEndPoint;
+                    // L'associer au socket UDP
+                    clients[i].udp.Connect(tcpEndpoint);
+                    
                     return;
                 }
             }
@@ -82,14 +93,14 @@ namespace CMS21MP.ServerSide
             MelonLogger.Msg($"{_client.Client.RemoteEndPoint} failed to connect: Server full!");
         }
         
-        private static void UDPReceiveCallback(IAsyncResult _result)
+        private static void UDPReceiveCallback(IAsyncResult result)
         {
             if (_isStopping) return;
 
             try
             {
-                IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] _data = udpListener.EndReceive(_result, ref _clientEndPoint);
+                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] _data = udpListener.EndReceive(result, ref clientEndPoint);
                 udpListener.BeginReceive(UDPReceiveCallback, null);
 
                 if (_data.Length < 4)
@@ -136,7 +147,9 @@ namespace CMS21MP.ServerSide
             packetHandlers = new Dictionary<int, packetHandler>()
             {
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
-                {(int)PacketTypes.readyState, ServerHandle.ReadyState}
+                {(int)PacketTypes.readyState, ServerHandle.ReadyState},
+                {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
+                {(int)PacketTypes.playerRotation, ServerHandle.playerRotation}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

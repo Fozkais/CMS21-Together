@@ -57,6 +57,43 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 SaveSystem.LoadSave(0, "client", true);
             }
+            
+            public static void SpawnPlayer(Packet _packet)
+            {
+                if(!GameData.DataInitialzed)
+                    GameData.InitializeGameData();
+                
+                Player _player = _packet.Read<Player>();
+                int _id = _packet.ReadInt();
+                ClientData.serverPlayers[_id] = _player;
+                MelonLogger.Msg($"Received {_player.username} spawn info from server.");
+                if (ClientData.serverPlayers.TryGetValue(_id, out var player))
+                {
+                    if(!ClientData.serverPlayerInstances.ContainsKey(player.id))
+                        ClientData.SpawnPlayer(_player, _id);
+                }
+            }
+            
+        #endregion
+
+        #region Movement and Rotation
+
+            public static void playerPosition(Packet _packet)
+            {
+                int _id = _packet.ReadInt();
+                Vector3Serializable _position = _packet.Read<Vector3Serializable>();
+                Movement.UpdatePlayersPosition(ClientData.serverPlayers[_id], _position);
+                
+                MelonLogger.Msg("Received position from server.");
+            }
+            
+            public static void playerRotation(Packet _packet)
+            {
+                int _id = _packet.ReadInt();
+                QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
+                Movement.UpdatePlayersRotation(ClientData.serverPlayers[_id], _rotation);
+            }
+
         #endregion
     }
 }

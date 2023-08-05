@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.ServerSide.Transport;
+using CMS21MP.SharedData;
 using UnityEngine;
 using MelonLoader;
 
@@ -25,7 +26,7 @@ namespace CMS21MP.ServerSide
         }
 
 
-        public void SendIntoGame(string _playerName)
+        public void SendToLobby(string _playerName)
         {
             player = new Player(id, _playerName, new Vector3(0, 0, 0));
 
@@ -36,18 +37,16 @@ namespace CMS21MP.ServerSide
                     ServerSend.SendPlayersInfo(client.player);
             }
             
-            /*foreach (ServerClient _client in Server.clients.Values)
+            foreach (ServerClient _client in Server.clients.Values)
             {
                 if (_client.player != null)
                 {
                     if (_client.id != id)
                     {
-                        /*ServerSend.SpawnPlayer(id, _client.player); TODO: Send spawn packet
                         ServerSend.SendPlayersInfo(player);
                     }
-                    /*ServerSend.SpawnPlayer(_client.id, player); #1#
                 }
-            }*/
+            }
         }
 
         public void Disconnect(int _id)

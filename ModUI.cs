@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
@@ -6,8 +7,8 @@ using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
-using Il2CppCMS.Tutorial;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
@@ -34,7 +35,7 @@ namespace CMS21MP
 
         private bool isDragging;
         private Vector2 offset;
-        private Rect windowRect = new Rect(Screen.width / 2.5f, Screen.height / 3.5f, 200, 250);
+        private Rect windowRect = new Rect(Screen.width / 2.5f, Screen.height / 3.5f, 200, 280);
         private Vector2 hostInterfaceOffset = new Vector2(220, 0);
 
         private Vector2 scrollPosition = Vector2.zero; // Variable de classe pour stocker la position de défilement
@@ -211,21 +212,33 @@ namespace CMS21MP
 
             GUILayout.Label(MainMod.MOD_VERSION, labelStyle, GUILayout.Width(190), GUILayout.Height(40));
 
-            GUILayout.Label("Username:", textStyle);
-            ModUI.Instance.username = GUILayout.TextField(ModUI.Instance.username, textFieldStyle, GUILayout.Width(190));
-
-            GUILayout.Label("IP Address:", textStyle);
-            ModUI.Instance.ipAddress = GUILayout.TextField(ModUI.Instance.ipAddress, textFieldStyle, GUILayout.Width(190));
-
-            GUILayout.Space(20);
-
-            if (GUILayout.Button("Join Server", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+            if (!MainMod.usingSteamAPI)
             {
-                if (!string.IsNullOrEmpty(ModUI.Instance.username) && !string.IsNullOrEmpty(ModUI.Instance.ipAddress))
-                {
-                    Client.Instance.ConnectToServer(ModUI.Instance.ipAddress);
-                    ShowLobbyInterface();
-                }
+                GUILayout.Label("Username:", textStyle);
+                ModUI.Instance.username = GUILayout.TextField(ModUI.Instance.username, textFieldStyle, GUILayout.Width(190));
+                
+                GUILayout.Label("IP Address:", textStyle);
+                ModUI.Instance.ipAddress = GUILayout.TextField(ModUI.Instance.ipAddress, textFieldStyle, GUILayout.Width(190));
+                
+            }
+            else
+            {
+                GUILayout.Label("Lobby ID:", textStyle);
+                
+                CallbackHandler.lobbyCodeString = GUILayout.TextField(CallbackHandler.lobbyCodeString, textFieldStyle, GUILayout.Width(190));
+            }
+
+            GUILayout.Space(10);
+            
+            if (GUILayout.Button("Use steam?", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+            {
+                MainMod.usingSteamAPI = !MainMod.usingSteamAPI;
+            }
+            
+
+            if (GUILayout.Button("Join Lobby", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+            {
+                JoinLobby();
             }
 
             if (GUILayout.Button("Host Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
@@ -278,7 +291,6 @@ namespace CMS21MP
                 }
             }
 
-
             GUILayout.Space(5);
 
             GUILayout.Label("Save Name:", textStyle);
@@ -292,7 +304,17 @@ namespace CMS21MP
             }
             else
             {
-                float scrollViewHeight = Mathf.Min(SaveSystem.ModSaves.Count * (buttonHeight + 20), maxScrollViewHeight);
+               DisplaySaves();
+            }
+
+            GUILayout.FlexibleSpace();
+
+            GUILayout.EndArea();
+        }
+
+        public void DisplaySaves()
+        {
+             float scrollViewHeight = Mathf.Min(SaveSystem.ModSaves.Count * (buttonHeight + 20), maxScrollViewHeight);
 
                 scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(220),
                     GUILayout.Height(scrollViewHeight));
@@ -315,13 +337,22 @@ namespace CMS21MP
 
                         if (GUILayout.Button(modSaveData.Name, buttonStyle, GUILayout.Width(160), GUILayout.Height(buttonHeight)))
                         {
-                            if(!MainMod.isServer)
-                                Server.Start();
-                            else
+
+                            if (!MainMod.usingSteamAPI)
                             {
-                                Server.Stop();
-                                Server.Start();
+                                if(!MainMod.isServer)
+                                    Server.Start();
+                                else
+                                {
+                                    Server.Stop();
+                                    Server.Start();
+                                }
                             }
+                            else
+                            { 
+                                CallbackHandler.CreateLobby(0);
+                            }
+                            
 
                             ShowLobbyInterface();
                             
@@ -333,11 +364,6 @@ namespace CMS21MP
                 }
 
                 GUILayout.EndScrollView();
-            }
-
-            GUILayout.FlexibleSpace();
-
-            GUILayout.EndArea();
         }
 
 
@@ -362,146 +388,162 @@ namespace CMS21MP
 
             // Affichage des joueurs
             if (MainMod.isServer)
-            {
-                for (int i = 1; i < Server.clients.Count; i++)
                 {
-                    try
+                    for (int i = 1; i < Server.clients.Count; i++)
                     {
-                        Player player = Server.clients[i].player;
-
-                        if (player != null)
+                        try
                         {
-                            GUILayout.BeginHorizontal();
+                            Player player = Server.clients[i].player;
 
-                            GUILayout.Label(player.username, textStyle);
+                            if (player != null)
+                            {
+                                GUILayout.BeginHorizontal();
 
-                            if (player.isReady)
-                            {
-                                GUILayout.Label("Ready", textStyle);
-                            }
-                            else
-                            {
-                                GUILayout.Label("Not Ready", textStyle);
-                            }
+                                GUILayout.Label(player.username, textStyle);
 
-                            if (player.id == Client.Instance.Id)
-                            {
-                                if (GUILayout.Button("Ready?", buttonStyle, GUILayout.Width(120),
-                                        GUILayout.Height(buttonHeight)))
+                                if (player.isReady)
                                 {
-                                    player.isReady = !player.isReady;
-                                    ClientSend.SendReadyState(player.isReady, i);
+                                    GUILayout.Label("Ready", textStyle);
                                 }
-                            }
-
-                            if (player.id != Client.Instance.Id)
-                            {
-                                if (GUILayout.Button("Kick", buttonStyle, GUILayout.Width(60), GUILayout.Height(buttonHeight)))
+                                else
                                 {
-                                   // ServerSend.DisconnectClient(player.id, "You've been kicked from the server."); TODO: Usefull ?
-                                    Server.clients[i].Disconnect(Server.clients[i].id);
+                                    GUILayout.Label("Not Ready", textStyle);
                                 }
-                            }
 
-                            GUILayout.EndHorizontal();
+                                if (player.id == Client.Instance.Id)
+                                {
+                                    if (GUILayout.Button("Ready?", buttonStyle, GUILayout.Width(120),
+                                            GUILayout.Height(buttonHeight)))
+                                    {
+                                        player.isReady = !player.isReady;
+                                        ClientSend.SendReadyState(player.isReady, i);
+                                    }
+                                }
+
+                                if (player.id != Client.Instance.Id)
+                                {
+                                    if (GUILayout.Button("Kick", buttonStyle, GUILayout.Width(60), GUILayout.Height(buttonHeight)))
+                                    {
+                                       // ServerSend.DisconnectClient(player.id, "You've been kicked from the server."); TODO: Usefull ?
+                                        Server.clients[i].Disconnect(Server.clients[i].id);
+                                    }
+                                }
+
+                                GUILayout.EndHorizontal();
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MelonLogger.Msg("Error: " + e.Message);
                         }
                     }
-                    catch (Exception e)
+
+                    if (GUILayout.Button("Start Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
                     {
-                        MelonLogger.Msg("Error: " + e.Message);
+                        foreach (var client in Server.clients)
+                        {
+                            if (client.Value.player != null && !client.Value.player.isReady)
+                            {
+                                return;
+                            }
+                        }
+        
+                        StartGame(saveToLoadIndex);
+                        SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
+                        showLobbyInterface = false;
+                    }
+
+
+                    GUILayout.Space(10);
+
+                    if (GUILayout.Button("Cancel", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+                    {
+                        // Actions à effectuer lors du clic sur le bouton pour retourner au menu principal
+                        showLobbyInterface = false;
+                        showHostInterface = false;
+                        showMainInterface = true;
+
+                        Server.Stop();
                     }
                 }
-
-                if (GUILayout.Button("Start Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+                else
                 {
-                    foreach (var client in Server.clients)
+                    for (int i = 1; i <= ClientData.serverPlayers.Count; i++)
                     {
-                        if (client.Value.player != null && !client.Value.player.isReady)
+                        try
                         {
-                            return;
+                            Player player = ClientData.serverPlayers[i];
+                            
+                            if (player != null)
+                            {
+                                GUILayout.BeginHorizontal();
+
+                                GUILayout.Label( player.username, textStyle);
+
+                                if (player.isReady)
+                                {
+                                    GUILayout.Label("Ready", textStyle);
+                                }
+                                else
+                                {
+                                    GUILayout.Label("Not Ready", textStyle);
+                                }
+                            
+                                if ( player.id == Client.Instance.Id)
+                                {
+                                    if (GUILayout.Button("Ready?", buttonStyle, GUILayout.Width(120), GUILayout.Height(buttonHeight)))
+                                    {
+                                        player.isReady = !player.isReady;
+                                        ClientSend.SendReadyState(player.isReady, i);
+                                    }
+                                }
+
+                                GUILayout.EndHorizontal();
+                            
+                                GUILayout.Space(10);
+                            }   
+                        }
+                        catch (Exception e)
+                        {
+                            MelonLogger.Msg("Error: " + e.Message);
                         }
                     }
-    
-                    StartGame(saveToLoadIndex);
-                    SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
-                    showLobbyInterface = false;
-                }
-
-
-                GUILayout.Space(10);
-
-                if (GUILayout.Button("Cancel", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
-                {
-                    // Actions à effectuer lors du clic sur le bouton pour retourner au menu principal
-                    showLobbyInterface = false;
-                    showHostInterface = false;
-                    showMainInterface = true;
-
-                    Server.Stop();
-                }
-            }
-            else
-            {
-                for (int i = 1; i <= ClientData.serverPlayers.Count; i++)
-                {
-                    try
-                    {
-                        Player player = ClientData.serverPlayers[i];
-                        
-                        if (player != null)
-                        {
-                            GUILayout.BeginHorizontal();
-
-                            GUILayout.Label( player.username, textStyle);
-
-                            if (player.isReady)
-                            {
-                                GUILayout.Label("Ready", textStyle);
-                            }
-                            else
-                            {
-                                GUILayout.Label("Not Ready", textStyle);
-                            }
-                        
-                            if ( player.id == Client.Instance.Id)
-                            {
-                                if (GUILayout.Button("Ready?", buttonStyle, GUILayout.Width(120), GUILayout.Height(buttonHeight)))
-                                {
-                                    player.isReady = !player.isReady;
-                                    ClientSend.SendReadyState(player.isReady, i);
-                                }
-                            }
-
-                            GUILayout.EndHorizontal();
-                        
-                            GUILayout.Space(10);
-                        }   
-                    }
-                    catch (Exception e)
-                    {
-                        MelonLogger.Msg("Error: " + e.Message);
-                    }
-                }
-                
-                if (GUILayout.Button("Cancel", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
-                {
-                    // Actions à effectuer lors du clic sur le bouton pour retourner au menu principal
-                    showLobbyInterface = false;
-                    showHostInterface = false;
-                    showMainInterface = true;
                     
-                    Client.Instance.Disconnect();
+                    if (GUILayout.Button("Cancel", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+                    {
+                        // Actions à effectuer lors du clic sur le bouton pour retourner au menu principal
+                        showLobbyInterface = false;
+                        showHostInterface = false;
+                        showMainInterface = true;
+                        
+                        Client.Instance.Disconnect();
+                    }
                 }
-            }
 
-            GUILayout.Space(20);
+                GUILayout.Space(20);
 
             GUILayout.EndArea();
         }
 
-        private void ShowLobbyInterface()
+        public void JoinLobby()
         {
-            showMainInterface = true;
+             if (!string.IsNullOrEmpty(ModUI.Instance.username) && !string.IsNullOrEmpty(ModUI.Instance.ipAddress))
+            {
+                if (!MainMod.usingSteamAPI)
+                {
+                    Client.Instance.ConnectToServer(ModUI.Instance.ipAddress);
+                }
+                else
+                {
+                    CallbackHandler.RefreshMultiplayerLobbies();
+                    ShowLobbyInterface();
+                }
+            }
+        }
+
+        public void ShowLobbyInterface()
+        {
+            showMainInterface = false;
             showHostInterface = false;
             showLobbyInterface = true;
         }

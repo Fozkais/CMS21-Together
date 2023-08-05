@@ -45,12 +45,7 @@ namespace CMS21MP
                     Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
                     Singleton<GameManager>.Instance.ProfileManager.Load(); // <- needed 
                     
-                    MelonLogger.Msg("SaveIndex: " + ModSaves[index].saveIndex + " | ProfileManager: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-                    MelonLogger.Msg("Index : " + index);
-                    MelonLogger.Msg("SaveName : " + ModSaves[index].Name + " | ProfileManager: " + Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name);
                     Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
-                    MelonLogger.Msg("ProfileManager: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-                    MelonLogger.Msg(Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData.Name);
                 }
                 else
                 {
@@ -61,14 +56,14 @@ namespace CMS21MP
                     save.WriteSaveHeader(writer); // <- needed 
                     save.WriteSaveVersion(writer); // <- needed 
 
-                    profileData[index] = save; // set the new save after all "mod" save and vanilla save
+                    profileData[profileData.Count - 1] = save; // set the new save after all "mod" save and vanilla save
+                    Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Update ProfileData
                     
-                    Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
+                    Singleton<GameManager>.Instance.ProfileManager.selectedProfile =  Singleton<GameManager>.Instance.GameDataManager.ProfileData.Count - 1; // <- needed
                     Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox); // <- not sure if needed 
                     Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(saveName); // -> here keys is all key from save dict converted to a string array to set saveName
                     Singleton<GameManager>.Instance.ProfileManager.Load(); // <- needed 
 
-                    Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set back new ProfileData
                     
                     // mettre a jour la nouvelle save dans la liste
                     SaveSystem.ModSaves[index].Name =  saveName;
@@ -92,13 +87,13 @@ namespace CMS21MP
                 save.WriteSaveVersion(writer); // <- needed 
 
                 profileData[profileData.Count - 1] = save; // set the new save after all "mod" save and vanilla save
+                Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Update ProfileData
                     
-                Singleton<GameManager>.Instance.ProfileManager.selectedProfile = profileData.Count - 1; // <- needed
+                Singleton<GameManager>.Instance.ProfileManager.selectedProfile =  Singleton<GameManager>.Instance.GameDataManager.ProfileData.Count - 1; // <- needed
                 Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox); // <- not sure if needed 
                 Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile("Client"); // -> here keys is all key from save dict converted to a string array to set saveName
                 Singleton<GameManager>.Instance.ProfileManager.Load(); // <- needed 
 
-                Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set back new ProfileData
                     
                 // mettre a jour la nouvelle save dans la liste
                 SaveSystem.ModSaves[ModSaves.Count - 1].Name =  "Client";
@@ -113,7 +108,12 @@ namespace CMS21MP
                 
                 StartGame(profileData.Count - 1);
             }
-
+            
+            MelonLogger.Msg("SaveIndex: " + ModSaves[index].saveIndex + " | ProfileManager: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            MelonLogger.Msg("Index : " + index);
+            MelonLogger.Msg("SaveName : " + ModSaves[index].Name + " | ProfileManager: " + Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name);
+            MelonLogger.Msg("ProfileManager: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            MelonLogger.Msg(Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData.Name);
             return index;
         }
 
@@ -159,13 +159,12 @@ namespace CMS21MP
         {
             Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set back new ProfileData
             
-                Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
+            Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
 
-                Singleton<GameManager>.Instance.GameDataManager.LoadProfile();
-                Singleton<GameManager>.Instance.StartCoroutine(Singleton<GameManager>.Instance.GameDataManager.Load(true));
-                
-                NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("garage", SceneType.Garage, true, false));
-                //SceneManager.LoadScene("garage");
+            Singleton<GameManager>.Instance.GameDataManager.LoadProfile();
+            Singleton<GameManager>.Instance.StartCoroutine(Singleton<GameManager>.Instance.GameDataManager.Load(true));
+            
+            NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("garage", SceneType.Garage, true, false));
         }
 
         
