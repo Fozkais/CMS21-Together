@@ -357,6 +357,7 @@ namespace CMS21MP
                             ShowLobbyInterface();
                             
                             saveToLoadIndex = SaveSystem.LoadSave(saveIndex, modSaveData.Name);
+                            ShowLobbyInterface();
                         }
 
                         GUILayout.EndHorizontal();

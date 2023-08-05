@@ -13,16 +13,30 @@ namespace CMS21MP.SharedData
         public string carID;
         public ModPartInfo partInfo;
         
+        public int carVersion;
         public int carPosition;
+        public string carScene;
 
         public bool isReferences;
         
-        public ModCar(int _carLoaderID, int _carPosition=-1)
+        public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
         {
             this.carLoaderID = _carLoaderID;
             this.carID = ClientData.carLoaders[_carLoaderID].carToLoad;
             this.partInfo = new ModPartInfo();
             this.carPosition = _carPosition;
+            this.carVersion = _carVersion;
+            this.carScene = _carScene;
+        }
+
+        public ModCar(ModCar _car)
+        {
+            this.carLoaderID = _car.carLoaderID;
+            this.carID = _car.carID;
+            this.partInfo = new ModPartInfo();
+            this.carPosition = _car.carPosition;
+            this.carVersion = _car.carVersion;
+            this.carScene = _car.carScene;
         }
     }
 

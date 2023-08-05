@@ -52,7 +52,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 Server.clients[_fromClient].player.position = _position;
                 
                 ServerSend.SendPosition(_fromClient, _position);
-                MelonLogger.Msg("Received position from:" + Server.clients[_fromClient].player.username);
+               // MelonLogger.Msg("Received position from:" + Server.clients[_fromClient].player.username);
             }
             
             public static void playerRotation(int _fromClient, Packet _packet)
@@ -63,6 +63,25 @@ namespace CMS21MP.ServerSide.DataHandle
                 ServerSend.SendRotation(_fromClient, _rotation);
             }
         
+        #endregion
+
+        #region Car
+
+        public static void CarInfo(int _fromClient, Packet _packet)
+        {
+            ModCar car = _packet.Read<ModCar>();
+
+            ServerSend.CarInfo(_fromClient, car);
+        }
+        
+        public static void CarPosition(int _fromClient, Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            int carPosition = _packet.ReadInt();
+            
+            ServerSend.CarPosition(_fromClient, carLoaderID, carPosition);
+        }
+
         #endregion
     }
 }

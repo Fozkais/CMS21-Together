@@ -236,5 +236,30 @@ namespace CMS21MP.ServerSide.DataHandle
             }
 
         #endregion
+
+        #region Car
+            public static void CarInfo(int _fromClient, ModCar _car)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                {
+                    _packet.Write(_car);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            public static void CarPosition(int _fromClient, int _carLoaderID, int _carPosition)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carPosition))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_carPosition);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            
+
+        #endregion
+
     }
 }

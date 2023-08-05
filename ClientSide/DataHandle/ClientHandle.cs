@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
@@ -93,6 +94,43 @@ namespace CMS21MP.ClientSide.DataHandle
                 QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
                 Movement.UpdatePlayersRotation(ClientData.serverPlayers[_id], _rotation);
             }
+
+        #endregion
+
+        #region Car
+
+        public static void CarInfo(Packet _packet)
+        {
+            ModCar car = _packet.Read<ModCar>();
+            
+            
+            MelonLogger.Msg($"Received car info from server. ID:{car.carID} Version:{car.carVersion} Pos:{car.carPosition}, Scene:{car.carScene}");
+            var carLoader = ClientData.carLoaders[car.carLoaderID];
+            if (ClientData.carOnScene.Any(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition))
+            {
+                ClientData.carOnScene.Remove(ClientData.carOnScene.Find(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition));
+                carLoader.DeleteCar();
+            }
+            else
+            {
+                ClientData.carOnScene.Add(car);
+                
+                carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
+                
+                carLoader.placeNo = car.carPosition;
+                carLoader.PlaceAtPosition();
+                carLoader.ChangePosition(car.carPosition);
+            }
+        }
+        
+        public static void CarPosition(Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            int carPosition = _packet.ReadInt();
+            
+            ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID).carPosition = carPosition;
+            ClientData.carLoaders[carLoaderID].ChangePosition(carPosition);
+        }
 
         #endregion
     }

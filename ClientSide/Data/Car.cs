@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using Il2Cpp;
+using Il2CppCMS.Tutorial;
 using MelonLoader;
 using UnityEngine;
 using Enumerable = System.Linq.Enumerable;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace CMS21MP.ClientSide.Data
 {
@@ -85,7 +88,7 @@ namespace CMS21MP.ClientSide.Data
                     {
                         loaderWithCar.Add(i, ClientData.carLoaders[i]);
                     }
-                    else if(loaderWithCar.ContainsKey(i) && !hasCar(ClientData.carLoaders[i]))
+                    if(loaderWithCar.ContainsKey(i) && !hasCar(ClientData.carLoaders[i]))
                     {
                         loaderWithCar.Remove(i);
                     }
@@ -95,8 +98,10 @@ namespace CMS21MP.ClientSide.Data
                 {
                     if (!ClientData.carOnScene.Any(s => s.carLoaderID == i))
                     {
-                        ClientData.carOnScene.Add(new ModCar(i));
-                        // TODO: Send car spawn to server
+                        ModCar newCar = new ModCar(i, loaderWithCar[i].ConfigVersion, SceneManager.GetActiveScene().name, loaderWithCar[i].placeNo);
+                        ClientData.carOnScene.Add(newCar);
+                        ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[i]));
+                        MelonLogger.Msg("Car Spawned");
                     }
                 }
 
@@ -104,8 +109,9 @@ namespace CMS21MP.ClientSide.Data
                 {
                     if (!loaderWithCar.ContainsKey(ClientData.carOnScene[i].carLoaderID))
                     {
+                        ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[i]));
                         ClientData.carOnScene.Remove(ClientData.carOnScene[i]);
-                        // TODO: Send car destroy to server
+                        MelonLogger.Msg("Car Despawned");
                     }
                 }
             }
@@ -323,12 +329,12 @@ namespace CMS21MP.ClientSide.Data
         {
             foreach (var car in ClientData.carOnScene)
             {
-                if (loaderWithCar[car.carLoaderID].placeNo != car.carPosition)
+                if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
                 {
-                    //TODO: Send car position to server
+                    ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
                 }
                 
-                car.carPosition = loaderWithCar[car.carLoaderID].placeNo;
+                car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
                     
             }
         }

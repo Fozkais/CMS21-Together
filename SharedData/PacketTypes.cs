@@ -12,10 +12,14 @@ namespace CMS21MP.SharedData
             
         #endregion
 
-        #region 
+        #region In-Game
 
-        playerPosition,
-        playerRotation
+            playerPosition,
+            playerRotation,
+            
+            carInfo,
+            carPosition,
+            carPart
 
         #endregion
     }

@@ -149,7 +149,9 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
                 {(int)PacketTypes.readyState, ServerHandle.ReadyState},
                 {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
-                {(int)PacketTypes.playerRotation, ServerHandle.playerRotation}
+                {(int)PacketTypes.playerRotation, ServerHandle.playerRotation},
+                {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
+                {(int)PacketTypes.carPosition, ServerHandle.CarPosition}
             };
             MelonLogger.Msg("Initialized Packets!");
         }
