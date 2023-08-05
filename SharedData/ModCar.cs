@@ -14,6 +14,8 @@ namespace CMS21MP.SharedData
         public ModPartInfo partInfo;
         
         public int carPosition;
+
+        public bool isReferences;
         
         public ModCar(int _carLoaderID, int _carPosition=-1)
         {

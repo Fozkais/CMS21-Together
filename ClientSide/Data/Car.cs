@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using Il2Cpp;
 using MelonLoader;
@@ -15,15 +16,21 @@ namespace CMS21MP.ClientSide.Data
         public static Dictionary<int, CarLoader> loaderWithCar = new Dictionary<int, CarLoader>();
         
         private static bool carSpawnHandleRunning;
-        private static bool partHandleRunning;
+        private static bool partReferenceHandleRunning;
+        private static bool partUpdateHandleRunning;
         private static bool carMovementHandleRunning;
         
         public static void UpdateCarInfo()
         {
             if (!carSpawnHandleRunning)
                 MelonCoroutines.Start(CarSpawnHandle(2));
+            if(!partReferenceHandleRunning)
+                MelonCoroutines.Start(CarPartReferenceHandle(2));
+            if(!partUpdateHandleRunning)
+                MelonCoroutines.Start(CarPartUpdateHandle(0.5f));
             if (!carMovementHandleRunning)
                 MelonCoroutines.Start(CarMovementHandle(1));
+            
         }
 
         private static IEnumerator CarSpawnHandle(int updateRate)
@@ -32,6 +39,21 @@ namespace CMS21MP.ClientSide.Data
             yield return new WaitForSeconds(updateRate);
             HandleCarSpawn();
             carSpawnHandleRunning = false;
+        }
+        
+        private static IEnumerator CarPartReferenceHandle(int updateRate)
+        {
+            partReferenceHandleRunning = true;
+            yield return new WaitForSeconds(updateRate);
+            GetPartsReferences();
+            partReferenceHandleRunning = false;
+        }
+        private static IEnumerator CarPartUpdateHandle(float updateRate)
+        {
+            partUpdateHandleRunning = true;
+            yield return new WaitForSeconds(updateRate);
+            UpdateParts();
+            partUpdateHandleRunning = false;
         }
         
         private static IEnumerator CarMovementHandle(int updateRate)
@@ -93,14 +115,207 @@ namespace CMS21MP.ClientSide.Data
         
         #region Get Parts References
 
-        
+            private static void GetPartsReferences()
+            {
+                foreach (var car in ClientData.carOnScene)
+                {
+                    if (!car.isReferences)
+                    {
+                        GetOtherPartsReferences(car);
+                        GetEnginePartsReferences(car);
+                        GetSuspensionsPartsReferences(car);
+                        //TODO: Handle body parts references
+                        car.isReferences = true;
+                    }
+                }
+            }
+
+            private static void GetSuspensionsPartsReferences(ModCar _car)
+            {
+                List<GameObject> suspensions = new List<GameObject>();
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontCenter_h);
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontLeft_h);
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontRight_h);
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearCenter_h);
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearLeft_h);
+                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearRight_h);
+
+                var suspensionReferencePoint = _car.partInfo.SuspensionPartsReferences;
+                
+                for (int i = 0; i < suspensions.Count; i++)
+                {
+                    var partsInSuspension = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
+                    for (int j = 0; j < partsInSuspension.Count; j++)
+                    {
+                        if (!suspensionReferencePoint.ContainsKey(j))
+                        {
+                            suspensionReferencePoint.Add(j, new List<PartScript>() { partsInSuspension[j] });
+                        }
+                        if (!suspensionReferencePoint[j].Contains(partsInSuspension[j]))
+                        {
+                            suspensionReferencePoint[j].Add(partsInSuspension[j]);
+                        }
+                    }
+                }
+            }
+
+            private static void GetEnginePartsReferences(ModCar _car)
+            {
+                var engine = ClientData.carLoaders[_car.carLoaderID].e_engine_h;
+                var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList();
+                
+                var engineReferencePoint = _car.partInfo.EnginePartsReferences;
+
+                for (int i = 0; i < partsInEngine.Count; i++)
+                {
+                    if (!engineReferencePoint.ContainsKey(i))
+                    {
+                        engineReferencePoint.Add(i, partsInEngine[i]);
+                    }
+                }
+            }
+
+            private static void GetOtherPartsReferences(ModCar _car)
+            {
+                var otherPartsObjects = ClientData.carLoaders[_car.carLoaderID].Parts;
+                var otherPartsReferencePoint = _car.partInfo.OtherPartsReferences;
+
+                for (int i = 0; i < otherPartsObjects.Count; i++)
+                {
+                    var partObject = ClientData.carLoaders[_car.carLoaderID].Parts._items[i].p_handle;
+                    var _parts = partObject.GetComponentsInChildren<PartScript>().ToList();
+
+                    for (int j = 0; j < _parts.Count; j++)
+                    {
+                        if (!otherPartsReferencePoint.ContainsKey(j))
+                        {
+                            otherPartsReferencePoint.Add(j, new List<PartScript>() { _parts[j] });
+                        }
+                        if (!otherPartsReferencePoint[j].Contains(_parts[j]))
+                        {
+                            otherPartsReferencePoint[j].Add(_parts[j]);
+                        }
+                    }
+                }
+            }
 
         #endregion
         
         #region Handle Part
-        
-        
-        #endregion
+
+            private static void UpdateParts()
+            {
+                foreach (var car in ClientData.carOnScene)
+                {
+                    if (car.isReferences)
+                    {
+                        UpdateOtherParts(car);
+                        UpdateEngineParts(car);
+                        UpdateSuspensionParts(car);
+                        //TODO: Handle body parts
+                    }
+                }
+            }
+
+            private static void UpdateSuspensionParts(ModCar _car)
+            {
+                var suspensionPartsReferences = _car.partInfo.SuspensionPartsReferences;
+                var suspensionParts = _car.partInfo.SuspensionParts;
+
+                for (int i = 0; i < suspensionPartsReferences.Count; i++)
+                {
+                    var parts = suspensionPartsReferences[i];
+                    for (int j = 0; j < parts.Count; j++)
+                    {
+                        var partConverted = new ModPartScript(parts[j], i, j, partType.suspension);
+                        
+                        if (!suspensionParts.ContainsKey(i))
+                        {
+                            suspensionParts.Add(i, new List<ModPartScript>());
+                        }
+                        if(!suspensionParts[i].Contains(partConverted))
+                        {
+                            suspensionParts[i].Add(partConverted); 
+                            //TODO: Send part new to server
+                        }
+                        
+                        if (hasDifferences(suspensionParts[i][j], parts[j]))
+                        {
+                            suspensionParts[i][j] = partConverted;
+                            MelonLogger.Msg("Suspension part updated");
+                            //TODO: Send part update to server
+                        }
+                    }
+                }
+            }
+
+            private static void UpdateEngineParts(ModCar _car)
+            {
+                var EnginePartsReferences = _car.partInfo.EnginePartsReferences;
+                var engineParts = _car.partInfo.EngineParts;
+                
+                for (int i = 0; i < EnginePartsReferences.Count; i++)
+                {
+                    var partConverted = new ModPartScript(EnginePartsReferences[i], i, -1, partType.other);
+                    if (!engineParts.ContainsKey(i))
+                    {
+                        engineParts.Add(i, partConverted);
+                        //TODO: Send part new to server
+                    }
+                    else
+                    {
+                        if (hasDifferences(engineParts[i], EnginePartsReferences[i]))
+                        {
+                            engineParts[i] = partConverted;
+                            MelonLogger.Msg("Engine part updated");
+                            //TODO: Send part update to server
+                        }
+                    }
+                }
+            }
+
+            private static void UpdateOtherParts(ModCar _car)
+            {
+                var otherPartsReferences = _car.partInfo.OtherPartsReferences;
+                var otherParts = _car.partInfo.OtherParts;
+
+                for (int i = 0; i < otherPartsReferences.Count; i++)
+                {
+                    var parts = otherPartsReferences[i];
+                    for (int j = 0; j < parts.Count; j++)
+                    {
+                        var partConverted = new ModPartScript(parts[j], i, j, partType.other);
+                        
+                        if (!otherParts.ContainsKey(i))
+                        {
+                            otherParts.Add(i, new List<ModPartScript>());
+                        }
+                        if(!otherParts[i].Contains(partConverted))
+                        {
+                            otherParts[i].Add(partConverted); 
+                            //TODO: Send part new to server
+                        }
+                        
+                        if (hasDifferences(otherParts[i][j], parts[j]))
+                        {
+                            otherParts[i][j] = partConverted;
+                            MelonLogger.Msg("Other part updated");
+                            //TODO: Send part update to server
+                        }
+                    }
+                }
+            }
+
+            private static bool hasDifferences(ModPartScript handled, PartScript toHandle) //TODO: Add more differences check
+            {
+                bool hasDifferences = false;
+                if (handled.unmounted != toHandle.IsUnmounted)
+                    hasDifferences = true;
+
+                return hasDifferences;
+            }
+
+            #endregion
 
         #region Car Moving
 
@@ -110,9 +325,10 @@ namespace CMS21MP.ClientSide.Data
             {
                 if (loaderWithCar[car.carLoaderID].placeNo != car.carPosition)
                 {
-                    car.carPosition = loaderWithCar[car.carLoaderID].placeNo;
                     //TODO: Send car position to server
                 }
+                
+                car.carPosition = loaderWithCar[car.carLoaderID].placeNo;
                     
             }
         }
