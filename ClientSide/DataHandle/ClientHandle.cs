@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.ClientSide.Data;
+using CMS21MP.CustomData;
 using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using Il2Cpp;
@@ -130,6 +131,17 @@ namespace CMS21MP.ClientSide.DataHandle
             
             ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID).carPosition = carPosition;
             ClientData.carLoaders[carLoaderID].ChangePosition(carPosition);
+        }
+        
+        public static void CarPart(Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            ModPartScript carPart = _packet.Read<ModPartScript>();
+
+            if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
+            {
+                Car.HandleNewPart(carLoaderID, carPart);
+            }
         }
 
         #endregion

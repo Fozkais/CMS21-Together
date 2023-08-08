@@ -40,7 +40,10 @@
     <Compile Include="ClientSide\Data\Car.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction.cs" />
+    <Compile Include="ClientSide\Data\ModInventory.cs" />
     <Compile Include="ClientSide\Data\Movement.cs" />
+    <Compile Include="ClientSide\Data\Stats.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="CustomData\ModCarClasses.cs" />

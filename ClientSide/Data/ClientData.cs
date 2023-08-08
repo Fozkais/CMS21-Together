@@ -13,13 +13,22 @@ namespace CMS21MP.ClientSide.Data
         public static GameObject playerPrefab;
         public static Dictionary<int, Player> serverPlayers = new Dictionary<int, Player>();
         public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
+        
         public static List<ModCar> carOnScene = new List<ModCar>();
         public static CarLoader[] carLoaders;
 
+        public static List<Item> playerInventory = new List<Item>();
+        public static List<GroupItem> playerGroupInventory = new List<GroupItem>();
+        public static Inventory localInventory;
+
+        public static int playerMoney;
+        public static int playerScrap;
+        public static int playerExp;
 
         public static void Init()
         {
             carLoaders = GameScript.Get().carOnScene;
+            localInventory = GameScript.Get().GetComponent<Inventory>(); // TODO: Check if inventory scene
         }
         
         public static void UpdateClientInfo()
@@ -27,7 +36,10 @@ namespace CMS21MP.ClientSide.Data
             Movement.SendMovement();
             Movement.SendRotation();
             
-            Car.UpdateCarInfo();
+            Car.UpdateCars();
+            ModInventory.UpdateInventory();
+            Stats.HandleStats();
+            GarageInteraction.handleInteraction();
         }
 
 

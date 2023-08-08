@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
+using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using MelonLoader;
 using Steamworks;
@@ -195,7 +196,8 @@ namespace CMS21MP.ServerSide.DataHandle
                     yield return  new WaitForEndOfFrame();
                 
                 MelonLogger.Msg("Sending Spawn Player Packets");
-
+                yield return new WaitForSeconds(1.5f);
+                
                 foreach (ServerClient _client in Server.clients.Values)
                     {
                         if (_client.player != null)
@@ -253,6 +255,16 @@ namespace CMS21MP.ServerSide.DataHandle
                 {
                     _packet.Write(_carLoaderID);
                     _packet.Write(_carPosition);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            public static void CarPart(int _fromClient, int _carLoaderID, ModPartScript _carPart)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carPart))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_carPart);
 
                     SendTCPDataToAll(_fromClient, _packet);
                 }

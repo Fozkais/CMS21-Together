@@ -271,7 +271,7 @@ namespace CMS21MP
 
             if (GUILayout.Button("New Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
-                bool isNameAlreadyExists = SaveSystem.ModSaves.Any(save => save.Name == save_name);
+                bool isNameAlreadyExists = SaveSystem.ModSaves.Any(save => save.Value.Name == save_name);
 
                 if (isNameAlreadyExists)
                 {
@@ -298,7 +298,7 @@ namespace CMS21MP
 
             GUILayout.Space(10);
 
-            if (!SaveSystem.ModSaves.Any(save => save.Name != "EmptySave"))
+            if (!SaveSystem.ModSaves.Any(save => save.Value.Name != "EmptySave"))
             {
                 GUILayout.Label("No Save", labelStyle);
             }
@@ -321,8 +321,8 @@ namespace CMS21MP
 
                 foreach (var data in SaveSystem.ModSaves)
                 {
-                    int saveIndex = data.saveIndex;
-                    ModSaveData modSaveData = data;
+                    int saveIndex = data.Value.saveIndex;
+                    ModSaveData modSaveData = data.Value;
 
                     if (modSaveData.Name != "EmptySave")
                     {

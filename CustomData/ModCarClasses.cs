@@ -120,7 +120,9 @@ namespace CMS21MP.CustomData
         public float p_clearCoat;
         public float p_normalStrenght;
         public float p_fresnel;
-        
+
+        public ModPaintData() { }
+
         public ModPaintData(PaintData data)
         {
             this.metal = data.metal;

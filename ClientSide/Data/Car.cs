@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
@@ -22,8 +24,8 @@ namespace CMS21MP.ClientSide.Data
         private static bool partReferenceHandleRunning;
         private static bool partUpdateHandleRunning;
         private static bool carMovementHandleRunning;
-        
-        public static void UpdateCarInfo()
+
+        public static void UpdateCars()
         {
             if (!carSpawnHandleRunning)
                 MelonCoroutines.Start(CarSpawnHandle(2));
@@ -48,14 +50,14 @@ namespace CMS21MP.ClientSide.Data
         {
             partReferenceHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
-            GetPartsReferences();
+            GetPartsReferencesAsync();
             partReferenceHandleRunning = false;
         }
         private static IEnumerator CarPartUpdateHandle(float updateRate)
         {
             partUpdateHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
-            UpdateParts();
+            UpdatePartsAsync();
             partUpdateHandleRunning = false;
         }
         
@@ -121,195 +123,231 @@ namespace CMS21MP.ClientSide.Data
         
         #region Get Parts References
 
-            private static void GetPartsReferences()
+            private async static Task GetPartsReferencesAsync()
             {
                 foreach (var car in ClientData.carOnScene)
                 {
                     if (!car.isReferences)
                     {
-                        GetOtherPartsReferences(car);
-                        GetEnginePartsReferences(car);
-                        GetSuspensionsPartsReferences(car);
+                        var getOtherPartTask = GetOtherPartsReferencesAsync(car);
+                        var getEnginePartTask = GetEnginePartsReferencesAsync(car);
+                        var getSuspensionPartTask = GetSuspensionsPartsReferencesAsync(car);
                         //TODO: Handle body parts references
+                        
+                        await Task.WhenAll(getOtherPartTask, getEnginePartTask, getSuspensionPartTask);
+                        
                         car.isReferences = true;
                     }
                 }
             }
 
-            private static void GetSuspensionsPartsReferences(ModCar _car)
+            private async static Task GetSuspensionsPartsReferencesAsync(ModCar _car)
             {
-                List<GameObject> suspensions = new List<GameObject>();
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontCenter_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontLeft_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontRight_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearCenter_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearLeft_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearRight_h);
-
-                var suspensionReferencePoint = _car.partInfo.SuspensionPartsReferences;
-                
-                for (int i = 0; i < suspensions.Count; i++)
+                await Task.Run(() =>
                 {
-                    var partsInSuspension = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
-                    for (int j = 0; j < partsInSuspension.Count; j++)
+                    List<GameObject> suspensions = new List<GameObject>();
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontCenter_h);
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontLeft_h);
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontRight_h);
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearCenter_h);
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearLeft_h);
+                    suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearRight_h);
+
+                    var suspensionReferencePoint = _car.partInfo.SuspensionPartsReferences;
+                    
+                    for (int i = 0; i < suspensions.Count; i++)
                     {
-                        if (!suspensionReferencePoint.ContainsKey(j))
+                        var partsInSuspension = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
+                        for (int j = 0; j < partsInSuspension.Count; j++)
                         {
-                            suspensionReferencePoint.Add(j, new List<PartScript>() { partsInSuspension[j] });
-                        }
-                        if (!suspensionReferencePoint[j].Contains(partsInSuspension[j]))
-                        {
-                            suspensionReferencePoint[j].Add(partsInSuspension[j]);
+                            if (!suspensionReferencePoint.ContainsKey(j))
+                            {
+                                suspensionReferencePoint.Add(j, new List<PartScript>() { partsInSuspension[j] });
+                            }
+                            if (!suspensionReferencePoint[j].Contains(partsInSuspension[j]))
+                            {
+                                suspensionReferencePoint[j].Add(partsInSuspension[j]);
+                            }
                         }
                     }
-                }
+                });
             }
 
-            private static void GetEnginePartsReferences(ModCar _car)
+            private async static Task GetEnginePartsReferencesAsync(ModCar _car)
             {
-                var engine = ClientData.carLoaders[_car.carLoaderID].e_engine_h;
-                var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList();
-                
-                var engineReferencePoint = _car.partInfo.EnginePartsReferences;
-
-                for (int i = 0; i < partsInEngine.Count; i++)
+                await Task.Run(() =>
                 {
-                    if (!engineReferencePoint.ContainsKey(i))
+                    var engine = ClientData.carLoaders[_car.carLoaderID].e_engine_h;
+                    var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList();
+
+                    var engineReferencePoint = _car.partInfo.EnginePartsReferences;
+
+                    for (int i = 0; i < partsInEngine.Count; i++)
                     {
-                        engineReferencePoint.Add(i, partsInEngine[i]);
+                        if (!engineReferencePoint.ContainsKey(i))
+                        {
+                            engineReferencePoint.Add(i, partsInEngine[i]);
+                        }
                     }
-                }
+                });
             }
 
-            private static void GetOtherPartsReferences(ModCar _car)
+            private async static Task GetOtherPartsReferencesAsync(ModCar _car)
             {
-                var otherPartsObjects = ClientData.carLoaders[_car.carLoaderID].Parts;
-                var otherPartsReferencePoint = _car.partInfo.OtherPartsReferences;
-
-                for (int i = 0; i < otherPartsObjects.Count; i++)
+                await Task.Run(() =>
                 {
-                    var partObject = ClientData.carLoaders[_car.carLoaderID].Parts._items[i].p_handle;
-                    var _parts = partObject.GetComponentsInChildren<PartScript>().ToList();
+                    var otherPartsObjects = ClientData.carLoaders[_car.carLoaderID].Parts;
+                    var otherPartsReferencePoint = _car.partInfo.OtherPartsReferences;
 
-                    for (int j = 0; j < _parts.Count; j++)
+                    for (int i = 0; i < otherPartsObjects.Count; i++)
                     {
-                        if (!otherPartsReferencePoint.ContainsKey(j))
+                        var partObject = ClientData.carLoaders[_car.carLoaderID].Parts._items[i].p_handle;
+                        var _parts = partObject.GetComponentsInChildren<PartScript>().ToList();
+
+                        for (int j = 0; j < _parts.Count; j++)
                         {
-                            otherPartsReferencePoint.Add(j, new List<PartScript>() { _parts[j] });
-                        }
-                        if (!otherPartsReferencePoint[j].Contains(_parts[j]))
-                        {
-                            otherPartsReferencePoint[j].Add(_parts[j]);
+                            if (!otherPartsReferencePoint.ContainsKey(j))
+                            {
+                                otherPartsReferencePoint.Add(j, new List<PartScript>() { _parts[j] });
+                            }
+
+                            if (!otherPartsReferencePoint[j].Contains(_parts[j]))
+                            {
+                                otherPartsReferencePoint[j].Add(_parts[j]);
+                            }
                         }
                     }
-                }
+                });
             }
 
         #endregion
         
         #region Handle Part
 
-            private static void UpdateParts()
+            private async static Task UpdatePartsAsync()
             {
                 foreach (var car in ClientData.carOnScene)
                 {
                     if (car.isReferences)
                     {
-                        UpdateOtherParts(car);
-                        UpdateEngineParts(car);
-                        UpdateSuspensionParts(car);
+                        var updateOtherPartTask =  UpdateOtherPartsAsync(car);
+                        var updateEnginePartTask =  UpdateEnginePartsAsync(car);
+                        var updateSuspensionTask =  UpdateSuspensionPartsAsync(car);
                         //TODO: Handle body parts
+                        await Task.WhenAll(updateOtherPartTask, updateEnginePartTask, updateSuspensionTask);
+                        car.isReady = true;
+                        car.isFromServer = false;
                     }
                 }
             }
 
-            private static void UpdateSuspensionParts(ModCar _car)
+            private async static Task UpdateSuspensionPartsAsync(ModCar _car)
             {
-                var suspensionPartsReferences = _car.partInfo.SuspensionPartsReferences;
-                var suspensionParts = _car.partInfo.SuspensionParts;
-
-                for (int i = 0; i < suspensionPartsReferences.Count; i++)
+                await Task.Run(() =>
                 {
-                    var parts = suspensionPartsReferences[i];
-                    for (int j = 0; j < parts.Count; j++)
+                    var suspensionPartsReferences = _car.partInfo.SuspensionPartsReferences;
+                    var suspensionParts = _car.partInfo.SuspensionParts;
+
+                    for (int i = 0; i < suspensionPartsReferences.Count; i++)
                     {
-                        var partConverted = new ModPartScript(parts[j], i, j, partType.suspension);
-                        
-                        if (!suspensionParts.ContainsKey(i))
+                        var parts = suspensionPartsReferences[i];
+                        for (int j = 0; j < parts.Count; j++)
                         {
-                            suspensionParts.Add(i, new List<ModPartScript>());
-                        }
-                        if(!suspensionParts[i].Contains(partConverted))
-                        {
-                            suspensionParts[i].Add(partConverted); 
-                            //TODO: Send part new to server
-                        }
-                        
-                        if (hasDifferences(suspensionParts[i][j], parts[j]))
-                        {
-                            suspensionParts[i][j] = partConverted;
-                            MelonLogger.Msg("Suspension part updated");
-                            //TODO: Send part update to server
+                            var partConverted = new ModPartScript(parts[j], i, j, partType.suspension);
+
+                            if (!suspensionParts.ContainsKey(i))
+                            {
+                                suspensionParts.Add(i, new List<ModPartScript>());
+                            }
+
+                            if (!_car.isFromServer)
+                            {
+                                if (!suspensionParts[i].Contains(partConverted))
+                                {
+                                    suspensionParts[i].Add(partConverted);
+                                    ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                                }
+                                
+                                if (hasDifferences(suspensionParts[i][j], parts[j]))
+                                {
+                                    suspensionParts[i][j] = partConverted;
+                                    MelonLogger.Msg("Suspension part updated");
+                                    ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
 
-            private static void UpdateEngineParts(ModCar _car)
+            private async static Task UpdateEnginePartsAsync(ModCar _car)
             {
-                var EnginePartsReferences = _car.partInfo.EnginePartsReferences;
-                var engineParts = _car.partInfo.EngineParts;
-                
-                for (int i = 0; i < EnginePartsReferences.Count; i++)
+                await Task.Run(() =>
                 {
-                    var partConverted = new ModPartScript(EnginePartsReferences[i], i, -1, partType.other);
-                    if (!engineParts.ContainsKey(i))
+                    var EnginePartsReferences = _car.partInfo.EnginePartsReferences;
+                    var engineParts = _car.partInfo.EngineParts;
+
+                    for (int i = 0; i < EnginePartsReferences.Count; i++)
                     {
-                        engineParts.Add(i, partConverted);
-                        //TODO: Send part new to server
-                    }
-                    else
-                    {
-                        if (hasDifferences(engineParts[i], EnginePartsReferences[i]))
+                        var partConverted = new ModPartScript(EnginePartsReferences[i], i, -1, partType.other);
+                        if (!_car.isFromServer)
                         {
-                            engineParts[i] = partConverted;
-                            MelonLogger.Msg("Engine part updated");
-                            //TODO: Send part update to server
+                            if (!engineParts.ContainsKey(i))
+                            {
+                                engineParts.Add(i, partConverted);
+                                ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                            }
+                            else
+                            {
+                                if (hasDifferences(engineParts[i], EnginePartsReferences[i]))
+                                {
+                                    engineParts[i] = partConverted;
+                                    MelonLogger.Msg("Engine part updated");
+                                    ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
 
-            private static void UpdateOtherParts(ModCar _car)
+            private async static Task UpdateOtherPartsAsync(ModCar _car)
             {
-                var otherPartsReferences = _car.partInfo.OtherPartsReferences;
-                var otherParts = _car.partInfo.OtherParts;
-
-                for (int i = 0; i < otherPartsReferences.Count; i++)
+                await Task.Run(() =>
                 {
-                    var parts = otherPartsReferences[i];
-                    for (int j = 0; j < parts.Count; j++)
+                    var otherPartsReferences = _car.partInfo.OtherPartsReferences;
+                    var otherParts = _car.partInfo.OtherParts;
+
+                    for (int i = 0; i < otherPartsReferences.Count; i++)
                     {
-                        var partConverted = new ModPartScript(parts[j], i, j, partType.other);
-                        
-                        if (!otherParts.ContainsKey(i))
+                        var parts = otherPartsReferences[i];
+                        for (int j = 0; j < parts.Count; j++)
                         {
-                            otherParts.Add(i, new List<ModPartScript>());
-                        }
-                        if(!otherParts[i].Contains(partConverted))
-                        {
-                            otherParts[i].Add(partConverted); 
-                            //TODO: Send part new to server
-                        }
-                        
-                        if (hasDifferences(otherParts[i][j], parts[j]))
-                        {
-                            otherParts[i][j] = partConverted;
-                            MelonLogger.Msg("Other part updated");
-                            //TODO: Send part update to server
+                            var partConverted = new ModPartScript(parts[j], i, j, partType.other);
+                            
+                            if (!otherParts.ContainsKey(i))
+                            {
+                                otherParts.Add(i, new List<ModPartScript>());
+                            }
+
+                            if (!_car.isFromServer)
+                            {
+                                if(!otherParts[i].Contains(partConverted))
+                                {
+                                    otherParts[i].Add(partConverted); 
+                                    ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                                }
+                                
+                                if (hasDifferences(otherParts[i][j], parts[j]))
+                                {
+                                    otherParts[i][j] = partConverted;
+                                    MelonLogger.Msg("Other part updated");
+                                    ClientSend.SendCarPart(_car.carLoaderID, partConverted);
+                                }
+                            }
                         }
                     }
-                }
+                });
             }
 
             private static bool hasDifferences(ModPartScript handled, PartScript toHandle) //TODO: Add more differences check
@@ -319,6 +357,34 @@ namespace CMS21MP.ClientSide.Data
                     hasDifferences = true;
 
                 return hasDifferences;
+            }
+            
+            
+            public async static void HandleNewPart(int _carLoaderID, ModPartScript _carPart)
+            {
+                switch (_carPart.type)
+                {
+                    case partType.other:
+                        while (!ClientData.carOnScene[_carLoaderID].isReady)
+                        { await Task.Delay(300); }
+                        UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.OtherPartsReferences[_carPart.partID][_carPart.partIdNumber], _carPart, _carLoaderID);
+                        MelonLogger.Msg("Other part added");
+                        break;
+                    case partType.engine:
+                        while(!ClientData.carOnScene[_carLoaderID].isReady)
+                        { await Task.Delay(300); }
+                        UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.EnginePartsReferences[_carPart.partID], _carPart, _carLoaderID);
+                        MelonLogger.Msg("Engine part added");
+                        break;
+                    case partType.suspension:
+                        while(!ClientData.carOnScene[_carLoaderID].isReady)
+                        { await Task.Delay(300); }
+                        UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.SuspensionPartsReferences[_carPart.partID][_carPart.partIdNumber], _carPart, _carLoaderID);
+                        MelonLogger.Msg("Suspension part added");
+                        break;
+                    case partType.body: // TODO: Handle bodyParts
+                        break;
+                }
             }
 
             #endregion
@@ -332,12 +398,80 @@ namespace CMS21MP.ClientSide.Data
                 if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
                 {
                     ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
+                    car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
                 }
                 
-                car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
                     
             }
         }
+
+        #endregion
+
+
+        #region PartUpdate
+
+            public static void UpdatePart(PartScript originalPart, ModPartScript newpart, int carLoaderID)
+            {
+                try
+                {
+                    if (!String.IsNullOrEmpty(newpart.tunedID))
+                    {
+                        originalPart.tunedID = newpart.tunedID;
+                        // if (originalPart.tunedID != newPart.tunedID)
+                        // MainMod.carLoaders[Newpart._carLoaderID].TunePart(originalPart.tunedID, newPart.tunedID); 
+                    }
+                    originalPart.IsExamined = newpart.isExamined;
+                    
+                    if (newpart.unmounted == false)
+                    {
+                        originalPart.IsPainted = newpart.isPainted;
+                        if (newpart.isPainted)
+                        {
+                            originalPart.CurrentPaintType = (PaintType)newpart.paintType;
+                            originalPart.CurrentPaintData = new ModPaintData().ToGame(newpart.paintData);
+                            originalPart.SetColor(ModColor.ToColor(newpart.color));
+                            if ((PaintType)newpart.paintType == PaintType.Custom)
+                                PaintHelper.SetCustomPaintType(originalPart.gameObject, originalPart.CurrentPaintData, false);
+                        }
+
+                        originalPart.Quality = newpart.quality;
+                        originalPart.SetCondition(newpart.condition);
+                        originalPart.UpdateDust(newpart.dust, true);
+                        // Handle Bolts
+
+                        if (originalPart.IsUnmounted)
+                        {
+                            originalPart.ShowBySaveGame();
+                            originalPart.ShowMountAnimation();
+                            originalPart.FastMount();
+                        }
+                        
+                        //Wheel Handle
+                        var wheelData =  ClientData.carLoaders[carLoaderID].WheelsData;
+                        for (int i = 0; i <  ClientData.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
+                        {
+                            ClientData.carLoaders[carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
+                            ClientData.carLoaders[carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                        }
+                        ClientData.carLoaders[carLoaderID].SetWheelSizes();
+                    }
+                    else
+                    {
+                        originalPart.Quality = newpart.quality;
+                        originalPart.SetCondition(newpart.condition);
+                        originalPart.UpdateDust(newpart.dust);
+                        if (originalPart.IsUnmounted == false)
+                        {
+                            originalPart.HideBySavegame(false, ClientData.carLoaders[carLoaderID]);
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg("Error while updating pieces : " + e);
+                    throw;
+                }
+            }
 
         #endregion
     }

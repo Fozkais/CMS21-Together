@@ -91,7 +91,8 @@ namespace CMS21MP.ClientSide
                 { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
                 { (int)PacketTypes.playerRotation, ClientHandle.playerRotation },
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
-                { (int)PacketTypes.carPosition, ClientHandle.CarPosition}
+                { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
+                { (int)PacketTypes.carPart, ClientHandle.CarPart}
                 
             };
             MelonLogger.Msg("Initialized Packets!");

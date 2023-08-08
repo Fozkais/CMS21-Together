@@ -70,11 +70,11 @@ public static class PreferencesManager
             Directory.CreateDirectory(SaveFolderPath);
         }
 
-        foreach (ModSaveData saveData in SaveSystem.ModSaves)
+        foreach (KeyValuePair<int,ModSaveData> saveData in SaveSystem.ModSaves)
         {
-            if (saveData.alreadyLoaded)
+            if (saveData.Value.alreadyLoaded)
             {
-                string saveFileName = Path.Combine(SaveFolderPath, $"save_{saveData.saveIndex}.cms21mp");
+                string saveFileName = Path.Combine(SaveFolderPath, $"save_{saveData.Value.saveIndex}.cms21mp");
                 string serializedSave = JsonConvert.SerializeObject(saveData);
                 File.WriteAllText(saveFileName, serializedSave);
             }
@@ -147,7 +147,7 @@ public static class PreferencesManager
 
     public static void SaveModSave(int saveIndex)
     {
-        if (SaveSystem.ModSaves.ElementAt(saveIndex) != null)
+        if (SaveSystem.ModSaves.ElementAt(saveIndex).Value.Name != "EmptySave")
         {
             ModSaveData modSaveData = SaveSystem.ModSaves[saveIndex];
             string saveFilePath = Path.Combine(SaveFolderPath, $"save_{saveIndex}.cms21mp");

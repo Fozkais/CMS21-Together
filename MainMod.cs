@@ -77,10 +77,12 @@ namespace CMS21MP
             if(sceneName == "Menu" && client.isConnected && !isServer)
             {
                Client.Instance.Disconnect();
+               Application.runInBackground = false;
             }
             if(sceneName == "Menu" && isServer)
             {
                Server.Stop();
+               Application.runInBackground = false;
             }
             if(sceneName == "garage" || sceneName == "Junkyard" || sceneName == "Auto_salon")
             {

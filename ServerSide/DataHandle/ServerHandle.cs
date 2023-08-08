@@ -1,5 +1,6 @@
 using System.Net;
 using CMS21MP.ClientSide;
+using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using MelonLoader;
 
@@ -80,6 +81,14 @@ namespace CMS21MP.ServerSide.DataHandle
             int carPosition = _packet.ReadInt();
             
             ServerSend.CarPosition(_fromClient, carLoaderID, carPosition);
+        }
+
+        public static void CarPart(int _fromClient, Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            ModPartScript carPart = _packet.Read<ModPartScript>();
+            
+            ServerSend.CarPart(_fromClient, carLoaderID, carPart);
         }
 
         #endregion

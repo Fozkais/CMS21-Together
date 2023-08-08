@@ -16,8 +16,13 @@ namespace CMS21MP.SharedData
         public int carVersion;
         public int carPosition;
         public string carScene;
+        
+        public int CarLifterState;
 
         public bool isReferences;
+        
+        public bool isReady;
+        public bool isFromServer;
         
         public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
         {
@@ -37,6 +42,8 @@ namespace CMS21MP.SharedData
             this.carPosition = _car.carPosition;
             this.carVersion = _car.carVersion;
             this.carScene = _car.carScene;
+            
+            this.isFromServer = true;
         }
     }
 

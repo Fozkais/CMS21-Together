@@ -1,5 +1,6 @@
 using System.Net;
 using CMS21MP.ClientSide.Data;
+using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using MelonLoader;
 using UnityEngine;
@@ -100,11 +101,11 @@ namespace CMS21MP.ClientSide.DataHandle
             }
             MelonLogger.Msg("Send car info to server");
         }
-        public static void SendCarPosition(int _carCarLoaderID, int _placeNo)
+        public static void SendCarPosition(int _carLoaderID, int _placeNo)
         {
             using (Packet _packet = new Packet((int)PacketTypes.carPosition))
             {
-                _packet.Write(_carCarLoaderID);
+                _packet.Write(_carLoaderID);
                 _packet.Write(_placeNo);
 
                 SendTCPData(_packet);
@@ -114,6 +115,16 @@ namespace CMS21MP.ClientSide.DataHandle
 
         #endregion
 
+        public static void SendCarPart(int _carLoaderID, ModPartScript _partConverted)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.carPart))
+            {
+                _packet.Write(_carLoaderID);
+                _packet.Write(_partConverted);
+
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }
