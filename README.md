@@ -29,7 +29,7 @@ Who never dreamed playing CMS with some friends?  Since RDG devs dont,  i'll add
 *Here's every planned feature state :*
 
 * Implement Networking System (TCP/UDP) : ✅
-* Implement Steam API Networking : 🚧
+* Implement Steam API Networking : ⏸️
 * Create a Lobby system : ✅
 * Add a Custom Save System : 🚧
 * Sync players Position and Rotation : ✅
@@ -43,16 +43,17 @@ Who never dreamed playing CMS with some friends?  Since RDG devs dont,  i'll add
 * Sync garage Customization : ❌
 * Sync other Map : ⏸️
 * Add Mod Support : ❌
+* Add Animation to players : ❌
 
 **the following "Roadmap" does not mean it's included in the project but that i have already done work on it at some point**
 <br/>
 ✅: Done / Implemented
 <br/>
-🚧: W.I.P / Currently worked on
+🚧: W.I.P / Work In Progress
 <br/>
 ❌: To Do / Missing
 <br/>
-⏸️: "Paused" / it's been worked on, but for the moment it's not.
+⏸️: "Paused" / Some new can appear but it's not the main focus.
 
 You can join the project Discord if you want to talk or ask for help : 
 https://discord.gg/rMz4tGbrc6
