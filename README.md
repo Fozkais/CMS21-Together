@@ -24,7 +24,7 @@
 
 ## About The Project
 
-Who never dreamed playing CMS with some friends?  Since RDG devs dont,  i'll add multiplayer myself ! :)
+Who never dreamed playing CMS with some friends?  Since RDG devs dont seem to, I'll add it myself ! :)
 
 *Here's every planned feature state :*
 
