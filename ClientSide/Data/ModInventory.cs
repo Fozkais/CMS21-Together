@@ -12,31 +12,34 @@ namespace CMS21MP.ClientSide.Data
         {
             var localInventory = ClientData.localInventory.items;
 
-            foreach (var item in localInventory)
+            for (int i = 0; i < localInventory._items.Count; i++)
             {
-                if (!ClientData.playerInventory.Contains(item))
+                if (!ClientData.playerInventory.Contains(localInventory._items[i]))
                 {
-                    ClientData.playerInventory.Add(item);
+                    ClientData.playerInventory.Add(localInventory._items[i]);
                     //TODO: Send Inventory packet
                 }
             }
 
-            foreach (var item in ClientData.playerInventory)
+            for (int i = 0; i < ClientData.playerInventory.Count; i++)
             {
-                if (!localInventory._items.Contains(item))
+                if (!localInventory._items.Contains(ClientData.playerInventory[i]))
                 {
                     //TODO: Send Inventory packet
-                    ClientData.playerInventory.Remove(item);
+                    ClientData.playerInventory.Remove(ClientData.playerInventory[i]);
                 }
             }
+            
         }
 
         public static void HandleNewGroupItem()
         {
             var localInventory = ClientData.localInventory.groups;
 
-            foreach (var item in localInventory)
+
+            for (int i = 0; i < localInventory._items.Count; i++)
             {
+                var item = localInventory._items[i];
                 if (!ClientData.playerGroupInventory.Contains(item))
                 {
                     ClientData.playerGroupInventory.Add(item);
@@ -44,8 +47,9 @@ namespace CMS21MP.ClientSide.Data
                 }
             }
 
-            foreach (var item in ClientData.playerGroupInventory)
+            for (int i = 0; i < ClientData.playerGroupInventory.Count; i++)
             {
+                var item = ClientData.playerGroupInventory[i];
                 if (!localInventory._items.Contains(item))
                 {
                     //TODO: Send Inventory packet

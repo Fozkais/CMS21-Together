@@ -3,6 +3,7 @@ namespace CMS21MP.SharedData
     public enum PacketTypes
     {
         #region Lobby and Connection
+            empty = 0,
             welcome = 1,
             disconnect,
             readyState,
@@ -19,7 +20,8 @@ namespace CMS21MP.SharedData
             
             carInfo,
             carPosition,
-            carPart
+            carPart,
+            carPartSize
 
         #endregion
     }

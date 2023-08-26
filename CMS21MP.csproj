@@ -46,6 +46,7 @@
     <Compile Include="ClientSide\Data\Stats.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
+    <Compile Include="CustomData\HarmonyPatches.cs" />
     <Compile Include="CustomData\ModCarClasses.cs" />
     <Compile Include="SharedData\DeepCopy.cs" />
     <Compile Include="SharedData\ModCar.cs" />

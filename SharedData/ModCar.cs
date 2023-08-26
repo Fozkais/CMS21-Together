@@ -20,7 +20,7 @@ namespace CMS21MP.SharedData
         public int CarLifterState;
 
         public bool isReferences;
-        
+
         public bool isReady;
         public bool isFromServer;
         
@@ -53,6 +53,10 @@ namespace CMS21MP.SharedData
         public Dictionary<int, List<ModPartScript>> OtherParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, List<ModPartScript>> SuspensionParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, ModPartScript> EngineParts = new Dictionary<int, ModPartScript>();
+        
+        public int otherPartsCount = -1;
+        public int suspensionPartsCount = -1;
+        public int enginePartsCount = -1;
         
         // public Dictionary<int, ModPartScript> BodyParts = new Dictionary<int, ModPartScript>(); TODO: Handle body Parts
         

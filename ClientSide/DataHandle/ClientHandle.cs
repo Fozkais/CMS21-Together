@@ -117,7 +117,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 ClientData.carOnScene.Add(car);
                 
                 carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
-                
+
                 carLoader.placeNo = car.carPosition;
                 carLoader.PlaceAtPosition();
                 carLoader.ChangePosition(car.carPosition);
@@ -141,6 +141,25 @@ namespace CMS21MP.ClientSide.DataHandle
             if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
             {
                 Car.HandleNewPart(carLoaderID, carPart);
+            }
+        }
+        
+        public static void CarPartSize(Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            int engineSize = _packet.ReadInt();
+            int suspensionSize = _packet.ReadInt();
+            int otherSize = _packet.ReadInt();
+            var car = ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID);
+            
+            MelonLogger.Msg("Received car part size from server.");
+            MelonLogger.Msg("Engine:" + engineSize + " Suspension:" + suspensionSize + " Other:" + otherSize);
+
+            if (car != null)
+            {
+                car.partInfo.enginePartsCount = engineSize;
+                car.partInfo.suspensionPartsCount = suspensionSize;
+                car.partInfo.otherPartsCount = otherSize;
             }
         }
 

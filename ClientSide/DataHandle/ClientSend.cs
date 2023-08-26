@@ -125,6 +125,19 @@ namespace CMS21MP.ClientSide.DataHandle
                 SendTCPData(_packet);
             }
         }
+
+        public static void SendPartSize(int engine, int suspension, int other, int carLoaderID)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.carPartSize))
+            {
+                _packet.Write(carLoaderID);
+                _packet.Write(engine);
+                _packet.Write(suspension);
+                _packet.Write(other);
+
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }

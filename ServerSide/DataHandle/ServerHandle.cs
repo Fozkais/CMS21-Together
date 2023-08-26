@@ -90,6 +90,16 @@ namespace CMS21MP.ServerSide.DataHandle
             
             ServerSend.CarPart(_fromClient, carLoaderID, carPart);
         }
+        
+        public static void CarPartSize(int _fromClient, Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            int engineSize = _packet.ReadInt();
+            int suspensionSize = _packet.ReadInt();
+            int otherSize = _packet.ReadInt();
+            
+            ServerSend.CarPartSize(_fromClient, carLoaderID, engineSize, suspensionSize, otherSize);
+        }
 
         #endregion
     }
