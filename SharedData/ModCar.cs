@@ -19,9 +19,10 @@ namespace CMS21MP.SharedData
         
         public int CarLifterState;
 
+        public bool isCarLoaded;
         public bool isReferences;
-
         public bool isReady;
+
         public bool isFromServer;
         
         public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
@@ -32,6 +33,8 @@ namespace CMS21MP.SharedData
             this.carPosition = _carPosition;
             this.carVersion = _carVersion;
             this.carScene = _carScene;
+
+            this.isFromServer = false;
         }
 
         public ModCar(ModCar _car)
@@ -42,8 +45,11 @@ namespace CMS21MP.SharedData
             this.carPosition = _car.carPosition;
             this.carVersion = _car.carVersion;
             this.carScene = _car.carScene;
-            
+
             this.isFromServer = true;
+            this.isCarLoaded = false;
+            this.isReady = false;
+            this.isReferences = false;
         }
     }
 
@@ -53,11 +59,7 @@ namespace CMS21MP.SharedData
         public Dictionary<int, List<ModPartScript>> OtherParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, List<ModPartScript>> SuspensionParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, ModPartScript> EngineParts = new Dictionary<int, ModPartScript>();
-        
-        public int otherPartsCount = -1;
-        public int suspensionPartsCount = -1;
-        public int enginePartsCount = -1;
-        
+
         // public Dictionary<int, ModPartScript> BodyParts = new Dictionary<int, ModPartScript>(); TODO: Handle body Parts
         
         public Dictionary<int, List<PartScript>> OtherPartsReferences = new Dictionary<int, List<PartScript>>();

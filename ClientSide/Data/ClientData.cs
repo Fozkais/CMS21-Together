@@ -33,8 +33,8 @@ namespace CMS21MP.ClientSide.Data
         
         public static void UpdateClientInfo()
         {
-            Movement.SendMovement();
-            Movement.SendRotation();
+           // Movement.SendMovement(); TODO:Fix thoses
+           // Movement.SendRotation();
             
             Car.UpdateCars();
             ModInventory.UpdateInventory();

@@ -270,18 +270,6 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
             }
             
-            public static void CarPartSize(int _fromClient, int _carLoaderID, int _engineSize, int _suspensionSize, int _otherSize)
-            {
-                using (Packet _packet = new Packet((int)PacketTypes.carPartSize))
-                {
-                    _packet.Write(_carLoaderID);
-                    _packet.Write(_engineSize);
-                    _packet.Write(_suspensionSize);
-                    _packet.Write(_otherSize);
-
-                    SendTCPDataToAll(_fromClient, _packet);
-                }
-            }
 
         #endregion
 
