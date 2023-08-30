@@ -37,6 +37,8 @@ namespace CMS21MP
         private Vector2 offset;
         private Rect windowRect = new Rect(Screen.width / 2.5f, Screen.height / 3.5f, 200, 280);
         private Vector2 hostInterfaceOffset = new Vector2(220, 0);
+        
+        private Texture2D backgroundTexture;
 
         private Vector2 scrollPosition = Vector2.zero; // Variable de classe pour stocker la position de défilement
 
@@ -193,15 +195,12 @@ namespace CMS21MP
                 fontSize = 16
             };
 
-            Texture2D
-                backgroundTexture =
-                    CreateRoundedBackgroundTexture(Color.black, 0.5f,
-                        2f); // Utilisez la fonction appropriée pour créer une texture avec des coins arrondis
+            if(backgroundTexture == null)
+                backgroundTexture = CreateRoundedBackgroundTexture(Color.black, 0.5f, 2f); 
+            
             backgroundStyle = new GUIStyle(GUI.skin.box)
             {
                 normal = { background = backgroundTexture }, // Utilisez votre texture de fond avec des coins arrondis
-                // border = new RectOffset(10, 10, 10, 10), // Marge pour les coins arrondis
-                // margin = new RectOffset(10, 10, 10, 10) // Marge globale de la boîte
             };
         }
 
