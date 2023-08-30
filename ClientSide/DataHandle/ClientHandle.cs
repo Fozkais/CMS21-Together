@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.ClientSide.Data;
@@ -24,6 +25,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 Client.Instance.Id = _myId;
 
                 ClientSend.WelcomeReceived();
+                _packet.Dispose();
             }
 
             public static void Disconnect(Packet _packet)
@@ -36,7 +38,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                 else
                     Client.Instance.Disconnect();
-                
+                _packet.Dispose();
             }
 
             public static void ReadyState(Packet _packet)
@@ -45,6 +47,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 int _id = _packet.ReadInt();
 
                 ClientData.serverPlayers[_id].isReady = _ready;
+                _packet.Dispose();
             }
             
             public static void PlayersInfo(Packet _packet)
@@ -53,11 +56,13 @@ namespace CMS21MP.ClientSide.DataHandle
                 ClientData.serverPlayers[info.id] = info;
                 
                 MelonLogger.Msg($"Received {info.username} info from server.");
+                _packet.Dispose();
             }
             
             public static void StartGame(Packet _packet)
             {
                 SaveSystem.LoadSave(0, "client", true);
+                _packet.Dispose();
             }
             
             public static void SpawnPlayer(Packet _packet)
@@ -74,6 +79,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     if(!ClientData.serverPlayerInstances.ContainsKey(player.id))
                         ClientData.SpawnPlayer(_player, _id);
                 }
+                _packet.Dispose();
             }
             
         #endregion
@@ -87,6 +93,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 Movement.UpdatePlayersPosition(ClientData.serverPlayers[_id], _position);
                 
                 MelonLogger.Msg("Received position from server.");
+                _packet.Dispose();
             }
             
             public static void playerRotation(Packet _packet)
@@ -94,6 +101,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 int _id = _packet.ReadInt();
                 QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
                 Movement.UpdatePlayersRotation(ClientData.serverPlayers[_id], _rotation);
+                _packet.Dispose();
             }
 
         #endregion
@@ -120,10 +128,19 @@ namespace CMS21MP.ClientSide.DataHandle
                 carLoader.StartCoroutine(carLoader.gameObject.GetComponentInChildren<CarDebug>()
                     .RunLoadCar(car.carID, car.carVersion));
 
-                carLoader.placeNo = 0; // TODO: Change this to a better way
+                carLoader.placeNo = car.carPosition; // TODO: Change this to a better way
                 carLoader.PlaceAtPosition();
-                carLoader.ChangePosition(0);
+                carLoader.ChangePosition(car.carPosition);
+                MelonCoroutines.Start(StartFadeOut());
             }
+            _packet.Dispose();
+        }
+        
+        private static IEnumerator StartFadeOut()
+        {
+            ScreenFader.Get().ShortFadeIn();
+            yield return new WaitForSeconds(6);
+            ScreenFader.Get().ShortFadeOut();
         }
         
         public static void CarPosition(Packet _packet)
@@ -133,6 +150,7 @@ namespace CMS21MP.ClientSide.DataHandle
             
             ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID).carPosition = carPosition;
             ClientData.carLoaders[carLoaderID].ChangePosition(carPosition);
+            _packet.Dispose();
         }
         
         public static void CarPart(Packet _packet)

@@ -37,9 +37,9 @@ namespace CMS21MP.ClientSide.Data
            // Movement.SendRotation();
             
             Car.UpdateCars();
-            ModInventory.UpdateInventory();
+            ModInventory.UpdateInventory();// TODO: Check if inventory scene
             Stats.HandleStats();
-            GarageInteraction.handleInteraction();
+            GarageInteraction.handleInteraction(); // TODO: Check if garage scene
         }
 
 

@@ -117,7 +117,7 @@ public static class PreferencesManager
                         ProfileData copiedData = DeepCopy.Copy(data);
                         
                         tempProfileData[modSaveData.saveIndex] = copiedData;
-                        MelonLogger.Msg("Added to tempProfileData:" + tempProfileData[modSaveData.saveIndex].carsInGarage[0].carToLoad);
+                      //  MelonLogger.Msg("Added to tempProfileData:" + tempProfileData[modSaveData.saveIndex].carsInGarage[0].carToLoad);
                     }
                 }
             }
@@ -131,7 +131,6 @@ public static class PreferencesManager
             }
             Singleton<GameManager>.Instance.GameDataManager.ProfileData = SaveSystem.profileData;
         }
-
     }
     private static SaveData UpdateSave(SteamSave save, int saveIndex, byte format, bool parameter)
     {

@@ -73,14 +73,15 @@ namespace CMS21MP.CustomData
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[4]));
                 }
             }
+            
         }
 
         [HarmonyPatch(typeof(CarLoader), "SetEngine")]
         [HarmonyPostfix]
         public static void SetEnginePatch(CarLoader __instance)
         {
-            MelonLogger.Msg("A car as Loaded! : " + __instance.carToLoad);
             MelonCoroutines.Start(WaitForEndOfSetEngine(__instance));
+            MelonLogger.Msg("A car as Loaded! : " + __instance.carToLoad);
         }
 
         public static IEnumerator WaitForEndOfSetEngine(CarLoader __instance) //TODO: Handle case where car is removed from scene
@@ -98,30 +99,31 @@ namespace CMS21MP.CustomData
             {
                 case "1":
                     ClientData.carOnScene[0].isCarLoaded = true;
-                    StartGetReferencesAsync(0);
+                    MelonCoroutines.Start(StartGetReferencesCoroutine(0));
                     break;
                 case "2":
                     ClientData.carOnScene[1].isCarLoaded = true;
-                    StartGetReferencesAsync(1);
+                    MelonCoroutines.Start(StartGetReferencesCoroutine(1));
                     break;
                 case "3":
                     ClientData.carOnScene[2].isCarLoaded = true;
-                    StartGetReferencesAsync(2);
+                    MelonCoroutines.Start(StartGetReferencesCoroutine(2));
                     break;
                 case "4":
                     ClientData.carOnScene[3].isCarLoaded = true;
-                    StartGetReferencesAsync(3);
+                    MelonCoroutines.Start(StartGetReferencesCoroutine(3));
                     break;
                 case "5":
                     ClientData.carOnScene[4].isCarLoaded = true;
-                    StartGetReferencesAsync(4);
+                    MelonCoroutines.Start(StartGetReferencesCoroutine(4));
                     break;
             }
         }
         
-        public static async void StartGetReferencesAsync(int carLoaderID)
+        public static IEnumerator StartGetReferencesCoroutine(int carLoaderID)
         {
-            await Task.Run(() => Car.GetPartsReferencesAsync(carLoaderID));
+            var ReferenceCouroutine = MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(carLoaderID));
+            yield return ReferenceCouroutine;
         }
     }
 }

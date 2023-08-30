@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using Il2Cpp;
+using UnityEngine.Serialization;
 
 namespace CMS21MP.SharedData
 {
@@ -20,7 +21,7 @@ namespace CMS21MP.SharedData
         public int CarLifterState;
 
         public bool isCarLoaded;
-        public bool isReferences;
+        public bool isReferenced;
         public bool isReady;
 
         public bool isFromServer;
@@ -49,7 +50,7 @@ namespace CMS21MP.SharedData
             this.isFromServer = true;
             this.isCarLoaded = false;
             this.isReady = false;
-            this.isReferences = false;
+            this.isReferenced = false;
         }
     }
 
