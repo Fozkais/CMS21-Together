@@ -125,6 +125,17 @@ namespace CMS21MP.ClientSide.DataHandle
                 SendTCPData(_packet);
             }
         }
+
+        public static void SendBodyPart(int _carLoaderID, ModCarPart _partConverted)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.bodyPart))
+            {
+                _packet.Write(_carLoaderID);
+                _packet.Write(_partConverted);
+
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }

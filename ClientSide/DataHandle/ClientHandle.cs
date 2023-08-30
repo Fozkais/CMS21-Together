@@ -164,6 +164,18 @@ namespace CMS21MP.ClientSide.DataHandle
             }
             _packet.Dispose();
         }
+        
+        public static void BodyPart(Packet _packet)
+        {
+            int carLoaderID = _packet.ReadInt();
+            ModCarPart carPart = _packet.Read<ModCarPart>();
+
+            if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
+            {
+                MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, null, carPart));
+            }
+            _packet.Dispose();
+        }
 
         #endregion
     }

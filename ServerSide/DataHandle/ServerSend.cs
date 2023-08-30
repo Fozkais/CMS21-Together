@@ -269,6 +269,16 @@ namespace CMS21MP.ServerSide.DataHandle
                     SendTCPDataToAll(_fromClient, _packet);
                 }
             }
+            public static void BodyPart(int _fromClient, int _carLoaderID, ModCarPart _carPart)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.bodyPart))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_carPart);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
             
 
         #endregion

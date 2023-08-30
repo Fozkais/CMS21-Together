@@ -55,15 +55,29 @@ namespace CMS21MP.ClientSide.Data
                     IEnumerator getOtherPartCoroutine = GetOtherPartsReferencesCoroutine(car);
                     IEnumerator getEnginePartCoroutine = GetEnginePartsReferencesCoroutine(car);
                     IEnumerator getSuspensionPartCoroutine = GetSuspensionsPartsReferencesCoroutine(car);
-                    //TODO: Handle body parts references
-                    
+                    IEnumerator getBodyPartCoroutine = GetBodyPartsReferencesCoroutine(car);
+
                     yield return getOtherPartCoroutine;
                     yield return getEnginePartCoroutine;
                     yield return getSuspensionPartCoroutine;
+                    yield return getBodyPartCoroutine;
 
                     car.isReferenced = true;
                     MelonLogger.Msg("Car is Referenced!");
                 }
+            }
+
+            private static IEnumerator GetBodyPartsReferencesCoroutine(ModCar _car)
+            {
+                var BodypartReferencePoint = _car.partInfo.BodyPartsReferences;
+                var bodyParts = ClientData.carLoaders[_car.carLoaderID].carParts;
+                for (int i = 0; i <bodyParts.Count; i++)
+                {
+                    if(!BodypartReferencePoint.ContainsKey(i))
+                        BodypartReferencePoint.Add(i, bodyParts._items[i]);
+                } 
+                
+                yield return null;
             }
 
             private static IEnumerator GetSuspensionsPartsReferencesCoroutine (ModCar _car)
@@ -153,10 +167,12 @@ namespace CMS21MP.ClientSide.Data
                         var updateOtherPartCoroutine = MelonCoroutines.Start(UpdateOtherPartsCoroutine(car));
                         var updateEnginePartCoroutine = MelonCoroutines.Start(UpdateEnginePartsCoroutine(car));
                         var updateSuspensionCoroutine = MelonCoroutines.Start(UpdateSuspensionPartsCoroutine(car));
-                        //TODO: Handle body parts
+                        var updateBodyPartCoroutine = MelonCoroutines.Start(UpdateBodyPartsCoroutine(car));
+                        
                         yield return updateSuspensionCoroutine;
                         yield return updateEnginePartCoroutine;
                         yield return updateOtherPartCoroutine;
+                        yield return updateBodyPartCoroutine;
                         
                         if (!car.isReady)
                         {
@@ -170,6 +186,45 @@ namespace CMS21MP.ClientSide.Data
                         }
                     }
                 }
+            }
+
+            private static IEnumerator UpdateBodyPartsCoroutine(ModCar _car)
+            {
+                var BodyPartsReferences = _car.partInfo.BodyPartsReferences;
+                var BodyParts = _car.partInfo.BodyParts;
+
+                for (int i = 0; i < BodyPartsReferences.Count; i++)
+                {
+                    var part = BodyPartsReferences[i];
+                    var partConverted = new ModCarPart(part, i);
+
+                    bool isNewPart = false;
+                    if (!BodyParts.Any(s => s.Value.carPartID == partConverted.carPartID))
+                    {
+                        isNewPart = true;
+                        BodyParts.Add(i, partConverted);
+                        if (!_car.isFromServer)
+                        {
+                            MelonLogger.Msg("Send new Body part");
+                            ClientSend.SendBodyPart(_car.carLoaderID, partConverted);
+                        }
+                    }
+                            
+                    if (!_car.isFromServer)
+                    {
+                        if (!isNewPart)
+                        {
+                            if (hasDifferences(BodyParts[i], BodyPartsReferences[i]))
+                            {
+                                BodyParts[i] = partConverted;
+                                MelonLogger.Msg("Body part updated");
+                                ClientSend.SendBodyPart(_car.carLoaderID, partConverted);
+                            }
+                        }
+                    }
+                }
+                
+                yield return null;
             }
 
             private static IEnumerator UpdateSuspensionPartsCoroutine(ModCar _car)
@@ -306,6 +361,16 @@ namespace CMS21MP.ClientSide.Data
 
                 return hasDifferences;
             }
+            private static bool hasDifferences(ModCarPart handled, CarPart toHandle) //TODO: Add more differences check
+            {
+                bool hasDifferences = false;
+                if (handled.unmounted != toHandle.Unmounted)
+                    hasDifferences = true;
+                if(handled.switched != toHandle.Switched)
+                    hasDifferences = true;
+
+                return hasDifferences;
+            }
             
 
             #endregion
@@ -329,40 +394,50 @@ namespace CMS21MP.ClientSide.Data
         #endregion
         
         #region PartUpdate
-            public static IEnumerator HandleNewPart(int _carLoaderID, ModPartScript _carPart)
+            public static IEnumerator HandleNewPart(int _carLoaderID, ModPartScript _carPart=null, ModCarPart _bodyPart=null)
             {
                 var car = ClientData.carOnScene[_carLoaderID];
-                while (!car.isReady && !ClientData.carLoaders[_carLoaderID].modelLoaded)
-                {
-                    yield return new WaitForEndOfFrame();
-                }
-                    
-                yield return new WaitForSeconds(3); // Additional wait to be sure that the car is ready
 
+                if (!car.isReady)
+                {
+                    while (!car.isReady && !ClientData.carLoaders[_carLoaderID].modelLoaded)
+                    {
+                        yield return new WaitForEndOfFrame();
+                    }
+                        
+                    yield return new WaitForSeconds(3); // Additional wait to be sure that the car is ready
+                }
+                
+                yield return new WaitForSeconds(0.25f); // Additional wait to be sure that the car is ready
+                
                 try
                 {
-                    switch (_carPart.type)
+                    if (_carPart != null)
                     {
-                    case partType.other:
-                        UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.OtherPartsReferences[_carPart.partID][
-                            _carPart.partIdNumber], _carPart, _carLoaderID);
-                        MelonLogger.Msg("Other part added");
-                        break;
-                        case partType.engine:
-                            UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.EnginePartsReferences[_carPart.partID],
-                                _carPart, _carLoaderID);
-                            MelonLogger.Msg("Engine part added");
-                            break;
-                        case partType.suspension:
-                            UpdatePart(
-                                ClientData.carOnScene[_carLoaderID].partInfo.SuspensionPartsReferences[_carPart.partID][
-                                    _carPart.partIdNumber], _carPart, _carLoaderID);
-                            MelonLogger.Msg("Suspension part added");
-                            break;
-                        // TODO: Handle bodyParts
-                        case partType.body:
-                            break;
+                        switch (_carPart.type)
+                        {
+                            case partType.other:
+                                UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.OtherPartsReferences[_carPart.partID][
+                                _carPart.partIdNumber], _carPart, _carLoaderID);
+                                MelonLogger.Msg("Other part added");
+                                break;
+                            case partType.engine:
+                                UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.EnginePartsReferences[_carPart.partID],
+                                    _carPart, _carLoaderID);
+                                MelonLogger.Msg("Engine part added");
+                                break;
+                            case partType.suspension:
+                                UpdatePart(
+                                    ClientData.carOnScene[_carLoaderID].partInfo.SuspensionPartsReferences[_carPart.partID][
+                                        _carPart.partIdNumber], _carPart, _carLoaderID);
+                                MelonLogger.Msg("Suspension part added");
+                                break;
+                        }
                     }
+                    if(_bodyPart != null)
+                        UpdateBodyPart(ClientData.carOnScene[_carLoaderID].partInfo.BodyPartsReferences[_bodyPart.carPartID], _bodyPart, _carLoaderID);
+                    
+                    
                 }
                 catch (Exception e)
                 {
@@ -432,6 +507,64 @@ namespace CMS21MP.ClientSide.Data
                 {
                     MelonLogger.Msg("Error while updating pieces : " + e);
                     throw;
+                }
+            }
+
+            public static void UpdateBodyPart(CarPart orginalPart, ModCarPart newBodyPart, int carLoaderID)
+            {
+                if (ClientData.carLoaders != null && ClientData.carOnScene[carLoaderID] != null)
+                {
+                    if (!String.IsNullOrEmpty(ClientData.carLoaders[carLoaderID].carToLoad))
+                    {
+                        Color color = ModColor.ToColor(newBodyPart.colors);
+                        Color tintColor = ModColor.ToColor(newBodyPart.TintColor);
+
+                        if(orginalPart.TunedID != newBodyPart.tunedID)
+                            ClientData.carLoaders[carLoaderID].TunePart(orginalPart.name, newBodyPart.tunedID);
+                        
+                        ClientData.carLoaders[carLoaderID].SetDent(orginalPart, newBodyPart.dent);
+                        ClientData.carLoaders[carLoaderID].EnableDust(orginalPart, newBodyPart.Dust);
+                        ClientData.carLoaders[carLoaderID].SetCondition(orginalPart, newBodyPart.condition);
+                        
+                        orginalPart.IsTinted = newBodyPart.isTinted;
+                        orginalPart.TintColor = tintColor;
+                        orginalPart.Color = color;
+                        orginalPart.PaintType = (PaintType)newBodyPart.paintType;
+                        orginalPart.OutsideRustEnabled = newBodyPart.outsaidRustEnabled;
+                        orginalPart.AdditionalString = newBodyPart.additionalString;
+                        orginalPart.Quality = newBodyPart.quality;
+                        orginalPart.WashFactor = newBodyPart.washFactor;
+                        
+                        
+                        if (!orginalPart.Unmounted && !orginalPart.name.StartsWith("license_plate"))
+                        {
+                            ClientData.carLoaders[carLoaderID].SetCustomCarPaintType(orginalPart, new ModPaintData().ToGame(newBodyPart.paintData));  
+                            ClientData.carLoaders[carLoaderID].SetCarColorAndPaintType(orginalPart, color, (PaintType)newBodyPart.paintType);
+                        }
+                        ClientData.carLoaders[carLoaderID].SetCarLivery(orginalPart, newBodyPart.livery, newBodyPart.liveryStrength);
+                        
+                        if(!orginalPart.Unmounted && newBodyPart.unmounted)
+                            ClientData.carLoaders[carLoaderID].TakeOffCarPartFromSave(newBodyPart.name);
+                        if (orginalPart.Unmounted && !newBodyPart.unmounted)
+                        {
+                            ClientData.carLoaders[carLoaderID].TakeOnCarPartFromSave(newBodyPart.name);
+                        }
+                                          
+                                     
+                        
+                        if (orginalPart.Switched != newBodyPart.switched)
+                            ClientData.carLoaders[carLoaderID].SwitchCarPart(orginalPart, false, newBodyPart.switched);
+
+
+                        if(newBodyPart.isTinted)
+                            PaintHelper.SetWindowProperties(orginalPart.handle, (int)(newBodyPart.TintColor.a * 255), orginalPart.TintColor);
+                        
+                        //MelonLogger.Msg($"Parts[{_bodyPart.carPartID}] updated!, {_bodyPart.name}, -> {MainMod.carLoaders[_carLoaderID].carParts._items[_bodyPart.carPartID].name}, {_bodyPart.unmounted}");
+                    }
+                    else
+                    {
+                        MelonLogger.Msg($"Loss of data from bodyPart ! {newBodyPart.name} on car with CarLoaderID{carLoaderID}");
+                    }
                 }
             }
 

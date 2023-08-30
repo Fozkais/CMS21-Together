@@ -20,8 +20,10 @@ namespace CMS21MP.SharedData
             
             carInfo,
             carPosition,
-            carPart
+            carPart,
+            bodyPart
             
         #endregion
+        
     }
 }
