@@ -21,7 +21,10 @@ namespace CMS21MP.SharedData
             carInfo,
             carPosition,
             carPart,
-            bodyPart
+            bodyPart,
+            
+            inventoryItem,
+            inventoryGroupItem
             
         #endregion
         

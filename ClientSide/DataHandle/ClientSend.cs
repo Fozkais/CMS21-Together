@@ -1,9 +1,7 @@
 using System.Net;
-using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using MelonLoader;
-using UnityEngine;
 
 namespace CMS21MP.ClientSide.DataHandle
 {
@@ -65,73 +63,93 @@ namespace CMS21MP.ClientSide.DataHandle
 
         #region Movement and Rotation
 
-        public static void SendPosition(Vector3Serializable position)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
+            public static void SendPosition(Vector3Serializable position)
             {
-                _packet.Write(position);
-                
-                SendTCPData(_packet);
+                using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
+                {
+                    _packet.Write(position);
+                    
+                    SendTCPData(_packet);
+                }
+              //  MelonLogger.Msg("Send position to server");
             }
-          //  MelonLogger.Msg("Send position to server");
-        }
-        
-        public static void SendRotation(QuaternionSerializable rotation)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.playerRotation))
+            
+            public static void SendRotation(QuaternionSerializable rotation)
             {
-                _packet.Write(rotation);
-                
-                SendTCPData(_packet);
+                using (Packet _packet = new Packet((int)PacketTypes.playerRotation))
+                {
+                    _packet.Write(rotation);
+                    
+                    SendTCPData(_packet);
+                }
             }
-        }
-
-
+            
         #endregion
 
         #region Car
 
-        public static void SendCarInfo(ModCar _car)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+            public static void SendCarInfo(ModCar _car)
             {
-                _packet.Write(_car);
+                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                {
+                    _packet.Write(_car);
 
-                SendTCPData(_packet);
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Send car info to server");
             }
-            MelonLogger.Msg("Send car info to server");
-        }
-        public static void SendCarPosition(int _carLoaderID, int _placeNo)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.carPosition))
+            public static void SendCarPosition(int _carLoaderID, int _placeNo)
             {
-                _packet.Write(_carLoaderID);
-                _packet.Write(_placeNo);
+                using (Packet _packet = new Packet((int)PacketTypes.carPosition))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_placeNo);
 
-                SendTCPData(_packet);
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Send car Position to server");
             }
-            MelonLogger.Msg("Send car Position to server");
-        }
+            public static void SendCarPart(int _carLoaderID, ModPartScript _partConverted)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carPart))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_partConverted);
+
+                    SendTCPData(_packet);
+                }
+            }
+
+            public static void SendBodyPart(int _carLoaderID, ModCarPart _partConverted)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.bodyPart))
+                {
+                    _packet.Write(_carLoaderID);
+                    _packet.Write(_partConverted);
+
+                    SendTCPData(_packet);
+                }
+            }
 
         #endregion
 
-        public static void SendCarPart(int _carLoaderID, ModPartScript _partConverted)
+
+        public static void SendInventoryItem(ModItem _Item, bool status)
         {
-            using (Packet _packet = new Packet((int)PacketTypes.carPart))
+            using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
             {
-                _packet.Write(_carLoaderID);
-                _packet.Write(_partConverted);
+                _packet.Write(_Item);
+                _packet.Write(status);
 
                 SendTCPData(_packet);
             }
         }
-
-        public static void SendBodyPart(int _carLoaderID, ModCarPart _partConverted)
+        public static void SendInventoryGroupItem(ModGroupItem _Item, bool status)
         {
-            using (Packet _packet = new Packet((int)PacketTypes.bodyPart))
+            using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
             {
-                _packet.Write(_carLoaderID);
-                _packet.Write(_partConverted);
+                _packet.Write(_Item);
+                _packet.Write(status);
 
                 SendTCPData(_packet);
             }

@@ -2,6 +2,7 @@ using System.Net;
 using CMS21MP.ClientSide;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
+using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21MP.ServerSide.DataHandle
@@ -98,6 +99,26 @@ namespace CMS21MP.ServerSide.DataHandle
             ServerSend.BodyPart(_fromClient, carLoaderID, carPart);
         }
         
+
+        #endregion
+
+        #region Inventory
+
+            public static void InventoryItem(int _fromClient, Packet _packet)
+            {
+                ModItem item = _packet.Read<ModItem>();
+                bool status = _packet.ReadBool();
+                
+                ServerSend.SendInventoryItem(_fromClient, item, status);
+            }
+            
+            public static void InventoryGroupItem(int _fromClient, Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+                bool status = _packet.ReadBool();
+                
+                ServerSend.SendInventoryGroupItem(_fromClient, item, status);
+            }
 
         #endregion
     }

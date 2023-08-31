@@ -10,7 +10,10 @@ namespace CMS21MP.ClientSide.Data
 
         public static void handleInteraction()
         {
-            LifterSync();
+            if (SceneChecker.isInGarage())
+            {
+                LifterSync();
+            }
         }
 
         #region Lifter

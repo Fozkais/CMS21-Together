@@ -28,7 +28,10 @@ namespace CMS21MP.ClientSide.Data
         public static void Init()
         {
             carLoaders = GameScript.Get().carOnScene;
-            localInventory = GameScript.Get().GetComponent<Inventory>(); // TODO: Check if inventory scene
+            if (SceneChecker.isInGarage())
+            {
+                localInventory = GameScript.Get().GetComponent<Inventory>();
+            }
         }
         
         public static void UpdateClientInfo()
@@ -37,9 +40,9 @@ namespace CMS21MP.ClientSide.Data
            // Movement.SendRotation();
             
             Car.UpdateCars();
-            ModInventory.UpdateInventory();// TODO: Check if inventory scene
+            ModInventory.UpdateInventory();
             Stats.HandleStats();
-            GarageInteraction.handleInteraction(); // TODO: Check if garage scene
+            GarageInteraction.handleInteraction();
         }
 
 

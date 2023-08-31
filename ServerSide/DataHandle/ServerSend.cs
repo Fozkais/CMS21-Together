@@ -4,6 +4,7 @@ using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
+using Il2Cpp;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
@@ -283,5 +284,25 @@ namespace CMS21MP.ServerSide.DataHandle
 
         #endregion
 
+        public static void SendInventoryItem(int _fromClient, ModItem _item, bool _status)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
+            {
+                _packet.Write(_item);
+                _packet.Write(_status);
+
+                SendTCPDataToAll(_fromClient, _packet);
+            }
+        }
+        public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
+            {
+                _packet.Write(_item);
+                _packet.Write(_status);
+
+                SendTCPDataToAll(_fromClient, _packet);
+            }
+        }
     }
 }

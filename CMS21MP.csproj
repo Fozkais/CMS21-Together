@@ -43,11 +43,13 @@
     <Compile Include="ClientSide\Data\GarageInteraction.cs" />
     <Compile Include="ClientSide\Data\ModInventory.cs" />
     <Compile Include="ClientSide\Data\Movement.cs" />
+    <Compile Include="ClientSide\Data\SceneChecker.cs" />
     <Compile Include="ClientSide\Data\Stats.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="CustomData\HarmonyPatches.cs" />
     <Compile Include="CustomData\ModCarClasses.cs" />
+    <Compile Include="CustomData\ModInventoryClasses.cs" />
     <Compile Include="SharedData\DeepCopy.cs" />
     <Compile Include="SharedData\ModCar.cs" />
     <Compile Include="SharedData\Packet.cs" />

@@ -229,10 +229,10 @@ namespace CMS21MP
 
             GUILayout.Space(10);
             
-            if (GUILayout.Button("Use steam?", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
+            /*if (GUILayout.Button("Use steam?", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
-                MainMod.usingSteamAPI = !MainMod.usingSteamAPI;
-            }
+                MainMod.usingSteamAPI = !MainMod.usingSteamAPI; TODO: TO RE-ENABLE WHEN STEAM API IS WORKING
+            }*/
             
 
             if (GUILayout.Button("Join Lobby", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
