@@ -70,7 +70,7 @@ I'll try to be brief,
 <br/>
 First of all i dont know if it work on Linux or MacOs i'm on windows and do not plan to port it to other so maybe it work , dont know. 
 <br/>
-Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to install MelonLoader version 6.1 on your CMS then add the mod in the mod file which should now be present in the game directory, 
+Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to install MelonLoader version 6.1 on your CMS then add it in the mod folder which should be present in the game directory, 
 <br/>
 with that you need 2 other file you can find on the mod Discord, those are the player Model and texture wich you'll need to put inside the folder Mods in the subfolder "togetherMod" (create it if he wont exist)
 <br/>
