@@ -25,7 +25,7 @@
 
 ## About The Project
 
-Who never dreamed playing CMS with some friends?  Since RDG devs dont seem to, I'll add it myself ! :)
+Who never dreamed playing CMS with some friends?  Since it's not in the base game I'll add it myself ! :)
 
 **In its current state, the mod is EXPERIMENTAL, many features are missing, others are buggy and there are certainly many bugs and features that could break the game, use at your own risk.**
 
