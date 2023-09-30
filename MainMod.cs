@@ -16,7 +16,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.1.0";
+      public const string ASSEMBLY_MOD_VERSION = "0.1.1";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -37,7 +37,7 @@ namespace CMS21MP
 
       public override void OnLateInitializeMelon() // Runs after Game has finished starting.
       {
-         SaveSystem.InitializeSave();
+         SaveSystem.GetVanillaSaves();
          
          threadManager = new ThreadManager();
 

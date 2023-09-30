@@ -29,7 +29,10 @@ namespace CMS21MP.ClientSide.Data
         {
             partUpdateHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
-            MelonCoroutines.Start(UpdatePartsCoroutine());
+            foreach (ModCar car in ClientData.carOnScene)
+            {
+                MelonCoroutines.Start(UpdatePartsCoroutine(car));
+            }
             yield return new WaitForSeconds(0.25f);
             partUpdateHandleRunning = false;
         }
@@ -39,6 +42,7 @@ namespace CMS21MP.ClientSide.Data
             carMovementHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
             HandleCarPos();
+            isCarStillLoaded();
             yield return new WaitForEndOfFrame();
             carMovementHandleRunning = false;
         }
@@ -49,9 +53,13 @@ namespace CMS21MP.ClientSide.Data
             {
                 ModCar car = ClientData.carOnScene[carLoaderID];
                 car.partInfo = new ModPartInfo();
+
+                yield return new WaitForEndOfFrame();
                 
                 if (car.isCarLoaded)
                 {
+                    yield return new WaitForEndOfFrame();
+
                     IEnumerator getOtherPartCoroutine = GetOtherPartsReferencesCoroutine(car);
                     IEnumerator getEnginePartCoroutine = GetEnginePartsReferencesCoroutine(car);
                     IEnumerator getSuspensionPartCoroutine = GetSuspensionsPartsReferencesCoroutine(car);
@@ -64,6 +72,10 @@ namespace CMS21MP.ClientSide.Data
 
                     car.isReferenced = true;
                     MelonLogger.Msg("Car is Referenced!");
+                }
+                else
+                {
+                    MelonLogger.Msg("Car is not loaded!");
                 }
             }
 
@@ -157,32 +169,28 @@ namespace CMS21MP.ClientSide.Data
         
         #region Handle Part
 
-            private static IEnumerator UpdatePartsCoroutine()
+            private static IEnumerator UpdatePartsCoroutine(ModCar car)
             {
-                for (var index = 0; index < ClientData.carOnScene.Count; index++)
+                if (car.isReferenced)
                 {
-                    var car = ClientData.carOnScene[index];
-                    if (car.isReferenced)
+                    var updateOtherPartCoroutine = MelonCoroutines.Start(UpdateOtherPartsCoroutine(car));
+                    var updateEnginePartCoroutine = MelonCoroutines.Start(UpdateEnginePartsCoroutine(car));
+                    var updateSuspensionCoroutine = MelonCoroutines.Start(UpdateSuspensionPartsCoroutine(car));
+                    var updateBodyPartCoroutine = MelonCoroutines.Start(UpdateBodyPartsCoroutine(car));
+                    
+                    yield return updateSuspensionCoroutine;
+                    yield return updateEnginePartCoroutine;
+                    yield return updateOtherPartCoroutine;
+                    yield return updateBodyPartCoroutine;
+                    
+                    if (!car.isReady)
                     {
-                        var updateOtherPartCoroutine = MelonCoroutines.Start(UpdateOtherPartsCoroutine(car));
-                        var updateEnginePartCoroutine = MelonCoroutines.Start(UpdateEnginePartsCoroutine(car));
-                        var updateSuspensionCoroutine = MelonCoroutines.Start(UpdateSuspensionPartsCoroutine(car));
-                        var updateBodyPartCoroutine = MelonCoroutines.Start(UpdateBodyPartsCoroutine(car));
-                        
-                        yield return updateSuspensionCoroutine;
-                        yield return updateEnginePartCoroutine;
-                        yield return updateOtherPartCoroutine;
-                        yield return updateBodyPartCoroutine;
-                        
-                        if (!car.isReady)
+                        car.isReady = true;
+                        MelonLogger.Msg("Car Ready !");
+                        if (car.isFromServer)
                         {
-                            car.isReady = true;
-                            MelonLogger.Msg("Car Ready !");
-                            if (car.isFromServer)
-                            {
-                                car.isFromServer = false;
-                                MelonLogger.Msg("Car is no longer from server !");
-                            }
+                            car.isFromServer = false;
+                            MelonLogger.Msg("Car is no longer from server !");
                         }
                     }
                 }
@@ -375,21 +383,37 @@ namespace CMS21MP.ClientSide.Data
 
             #endregion
 
-        #region Car Moving
+        #region Other Car Info
 
-        public static void HandleCarPos()
-        {
-            foreach (var car in ClientData.carOnScene)
+            public static void HandleCarPos()
             {
-                if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
+                foreach (var car in ClientData.carOnScene)
                 {
-                    ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
-                    car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
-                }
-                
+                    if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
+                    {
+                        ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
+                        car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
+                    }
                     
+                        
+                }
             }
-        }
+
+            public static void isCarStillLoaded()
+            {
+                for (var index = 0; index < ClientData.carOnScene.Count; index++)
+                {
+                    var car = ClientData.carOnScene[index];
+                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.carLoaderID].carToLoad))
+                    {
+                        MelonLogger.Msg("Detected A removed car");
+                        ClientSend.SendCarInfo(car);
+                        ClientData.carOnScene.Remove(car);
+                    }
+                }
+            }
+        
+        
 
         #endregion
         

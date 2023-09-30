@@ -1,5 +1,7 @@
+using System;
 using System.Net;
 using CMS21MP.SharedData;
+using MelonLoader;
 
 namespace CMS21MP.ServerSide.Transport
 {
@@ -35,10 +37,17 @@ namespace CMS21MP.ServerSide.Transport
 
             ThreadManager.ExecuteOnMainThread(() =>
             {
-                using (Packet _packet = new Packet(_packetBytes))
+                try
                 {
-                    int _packetId = _packet.ReadInt();
-                    Server.packetHandlers[_packetId](id, _packet);
+                    using (Packet _packet = new Packet(_packetBytes))
+                    {
+                        int _packetId = _packet.ReadInt();
+                        Server.packetHandlers[_packetId](id, _packet);
+                    }
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg("Error while Handle UDP Data [Server] : " + e);
                 }
             });
         }

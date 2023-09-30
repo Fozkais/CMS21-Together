@@ -36,7 +36,8 @@ namespace CMS21MP.ClientSide.DataHandle
                     
                     SendTCPData(_packet);
                 }
-                Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+                MelonLogger.Msg("Port:" + ((IPEndPoint)Client.Instance.udp.socket.Client.LocalEndPoint).Port);
+                Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.udp.socket.Client.LocalEndPoint).Port);
             }
 
             public static void SendReadyState(bool b, int number)

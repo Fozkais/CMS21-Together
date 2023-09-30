@@ -450,6 +450,8 @@ namespace CMS21MP
         
                         StartGame(saveToLoadIndex);
                         SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
+                        PreferencesManager.SaveModSave(saveToLoadIndex);
+                        
                         showLobbyInterface = false;
                     }
 

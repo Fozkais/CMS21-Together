@@ -109,7 +109,7 @@ public static class PreferencesManager
                     if (modSaveData.alreadyLoaded)
                     {
                         SaveData newsaveData = UpdateSave(save, modSaveData.saveIndex, format, parameter);
-                        SaveSystem.saveData[3] = newsaveData;
+                        SaveSystem.saveData[3] = newsaveData; // Use One of the vanilla save slots to load the save
                         
                         Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(SaveSystem.saveData);
                         ProfileData data = Singleton<GameManager>.Instance.GameDataManager.ProfileData[3];

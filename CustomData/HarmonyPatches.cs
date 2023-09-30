@@ -20,8 +20,17 @@ namespace CMS21MP.CustomData
         public static void LoadCarPatch(string name, CarLoader __instance)
         {
             MelonLogger.Msg("A car is being Loaded! : " + name);
+        }
 
-            var loaderNumber = __instance.gameObject.name[10].ToString();
+        private static IEnumerator LoadCarCouroutine(CarLoader __instance)
+        {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForSeconds(1);
+            
+             var loaderNumber = __instance.gameObject.name[10].ToString();
+
+             yield return new WaitForEndOfFrame();
+             
 
             if (loaderNumber == "1")
             {
@@ -73,7 +82,6 @@ namespace CMS21MP.CustomData
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[4]));
                 }
             }
-            
         }
 
         [HarmonyPatch(typeof(CarLoader), "SetEngine")]
@@ -81,7 +89,6 @@ namespace CMS21MP.CustomData
         public static void SetEnginePatch(CarLoader __instance)
         {
             MelonCoroutines.Start(WaitForEndOfSetEngine(__instance));
-            MelonLogger.Msg("A car as Loaded! : " + __instance.carToLoad);
         }
 
         public static IEnumerator WaitForEndOfSetEngine(CarLoader __instance) //TODO: Handle case where car is removed from scene
@@ -90,8 +97,13 @@ namespace CMS21MP.CustomData
             
             while (!__instance.done || !__instance.modelLoaded)
                 yield return new WaitForEndOfFrame();
-            
+
             yield return new WaitForEndOfFrame();
+
+            if (ClientData.carOnScene.Count > 1)
+                yield return new WaitForSeconds(2);
+            
+            MelonLogger.Msg("A car as been Loaded! : " + __instance.carToLoad);
             
             var loaderNumber = __instance.gameObject.name[10].ToString();
 
@@ -99,31 +111,26 @@ namespace CMS21MP.CustomData
             {
                 case "1":
                     ClientData.carOnScene[0].isCarLoaded = true;
-                    MelonCoroutines.Start(StartGetReferencesCoroutine(0));
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(0));
                     break;
                 case "2":
                     ClientData.carOnScene[1].isCarLoaded = true;
-                    MelonCoroutines.Start(StartGetReferencesCoroutine(1));
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(1));
                     break;
                 case "3":
                     ClientData.carOnScene[2].isCarLoaded = true;
-                    MelonCoroutines.Start(StartGetReferencesCoroutine(2));
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(2));
                     break;
                 case "4":
                     ClientData.carOnScene[3].isCarLoaded = true;
-                    MelonCoroutines.Start(StartGetReferencesCoroutine(3));
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(3));
                     break;
                 case "5":
                     ClientData.carOnScene[4].isCarLoaded = true;
-                    MelonCoroutines.Start(StartGetReferencesCoroutine(4));
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(4));
                     break;
             }
         }
         
-        public static IEnumerator StartGetReferencesCoroutine(int carLoaderID)
-        {
-            var ReferenceCouroutine = MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(carLoaderID));
-            yield return ReferenceCouroutine;
-        }
     }
 }

@@ -74,7 +74,7 @@ namespace CMS21MP.ClientSide.Transport
 
             if (_data.Length < 4)
             {
-                MelonLogger.Msg("UDP connect error, forced to disconnect");
+                MelonLogger.Msg("UDP connect error , forced to disconnect");
                 Disconnect();
                 return;
             }
@@ -83,24 +83,16 @@ namespace CMS21MP.ClientSide.Transport
         }
         catch (SocketException ex)
         {
-            MelonLogger.Msg("error while receiving data from server via UDP: ");
+            MelonLogger.Msg("error while receiving data from server via UDP: " + ex);
             //MelonCoroutines.Start(ResetConnection());
         }
     }
 
-    private IEnumerator ResetConnection()
-    {
-        MelonLogger.Msg($"[UDP ReceiveCallback] Error while connecting, retrying...");
-        yield return new WaitForSeconds(1f);
-        Disconnect();
-        Client.Instance.tcp.Disconnect();
-        yield return new WaitForSeconds(0.5f);
-        Client.Instance.Disconnect();
-        Client.Instance.ConnectToServer(Client.Instance.ip);
-    }
-
     private void HandleData(byte[] _data)
     {
+        if(_data.Length < 4)
+            return;
+        
         using (Packet _packet = new Packet(_data))
         {
             int _packetLength = _packet.ReadInt();

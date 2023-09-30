@@ -139,7 +139,7 @@ namespace CMS21MP.ClientSide.DataHandle
         private static IEnumerator StartFadeOut()
         {
             ScreenFader.Get().ShortFadeIn();
-            yield return new WaitForSeconds(6);
+            yield return new WaitForSeconds(8);
             ScreenFader.Get().ShortFadeOut();
         }
         

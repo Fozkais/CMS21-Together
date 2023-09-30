@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
 using CMS21MP.ClientSide;
+using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
 
@@ -53,6 +54,9 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
+            ServerSend.DisconnectClient(0, "Server is shutting down.");
+            
+            
             MainMod.isServer = false;
             _isStopping = true;
 
@@ -99,22 +103,30 @@ namespace CMS21MP.ServerSide
 
             try
             {
-                IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                byte[] _data = udpListener.EndReceive(result, ref clientEndPoint);
-                udpListener.BeginReceive(UDPReceiveCallback, null);
-
-                if (_data.Length < 4)
-                    return;
-
-                using (Packet _packet = new Packet(_data))
+                try
                 {
-                    int _clientId = _packet.ReadInt();
+                    IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                    byte[] _data = udpListener.EndReceive(result, ref clientEndPoint);
 
-                    if (_clientId == 0)
+                    if (_data.Length < 4)
                         return;
 
-                    clients[_clientId].udp.HandleData(_packet);
+                    using (Packet _packet = new Packet(_data))
+                    {
+                        int _clientId = _packet.ReadInt();
+
+                        if (_clientId == 0)
+                            return;
+
+                        clients[_clientId].udp.HandleData(_packet);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    MelonLogger.Msg($"Error receiving UDP data: {ex}");
+                    throw;
+                }
+                udpListener.BeginReceive(UDPReceiveCallback, null);
             }
             catch (Exception _ex)
             {

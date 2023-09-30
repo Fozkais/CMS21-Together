@@ -138,7 +138,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 {
                     _packet.Write(_msg);
 
-                   // SendTCPData(id, _packet);
+                    SendTCPDataToAll(0, _packet);
                 }
             }
             
