@@ -19,49 +19,78 @@
 ## Table Of Contents
 
 * [About the Project](#about-the-project)
-* [License](#license)
+* [How it Works](#how-it-work)
+*  [License](#license)
 * [Authors](#authors)
 
 ## About The Project
 
-Who never dreamed playing CMS with some friends?  Since RDG devs dont seem to, I'll add it myself ! :)
+Who never dreamed playing CMS with some friends?  Since it's not in the base game I'll add it myself ! :)
+
+**In its current state, the mod is EXPERIMENTAL, many features are missing, others are buggy and there are certainly many bugs and features that could break the game, use at your own risk.**
 
 *Here's every planned feature state :*
 
-* Implement Networking System (TCP/UDP) : ✅
+* Implement Networking System (TCP/UDP) : 🔴 -> UDP as problem
 * Implement Steam API Networking : ⏸️
 * Create a Lobby system : ✅
-* Add a Custom Save System : 🚧
-* Sync players Position and Rotation : ✅
+* Add a Custom Save System : 🔴 -> Dont work on all pc ??
+* Sync players Position and Rotation : 🔴 -> Uses UDP
 * Sync Inventory : ✅
 * Sync Cars Spawning and position : ✅
-* Sync Garage Interaction : ⏸️ (Lifter, Wheel Assembler, ect...)
-* Sync Cars "mechanic" : ⏸️ (Engine, Suspension, ect...)
-* Sync Stats : ✅
+* Sync Garage Interaction : 🚧 (Lifter, Wheel Assembler, ect...)
+* Sync Cars "mechanic" : 🚧 (Engine, Suspension, ect...)
+* Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ❌
 * Sync garage upgrade : ❌
 * Sync garage Customization : ❌
-* Sync other Map : ⏸️
+* Sync other Map : ❌
 * Add Mod Support : ❌
 * Add Animation to players : ❌
 
-**the following "Roadmap" does not mean it's included in the project but that i have already done work on it at some point**
+**Here the description of every emote :**
 <br/>
-✅: Done / Implemented
+✅: Done / Implemented 
 <br/>
 🚧: W.I.P / Work In Progress
 <br/>
 ❌: To Do / Missing
 <br/>
 ⏸️: "Paused" / Some new can appear but it's not the main focus.
+<br/>
+-> : Mean there's some issue with it
+<br/>
+🔴 : As been implemented and worked at a time but now as some unexplained Issues
 
 You can join the project Discord if you want to talk or ask for help : 
 https://discord.gg/rMz4tGbrc6
-## License
+## How it work
 
-Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS21-Together/blob/MainMod/LICENSE) for more information.
+I'll try to be brief,
+<br/>
+First of all i dont know if it work on Linux or MacOs i'm on windows and do not plan to port it to other so maybe it work , dont know. 
+<br/>
+Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to install MelonLoader version 6.1 on your CMS then add it in the mod folder which should be present in the game directory, 
+<br/>
+with that you need 2 other file you can find on the mod Discord, those are the player Model and texture wich you'll need to put inside the folder Mods in the subfolder "togetherMod" (create it if he wont exist)
+<br/>
+Finally you need to download and put in UserLibs 2 files from Facepuch Steamwork: Facepunch.Steamworks.Win64 and steam_api64
+<br/>
+which you can find here: [Facepunch Steamwork](https://github.com/Facepunch/Facepunch.Steamworks) , 
+<br/>
+it will be used in the future to implement the steam API on the mod to replace actual networking system.
+
+From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, 
+<br/>
+from there you'll be able to launch a game and join one (you have to launch/join from the game's menu, not in-game). 
+if there's no issue with the save system it should create a new save and create a lobby that 4 player max can join,
+if they are all ready you can start the game and start playing (in the case where everything work)
 
 ## Authors
 
 * **Fozkais** - *indie game dev* - [Fozkais](https://github.com/Fozkais)
 *  **Meitzi** - *Huge Contributor* - [MetziQ](https://www.nexusmods.com/carmechanicsimulator2021/users/151281813)
+
+## License
+
+Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS21-Together/blob/MainMod/LICENSE) for more information.
