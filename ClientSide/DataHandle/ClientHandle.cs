@@ -193,21 +193,17 @@ namespace CMS21MP.ClientSide.DataHandle
 
                 if (status)
                 {
-                    if (!ModInventory.ItemsUID.Contains(_item.UID) )
+                    if (!ModInventory.handledItem.Any(s => s.UID == _item.UID) )
                     {
-                        // MelonLogger.Msg($"Adding Item with UID:{_itemUID}");
-                        ModInventory.ItemsHandler.Add(_itemGame);
-                        ModInventory.ItemsUID.Add(_item.UID);
+                        ModInventory.handledItem.Add(_item);
                         ClientData.localInventory.Add(_itemGame);
                     }
                 }
                 else
                 {
-                    if (ModInventory.ItemsUID.Contains(_item.UID))
+                    if (ModInventory.handledItem.Any(s => s.UID == _item.UID))
                     {
-                        // MelonLogger.Msg($"Removing Item with UID:{_itemUID}");
-                        ModInventory.ItemsHandler.Remove(_itemGame);
-                        ModInventory.ItemsUID.Remove(_item.UID);
+                        ModInventory.handledItem.Remove(_item);
                         ClientData.localInventory.Delete(_itemGame);
                     }
                 }
@@ -220,21 +216,18 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 if (status)
                 {
-                    if (!ModInventory.ItemsUID.Contains(_item.UID) )
+                    if (!ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
                     {
-                        // MelonLogger.Msg($"Adding Item with UID:{_itemUID}");
-                        ModInventory.GroupItemsHandler.Add(_item.ToGame(_item));
-                        ModInventory.ItemsUID.Add(_item.UID);
+                        ModInventory.handledGroupItem.Add(_item);
                         ClientData.localInventory.AddGroup(_item.ToGame(_item));
                     }
                 }
                 else
                 {
-                    if (ModInventory.ItemsUID.Contains(_item.UID))
+                    if (ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
                     {
-                        // MelonLogger.Msg($"Removing Item with UID:{_itemUID}");
-                        ModInventory.GroupItemsHandler.Remove(_item.ToGame(_item));
-                        ModInventory.ItemsUID.Remove(_item.UID);
+                        int index = ModInventory.handledGroupItem.FindIndex(s => s.UID == _item.UID);
+                        ModInventory.handledGroupItem.Remove(ModInventory.handledGroupItem[index]);
                         ClientData.localInventory.DeleteGroup(_item.UID);
                     }
                 }

@@ -1,8 +1,6 @@
-using System.Net;
-using CMS21MP.ClientSide;
+using System.Collections.Generic;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
-using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21MP.ServerSide.DataHandle
