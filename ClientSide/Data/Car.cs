@@ -82,7 +82,11 @@ namespace CMS21MP.ClientSide.Data
             private static IEnumerator GetBodyPartsReferencesCoroutine(ModCar _car)
             {
                 var BodypartReferencePoint = _car.partInfo.BodyPartsReferences;
+
+              //  MelonLogger.Msg("Car Parts Loaded!");
+                
                 var bodyParts = ClientData.carLoaders[_car.carLoaderID].carParts;
+                
                 for (int i = 0; i <bodyParts.Count; i++)
                 {
                     if(!BodypartReferencePoint.ContainsKey(i))
@@ -95,6 +99,7 @@ namespace CMS21MP.ClientSide.Data
             private static IEnumerator GetSuspensionsPartsReferencesCoroutine (ModCar _car)
             {
                 List<GameObject> suspensions = new List<GameObject>();
+                
                 suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontCenter_h);
                 suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontLeft_h);
                 suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontRight_h);
@@ -106,7 +111,17 @@ namespace CMS21MP.ClientSide.Data
                 
                 for (int i = 0; i < suspensions.Count; i++)
                 {
-                    var partsInSuspension = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
+
+                    //MelonLogger.Msg("Suspension " + i + " is loaded!");
+                    
+                    
+                    var partsInSuspension = suspensions[i].GetComponentsInChildren<PartScript>().ToList(); // Object reference not set to an instance of an object
+                    if (partsInSuspension.Count == 0)
+                    {
+                      //  MelonLogger.Msg("Suspension " + i + " is empty!");
+                        suspensionReferencePoint.Add(i, new List<PartScript>());
+                    }
+                    
                     for (int j = 0; j < partsInSuspension.Count; j++)
                     {
                         if (!suspensionReferencePoint.ContainsKey(i))
@@ -125,8 +140,11 @@ namespace CMS21MP.ClientSide.Data
 
             private static IEnumerator GetEnginePartsReferencesCoroutine (ModCar _car)
             {
+
+              //  MelonLogger.Msg("Engine is loaded!");
+                
                 var engine = ClientData.carLoaders[_car.carLoaderID].e_engine_h;
-                var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList();
+                var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList(); // Object reference not set to an instance of an object
 
                 var engineReferencePoint = _car.partInfo.EnginePartsReferences;
 
@@ -142,6 +160,8 @@ namespace CMS21MP.ClientSide.Data
 
             private static IEnumerator GetOtherPartsReferencesCoroutine (ModCar _car)
             {
+                yield return new WaitForEndOfFrame();
+                
                 var otherPartsObjects = ClientData.carLoaders[_car.carLoaderID].Parts;
                 var otherPartsReferencePoint = _car.partInfo.OtherPartsReferences;
 
@@ -389,10 +409,13 @@ namespace CMS21MP.ClientSide.Data
             {
                 foreach (var car in ClientData.carOnScene)
                 {
-                    if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
+                    if (!car.isFromServer)
                     {
-                        ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
-                        car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
+                        if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
+                        {
+                            ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
+                            car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
+                        }
                     }
                     
                         
@@ -404,7 +427,7 @@ namespace CMS21MP.ClientSide.Data
                 for (var index = 0; index < ClientData.carOnScene.Count; index++)
                 {
                     var car = ClientData.carOnScene[index];
-                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.carLoaderID].carToLoad))
+                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.carLoaderID].carToLoad) && ClientData.carLoaders[car.carLoaderID].carParts == null)
                     {
                         MelonLogger.Msg("Detected A removed car");
                         ClientSend.SendCarInfo(car);
@@ -420,6 +443,7 @@ namespace CMS21MP.ClientSide.Data
         #region PartUpdate
             public static IEnumerator HandleNewPart(int _carLoaderID, ModPartScript _carPart=null, ModCarPart _bodyPart=null)
             {
+               // MelonLogger.Msg("Update Part Begin");
                 var car = ClientData.carOnScene[_carLoaderID];
 
                 if (!car.isReady)
@@ -433,6 +457,7 @@ namespace CMS21MP.ClientSide.Data
                 }
                 
                 yield return new WaitForSeconds(0.25f); // Additional wait to be sure that the car is ready
+                
                 
                 try
                 {
@@ -470,6 +495,7 @@ namespace CMS21MP.ClientSide.Data
             }
             public static void UpdatePart(PartScript originalPart, ModPartScript newpart, int carLoaderID)
             {
+               // MelonLogger.Msg("Update Part");
                 try
                 {
                     if (!String.IsNullOrEmpty(newpart.tunedID))
@@ -536,6 +562,7 @@ namespace CMS21MP.ClientSide.Data
 
             public static void UpdateBodyPart(CarPart orginalPart, ModCarPart newBodyPart, int carLoaderID)
             {
+              //  MelonLogger.Msg("Update BodyPart");
                 if (ClientData.carLoaders != null && ClientData.carOnScene[carLoaderID] != null)
                 {
                     if (!String.IsNullOrEmpty(ClientData.carLoaders[carLoaderID].carToLoad))

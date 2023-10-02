@@ -27,7 +27,14 @@ namespace CMS21MP.ClientSide.Data
 
         public static void Init()
         {
-            carLoaders = GameScript.Get().carOnScene;
+            carLoaders = new[]
+            {
+                GameScript.Get().carOnScene[0],
+                GameScript.Get().carOnScene[3],
+                GameScript.Get().carOnScene[4],
+                GameScript.Get().carOnScene[1],
+                GameScript.Get().carOnScene[2]
+            };
             if (SceneChecker.isInGarage())
             {
                 localInventory = GameScript.Get().GetComponent<Inventory>();

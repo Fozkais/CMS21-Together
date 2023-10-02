@@ -68,7 +68,7 @@ namespace CMS21MP.ClientSide.DataHandle
             public static void SpawnPlayer(Packet _packet)
             {
                 if(!GameData.DataInitialzed)
-                    GameData.InitializeGameData();
+                    MelonCoroutines.Start(GameData.InitializeGameData());
                 
                 Player _player = _packet.Read<Player>();
                 int _id = _packet.ReadInt();
@@ -119,14 +119,16 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 ClientData.carOnScene.Remove(ClientData.carOnScene.Find(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition));
                 carLoader.DeleteCar();
+                MelonLogger.Msg("Removing car...");
             }
             else
             {
+                MelonLogger.Msg("Loading new car...");
                 ClientData.carOnScene.Add(car);
                 
-                //carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
-                carLoader.StartCoroutine(carLoader.gameObject.GetComponentInChildren<CarDebug>()
-                    .RunLoadCar(car.carID, car.carVersion));
+                carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
+               // carLoader.StartCoroutine(carLoader.gameObject.GetComponentInChildren<CarDebug>()
+                //    .RunLoadCar(car.carID, car.carVersion));
 
                 carLoader.placeNo = car.carPosition; // TODO: Change this to a better way
                 carLoader.PlaceAtPosition();
@@ -158,8 +160,10 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             ModPartScript carPart = _packet.Read<ModPartScript>();
 
+            //MelonLogger.Msg("Received part for car with id : " + carLoaderID);
             if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
             {
+                
                 MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
             }
             _packet.Dispose();

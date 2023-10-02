@@ -191,13 +191,13 @@ namespace CMS21MP.ServerSide.DataHandle
                     yield return  new WaitForEndOfFrame();
                 
                 if(!GameData.DataInitialzed)
-                    GameData.InitializeGameData();
+                    MelonCoroutines.Start(GameData.InitializeGameData());
                 
-                while (GameData.carLoaders.Length <= 3)
+                while (ClientData.carLoaders.Length <= 3)
                     yield return  new WaitForEndOfFrame();
                 
-                MelonLogger.Msg("Sending Spawn Player Packets");
                 yield return new WaitForSeconds(1.5f);
+                MelonLogger.Msg("Sending Spawn Player Packets");
                 
                 foreach (ServerClient _client in Server.clients.Values)
                     {

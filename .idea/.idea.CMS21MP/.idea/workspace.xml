@@ -9,20 +9,15 @@
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21Together.sln" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/SaveSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/SaveSystem.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,6 +53,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0c3bbec8638a45a18533422dcbe73ca22a1200/8a/49d42b46/MonoBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/36c96bacabb943c4b2e878789b27c36590ba00/6d/6217cafa/ProfileManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4b76c3e709534801a173f34a1d6b3dfc522790/97/d5a5327c/KeyValuePair`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70f1b82fe8d247009c63d08e8b1d7cc290bc00/f9/492081d5/CarLoader.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/16/719c51a0/NewCarData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/3e/1a84a1a6/MountObjectData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/46/5261f8ce/Item.cs" root0="SKIP_HIGHLIGHTING" />
@@ -76,10 +72,23 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/ef/d9e7a652/Callback`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/fe/b461e8ef/SteamNetworkingSockets.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/9f46c266303142c4a7881481b5632aed908800/88/8da40647/Assembly-CSharp-firstpass.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/198a6261cebc324728dcc4c178edc5f2894123f711722c80e8557cbfd27651/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/74b2b97115b23b3f1292f249738bcb73cca782453c117a91fd9226c536e9c83/WebSocket.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/838f4b55841be1e477eb0d1f8c0a0e1228f5621aeacf8812ffa911b5f1550/TomlTable.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d33bf0d9ea267aba6791f34dd0f4f71b1093e58ac4cf91e6955a95216f5efe/FormatterServices.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/ClientData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/GameData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientSend.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModUI.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -98,31 +107,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;MainMod&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.obiscr.chatgpt.settings.ChatGPT&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "MainMod",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propDebugger",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="CMS21MP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -140,6 +149,16 @@
       <option name="PROJECT_TFM" value="" />
       <method v="2">
         <option name="Build" />
+      </method>
+    </configuration>
+    <configuration name="Debugger.Launch: Car Mechanic Simulator 2021.exe" type="RunNativeExe" factoryName="Native Executable">
+      <option name="EXE_PATH" value="C:\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\Car Mechanic Simulator 2021.exe" />
+      <option name="PROGRAM_PARAMETERS" value=" --melonloader.launchdebugger" />
+      <option name="WORKING_DIRECTORY" value="C:\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021" />
+      <option name="PASS_PARENT_ENVS" value="1" />
+      <option name="USE_EXTERNAL_CONSOLE" value="0" />
+      <method v="2">
+        <option name="Build Solution" enabled="true" />
       </method>
     </configuration>
     <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -247,7 +266,8 @@
       <workItem from="1688644799178" duration="10174000" />
       <workItem from="1688674906514" duration="2269000" />
       <workItem from="1688741529733" duration="41454000" />
-      <workItem from="1696102531296" duration="2526000" />
+      <workItem from="1696102531296" duration="2789000" />
+      <workItem from="1696153890255" duration="15430000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -424,7 +444,15 @@
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---">
+      <option name="closed" value="true" />
+      <created>1696105205895</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1696105205895</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -479,7 +507,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Update to the mod&#10;- Allow player to receive Message from server using TCP." />
     <MESSAGE value="&quot;Huge&quot; update to the mod&#10;- Allow Client to Receive and Send Data throught TCP and UDP" />
     <MESSAGE value="RollBack to fix Error&#10;- Allow (probably) client to receive and send data throught TCP" />
     <MESSAGE value="--Bug Fixes--&#10;- Added updating from the Mainthread to allow receive Data from server." />
@@ -504,7 +531,25 @@
     <MESSAGE value="-- Pre-Release 0.5 --&#10;- introduced basic saving system&#10;- Huge refactor of ClientHandle&#10;- Huge rewrite of CarHandling system&#10;- Adjustement to model size&#10;-- Knowed bug -- &#10;- Stop host still broken&#10;- CarHandle make game crash." />
     <MESSAGE value="New UI / CustomSave" />
     <MESSAGE value="- Lobby 1/2 + Refacto" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Lobby 1/2 + Refacto" />
+    <MESSAGE value="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---" />
+    <option name="LAST_COMMIT_MESSAGE" value="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint suspend="NONE" type="DotNet Exception Breakpoints">
+          <properties exception="System.Collections.Generic.KeyNotFoundException" isInternal="false" displayValue="KeyNotFoundException" namespaceName="System.Collections.Generic">
+            <option name="internal" value="false" />
+          </properties>
+          <option name="timeStamp" value="4" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#CMS21MP.SharedData.ModCar" memberName="carLoaderID" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

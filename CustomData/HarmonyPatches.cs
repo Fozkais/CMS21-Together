@@ -19,25 +19,30 @@ namespace CMS21MP.CustomData
         [HarmonyPostfix]
         public static void LoadCarPatch(string name, CarLoader __instance)
         {
-            MelonLogger.Msg("A car is being Loaded! : " + name);
+            MelonCoroutines.Start(LoadCarCouroutine(__instance, name));
         }
 
-        private static IEnumerator LoadCarCouroutine(CarLoader __instance)
+        private static IEnumerator LoadCarCouroutine(CarLoader __instance, string name)
         {
+            while(GameData.DataInitialzed == false)
+                yield return new WaitForSeconds(1);
+            
             yield return new WaitForEndOfFrame();
             yield return new WaitForSeconds(1);
             
              var loaderNumber = __instance.gameObject.name[10].ToString();
+             
+             MelonLogger.Msg("A car is being Loaded! : " + name + ", "  + loaderNumber);
 
              yield return new WaitForEndOfFrame();
              
 
             if (loaderNumber == "1")
             {
-                ModCar newCar0 = new ModCar(0, __instance.ConfigVersion, SceneManager.GetActiveScene().name,
-                    __instance.placeNo);
-                if (!ClientData.carOnScene.Any(s => s.carLoaderID == 0))
+                ModCar newCar0 = new ModCar(0, __instance.ConfigVersion, SceneManager.GetActiveScene().name, __instance.placeNo);
+                if(!ClientData.carOnScene.Any(s => s.carLoaderID == 0))
                 {
+                    MelonLogger.Msg("Pass 1");
                     ClientData.carOnScene.Add(newCar0);
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[0]));
                 }
@@ -48,6 +53,7 @@ namespace CMS21MP.CustomData
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.carLoaderID == 1))
                 {
+                    MelonLogger.Msg("Pass 2");
                     ClientData.carOnScene.Add(newCar1);
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[1]));
                 }
@@ -58,6 +64,7 @@ namespace CMS21MP.CustomData
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.carLoaderID == 2))
                 {
+                    MelonLogger.Msg("Pass 3");
                     ClientData.carOnScene.Add(newCar2);
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[2]));
                 }
@@ -68,6 +75,7 @@ namespace CMS21MP.CustomData
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.carLoaderID == 3))
                 {
+                    MelonLogger.Msg("Pass 4");
                     ClientData.carOnScene.Add(newCar3);
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[3]));
                 }
@@ -78,6 +86,7 @@ namespace CMS21MP.CustomData
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.carLoaderID == 4))
                 {
+                    MelonLogger.Msg("Pass 5");
                     ClientData.carOnScene.Add(newCar4);
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[4]));
                 }
@@ -93,19 +102,23 @@ namespace CMS21MP.CustomData
 
         public static IEnumerator WaitForEndOfSetEngine(CarLoader __instance) //TODO: Handle case where car is removed from scene
         {
+            while(GameData.DataInitialzed == false)
+                yield return new WaitForSeconds(1);
+            
+            yield return new WaitForSeconds(1);
+            
             yield return new WaitForEndOfFrame();
             
             while (!__instance.done || !__instance.modelLoaded)
                 yield return new WaitForEndOfFrame();
 
             yield return new WaitForEndOfFrame();
-
-            if (ClientData.carOnScene.Count > 1)
-                yield return new WaitForSeconds(2);
             
-            MelonLogger.Msg("A car as been Loaded! : " + __instance.carToLoad);
+            
             
             var loaderNumber = __instance.gameObject.name[10].ToString();
+            
+            MelonLogger.Msg("A car as been Loaded! : " + __instance.carToLoad + ", " + loaderNumber);
 
             switch (loaderNumber)
             {

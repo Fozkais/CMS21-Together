@@ -447,7 +447,6 @@ namespace CMS21MP
                                 return;
                             }
                         }
-        
                         StartGame(saveToLoadIndex);
                         SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
                         PreferencesManager.SaveModSave(saveToLoadIndex);
