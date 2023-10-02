@@ -34,12 +34,12 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Implement Networking System (TCP/UDP) : 🔴 -> UDP as problem
 * Implement Steam API Networking : ⏸️
 * Create a Lobby system : ✅
-* Add a Custom Save System : 🔴 -> Dont work on all pc ??
+* Add a Custom Save System : ✅ -> Fixed on 0.1.1
 * Sync players Position and Rotation : 🔴 -> Uses UDP
-* Sync Inventory : ✅
+* Sync Inventory : ✅ -> Fixed on 0.1.3
 * Sync Cars Spawning and position : ✅
 * Sync Garage Interaction : 🚧 (Lifter, Wheel Assembler, ect...)
-* Sync Cars "mechanic" : 🚧 (Engine, Suspension, ect...)
+* Sync Cars "mechanic" : ✅ -> Fixed on 0.1.2 (almost fully working?)
 * Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ❌
 * Sync garage upgrade : ❌
