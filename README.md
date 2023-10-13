@@ -88,7 +88,7 @@ if they are all ready you can start the game and start playing (in the case wher
 
 ## Authors
 
-* **Fozkais** - *indie game dev* - [Fozkais](https://github.com/Fozkais)
+* **Fozkais** - *Main dev* - [Fozkais](https://github.com/Fozkais)
 *  **Meitzi** - *Huge Contributor* - [MetziQ](https://www.nexusmods.com/carmechanicsimulator2021/users/151281813)
 
 ## License
