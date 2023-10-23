@@ -82,13 +82,13 @@ it will be used in the future to implement the steam API on the mod to replace a
 
 From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, 
 <br/>
-from there you'll be able to launch a game and join one (you have to launch/join from the game's menu, not in-game). 
+from there you'll be able to launch a game and join one (you have to launch/join from the main menu, not in-game). 
 if there's no issue with the save system it should create a new save and create a lobby that 4 player max can join,
 if they are all ready you can start the game and start playing (in the case where everything work)
 
 ## Authors
 
-* **Fozkais** - *indie game dev* - [Fozkais](https://github.com/Fozkais)
+* **Fozkais** - *Main dev* - [Fozkais](https://github.com/Fozkais)
 *  **Meitzi** - *Huge Contributor* - [MetziQ](https://www.nexusmods.com/carmechanicsimulator2021/users/151281813)
 
 ## License
