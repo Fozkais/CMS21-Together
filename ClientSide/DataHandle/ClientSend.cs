@@ -134,26 +134,48 @@ namespace CMS21MP.ClientSide.DataHandle
         #endregion
 
 
-        public static void SendInventoryItem(ModItem _Item, bool status)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
+        #region Inventory
+            public static void SendInventoryItem(ModItem _Item, bool status)
             {
-                _packet.Write(_Item);
-                _packet.Write(status);
+                using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
+                {
+                    _packet.Write(_Item);
+                    _packet.Write(status);
 
-                SendTCPData(_packet);
+                    SendTCPData(_packet);
+                }
             }
-        }
-        public static void SendInventoryGroupItem(ModGroupItem _Item, bool status)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
+            public static void SendInventoryGroupItem(ModGroupItem _Item, bool status)
             {
-                _packet.Write(_Item);
-                _packet.Write(status);
+                using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
+                {
+                    _packet.Write(_Item);
+                    _packet.Write(status);
 
-                SendTCPData(_packet);
+                    SendTCPData(_packet);
+                }
             }
-        }
+        
+
+        #endregion
+
+        #region Garage Interaction
+
+            public static void SendLifterNewPos(int action, int pos,int _carLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.lifterPos))
+                {
+                    _packet.Write(action);
+                    _packet.Write(pos);
+                    _packet.Write(_carLoaderID);
+
+                    SendTCPData(_packet);
+                }
+            }
+        
+
+        #endregion
+
     }
     
 }

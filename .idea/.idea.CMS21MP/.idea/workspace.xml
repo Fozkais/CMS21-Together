@@ -9,16 +9,18 @@
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GarageInteraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GarageInteraction.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharedData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PacketTypes.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SharedData/SaveSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/SaveSystem.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -251,7 +253,7 @@
       <workItem from="1697365496451" duration="1312000" />
       <workItem from="1697742162849" duration="8656000" />
       <workItem from="1697986232145" duration="869000" />
-      <workItem from="1698063345500" duration="6167000" />
+      <workItem from="1698063345500" duration="11572000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -460,7 +462,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698063850889</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves">
+      <option name="closed" value="true" />
+      <created>1698070219140</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1698070219140</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -515,7 +525,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Initial GitHub Commit&#10;- Early state for player spawning and moving sync (probably work?)&#10;- Handle Disconnection" />
     <MESSAGE value="-QuickFix-&#10;Remove bin folder from the git" />
     <MESSAGE value="Early Update - 1&#10;- Properly Handle Disconnection&#10;- Players Spawning and Movement are Synced (rotation?)&#10;!-Knowed Bug-!&#10;- connected player list wont work&#10;- Other player are invisible&#10;- error may appear if a player disconnect and reconnect" />
     <MESSAGE value="-Minor change&#10;- Add playerModel" />
@@ -540,7 +549,8 @@
     <MESSAGE value="--- 0.1.2 ---&#10;1. Fix Car sync issue , &#10;   -&gt; Almost fully working on Garage , probably broken on Junkyard, Car_Dealer and Barn&#10;2. Few change on Game-Data-Initialization.&#10;--- End ---" />
     <MESSAGE value="--- 0.1.3 ---&#10;1. Fully rewritten Inventory sync&#10;    -&gt; fully working inventory sync&#10;2. Small fix on ModUI&#10;    -&gt; when host create a game, lobby wasn't showing automatically&#10;--- End ---" />
     <MESSAGE value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
+    <MESSAGE value="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves" />
+    <option name="LAST_COMMIT_MESSAGE" value="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

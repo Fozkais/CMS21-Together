@@ -284,25 +284,47 @@ namespace CMS21MP.ServerSide.DataHandle
 
         #endregion
 
-        public static void SendInventoryItem(int _fromClient, ModItem _item, bool _status)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
+        #region Inventory
+            public static void SendInventoryItem(int _fromClient, ModItem _item, bool _status)
             {
-                _packet.Write(_item);
-                _packet.Write(_status);
+                using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
+                {
+                    _packet.Write(_item);
+                    _packet.Write(_status);
 
-                SendTCPDataToAll(_fromClient, _packet);
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
             }
-        }
-        public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
+            public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status)
             {
-                _packet.Write(_item);
-                _packet.Write(_status);
+                using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
+                {
+                    _packet.Write(_item);
+                    _packet.Write(_status);
 
-                SendTCPDataToAll(_fromClient, _packet);
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
             }
-        }
+
+        
+
+        #endregion
+
+        #region Garage Interaction
+            public static void SendLifterPos(int _fromClient, int action, int pos, int loaderid)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.lifterPos))
+                {
+                    _packet.Write(action);
+                    _packet.Write(pos);
+                    _packet.Write(loaderid);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+
+        
+
+        #endregion
     }
 }

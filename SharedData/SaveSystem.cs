@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using CMS21MP.SharedData;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppCMS.ContainersSave;
-using Il2CppCMS.Platforms.Base;
-using Il2CppCMS.Platforms.Steam;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;
-using Newtonsoft.Json;
 using UnityEngine;
 using BinaryWriter = Il2CppSystem.IO.BinaryWriter;
-using SystemWriter =  System.IO.BinaryWriter;
 
-namespace CMS21MP
+namespace CMS21MP.SharedData
 {
+    [HarmonyPatch]
     public static class SaveSystem
     {
         
@@ -171,13 +166,13 @@ namespace CMS21MP
         }
         
         
-        [HarmonyPatch(typeof(GameDataManager), "Save")]
+        /*[HarmonyPatch(typeof(GameDataManager), "Save")]
         [HarmonyPostfix]
         public static void Savepatch2(bool forcedUpdated)
         {
             MelonLogger.Msg(" GameDataManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             PreferencesManager.SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-        }
+        }*/
     }
 
     [Serializable]

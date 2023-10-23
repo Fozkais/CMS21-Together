@@ -49,7 +49,6 @@ namespace CMS21MP.ClientSide.Data
             Car.UpdateCars();
             ModInventory.UpdateInventory();
             Stats.HandleStats();
-            GarageInteraction.handleInteraction();
         }
 
 

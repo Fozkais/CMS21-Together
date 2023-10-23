@@ -10,7 +10,6 @@ namespace CMS21MP.ServerSide.Transport
     {
         public IPEndPoint endPoint;
         private int id;
-        private Packet receivedData;
 
         public ServerUDP(int _id)
         {

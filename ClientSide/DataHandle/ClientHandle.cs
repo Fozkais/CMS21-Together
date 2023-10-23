@@ -91,8 +91,6 @@ namespace CMS21MP.ClientSide.DataHandle
                 int _id = _packet.ReadInt();
                 Vector3Serializable _position = _packet.Read<Vector3Serializable>();
                 Movement.UpdatePlayersPosition(_id, _position);
-                MelonLogger.Msg("Player to move id:"+ _id + "Name:"+ ClientData.serverPlayers[_id].username);
-                MelonLogger.Msg("Received position from server.");
                 _packet.Dispose();
             }
             
@@ -232,6 +230,31 @@ namespace CMS21MP.ClientSide.DataHandle
                     }
                 }
             }
+
+        #endregion
+
+        #region Garage Interaction
+
+        public static void LifterPos(Packet _packet)
+        {
+            int _action = _packet.ReadInt();
+            int _pos = _packet.ReadInt();
+            int _loaderId = _packet.ReadInt();
+            
+            MelonLogger.Msg("Received New lifter pos to : " + _loaderId + 
+                            " action: " + _action + " pos: " + _pos);
+
+            if (ClientData.carOnScene.Any(s => s.carLoaderID == _loaderId))
+            {
+                if (ClientData.carOnScene[_loaderId].CarLifterState != _pos)
+                {
+                    GarageInteraction.needToTrigger = true;
+                    ClientData.carLoaders[_loaderId].lifter.Action(_action);
+                    ClientData.carOnScene[_loaderId].CarLifterState = _pos;
+                }
+            }
+            
+        }            
 
         #endregion
     }

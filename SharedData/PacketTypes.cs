@@ -24,7 +24,9 @@ namespace CMS21MP.SharedData
             bodyPart,
             
             inventoryItem,
-            inventoryGroupItem
+            inventoryGroupItem,
+            
+            lifterPos
             
         #endregion
         

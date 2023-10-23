@@ -60,7 +60,6 @@ namespace CMS21MP.ClientSide.Transport
     {
         try
         {
-            MelonLogger.Msg("Received data...");
             IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
             byte[] _data = socket.EndReceive(_result, ref receivedIP);
 
@@ -71,7 +70,6 @@ namespace CMS21MP.ClientSide.Transport
                 return;
             }
             
-            MelonLogger.Msg("Received Valid Data! Handling...");
             HandleData(_data);
             socket.BeginReceive(ReceiveCallback, null);
         }
@@ -99,7 +97,6 @@ namespace CMS21MP.ClientSide.Transport
                 if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
                 {
                     handler(_packet);
-                    MelonLogger.Msg("Handled packet with id:" + _packetId);
                 }
                 else
                 {

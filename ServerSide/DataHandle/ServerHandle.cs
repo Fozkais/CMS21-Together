@@ -122,6 +122,20 @@ namespace CMS21MP.ServerSide.DataHandle
             }
 
         #endregion
+
+        #region Garage Interaction
+
+        public static void LifterPos(int _fromClient, Packet _packet)
+        {
+            int action = _packet.ReadInt();
+            int pos = _packet.ReadInt();
+            int _Loaderid = _packet.ReadInt();
+
+            MelonLogger.Msg("Received Lifter: " + _Loaderid + " action : " + action + " pos: " +  pos);
+            ServerSend.SendLifterPos(_fromClient, action, pos, _Loaderid);
+        }
+
+        #endregion
         
     }
 }
