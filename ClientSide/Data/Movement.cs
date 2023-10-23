@@ -13,18 +13,22 @@ namespace CMS21MP.ClientSide.Data
         private static Quaternion lastRotation = Quaternion.identity;
 
 
-        public static void UpdatePlayersRotation(Player player, QuaternionSerializable _rotation)
+        public static void UpdatePlayersRotation(int id, QuaternionSerializable _rotation)
         {
-            if (ClientData.serverPlayerInstances.ContainsKey(player.id))
-                ClientData.serverPlayerInstances[player.id].transform.rotation = 
-                    Quaternion.Slerp( ClientData.serverPlayerInstances[player.id].transform.rotation, _rotation.toQuaternion(), 0.25f);
+            if (ClientData.serverPlayerInstances.ContainsKey(id))
+                ClientData.serverPlayerInstances[id].transform.rotation = 
+                    Quaternion.Slerp( ClientData.serverPlayerInstances[id].transform.rotation, _rotation.toQuaternion(), 0.15f);
         }
 
-        public static void UpdatePlayersPosition(Player player, Vector3Serializable _position)
+        public static void UpdatePlayersPosition(int id, Vector3Serializable _position)
         {
-            if (ClientData.serverPlayerInstances.ContainsKey(player.id))
-                ClientData.serverPlayerInstances[player.id].transform.position = 
-                    Vector3.Slerp(ClientData.serverPlayerInstances[player.id].transform.position, _position.toVector3(), 0.25f);
+
+            if (ClientData.serverPlayerInstances.ContainsKey(id))
+            {
+                Vector3 pos = new Vector3(_position.x, -0.5f, _position.z);
+                ClientData.serverPlayerInstances[id].transform.position = 
+                    Vector3.Slerp(ClientData.serverPlayerInstances[id].transform.position, pos, 0.15f);
+            }
         }
 
         public static void SendMovement()

@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
 using CMS21MP.ClientSide;
+using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
@@ -22,7 +23,7 @@ namespace CMS21MP.ServerSide
 
         public static TcpListener tcpListener;
         private static UdpClient udpListener;
-        private static bool _isStopping;
+        private static bool isStopping;
 
         public static void Start()
         {
@@ -31,7 +32,6 @@ namespace CMS21MP.ServerSide
 
             MelonLogger.Msg("Starting server...");
             InitializeServerData();
-            _isStopping = false;
 
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
@@ -42,6 +42,7 @@ namespace CMS21MP.ServerSide
 
             MelonLogger.Msg($"Server started successfully !");
             MainMod.isServer = true;
+            isStopping = false;
             
             Client.Instance.ConnectToServer("127.0.0.1");
         }
@@ -58,7 +59,7 @@ namespace CMS21MP.ServerSide
             
             
             MainMod.isServer = false;
-            _isStopping = true;
+            isStopping = true;
 
             udpListener.Close();
             tcpListener.Stop();
@@ -68,13 +69,15 @@ namespace CMS21MP.ServerSide
             packetHandlers.Clear();
             
             Client.PacketHandlers.Clear();
+            GameData.DataInitialzed = false;
             MelonLogger.Msg("Server Closed.");
 
         }
 
         private static void TCPConnectCallback(IAsyncResult _result)
         {
-            if (_isStopping) return;
+            if(isStopping)
+                return;
             
             TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
@@ -85,11 +88,6 @@ namespace CMS21MP.ServerSide
                 if (clients[i].tcp.socket == null)
                 {
                     clients[i].tcp.Connect(_client);
-                    // Récupérer son endpoint TCP
-                    IPEndPoint tcpEndpoint = (IPEndPoint)_client.Client.RemoteEndPoint;
-                    // L'associer au socket UDP
-                    clients[i].udp.Connect(tcpEndpoint);
-                    
                     return;
                 }
             }
@@ -99,32 +97,41 @@ namespace CMS21MP.ServerSide
         
         private static void UDPReceiveCallback(IAsyncResult result)
         {
-            if (_isStopping) return;
-            try
+            if(isStopping)
+                return;
+                try
                 {
                     IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
                     byte[] _data = udpListener.EndReceive(result, ref receivedIP);
-
+                    udpListener.BeginReceive(UDPReceiveCallback, null);
+                    
                     if (_data.Length < 4)
                         return;
+                    
 
                     using (Packet _packet = new Packet(_data))
                     {
-                        _packet.ReadInt(); // skip packet lenght read
                         int _clientId = _packet.ReadInt();
-                        MelonLogger.Msg("client_Id : " + _clientId);
                         if (_clientId == 0)
                             return;
                         
-                        clients[_clientId].udp.HandleData(_data);
-                        MelonLogger.Msg("UDP packet handled.");
+                        if (clients[_clientId].udp.endPoint == null)
+                        {
+                            clients[_clientId].udp.Connect(receivedIP);
+                            return;
+                        }
+                        
+                        
+                        if (clients[_clientId].udp.endPoint.ToString() == receivedIP.ToString())
+                        {
+                            clients[_clientId].udp.HandleData(_packet);
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     MelonLogger.Msg($"Error receiving UDP data: {ex}");
                 }
-                udpListener.BeginReceive(UDPReceiveCallback, null);
             }
 
         public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet)

@@ -152,22 +152,19 @@ public static class PreferencesManager
 
     public static void SaveModSave(int saveIndex)
     {
-        if (SaveSystem.ModSaves.ElementAt(saveIndex).Value.Name != "EmptySave")
-        {
-            ModSaveData modSaveData = SaveSystem.ModSaves[saveIndex];
-            string saveFilePath = Path.Combine(SaveFolderPath, $"save_{saveIndex}.cms21mp");
+        ModSaveData modSaveData = SaveSystem.ModSaves[saveIndex];
+        string saveFilePath = Path.Combine(SaveFolderPath, $"save_{saveIndex}.cms21mp");
 
-            if (!Directory.Exists(SaveFolderPath))
-            {
-                Directory.CreateDirectory(SaveFolderPath);
-            }
-            
-               JsonConvert.SerializeObject(modSaveData);
-               
-            File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(modSaveData));
-            
-            MelonLogger.Msg("Saved Successfully!");
+        if (!Directory.Exists(SaveFolderPath))
+        {
+            Directory.CreateDirectory(SaveFolderPath);
         }
+        
+           JsonConvert.SerializeObject(modSaveData);
+           
+        File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(modSaveData));
+        
+        MelonLogger.Msg("Saved Successfully!");
     }
 }
 

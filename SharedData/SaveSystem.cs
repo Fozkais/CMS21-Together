@@ -120,8 +120,11 @@ namespace CMS21MP
                     SaveSystem.ModSaves[index].Name =  saveName;
                     SaveSystem.ModSaves[index].saveIndex = index;
 
-                    if(!clientSave)
+                    if (!clientSave)
+                    {
+                       MelonLogger.Msg("SaveSystem Save Index :" + index); 
                         PreferencesManager.SaveModSave(index);
+                    }
                 }
             }
             
@@ -163,6 +166,7 @@ namespace CMS21MP
         [HarmonyPostfix]
         public static void Savepatch()
         {
+            MelonLogger.Msg(" ProfileManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             PreferencesManager.SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
         }
         
@@ -171,6 +175,7 @@ namespace CMS21MP
         [HarmonyPostfix]
         public static void Savepatch2(bool forcedUpdated)
         {
+            MelonLogger.Msg(" GameDataManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             PreferencesManager.SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
         }
     }

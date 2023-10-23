@@ -90,8 +90,8 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 int _id = _packet.ReadInt();
                 Vector3Serializable _position = _packet.Read<Vector3Serializable>();
-                Movement.UpdatePlayersPosition(ClientData.serverPlayers[_id], _position);
-                
+                Movement.UpdatePlayersPosition(_id, _position);
+                MelonLogger.Msg("Player to move id:"+ _id + "Name:"+ ClientData.serverPlayers[_id].username);
                 MelonLogger.Msg("Received position from server.");
                 _packet.Dispose();
             }
@@ -100,7 +100,7 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 int _id = _packet.ReadInt();
                 QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
-                Movement.UpdatePlayersRotation(ClientData.serverPlayers[_id], _rotation);
+                Movement.UpdatePlayersRotation(_id, _rotation);
                 _packet.Dispose();
             }
 

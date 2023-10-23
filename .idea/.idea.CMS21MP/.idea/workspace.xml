@@ -9,20 +9,17 @@
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/Packet.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PreferencesManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharedData/SaveSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/SaveSystem.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,42 +51,19 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/ILViewer/965226ce53ee4d47a2f8d3c142bf0da919a00/33/a9f93b0a/0200002C.il" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/050fcb9e40204155abf07011e22d3209532b98/29/c20f10c2/BinaryWriter.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0c3bbec8638a45a18533422dcbe73ca22a1200/8a/49d42b46/MonoBehaviour.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/36c96bacabb943c4b2e878789b27c36590ba00/6d/6217cafa/ProfileManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4b76c3e709534801a173f34a1d6b3dfc522790/97/d5a5327c/KeyValuePair`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70f1b82fe8d247009c63d08e8b1d7cc290bc00/44/5de8b094/Inventory.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/70f1b82fe8d247009c63d08e8b1d7cc290bc00/f9/492081d5/CarLoader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/965226ce53ee4d47a2f8d3c142bf0da919a00/88/2d5200fb/ClientData.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/16/719c51a0/NewCarData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/3e/1a84a1a6/MountObjectData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/46/5261f8ce/Item.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/7c/04ae1fb7/WheelData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/8f/7f236cd4/DLC.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/90/3011cea2/CarLoader.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/99/202746f3/PartData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/a7/ab693f08/InteractiveObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/b7/83341a56/CarPart.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/be/0f9f9f53/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9f46c266303142c4a7881481b5632aed908800/df/69d5f767/MountObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/a8f6c33fa12646d38264c39c3694d5f3c0e00/4d/f70543fe/MelonCoroutines.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/43/48fc3d2a/DlcInstalled_t.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/4f/6ceef565/SteamAPI.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/51/9ce49ca7/SteamNetworking.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/ef/d9e7a652/Callback`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ac704ccc21694a55856e7ee9030943805b600/fe/b461e8ef/SteamNetworkingSockets.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce12dc1aa9e14b919d8c1321c95d47fb35e718/ba/32b27b37/UdpClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/metadata/9f46c266303142c4a7881481b5632aed908800/88/8da40647/Assembly-CSharp-firstpass.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/198a6261cebc324728dcc4c178edc5f2894123f711722c80e8557cbfd27651/ThrowHelper.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/575c31ecc35a636b6f962cb71d53992552941a18982aae1c8e6c16305cc3761b/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/74b2b97115b23b3f1292f249738bcb73cca782453c117a91fd9226c536e9c83/WebSocket.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/838f4b55841be1e477eb0d1f8c0a0e1228f5621aeacf8812ffa911b5f1550/TomlTable.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/87c1dd833e1c3b867920d1248f993b6cc3f4be2881fb202ce7735eccf82fe3/Socket.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d33bf0d9ea267aba6791f34dd0f4f71b1093e58ac4cf91e6955a95216f5efe/FormatterServices.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/ClientData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientSend.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModUI.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModUI.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/SharedData/Packet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/SharedData/PreferencesManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -277,7 +251,7 @@
       <workItem from="1697365496451" duration="1312000" />
       <workItem from="1697742162849" duration="8656000" />
       <workItem from="1697986232145" duration="869000" />
-      <workItem from="1698063345500" duration="386000" />
+      <workItem from="1698063345500" duration="6167000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -478,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1696277147331</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="B-1_4-UDP_0&#10;- Fix SaveSystem bug">
+      <option name="closed" value="true" />
+      <created>1698063850889</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1698063850889</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -533,7 +515,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="--Bug Fixes--&#10;- Added updating from the Mainthread to allow receive Data from server." />
     <MESSAGE value="Initial GitHub Commit&#10;- Early state for player spawning and moving sync (probably work?)&#10;- Handle Disconnection" />
     <MESSAGE value="-QuickFix-&#10;Remove bin folder from the git" />
     <MESSAGE value="Early Update - 1&#10;- Properly Handle Disconnection&#10;- Players Spawning and Movement are Synced (rotation?)&#10;!-Knowed Bug-!&#10;- connected player list wont work&#10;- Other player are invisible&#10;- error may appear if a player disconnect and reconnect" />
@@ -558,6 +539,8 @@
     <MESSAGE value="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---" />
     <MESSAGE value="--- 0.1.2 ---&#10;1. Fix Car sync issue , &#10;   -&gt; Almost fully working on Garage , probably broken on Junkyard, Car_Dealer and Barn&#10;2. Few change on Game-Data-Initialization.&#10;--- End ---" />
     <MESSAGE value="--- 0.1.3 ---&#10;1. Fully rewritten Inventory sync&#10;    -&gt; fully working inventory sync&#10;2. Small fix on ModUI&#10;    -&gt; when host create a game, lobby wasn't showing automatically&#10;--- End ---" />
+    <MESSAGE value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

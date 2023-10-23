@@ -10,7 +10,7 @@ namespace CMS21MP.ClientSide.Data
     public static class GameData
     {
         public static GameObject localPlayer;
-        public static bool DataInitialzed { get; private set; }
+        public static bool DataInitialzed;
 
         public static IEnumerator InitializeGameData() // TODO: reset data when changing scene
         {

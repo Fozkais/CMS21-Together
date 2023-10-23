@@ -448,9 +448,10 @@ namespace CMS21MP
                                 return;
                             }
                         }
-                        StartGame(saveToLoadIndex);
-                        SaveSystem.ModSaves[saveToLoadIndex].alreadyLoaded = true;
-                        PreferencesManager.SaveModSave(saveToLoadIndex);
+                        
+                        StartGame(saveToLoadIndex - 1);
+                        SaveSystem.ModSaves[saveToLoadIndex-1].alreadyLoaded = true;
+                        PreferencesManager.SaveModSave(saveToLoadIndex-1);
                         
                         showLobbyInterface = false;
                     }
