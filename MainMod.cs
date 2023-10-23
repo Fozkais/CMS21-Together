@@ -103,7 +103,8 @@ namespace CMS21MP
          {
             if (Client.Instance.isConnected)
             {
-               ClientData.UpdateClientInfo();
+               if(SceneChecker.isInGarage())
+                  ClientData.UpdateClientInfo();
             }
          }
          

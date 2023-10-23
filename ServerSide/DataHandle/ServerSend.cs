@@ -123,13 +123,13 @@ namespace CMS21MP.ServerSide.DataHandle
 
                     SendTCPData(_toClient, _packet, steamId);
                 }
-                using (Packet _packet = new Packet((int)PacketTypes.welcome))
+                /*using (Packet _packet = new Packet((int)PacketTypes.welcome))
                 {
                     _packet.Write("UDP Welcome!");
                     _packet.Write(_toClient);
 
                     SendUDPData(_toClient, _packet, steamId);
-                }
+                }*/
             }
 
             public static void DisconnectClient(int id, string _msg)

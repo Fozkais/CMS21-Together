@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21MP.SharedData
@@ -12,6 +13,9 @@ namespace CMS21MP.SharedData
         private List<byte> buffer;
         private byte[] readableBuffer;
         private int readPos;
+
+
+        private string content = "";
 
         /// <summary>Creates a new empty packet (without an ID).</summary>
         public Packet()
@@ -27,6 +31,7 @@ namespace CMS21MP.SharedData
             buffer = new List<byte>(); // Intitialize buffer
             readPos = 0; // Set readPos to 0
 
+            content += "PacketID:";
             Write(_id); // Write packet id to the buffer
         }
 
@@ -59,6 +64,7 @@ namespace CMS21MP.SharedData
         /// <param name="_value">The int to insert.</param>
         public void InsertInt(int _value)
         {
+            content +=  _value + ", ";
             buffer.InsertRange(0, BitConverter.GetBytes(_value)); // Insert the int at the start of the buffer
         }
 
@@ -96,6 +102,12 @@ namespace CMS21MP.SharedData
                 readPos -= 4; // "Unread" the last read int
             }
         }
+
+        public void ReadData()
+        {
+            MelonLogger.Msg("Data in packet : " + content);
+        }
+        
         #endregion
 
         #region Write Data
@@ -115,36 +127,42 @@ namespace CMS21MP.SharedData
         /// <param name="_value">The short to add.</param>
         public void Write(short _value)
         {
+            content += ", " + _value;
             buffer.AddRange(BitConverter.GetBytes(_value));
         }
         /// <summary>Adds an int to the packet.</summary>
         /// <param name="_value">The int to add.</param>
         public void Write(int _value)
         {
+            content += ", " + _value;
             buffer.AddRange(BitConverter.GetBytes(_value));
         }
         /// <summary>Adds a long to the packet.</summary>
         /// <param name="_value">The long to add.</param>
         public void Write(long _value)
         {
+            content += ", " + _value;
             buffer.AddRange(BitConverter.GetBytes(_value));
         }
         /// <summary>Adds a float to the packet.</summary>
         /// <param name="_value">The float to add.</param>
         public void Write(float _value)
         {
+            content += ", " + _value;
             buffer.AddRange(BitConverter.GetBytes(_value));
         }
         /// <summary>Adds a bool to the packet.</summary>
         /// <param name="_value">The bool to add.</param>
         public void Write(bool _value)
         {
+            content += ", " + _value;
             buffer.AddRange(BitConverter.GetBytes(_value));
         }
         /// <summary>Adds a string to the packet.</summary>
         /// <param name="_value">The string to add.</param>
         public void Write(string _value)
         {
+            content += ", " + _value;
             Write(_value.Length); // Add the length of the string to the packet
             buffer.AddRange(Encoding.ASCII.GetBytes(_value)); // Add the string itself
         }
@@ -152,6 +170,7 @@ namespace CMS21MP.SharedData
         /// <param name="_value">The Vector3 to add.</param>
         public void Write(Vector3 _value)
         {
+            content += ", " + _value;
             Write(_value.x);
             Write(_value.y);
             Write(_value.z);
@@ -160,6 +179,7 @@ namespace CMS21MP.SharedData
         /// <param name="_value">The Quaternion to add.</param>
         public void Write(Quaternion _value)
         {
+            content += ", " + _value;
             Write(_value.x);
             Write(_value.y);
             Write(_value.z);
@@ -168,6 +188,7 @@ namespace CMS21MP.SharedData
 
         public void Write<T>(T _value)
         {
+            content += ", " + _value;
             byte[] array = ObjectToByteArray(_value);
             Write(array.Length);
             Write(array);

@@ -87,7 +87,7 @@ namespace CMS21MP.ServerSide.Transport
                     }
                 }
             }
-            private bool HandleData(byte[] _data)
+            public bool HandleData(byte[] _data)
             {
                 int _packetLenght = 0;
                 

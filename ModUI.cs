@@ -311,7 +311,7 @@ namespace CMS21MP
             GUILayout.EndArea();
         }
 
-        public void DisplaySaves()
+        public async void DisplaySaves()
         {
              float scrollViewHeight = Mathf.Min(SaveSystem.ModSaves.Count * (buttonHeight + 20), maxScrollViewHeight);
 
@@ -346,10 +346,11 @@ namespace CMS21MP
                                     Server.Stop();
                                     Server.Start();
                                 }
+                                showLobbyInterface = true;
                             }
                             else
                             { 
-                                CallbackHandler.CreateLobby(0);
+                               await CallbackHandler.CreateLobby(0);
                             }
                             
 
@@ -526,7 +527,7 @@ namespace CMS21MP
             GUILayout.EndArea();
         }
 
-        public void JoinLobby()
+        public async void JoinLobby()
         {
              if (!string.IsNullOrEmpty(ModUI.Instance.username) && !string.IsNullOrEmpty(ModUI.Instance.ipAddress))
             {
@@ -536,7 +537,7 @@ namespace CMS21MP
                 }
                 else
                 {
-                    CallbackHandler.RefreshMultiplayerLobbies();
+                    await CallbackHandler.RefreshMultiplayerLobbies();
                     ShowLobbyInterface();
                 }
             }

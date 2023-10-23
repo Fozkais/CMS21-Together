@@ -43,8 +43,8 @@ namespace CMS21MP.ClientSide.Data
         
         public static void UpdateClientInfo()
         {
-           // Movement.SendMovement();
-            // Movement.SendRotation();
+            Movement.SendMovement();
+            Movement.SendRotation();
             
             Car.UpdateCars();
             ModInventory.UpdateInventory();

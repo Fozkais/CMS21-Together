@@ -15,6 +15,7 @@ namespace CMS21MP.ClientSide.Transport
 {
     public UdpClient socket;
     public IPEndPoint endPoint;
+    private Packet receivedData;
 
     public ClientUDP()
     {
@@ -23,19 +24,25 @@ namespace CMS21MP.ClientSide.Transport
 
     public void Connect(int localPort)
     {
-        socket = new UdpClient(localPort);
-        try
+        if (MainMod.isServer)
         {
-            socket.Connect(endPoint);
+            socket = new UdpClient();
+            MelonLogger.Msg("UDP endpoint to " + "127.0.0.1" + ":" + Client.Instance.port + " ...");
+            endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), Client.Instance.port);
         }
-        catch
-        {
+        else
+        { 
+            socket = new UdpClient();
+            MelonLogger.Msg("UDP endpoint to " + Client.Instance.ip + ":" + Client.Instance.port + " ...");
             endPoint = new IPEndPoint(IPAddress.Parse(Client.Instance.ip), Client.Instance.port);
-            socket.Connect(endPoint);
+            
         }
+        
+        socket.Connect(endPoint);
+        
         socket.BeginReceive(ReceiveCallback, null);
         
-        using (Packet packet = new Packet())
+        using (Packet packet = new Packet((int)PacketTypes.empty))
         {
             SendData(packet);
         }
@@ -53,9 +60,14 @@ namespace CMS21MP.ClientSide.Transport
     {
         try
         {
-            _packet.InsertInt(Client.Instance.Id);
+            //_packet.InsertInt(Client.Instance.Id);
             if (socket != null)
             {
+                _packet.InsertInt(Client.Instance.Id);
+                _packet.WriteLength();
+                _packet.ReadData();
+                //socket.Send(_packet.ToArray(), _packet.Length(), endPoint); 
+                
                 socket.BeginSend(_packet.ToArray(), _packet.Length(), null, null);
             }
         }
@@ -69,8 +81,8 @@ namespace CMS21MP.ClientSide.Transport
     {
         try
         {
-            byte[] _data = socket.EndReceive(_result, ref endPoint);
-            socket.BeginReceive(ReceiveCallback, null);
+            IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
+            byte[] _data = socket.EndReceive(_result, ref receivedIP);
 
             if (_data.Length < 4)
             {
@@ -80,6 +92,7 @@ namespace CMS21MP.ClientSide.Transport
             }
 
             HandleData(_data);
+            socket.BeginReceive(ReceiveCallback, null);
         }
         catch (SocketException ex)
         {
@@ -88,33 +101,50 @@ namespace CMS21MP.ClientSide.Transport
         }
     }
 
-    private void HandleData(byte[] _data)
+    private bool HandleData(byte[] _data)
     {
-        if(_data.Length < 4)
-            return;
-        
-        using (Packet _packet = new Packet(_data))
+        receivedData = new Packet();
+        int _packetLenght = 0;
+
+        receivedData.SetBytes(_data);
+        if (receivedData.UnreadLength() >= 4)
         {
-            int _packetLength = _packet.ReadInt();
-            _data = _packet.ReadBytes(_packetLength);
+            _packetLenght = receivedData.ReadInt();
+            if (_packetLenght <= 0)
+            {
+                return true;
+            }
         }
 
-        ThreadManager.ExecuteOnMainThread(() =>
+        while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
         {
-            using (Packet _packet = new Packet(_data))
+            byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
+            ThreadManager.ExecuteOnMainThread(() =>
             {
-                int _packetId = _packet.ReadInt();
-
-                if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
+                using (Packet _packet = new Packet(_packetBytes))
                 {
-                    handler(_packet);
+                    int _packetId = _packet.ReadInt();
+                    MelonLogger.Msg("Readed _packetId:" + _packetId);
+                    Client.PacketHandlers[_packetId](_packet);
                 }
-                else
+            });
+            _packetLenght = 0;
+            if (receivedData.UnreadLength() >= 4)
+            {
+                _packetLenght = receivedData.ReadInt();
+                if (_packetLenght <= 0)
                 {
-                    MelonLogger.Msg($"Packet with id {_packetId} not found in packetHandlers dictionary.");
+                    return true;
                 }
             }
-        });
+        }
+
+        if (_packetLenght <= 1)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private void Disconnect()

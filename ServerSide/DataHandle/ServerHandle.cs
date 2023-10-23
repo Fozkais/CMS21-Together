@@ -10,6 +10,9 @@ namespace CMS21MP.ServerSide.DataHandle
 
         #region Lobby and Connection
         
+            public static void Empty(int _fromclient, Packet _packet)
+            {
+            }
             public static void WelcomeReceived(int _fromClient, Packet _packet)
             {
                 int _clientIdCheck = _packet.ReadInt();
@@ -119,5 +122,6 @@ namespace CMS21MP.ServerSide.DataHandle
             }
 
         #endregion
+        
     }
 }

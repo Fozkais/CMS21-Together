@@ -18,8 +18,9 @@ namespace CMS21MP.SharedData
 
 public static class PreferencesManager
 {
-    private const string PreferencesFilePath = @"Mods\togetherMod\preferences.cms21mp";
-    private const string SaveFolderPath = @"Mods\togetherMod\saves";
+    private const string ModFolderPath = @"Mods\togetherMod\";
+    private const string PreferencesFilePath = ModFolderPath + "preferences.cms21mp";
+    private const string SaveFolderPath = ModFolderPath + "saves";
     private const string DefaultIPAdress = "127.0.0.1";
     private const string DefaultUsername = "player";
 
@@ -60,6 +61,11 @@ public static class PreferencesManager
         };
 
         string serializedPreferences = JsonConvert.SerializeObject(preferences);
+        if (!Directory.Exists(ModFolderPath))
+        {
+            Directory.CreateDirectory(ModFolderPath);
+        }
+        
         File.WriteAllText(PreferencesFilePath, serializedPreferences);
     }
 

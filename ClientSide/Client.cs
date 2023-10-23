@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Net;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ClientSide.Transport;
@@ -64,6 +65,7 @@ namespace CMS21MP.ClientSide
             {
                 isConnected = true;
                 tcp.Connect();
+                //udp.Connect(((IPEndPoint)tcp.socket.Client.LocalEndPoint).Port);
             }
             catch (Exception ex) // Capturer toutes les exceptions possibles
             {

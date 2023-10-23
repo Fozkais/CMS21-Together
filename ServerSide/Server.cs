@@ -78,7 +78,7 @@ namespace CMS21MP.ServerSide
             
             TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-            MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
+           // MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
 
             for (int i = 1; i <= MaxPlayers; i++)
             {
@@ -100,39 +100,32 @@ namespace CMS21MP.ServerSide
         private static void UDPReceiveCallback(IAsyncResult result)
         {
             if (_isStopping) return;
-
             try
-            {
-                try
                 {
-                    IPEndPoint clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
-                    byte[] _data = udpListener.EndReceive(result, ref clientEndPoint);
+                    IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
+                    byte[] _data = udpListener.EndReceive(result, ref receivedIP);
 
                     if (_data.Length < 4)
                         return;
 
                     using (Packet _packet = new Packet(_data))
                     {
+                        _packet.ReadInt(); // skip packet lenght read
                         int _clientId = _packet.ReadInt();
-
+                        MelonLogger.Msg("client_Id : " + _clientId);
                         if (_clientId == 0)
                             return;
-
-                        clients[_clientId].udp.HandleData(_packet);
+                        
+                        clients[_clientId].udp.HandleData(_data);
+                        MelonLogger.Msg("UDP packet handled.");
                     }
                 }
                 catch (Exception ex)
                 {
                     MelonLogger.Msg($"Error receiving UDP data: {ex}");
-                    throw;
                 }
                 udpListener.BeginReceive(UDPReceiveCallback, null);
             }
-            catch (Exception _ex)
-            {
-                MelonLogger.Msg($"Error receiving UDP data: {_ex}");
-            }
-        }
 
         public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet)
         {
@@ -158,6 +151,7 @@ namespace CMS21MP.ServerSide
 
             packetHandlers = new Dictionary<int, packetHandler>()
             {
+                {(int)PacketTypes.empty, ServerHandle.Empty},
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
                 {(int)PacketTypes.readyState, ServerHandle.ReadyState},
                 {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
