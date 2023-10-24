@@ -65,7 +65,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 _packet.Dispose();
             }
             
-            public static void SpawnPlayer(Packet _packet)
+            public static void SpawnPlayer(Packet _packet) // TODO: Check this to be broken (other than host dont have correct info on Player instance)
             {
                 /*if(!GameData.DataInitialzed)
                     MelonCoroutines.Start(GameData.InitializeGameData());*/
@@ -172,7 +172,7 @@ namespace CMS21MP.ClientSide.DataHandle
         private static IEnumerator StartFadeOut()
         {
             ScreenFader.Get().ShortFadeIn();
-            yield return new WaitForSeconds(8);
+            yield return new WaitForSeconds(6);
             ScreenFader.Get().ShortFadeOut();
         }
         
@@ -281,7 +281,7 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 if (ClientData.carOnScene[_loaderId].CarLifterState != _pos)
                 {
-                    GarageInteraction.needToTrigger = true;
+                    MelonCoroutines.Start(GarageInteraction.PauseUpdating());
                     ClientData.carLoaders[_loaderId].lifter.Action(_action);
                     ClientData.carOnScene[_loaderId].CarLifterState = _pos;
                 }
