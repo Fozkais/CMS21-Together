@@ -92,6 +92,7 @@ namespace CMS21MP.ClientSide
                 { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
                 { (int)PacketTypes.playerRotation, ClientHandle.playerRotation },
+                { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange },
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
                 { (int)PacketTypes.carPart, ClientHandle.CarPart},

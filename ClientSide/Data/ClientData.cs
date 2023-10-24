@@ -27,7 +27,7 @@ namespace CMS21MP.ClientSide.Data
 
         public static void Init()
         {
-            carLoaders = new[]
+            carLoaders = new[] // TODO: Reorganise order to match other scene loader organisation
             {
                 GameScript.Get().carOnScene[0],
                 GameScript.Get().carOnScene[3],
@@ -39,6 +39,8 @@ namespace CMS21MP.ClientSide.Data
             {
                 localInventory = GameScript.Get().GetComponent<Inventory>();
             }
+
+            MelonCoroutines.Start(GameData.InitializeGameData());
         }
         
         public static void UpdateClientInfo()
@@ -68,8 +70,8 @@ namespace CMS21MP.ClientSide.Data
                     playerObject.transform.name = player.username;
                     
                 }
-                if(!serverPlayerInstances.ContainsKey(player.id))
-                    serverPlayerInstances.Add(player.id, playerObject);
+                MelonLogger.Msg($"Instance set for player: {player.username}");
+                serverPlayerInstances[id] = playerObject;
             }
             else
             {
@@ -110,6 +112,8 @@ namespace CMS21MP.ClientSide.Data
                     model.transform.rotation = new Quaternion(0, 180, 0, 0);
                     
                     playerPrefab = model;
+                    
+                    DontDestroyOnLoad(playerPrefab);
                     
                     playerModel.Unload(false);
                     playerTexture.Unload(false);

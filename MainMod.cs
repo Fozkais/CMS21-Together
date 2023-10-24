@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.ServerSide;
@@ -7,6 +8,7 @@ using CMS21MP.SharedData;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Client = CMS21MP.ClientSide.Client;
 
 namespace CMS21MP
@@ -74,19 +76,38 @@ namespace CMS21MP
 
          #region MultiplayerState
 
-            if(sceneName == "Menu" && client.isConnected && !isServer)
+            if (client.isConnected || isServer)
             {
-               Client.Instance.Disconnect();
-               Application.runInBackground = false;
-            }
-            if(sceneName == "Menu" && isServer)
-            {
-               Server.Stop();
-               Application.runInBackground = false;
-            }
-            if(sceneName == "garage" || sceneName == "Junkyard" || sceneName == "Auto_salon")
-            {
-               ClientData.Init();
+               if(sceneName == "Menu" && client.isConnected && !isServer)
+               {
+                  Client.Instance.Disconnect();
+                  Application.runInBackground = false;
+               }
+               if(sceneName == "Menu" && isServer)
+               {
+                  Server.Stop();
+                  Application.runInBackground = false;
+               }
+               if(sceneName == "garage" /*|| sceneName == "Junkyard" || sceneName == "Auto_salon"  TODO: Re-enable when Init modified to adpat between scene*/ ) 
+               {
+                  ClientData.Init();
+               }
+
+               SceneChecker.UpdatePlayerScene(sceneName);
+               
+
+               if (SceneChecker.isInGarage())
+               {
+                  foreach (KeyValuePair<int, Player> player in ClientData.serverPlayers)
+                  {
+                     if (SceneChecker.isInGarage(player.Value))
+                     {
+                        MelonLogger.Msg($"Player: {player.Value.username} in garage, Spawning...");
+                        ClientData.SpawnPlayer(player.Value, player.Key);
+                     }
+                  }
+               }
+               
             }
             #endregion
       }

@@ -176,6 +176,15 @@ namespace CMS21MP.ClientSide.DataHandle
 
         #endregion
 
+        public static void SendSceneChange(string scene)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.playerSceneChange))
+            {
+                _packet.Write(scene);
+
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }

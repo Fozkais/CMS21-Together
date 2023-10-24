@@ -17,6 +17,7 @@ namespace CMS21MP.SharedData
 
             playerPosition,
             playerRotation,
+            playerSceneChange,
             
             carInfo,
             carPosition,
@@ -26,7 +27,7 @@ namespace CMS21MP.SharedData
             inventoryItem,
             inventoryGroupItem,
             
-            lifterPos
+            lifterPos,
             
         #endregion
         

@@ -190,8 +190,8 @@ namespace CMS21MP.ServerSide.DataHandle
                 while (SceneManager.GetActiveScene().name != "garage")
                     yield return  new WaitForEndOfFrame();
                 
-                if(!GameData.DataInitialzed)
-                    MelonCoroutines.Start(GameData.InitializeGameData());
+                /*if(!GameData.DataInitialzed)
+                    MelonCoroutines.Start(GameData.InitializeGameData());*/
                 
                 while (ClientData.carLoaders.Length <= 3)
                     yield return  new WaitForEndOfFrame();
@@ -214,7 +214,7 @@ namespace CMS21MP.ServerSide.DataHandle
         #endregion
 
 
-        #region Movement and Rotation
+        #region Player Info
             public static void SendPosition(int fromClient, Vector3Serializable position)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
@@ -235,6 +235,17 @@ namespace CMS21MP.ServerSide.DataHandle
                     _packet.Write(rotation);
 
                     SendUDPDataToAll(fromClient, _packet);
+                }
+            }
+            
+            public static void SendPlayerSceneChange(int fromClient, string scene)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.playerSceneChange))
+                {
+                    _packet.Write(scene);
+                    _packet.Write(fromClient);
+
+                    SendTCPDataToAll(fromClient, _packet);
                 }
             }
 
@@ -326,5 +337,6 @@ namespace CMS21MP.ServerSide.DataHandle
         
 
         #endregion
+        
     }
 }

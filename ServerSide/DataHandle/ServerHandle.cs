@@ -47,7 +47,7 @@ namespace CMS21MP.ServerSide.DataHandle
             
         #endregion
         
-        #region Movement and Rotation
+        #region Player Information
         
             public static void playerPosition(int _fromClient, Packet _packet)
             {
@@ -64,6 +64,13 @@ namespace CMS21MP.ServerSide.DataHandle
                 Server.clients[_fromClient].player.rotation = _rotation;
                 
                 ServerSend.SendRotation(_fromClient, _rotation);
+            }
+            
+            public static void playerSceneChange(int _fromClient, Packet _packet)
+            {
+                string scene = _packet.ReadString();
+                
+                ServerSend.SendPlayerSceneChange(_fromClient, scene);
             }
         
         #endregion

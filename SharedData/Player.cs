@@ -13,12 +13,15 @@ namespace CMS21MP.SharedData
         public Vector3Serializable position;
         public QuaternionSerializable rotation;
 
+        public string scene;
+
         public Player(int _id, string _username, Vector3 _spawnPosition)
         {
             id = _id;
             username = _username;
             position = new Vector3Serializable(_spawnPosition);
             rotation = new QuaternionSerializable(Quaternion.identity);
+            scene = "garage";
         }
     }
 

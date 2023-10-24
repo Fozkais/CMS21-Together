@@ -67,8 +67,8 @@ namespace CMS21MP.ClientSide.DataHandle
             
             public static void SpawnPlayer(Packet _packet)
             {
-                if(!GameData.DataInitialzed)
-                    MelonCoroutines.Start(GameData.InitializeGameData());
+                /*if(!GameData.DataInitialzed)
+                    MelonCoroutines.Start(GameData.InitializeGameData());*/
                 
                 Player _player = _packet.Read<Player>();
                 int _id = _packet.ReadInt();
@@ -84,7 +84,7 @@ namespace CMS21MP.ClientSide.DataHandle
             
         #endregion
 
-        #region Movement and Rotation
+        #region Player Infos
 
             public static void playerPosition(Packet _packet)
             {
@@ -99,6 +99,39 @@ namespace CMS21MP.ClientSide.DataHandle
                 int _id = _packet.ReadInt();
                 QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
                 Movement.UpdatePlayersRotation(_id, _rotation);
+                _packet.Dispose();
+            }
+            
+            public static void playerSceneChange(Packet _packet)
+            {
+                string scene = _packet.ReadString();
+                int id = _packet.ReadInt();
+                
+                MelonLogger.Msg("Received Scene Update :" + scene);
+
+                if (ClientData.serverPlayers.TryGetValue(id, out var player))
+                {
+                    player.scene = scene;
+                    if (player.scene != SceneManager.GetActiveScene().name)
+                    {
+                        MelonLogger.Msg($"Destroying {player.username} instance");
+                        Destroy(ClientData.serverPlayerInstances[id]);
+                    }
+                    else
+                    {
+                        if (ClientData.serverPlayerInstances.TryGetValue(id, out var instance))
+                        {
+                            if (instance == null)
+                            {
+                                MelonLogger.Msg($"Instance Null for {player.username} with id : {player.id} or {id} , spawning...");
+                                ClientData.SpawnPlayer(player, id);
+                            }
+                        }
+                    }
+                }
+                
+                
+                
                 _packet.Dispose();
             }
 
