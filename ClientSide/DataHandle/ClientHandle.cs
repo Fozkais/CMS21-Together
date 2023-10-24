@@ -143,10 +143,11 @@ namespace CMS21MP.ClientSide.DataHandle
         {
             ModCar car = _packet.Read<ModCar>();
             
-            
             MelonLogger.Msg($"Received car info from server. ID:{car.carID} Version:{car.carVersion} Pos:{car.carPosition}, Scene:{car.carScene}");
+            MelonLogger.Msg($"Received carLoaderId : {car.carLoaderID}");
             var carLoader = ClientData.carLoaders[car.carLoaderID];
-            if (ClientData.carOnScene.Any(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition))
+            
+            if (ClientData.carOnScene.Any(s => s.carLoaderID == car.carLoaderID && s.carID == car.carID))
             {
                 ClientData.carOnScene.Remove(ClientData.carOnScene.Find(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition));
                 carLoader.DeleteCar();
@@ -154,26 +155,27 @@ namespace CMS21MP.ClientSide.DataHandle
             }
             else
             {
+                MelonCoroutines.Start(StartFadeIn());
                 MelonLogger.Msg("Loading new car...");
                 ClientData.carOnScene.Add(car);
-                
                 carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
+                //carLoader.ConfigVersion = car.carVersion;
+                //carLoader.StartCoroutine(carLoader.LoadCar(car.carID));
                // carLoader.StartCoroutine(carLoader.gameObject.GetComponentInChildren<CarDebug>()
                 //    .RunLoadCar(car.carID, car.carVersion));
 
                 carLoader.placeNo = car.carPosition; // TODO: Change this to a better way
                 carLoader.PlaceAtPosition();
                 carLoader.ChangePosition(car.carPosition);
-                MelonCoroutines.Start(StartFadeOut());
             }
             _packet.Dispose();
         }
         
-        private static IEnumerator StartFadeOut()
+        private static IEnumerator StartFadeIn()
         {
-            ScreenFader.Get().ShortFadeIn();
-            yield return new WaitForSeconds(6);
-            ScreenFader.Get().ShortFadeOut();
+            ScreenFader.Get().NormalFadeIn();
+            yield return new WaitForSeconds(4.5f);
+            ScreenFader.Get().NormalFadeOut();
         }
         
         public static void CarPosition(Packet _packet)

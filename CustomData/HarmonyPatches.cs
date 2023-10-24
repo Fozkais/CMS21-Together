@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using CMS21MP.ClientSide.Data;
@@ -15,6 +16,10 @@ namespace CMS21MP.CustomData
     [HarmonyPatch]
     public class HarmonyPatches
     {
+
+        private static bool ListenToFade;
+        private static CarLoader LoaderToListen;
+        
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPostfix]
         public static void LoadCarPatch(string name, CarLoader __instance)
@@ -24,6 +29,9 @@ namespace CMS21MP.CustomData
 
         private static IEnumerator LoadCarCouroutine(CarLoader __instance, string name)
         {
+            LoaderToListen = __instance;
+            ListenToFade = true;
+            
             while(GameData.DataInitialzed == false)
                 yield return new WaitForSeconds(1);
             
@@ -91,9 +99,59 @@ namespace CMS21MP.CustomData
                     ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[4]));
                 }
             }
+            
+        }
+        
+
+        [HarmonyPatch(typeof(ScreenFader), "NormalFadeOut")]
+        [HarmonyPostfix]
+        public static void NormalFadeOutPatch()
+        {
+            MelonLogger.Msg("FadeOut Called!");
+            if (ListenToFade)
+            {
+                MelonCoroutines.Start(FadeOutPatch());
+            }
         }
 
-        [HarmonyPatch(typeof(CarLoader), "SetEngine")]
+        private static IEnumerator FadeOutPatch()
+        {
+            ListenToFade = false;
+            yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
+            
+            var loaderNumber = LoaderToListen.gameObject.name[10].ToString();
+            
+            MelonLogger.Msg("A car as been Loaded! : " + LoaderToListen.carToLoad + ", " + loaderNumber);
+
+            switch (loaderNumber)
+            {
+                case "1":
+                    ClientData.carOnScene[0].isCarLoaded = true;
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(0));
+                    break;
+                case "2":
+                    ClientData.carOnScene[1].isCarLoaded = true;
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(1));
+                    break;
+                case "3":
+                    ClientData.carOnScene[2].isCarLoaded = true;
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(2));
+                    break;
+                case "4":
+                    ClientData.carOnScene[3].isCarLoaded = true;
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(3));
+                    break;
+                case "5":
+                    ClientData.carOnScene[4].isCarLoaded = true;
+                    MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(4));
+                    break;
+            }
+
+            LoaderToListen = null;
+        }
+
+        /*[HarmonyPatch(typeof(CarLoader), "SetEngine")]
         [HarmonyPostfix]
         public static void SetEnginePatch(CarLoader __instance)
         {
@@ -102,7 +160,7 @@ namespace CMS21MP.CustomData
 
         public static IEnumerator WaitForEndOfSetEngine(CarLoader __instance) //TODO: Handle case where car is removed from scene
         {
-            while(GameData.DataInitialzed == false)
+            while(!GameData.DataInitialzed) // TODO: why ?
                 yield return new WaitForSeconds(1);
             
             yield return new WaitForSeconds(1);
@@ -143,7 +201,7 @@ namespace CMS21MP.CustomData
                     MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(4));
                     break;
             }
-        }
+        }*/
         
         
     }

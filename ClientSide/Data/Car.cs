@@ -71,6 +71,10 @@ namespace CMS21MP.ClientSide.Data
                     yield return getBodyPartCoroutine;
 
                     car.isReferenced = true;
+                    MelonLogger.Msg("Other part Reference Count :" + car.partInfo.OtherPartsReferences.Count);
+                    MelonLogger.Msg("Suspension part Reference Count :" + car.partInfo.SuspensionPartsReferences.Count);
+                    MelonLogger.Msg("Engine part Reference Count :" + car.partInfo.EnginePartsReferences.Count);
+                    MelonLogger.Msg("Body part Reference Count :" + car.partInfo.BodyPartsReferences.Count);
                     MelonLogger.Msg("Car is Referenced!");
                 }
                 else
@@ -445,20 +449,22 @@ namespace CMS21MP.ClientSide.Data
             {
                // MelonLogger.Msg("Update Part Begin");
                 var car = ClientData.carOnScene[_carLoaderID];
-
-                if (!car.isReady)
-                {
-                    while (!car.isReady && !ClientData.carLoaders[_carLoaderID].modelLoaded)
+                
+                    while (!car.isCarLoaded)
                     {
-                        yield return new WaitForEndOfFrame();
+                        yield return new WaitForSeconds(0.5f);
                     }
-                        
-                    yield return new WaitForSeconds(3); // Additional wait to be sure that the car is ready
-                }
+
+                    while (!car.isReady)
+                    {
+                        yield return new WaitForSeconds(0.5f);
+                    }
+
+                    yield return new WaitForEndOfFrame(); // Additional wait to be sure that the car is ready
                 
                 yield return new WaitForSeconds(0.25f); // Additional wait to be sure that the car is ready
                 
-                
+                MelonLogger.Msg("Passed Car Load Time.");
                 try
                 {
                     if (_carPart != null)
