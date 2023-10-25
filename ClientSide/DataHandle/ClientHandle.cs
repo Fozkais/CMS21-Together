@@ -312,9 +312,9 @@ namespace CMS21MP.ClientSide.DataHandle
             if (ClientData.carOnScene.Any(s => s.carLoaderID == _loaderId - 1))
             {
                 MelonLogger.Msg("Passed Lifter.");
-              //  MelonCoroutines.Start(GarageInteraction.PauseUpdating());
-              //  ClientData.carLoaders[_loaderId-1].lifter.Action(_action);
-              //  ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
+                MelonCoroutines.Start(GarageInteraction.PauseUpdating());
+                ClientData.carLoaders[_loaderId-1].lifter.Action(_action);
+                ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
             }
             
         }            
