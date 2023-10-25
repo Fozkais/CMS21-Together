@@ -22,7 +22,9 @@ namespace CMS21MP.SharedData
             carInfo,
             carPosition,
             carPart,
+            carParts,
             bodyPart,
+            bodyParts,
             
             inventoryItem,
             inventoryGroupItem,

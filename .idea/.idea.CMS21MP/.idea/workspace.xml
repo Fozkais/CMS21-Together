@@ -7,12 +7,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="B-2_0-CarSync-0_1&#10;- Move Car Update to a Buffer to wait car to be ready">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SharedData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/ModCar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SharedData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PacketTypes.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -258,7 +265,7 @@
       <workItem from="1698063345500" duration="11838000" />
       <workItem from="1698097010401" duration="15957000" />
       <workItem from="1698164367830" duration="1075000" />
-      <workItem from="1698227653783" duration="6587000" />
+      <workItem from="1698227653783" duration="17032000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -507,7 +514,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698161244945</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?">
+      <option name="closed" value="true" />
+      <created>1698236277048</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1698236277048</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -562,7 +577,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="-- Early Update 3 --&#10;- Game Updated to 1.0.27&#10;- Handle Player Movement and Rotation&#10;- Player has now a model that is rendered InGame&#10;- Properly handle other player disconnection&#10;- Reworked movement and rotation system (update when moved/rotated &gt; 0.5&#10;-- Bug Fix -- &#10;- AssetBundle can now be used&#10;- server slots status now work properly&#10;- Index error while connecting/disconnecting fixed&#10;-- Knowed Bug --&#10;- Changing MelonLoader to last stable (5.7) make game crash due to the mod" />
     <MESSAGE value="-- Git ignore Fix --" />
     <MESSAGE value="-- Git Ignore fix 2 --" />
     <MESSAGE value="-- Early Update 4 --&#10;- Code Refactoring and Reorganised&#10;- Handle Inventory (Adding item)&#10;- Improved ModGui Backend avoid possible error&#10;-- Knowed Bug --&#10;- Only Host can see other Players&#10;- Inventory won't sync on connection&#10;- Inventory item missing info : BaseUID&#10;- Changing MelonLoader to last stable (5.7) make game crash due to the mod" />
@@ -587,6 +601,8 @@
     <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
     <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
     <MESSAGE value="B-2_0-CarSync-0" />
+    <MESSAGE value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
+    <option name="LAST_COMMIT_MESSAGE" value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -107,6 +107,21 @@ namespace CMS21MP.ServerSide.DataHandle
             ServerSend.BodyPart(_fromClient, carLoaderID, carPart);
         }
         
+        public static void PartScripts(int _fromClient, Packet _packet)
+        {
+            List<ModPartScript> carParts = _packet.Read< List<ModPartScript>>();
+            int carLoaderID = _packet.ReadInt();
+            
+            ServerSend.PartScripts(_fromClient, carParts, carLoaderID);
+        }
+        public static void BodyParts(int _fromClient, Packet _packet)
+        {
+            List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
+            int carLoaderID = _packet.ReadInt();
+            
+            ServerSend.BodyParts(_fromClient, carParts, carLoaderID);
+        }
+        
 
         #endregion
 

@@ -168,6 +168,8 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},
                 {(int)PacketTypes.bodyPart, ServerHandle.BodyPart},
+                {(int)PacketTypes.carParts, ServerHandle.PartScripts},
+                {(int)PacketTypes.bodyParts, ServerHandle.BodyParts},
                 {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
                 {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
                 {(int)PacketTypes.lifterPos, ServerHandle.LifterPos}

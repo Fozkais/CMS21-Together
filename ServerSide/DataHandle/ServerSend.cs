@@ -292,6 +292,30 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
             }
             
+            public static void PartScripts(int _fromClient, List<ModPartScript> tempCarScripts, int carCarLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carParts))
+                {
+                    MelonLogger.Msg($"Sending: {tempCarScripts.Count} parts");
+                    _packet.Write(tempCarScripts);
+                    _packet.Write(carCarLoaderID);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+
+            public static void BodyParts(int _fromClient, List<ModCarPart> tempCarParts, int carCarLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.bodyParts))
+                {
+                    MelonLogger.Msg($"Sending: {tempCarParts.Count} bodyParts");
+                    _packet.Write(tempCarParts);
+                    _packet.Write(carCarLoaderID);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            
 
         #endregion
 

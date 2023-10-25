@@ -97,6 +97,8 @@ namespace CMS21MP.ClientSide
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
                 { (int)PacketTypes.carPart, ClientHandle.CarPart},
                 { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
+                { (int)PacketTypes.carParts, ClientHandle.PartScripts},
+                { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
                 { (int)PacketTypes.inventoryItem, ClientHandle.InventoryItem},
                 { (int)PacketTypes.inventoryGroupItem, ClientHandle.InventoryGroupItem},
                 { (int)PacketTypes.lifterPos, ClientHandle.LifterPos }

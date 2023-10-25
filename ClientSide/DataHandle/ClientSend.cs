@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
@@ -119,6 +120,30 @@ namespace CMS21MP.ClientSide.DataHandle
                     SendTCPData(_packet);
                 }
             }
+            
+            public static void SendPartScripts(List<ModPartScript> tempCarScripts, int carCarLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carParts))
+                {
+                    MelonLogger.Msg($"Sending: {tempCarScripts.Count} parts");
+                    _packet.Write(tempCarScripts);
+                    _packet.Write(carCarLoaderID);
+
+                    SendTCPData(_packet);
+                }
+            }
+
+            public static void SendBodyParts(List<ModCarPart> tempCarParts, int carCarLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.bodyParts))
+                {
+                    MelonLogger.Msg($"Sending: {tempCarParts.Count} bodyParts");
+                    _packet.Write(tempCarParts);
+                    _packet.Write(carCarLoaderID);
+
+                    SendTCPData(_packet);
+                }
+            }
 
             public static void SendBodyPart(int _carLoaderID, ModCarPart _partConverted)
             {
@@ -185,6 +210,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 SendTCPData(_packet);
             }
         }
+        
     }
     
 }

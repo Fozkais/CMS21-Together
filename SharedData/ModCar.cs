@@ -23,8 +23,12 @@ namespace CMS21MP.SharedData
         public bool isCarLoaded;
         public bool isReferenced;
         public bool isReady;
+        public bool isUpdated;
 
         public bool isFromServer;
+        
+        public List<ModCarPart> tempCarParts = new List<ModCarPart>();
+        public List<ModPartScript> tempCarScripts = new List<ModPartScript>();
         
         public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
         {
@@ -51,6 +55,7 @@ namespace CMS21MP.SharedData
             this.isCarLoaded = false;
             this.isReady = false;
             this.isReferenced = false;
+            this.isUpdated = false;
         }
     }
 

@@ -105,7 +105,10 @@ namespace CMS21MP.ClientSide.Transport
                     using (Packet _packet = new Packet(_packetBytes))
                     {
                         int _packetId = _packet.ReadInt();
-                       Client.PacketHandlers[_packetId](_packet);
+                        if(Client.PacketHandlers.ContainsKey(_packetId))
+                            Client.PacketHandlers[_packetId](_packet);
+                        else
+                            MelonLogger.Msg($"Invalid packetId: {_packetId} ");
                     }
                 });
                 _packetLenght = 0;
