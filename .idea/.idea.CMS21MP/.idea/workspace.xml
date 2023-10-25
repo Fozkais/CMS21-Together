@@ -8,18 +8,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/ModCar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PacketTypes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +254,7 @@
       <workItem from="1698063345500" duration="11838000" />
       <workItem from="1698097010401" duration="15957000" />
       <workItem from="1698164367830" duration="1075000" />
-      <workItem from="1698227653783" duration="17032000" />
+      <workItem from="1698227653783" duration="17383000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -522,7 +511,23 @@
       <option name="project" value="LOCAL" />
       <updated>1698236277048</updated>
     </task>
-    <option name="localTasksCounter" value="36" />
+    <task id="LOCAL-00036" summary="B-2_0-CarSync_1">
+      <option name="closed" value="true" />
+      <created>1698271059126</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1698271059126</updated>
+    </task>
+    <task id="LOCAL-00037" summary="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn">
+      <option name="closed" value="true" />
+      <created>1698271277915</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1698271277915</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -577,8 +582,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="-- Git ignore Fix --" />
-    <MESSAGE value="-- Git Ignore fix 2 --" />
     <MESSAGE value="-- Early Update 4 --&#10;- Code Refactoring and Reorganised&#10;- Handle Inventory (Adding item)&#10;- Improved ModGui Backend avoid possible error&#10;-- Knowed Bug --&#10;- Only Host can see other Players&#10;- Inventory won't sync on connection&#10;- Inventory item missing info : BaseUID&#10;- Changing MelonLoader to last stable (5.7) make game crash due to the mod" />
     <MESSAGE value="-- Early Update 5 --&#10;- Totaly new Inventory Management ( Testing) adding item with UID work&#10;-- Bug Fix --&#10;- All player can see others&#10;- Added UID to item Management&#10;- Reverted to ML6.0 for compatibility issue" />
     <MESSAGE value="-- Early Update 6 --&#10;- Finally fully Handle inventory &#10;(Adding / Removing Item)&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)" />
@@ -602,7 +605,9 @@
     <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
     <MESSAGE value="B-2_0-CarSync-0" />
     <MESSAGE value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
-    <option name="LAST_COMMIT_MESSAGE" value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
+    <MESSAGE value="B-2_0-CarSync_1" />
+    <MESSAGE value="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn" />
+    <option name="LAST_COMMIT_MESSAGE" value="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
