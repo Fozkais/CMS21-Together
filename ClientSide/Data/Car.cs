@@ -29,9 +29,50 @@ namespace CMS21MP.ClientSide.Data
         {
             partUpdateHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
-            foreach (ModCar car in ClientData.carOnScene)
+            try
             {
-                MelonCoroutines.Start(UpdatePartsCoroutine(car));
+                foreach (ModCar car in ClientData.carOnScene)
+                {
+                    MelonCoroutines.Start(UpdatePartsCoroutine(car));
+                    
+                   // MelonLogger.Msg("Buffering through car :" + car.carLoaderID);
+                    if (car.partInfo.CarPartsBuffer.Count > 0)
+                    {
+                        MelonLogger.Msg("Founded Bodypart in buffer!");
+                        if (car.isReady && car.isReferenced)
+                        {
+                            MelonLogger.Msg("Car Ready! Updating..");
+                            for (var index = 0; index < car.partInfo.CarPartsBuffer.Count; index++)
+                            {
+                                var part = car.partInfo.CarPartsBuffer[index];
+                                HandleNewPart(car.carLoaderID, null, part);
+                                car.partInfo.CarPartsBuffer.Remove(part);
+                            }
+                        }
+                    }
+                    if (car.partInfo.PartScriptsBuffer.Count > 0)
+                    {
+                        MelonLogger.Msg("Founded PartScript in buffer!: " + car.partInfo.PartScriptsBuffer.Count);
+                        if (car.isReady && car.isReferenced)
+                        {
+                            MelonLogger.Msg("Car Ready! Updating..");
+                            for (var index = 0; index < car.partInfo.PartScriptsBuffer.Count; index++)
+                            {
+                                var part = car.partInfo.PartScriptsBuffer[index];
+                                HandleNewPart(car.carLoaderID, part, null);
+                                car.partInfo.PartScriptsBuffer.Remove(part);
+                            }
+                        }
+                        else
+                        {
+                            MelonLogger.Msg("Car is not ready...");
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Msg($"Error while updating Buffer: {e}");
             }
             yield return new WaitForSeconds(0.25f);
             partUpdateHandleRunning = false;
@@ -445,26 +486,11 @@ namespace CMS21MP.ClientSide.Data
         #endregion
         
         #region PartUpdate
-            public static IEnumerator HandleNewPart(int _carLoaderID, ModPartScript _carPart=null, ModCarPart _bodyPart=null)
+        
+        
+            public static void HandleNewPart(int _carLoaderID, ModPartScript _carPart=null, ModCarPart _bodyPart=null)
             {
-               // MelonLogger.Msg("Update Part Begin");
-                var car = ClientData.carOnScene[_carLoaderID];
-                
-                    while (!car.isCarLoaded)
-                    {
-                        yield return new WaitForSeconds(0.5f);
-                    }
-
-                    while (!car.isReady)
-                    {
-                        yield return new WaitForSeconds(0.5f);
-                    }
-
-                    yield return new WaitForEndOfFrame(); // Additional wait to be sure that the car is ready
-                
-                yield return new WaitForSeconds(0.25f); // Additional wait to be sure that the car is ready
-                
-                MelonLogger.Msg("Passed Car Load Time.");
+                MelonLogger.Msg("Update Part Begin");
                 try
                 {
                     if (_carPart != null)
@@ -472,26 +498,79 @@ namespace CMS21MP.ClientSide.Data
                         switch (_carPart.type)
                         {
                             case partType.other:
-                                UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.OtherPartsReferences[_carPart.partID][
-                                _carPart.partIdNumber], _carPart, _carLoaderID);
-                                MelonLogger.Msg("Other part added");
+                                if (ClientData.carOnScene[_carLoaderID].partInfo.OtherPartsReferences
+                                    .TryGetValue(_carPart.partID, out List<PartScript> otherParts))
+                                {
+                                    if (otherParts.Count <= _carPart.partIdNumber)
+                                    {
+                                        UpdatePart(otherParts[_carPart.partIdNumber], _carPart, _carLoaderID);
+                                        MelonLogger.Msg("Other part added");
+                                    }
+                                    else
+                                    {
+                                        MelonLogger.Msg("Cant update other part 2");
+                                    }
+                                }
+                                else
+                                {
+                                    MelonLogger.Msg("Cant update other part 1");
+                                }
                                 break;
                             case partType.engine:
-                                UpdatePart(ClientData.carOnScene[_carLoaderID].partInfo.EnginePartsReferences[_carPart.partID],
-                                    _carPart, _carLoaderID);
-                                MelonLogger.Msg("Engine part added");
+                                if (ClientData.carOnScene[_carLoaderID].partInfo.EnginePartsReferences
+                                    .TryGetValue(_carPart.partID, out PartScript enginePart))
+                                {
+                                    UpdatePart(enginePart, _carPart, _carLoaderID);
+                                    MelonLogger.Msg("Engine part added");
+                                }
+                                else
+                                {
+                                    MelonLogger.Msg("Cant update engine part");
+                                }
                                 break;
                             case partType.suspension:
-                                UpdatePart(
-                                    ClientData.carOnScene[_carLoaderID].partInfo.SuspensionPartsReferences[_carPart.partID][
-                                        _carPart.partIdNumber], _carPart, _carLoaderID);
-                                MelonLogger.Msg("Suspension part added");
+                                if (ClientData.carOnScene[_carLoaderID].partInfo.SuspensionPartsReferences
+                                    .TryGetValue(_carPart.partID, out List<PartScript> suspensionParts))
+                                {
+                                    if (suspensionParts.Count >= _carPart.partIdNumber)
+                                    {
+                                        UpdatePart(suspensionParts[_carPart.partIdNumber], _carPart, _carLoaderID);
+                                        MelonLogger.Msg("Suspension part added");
+                                    }
+                                    else
+                                    {
+                                        MelonLogger.Msg("Cant update suspension part 2");
+                                    }
+                                    
+                                }
+                                else
+                                {
+                                    MelonLogger.Msg("Cant update suspension part 1");
+                                }
                                 break;
                         }
                     }
-                    if(_bodyPart != null)
-                        UpdateBodyPart(ClientData.carOnScene[_carLoaderID].partInfo.BodyPartsReferences[_bodyPart.carPartID], _bodyPart, _carLoaderID);
-                    
+                    else
+                    {
+                        MelonLogger.Msg("Invalid partScript");
+                    }
+
+                    if (_bodyPart != null)
+                    {
+                        if (ClientData.carOnScene[_carLoaderID].partInfo.BodyPartsReferences
+                            .TryGetValue(_bodyPart.carPartID, out CarPart carPart))
+                        {
+                            UpdateBodyPart(carPart, _bodyPart, _carLoaderID);
+                        }
+                        else
+                        {
+                            MelonLogger.Msg("Cant update bodypart");
+                        }
+                    }
+                    else
+                    {
+                        MelonLogger.Msg("Invalid carPart");
+                    }
                     
                 }
                 catch (Exception e)

@@ -24,7 +24,7 @@ namespace CMS21MP.ClientSide.Data
                     {
                         if (ClientData.serverPlayerInstances.ContainsKey(id))
                             ClientData.serverPlayerInstances[id].transform.rotation =
-                                Quaternion.Slerp(ClientData.serverPlayerInstances[id].transform.rotation,
+                                Quaternion.Lerp(ClientData.serverPlayerInstances[id].transform.rotation,
                                     _rotation.toQuaternion(), 0.15f);
                     }
                 }
@@ -42,7 +42,7 @@ namespace CMS21MP.ClientSide.Data
                     {
                         Vector3 pos = new Vector3(_position.x, _position.y - 0.75f, _position.z);
                         ClientData.serverPlayerInstances[id].transform.position = 
-                            Vector3.Slerp(ClientData.serverPlayerInstances[id].transform.position, pos, 0.15f);
+                            Vector3.Lerp(ClientData.serverPlayerInstances[id].transform.position, pos, 0.15f);
                     }
                 }
             }

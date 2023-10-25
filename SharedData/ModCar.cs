@@ -60,12 +60,17 @@ namespace CMS21MP.SharedData
         public Dictionary<int, List<ModPartScript>> OtherParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, List<ModPartScript>> SuspensionParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, ModPartScript> EngineParts = new Dictionary<int, ModPartScript>();
-        public Dictionary<int, ModCarPart> BodyParts = new Dictionary<int, ModCarPart>(); 
+        public Dictionary<int, ModCarPart> BodyParts = new Dictionary<int, ModCarPart>();
+
+        public List<ModPartScript> PartScriptsBuffer = new List<ModPartScript>();
+        public List<ModCarPart> CarPartsBuffer = new List<ModCarPart>();
         
         public Dictionary<int, List<PartScript>> OtherPartsReferences = new Dictionary<int, List<PartScript>>();
         public Dictionary<int, List<PartScript>> SuspensionPartsReferences  = new Dictionary<int, List<PartScript>>();
         public Dictionary<int, PartScript> EnginePartsReferences  = new Dictionary<int, PartScript>();
         public Dictionary<int, CarPart> BodyPartsReferences  = new Dictionary<int, CarPart>();
+        
+        
         
         
     }

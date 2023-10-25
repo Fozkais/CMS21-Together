@@ -155,9 +155,10 @@ namespace CMS21MP.ClientSide.DataHandle
             }
             else
             {
-                MelonCoroutines.Start(StartFadeIn());
-                MelonLogger.Msg("Loading new car...");
                 ClientData.carOnScene.Add(car);
+                MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.Find(s =>
+                    s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition)));
+                MelonLogger.Msg("Loading new car...");
                 carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
                 //carLoader.ConfigVersion = car.carVersion;
                 //carLoader.StartCoroutine(carLoader.LoadCar(car.carID));
@@ -171,10 +172,13 @@ namespace CMS21MP.ClientSide.DataHandle
             _packet.Dispose();
         }
         
-        private static IEnumerator StartFadeIn()
+        private static IEnumerator StartFadeIn(ModCar car)
         {
             ScreenFader.Get().NormalFadeIn();
-            yield return new WaitForSeconds(4.5f);
+            while (!car.isReady && !car.isReferenced)
+            {
+                yield return new WaitForSeconds(0.5f);
+            }
             ScreenFader.Get().NormalFadeOut();
         }
         
@@ -193,11 +197,14 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             ModPartScript carPart = _packet.Read<ModPartScript>();
 
-            //MelonLogger.Msg("Received part for car with id : " + carLoaderID);
+            MelonLogger.Msg("Received new PartScript");
             if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
             {
-                
-                MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
+                MelonLogger.Msg("Added PartScript to Buffer");
+                var car = ClientData.carOnScene.First(s => s.carLoaderID == carLoaderID);
+                car.partInfo.PartScriptsBuffer.Add(carPart);
+                MelonLogger.Msg($"Count: {car.partInfo.PartScriptsBuffer.Count}!");
+               // MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
             }
             _packet.Dispose();
         }
@@ -207,9 +214,14 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             ModCarPart carPart = _packet.Read<ModCarPart>();
 
+            MelonLogger.Msg("Received new BodyPart");
             if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
             {
-                MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, null, carPart));
+                MelonLogger.Msg("Added BodyPart to Buffer");
+                var car = ClientData.carOnScene.First(s => s.carLoaderID == carLoaderID);
+                car.partInfo.CarPartsBuffer.Add(carPart);
+                MelonLogger.Msg($"Count: {car.partInfo.CarPartsBuffer.Count}!");
+                //MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, null, carPart));
             }
             _packet.Dispose();
         }
