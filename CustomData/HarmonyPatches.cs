@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,16 +25,29 @@ namespace CMS21MP.CustomData
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPostfix]
         public static void LoadCarPatch(string name, CarLoader __instance)
-        {
+        { 
+            
             MelonCoroutines.Start(LoadCarCouroutine(__instance, name));
+        }
+        
+            
+        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
+        [HarmonyPostfix]
+        public static void LoadCarFromFilePatch(NewCarData carDataCheck, CarLoader __instance)
+        {
+            
+            MelonCoroutines.Start(LoadCarCouroutine(__instance, carDataCheck.carToLoad));
         }
 
         private static IEnumerator LoadCarCouroutine(CarLoader __instance, string name)
         {
+            if (String.IsNullOrEmpty(name)) 
+                yield break;
+            
             LoaderToListen = __instance;
             ListenToFade = true;
             
-            while(GameData.DataInitialzed == false)
+            while(GameData.DataInitialzed == false) // DO NOT REMOVE!
                 yield return new WaitForSeconds(1);
             
             yield return new WaitForEndOfFrame();
@@ -52,7 +67,7 @@ namespace CMS21MP.CustomData
                 {
                     MelonLogger.Msg("Pass 1");
                     ClientData.carOnScene.Add(newCar0);
-                    ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[0]));
+                    ClientSend.SendCarInfo(new ModCar(newCar0));
                 }
             }
             else if (loaderNumber == "2")
@@ -63,7 +78,8 @@ namespace CMS21MP.CustomData
                 {
                     MelonLogger.Msg("Pass 2");
                     ClientData.carOnScene.Add(newCar1);
-                    ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[1]));
+                    ClientSend.SendCarInfo(new ModCar(newCar1));
+                    
                 }
             }
             else if (loaderNumber == "3")
@@ -74,7 +90,7 @@ namespace CMS21MP.CustomData
                 {
                     MelonLogger.Msg("Pass 3");
                     ClientData.carOnScene.Add(newCar2);
-                    ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[2]));
+                    ClientSend.SendCarInfo(new ModCar(newCar2));
                 }
             }
             else if (loaderNumber == "4")
@@ -85,7 +101,7 @@ namespace CMS21MP.CustomData
                 {
                     MelonLogger.Msg("Pass 4");
                     ClientData.carOnScene.Add(newCar3);
-                    ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[3]));
+                    ClientSend.SendCarInfo(new ModCar(newCar3));
                 }
             }
             else if (loaderNumber == "5")
@@ -96,7 +112,7 @@ namespace CMS21MP.CustomData
                 {
                     MelonLogger.Msg("Pass 5");
                     ClientData.carOnScene.Add(newCar4);
-                    ClientSend.SendCarInfo(new ModCar(ClientData.carOnScene[4]));
+                    ClientSend.SendCarInfo(new ModCar(newCar4));
                 }
             }
 
@@ -118,20 +134,40 @@ namespace CMS21MP.CustomData
         [HarmonyPostfix]
         public static void SetEnginePatch(CarLoader __instance)
         {
-            MelonCoroutines.Start(HandleLoadedCar());
+            MelonCoroutines.Start(HandleLoadedCar(__instance));
         }
 
-        private static IEnumerator HandleLoadedCar()
+        private static IEnumerator HandleLoadedCar(CarLoader _loader=null)
         {
+            
             ListenToFade = false;
+            
+            while(GameData.DataInitialzed == false) // DO NOT REMOVE!
+                yield return new WaitForSeconds(1.1f);
+            
+            
             yield return new WaitForSeconds(1);
             yield return new WaitForEndOfFrame();
-            
-            var loaderNumber = LoaderToListen.gameObject.name[10].ToString();
-            
-            MelonLogger.Msg("A car as been Loaded! : " + LoaderToListen.carToLoad + ", " + loaderNumber);
+            string loaderNumber;
+            int validIndex;
 
-            switch (loaderNumber)
+            if (_loader == null)
+            {
+                loaderNumber = LoaderToListen.gameObject.name[10].ToString();
+                validIndex = ClientData.carOnScene.FindIndex(s => s.carID == LoaderToListen.carToLoad && s.carVersion == LoaderToListen.ConfigVersion); 
+                MelonLogger.Msg("A car as been Loaded! : " + LoaderToListen.carToLoad + ", " + loaderNumber);
+            }
+            else
+            {
+                loaderNumber = _loader.gameObject.name[10].ToString();
+                validIndex = ClientData.carOnScene.FindIndex(s => s.carID == _loader.carToLoad && s.carVersion == _loader.ConfigVersion); 
+                MelonLogger.Msg("A car as been Loaded ! : " + _loader.carToLoad + ", " + loaderNumber);
+            }
+            
+            ClientData.carOnScene[validIndex].isCarLoaded = true;
+            MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(0));
+            
+            /*switch (loaderNumber)
             {
                 case "1":
                     ClientData.carOnScene[0].isCarLoaded = true;
@@ -153,7 +189,7 @@ namespace CMS21MP.CustomData
                     ClientData.carOnScene[4].isCarLoaded = true;
                     MelonCoroutines.Start(Car.GetPartsReferencesCoroutine(4));
                     break;
-            }
+            }*/
 
             LoaderToListen = null;
         }

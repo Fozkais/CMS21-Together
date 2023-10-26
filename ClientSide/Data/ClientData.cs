@@ -70,7 +70,7 @@ namespace CMS21MP.ClientSide.Data
                     playerObject.transform.name = player.username;
                     
                 }
-                MelonLogger.Msg($"Instance set for player: {player.username}");
+                MelonLogger.Msg($"{player.username} is In-game");
                 serverPlayerInstances[id] = playerObject;
             }
             else
