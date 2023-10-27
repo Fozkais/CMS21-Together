@@ -39,7 +39,7 @@ namespace CMS21MP.ClientSide.Data
         
          public static void AddItem()
         {
-            var localInventory = ClientData.localInventory.items;
+            var localInventory = GameData.localInventory.items;
             for (int i = 0; i < localInventory.Count; i++)
             {
                 var item = localInventory._items[i];
@@ -62,7 +62,7 @@ namespace CMS21MP.ClientSide.Data
         }
         public static void AddItemGroupNew()
         {
-            var localInventory = ClientData.localInventory.groups;
+            var localInventory = GameData.localInventory.groups;
             for (int i = 0; i < localInventory.Count; i++)
             {
                 var item = localInventory._items[i];
@@ -85,7 +85,7 @@ namespace CMS21MP.ClientSide.Data
         
         public static void RemoveItem()
         {
-            var localInventory = ClientData.localInventory?.items;
+            var localInventory = GameData.localInventory?.items;
             List<Item> items = new List<Item>();
             foreach (var _item in localInventory)
             {
@@ -94,11 +94,6 @@ namespace CMS21MP.ClientSide.Data
             for (int i = 0; i < handledItem.Count; i++)
             {
                 var item = handledItem[i];
-                if(localInventory == null) 
-                {
-                    ClientData.localInventory = GameScript.Get().GetComponent<Inventory>();
-                    return; 
-                }
                 
                 if (localInventory._items.Count == 0)
                 {
@@ -118,7 +113,7 @@ namespace CMS21MP.ClientSide.Data
         }
         public static void RemoveGroupItem()
         {
-            var localInventory = ClientData.localInventory?.groups;
+            var localInventory = GameData.localInventory?.groups;
             List<GroupItem> items = new List<GroupItem>();
             foreach (var _item in localInventory)
             {
@@ -128,11 +123,7 @@ namespace CMS21MP.ClientSide.Data
             for (int i = 0; i < handledGroupItem.Count; i++)
             {
                 var item = handledGroupItem[i];
-                if(localInventory == null) 
-                {
-                    ClientData.localInventory = GameScript.Get().GetComponent<Inventory>();
-                    return; 
-                }
+
                 if (localInventory.Count == 0)
                 {
                     MelonLogger.Msg("Local Inventory is empty");

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CMS21MP.ClientSide.DataHandle;
+using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using HarmonyLib;
 using Il2Cpp;
@@ -39,6 +40,20 @@ namespace CMS21MP.ClientSide.Data
                 yield return new WaitForSeconds(0.25f);
                 needToTrigger = true;
             }
+        #endregion
+        
+        #region TireChanger
+        
+            
+        [HarmonyPatch(typeof(TireChangerLogic), "SetGroupOnTireChanger")]
+        [HarmonyPostfix]
+        public static void TireChangerFix(GroupItem groupItem, bool instant, bool connect, TireChangerLogic __instance)
+        {
+            if (groupItem == null) return;
+            MelonLogger.Msg($"Tire Changer Triggered! : {instant} , {connect}");
+            ClientSend.SendTireChange(new ModGroupItem(groupItem), instant,connect);
+        }
+        
         #endregion
 
     }

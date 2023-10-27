@@ -156,6 +156,15 @@ namespace CMS21MP.ServerSide.DataHandle
             MelonLogger.Msg("Received Lifter: " + _Loaderid + " action : " + action + " pos: " +  pos);
             ServerSend.SendLifterPos(_fromClient, action, pos, _Loaderid);
         }
+        
+        public static void TireChanger(int _fromClient, Packet _packet)
+        {
+            ModGroupItem item = _packet.Read<ModGroupItem>();
+            bool instant = _packet.ReadBool();
+            bool connect = _packet.ReadBool();
+
+            ServerSend.SendTireChange(_fromClient, item, instant, connect);
+        }
 
         #endregion
         

@@ -30,6 +30,7 @@ namespace CMS21MP.SharedData
             inventoryGroupItem,
             
             lifterPos,
+            tireChanger
             
         #endregion
         

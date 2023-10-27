@@ -15,11 +15,9 @@ namespace CMS21MP.ClientSide.Data
         public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
         
         public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
-        public static CarLoader[] carLoaders;
 
         public static List<Item> playerInventory = new List<Item>();
         public static List<GroupItem> playerGroupInventory = new List<GroupItem>();
-        public static Inventory localInventory;
 
         public static int playerMoney;
         public static int playerScrap;
@@ -27,19 +25,6 @@ namespace CMS21MP.ClientSide.Data
 
         public static void Init()
         {
-            carLoaders = new[] // TODO: Reorganise order to match other scene loader organisation
-            {
-                GameScript.Get().carOnScene[0],
-                GameScript.Get().carOnScene[3],
-                GameScript.Get().carOnScene[4],
-                GameScript.Get().carOnScene[1],
-                GameScript.Get().carOnScene[2]
-            };
-            if (SceneChecker.isInGarage())
-            {
-                localInventory = GameScript.Get().GetComponent<Inventory>();
-            }
-
             MelonCoroutines.Start(GameData.InitializeGameData());
         }
         

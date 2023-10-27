@@ -141,7 +141,7 @@ namespace CMS21MP.ClientSide.Data
 
               //  MelonLogger.Msg("Car Parts Loaded!");
                 
-                var bodyParts = ClientData.carLoaders[_car.carLoaderID].carParts;
+                var bodyParts = GameData.carLoaders[_car.carLoaderID].carParts;
                 
                 for (int i = 0; i <bodyParts.Count; i++)
                 {
@@ -156,12 +156,12 @@ namespace CMS21MP.ClientSide.Data
             {
                 List<GameObject> suspensions = new List<GameObject>();
                 
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontCenter_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontLeft_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_frontRight_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearCenter_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearLeft_h);
-                suspensions.Add(ClientData.carLoaders[_car.carLoaderID].s_rearRight_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_frontCenter_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_frontLeft_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_frontRight_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_rearCenter_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_rearLeft_h);
+                suspensions.Add(GameData.carLoaders[_car.carLoaderID].s_rearRight_h);
 
                 var suspensionReferencePoint = _car.partInfo.SuspensionPartsReferences;
                 
@@ -199,7 +199,7 @@ namespace CMS21MP.ClientSide.Data
 
               //  MelonLogger.Msg("Engine is loaded!");
                 
-                var engine = ClientData.carLoaders[_car.carLoaderID].e_engine_h;
+                var engine = GameData.carLoaders[_car.carLoaderID].e_engine_h;
                 var partsInEngine = engine.GetComponentsInChildren<PartScript>().ToList(); // Object reference not set to an instance of an object
 
                 var engineReferencePoint = _car.partInfo.EnginePartsReferences;
@@ -218,12 +218,12 @@ namespace CMS21MP.ClientSide.Data
             {
                 yield return new WaitForEndOfFrame();
                 
-                var otherPartsObjects = ClientData.carLoaders[_car.carLoaderID].Parts;
+                var otherPartsObjects = GameData.carLoaders[_car.carLoaderID].Parts;
                 var otherPartsReferencePoint = _car.partInfo.OtherPartsReferences;
 
                 for (int i = 0; i < otherPartsObjects.Count; i++)
                 {
-                    var partObject = ClientData.carLoaders[_car.carLoaderID].Parts._items[i].p_handle;
+                    var partObject = GameData.carLoaders[_car.carLoaderID].Parts._items[i].p_handle;
                     var _parts = partObject.GetComponentsInChildren<PartScript>().ToList();
 
                     for (int j = 0; j < _parts.Count; j++)
@@ -482,10 +482,10 @@ namespace CMS21MP.ClientSide.Data
                 {
                     if (!car.Value.isFromServer)
                     {
-                        if (ClientData.carLoaders[car.Value.carLoaderID].placeNo != car.Value.carPosition && ClientData.carLoaders[car.Value.carLoaderID].placeNo != -1)
+                        if (GameData.carLoaders[car.Value.carLoaderID].placeNo != car.Value.carPosition && GameData.carLoaders[car.Value.carLoaderID].placeNo != -1)
                         {
-                            ClientSend.SendCarPosition(car.Value.carLoaderID, ClientData.carLoaders[car.Value.carLoaderID].placeNo);
-                            car.Value.carPosition = ClientData.carLoaders[car.Value.carLoaderID].placeNo;
+                            ClientSend.SendCarPosition(car.Value.carLoaderID, GameData.carLoaders[car.Value.carLoaderID].placeNo);
+                            car.Value.carPosition = GameData.carLoaders[car.Value.carLoaderID].placeNo;
                         }
                     }
                     
@@ -497,7 +497,7 @@ namespace CMS21MP.ClientSide.Data
             {
                 foreach (KeyValuePair<int,ModCar> car in ClientData.carOnScene)
                 {
-                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.Value.carLoaderID].carToLoad) && ClientData.carLoaders[car.Value.carLoaderID].carParts == null)
+                    if (String.IsNullOrEmpty(GameData.carLoaders[car.Value.carLoaderID].carToLoad) && GameData.carLoaders[car.Value.carLoaderID].carParts == null)
                     {
                         MelonLogger.Msg("Detected A removed car");
                         ClientSend.SendCarInfo(car.Value);
@@ -690,14 +690,14 @@ namespace CMS21MP.ClientSide.Data
                         }
                         
                         //Wheel Handle
-                        var wheelData =  ClientData.carLoaders[carLoaderID].WheelsData;
-                        for (int i = 0; i <  ClientData.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
+                        var wheelData =  GameData.carLoaders[carLoaderID].WheelsData;
+                        for (int i = 0; i <  GameData.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
                         {
-                            ClientData.carLoaders[carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, 
+                            GameData.carLoaders[carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, 
                                 (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
-                            ClientData.carLoaders[carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                            GameData.carLoaders[carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
                         }
-                        ClientData.carLoaders[carLoaderID].SetWheelSizes();
+                        GameData.carLoaders[carLoaderID].SetWheelSizes();
                     }
                     else
                     {
@@ -707,7 +707,7 @@ namespace CMS21MP.ClientSide.Data
                         originalPart.UpdateDust(newpart.dust);
                         if (originalPart.IsUnmounted == false)
                         {
-                            originalPart.HideBySavegame(false, ClientData.carLoaders[carLoaderID]);
+                            originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderID]);
                         }
                     }
                 }
@@ -720,19 +720,19 @@ namespace CMS21MP.ClientSide.Data
             public static void UpdateBodyPart(CarPart orginalPart, ModCarPart newBodyPart, int carLoaderID)
             {
               //  MelonLogger.Msg("Update BodyPart");
-                if (ClientData.carLoaders != null && ClientData.carOnScene[carLoaderID] != null)
+                if (GameData.carLoaders != null && ClientData.carOnScene[carLoaderID] != null)
                 {
-                    if (!String.IsNullOrEmpty(ClientData.carLoaders[carLoaderID].carToLoad))
+                    if (!String.IsNullOrEmpty(GameData.carLoaders[carLoaderID].carToLoad))
                     {
                         Color color = ModColor.ToColor(newBodyPart.colors);
                         Color tintColor = ModColor.ToColor(newBodyPart.TintColor);
 
                         if(orginalPart.TunedID != newBodyPart.tunedID)
-                            ClientData.carLoaders[carLoaderID].TunePart(orginalPart.name, newBodyPart.tunedID);
+                            GameData.carLoaders[carLoaderID].TunePart(orginalPart.name, newBodyPart.tunedID);
                         
-                        ClientData.carLoaders[carLoaderID].SetDent(orginalPart, newBodyPart.dent);
-                        ClientData.carLoaders[carLoaderID].EnableDust(orginalPart, newBodyPart.Dust);
-                        ClientData.carLoaders[carLoaderID].SetCondition(orginalPart, newBodyPart.condition);
+                        GameData.carLoaders[carLoaderID].SetDent(orginalPart, newBodyPart.dent);
+                        GameData.carLoaders[carLoaderID].EnableDust(orginalPart, newBodyPart.Dust);
+                        GameData.carLoaders[carLoaderID].SetCondition(orginalPart, newBodyPart.condition);
                         
                         orginalPart.IsTinted = newBodyPart.isTinted;
                         orginalPart.TintColor = tintColor;
@@ -746,22 +746,22 @@ namespace CMS21MP.ClientSide.Data
                         
                         if (!orginalPart.Unmounted && !orginalPart.name.StartsWith("license_plate"))
                         {
-                            ClientData.carLoaders[carLoaderID].SetCustomCarPaintType(orginalPart, new ModPaintData().ToGame(newBodyPart.paintData));  
-                            ClientData.carLoaders[carLoaderID].SetCarColorAndPaintType(orginalPart, color, (PaintType)newBodyPart.paintType);
+                            GameData.carLoaders[carLoaderID].SetCustomCarPaintType(orginalPart, new ModPaintData().ToGame(newBodyPart.paintData));  
+                            GameData.carLoaders[carLoaderID].SetCarColorAndPaintType(orginalPart, color, (PaintType)newBodyPart.paintType);
                         }
-                        ClientData.carLoaders[carLoaderID].SetCarLivery(orginalPart, newBodyPart.livery, newBodyPart.liveryStrength);
+                        GameData.carLoaders[carLoaderID].SetCarLivery(orginalPart, newBodyPart.livery, newBodyPart.liveryStrength);
                         
                         if(!orginalPart.Unmounted && newBodyPart.unmounted)
-                            ClientData.carLoaders[carLoaderID].TakeOffCarPartFromSave(newBodyPart.name);
+                            GameData.carLoaders[carLoaderID].TakeOffCarPartFromSave(newBodyPart.name);
                         if (orginalPart.Unmounted && !newBodyPart.unmounted)
                         {
-                            ClientData.carLoaders[carLoaderID].TakeOnCarPartFromSave(newBodyPart.name);
+                            GameData.carLoaders[carLoaderID].TakeOnCarPartFromSave(newBodyPart.name);
                         }
                                           
                                      
                         
                         if (orginalPart.Switched != newBodyPart.switched)
-                            ClientData.carLoaders[carLoaderID].SwitchCarPart(orginalPart, false, newBodyPart.switched);
+                            GameData.carLoaders[carLoaderID].SwitchCarPart(orginalPart, false, newBodyPart.switched);
 
 
                         if(newBodyPart.isTinted)

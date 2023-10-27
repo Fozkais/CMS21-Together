@@ -71,11 +71,11 @@ namespace CMS21MP.ServerSide
             Client.PacketHandlers.Clear();
             GameData.DataInitialzed = false;
 
-            ClientData.carLoaders = null;
+            GameData.carLoaders = null;
             ClientData.carOnScene.Clear();
             ClientData.serverPlayers.Clear();
             ClientData.serverPlayerInstances.Clear();
-            ClientData.localInventory.DeleteAll();
+            GameData.localInventory.DeleteAll();
             ClientData.playerGroupInventory.Clear();
             ClientData.playerInventory.Clear();
             
@@ -182,7 +182,8 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.bodyParts, ServerHandle.BodyParts},
                 {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
                 {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
-                {(int)PacketTypes.lifterPos, ServerHandle.LifterPos}
+                {(int)PacketTypes.lifterPos, ServerHandle.LifterPos},
+                {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
             };
             MelonLogger.Msg("Initialized Packets!");
         }

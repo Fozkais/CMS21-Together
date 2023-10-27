@@ -33,7 +33,7 @@ namespace CMS21MP.SharedData
         public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
         {
             this.carLoaderID = _carLoaderID;
-            this.carID = ClientData.carLoaders[_carLoaderID].carToLoad;
+            this.carID = GameData.carLoaders[_carLoaderID].carToLoad;
             this.partInfo = new ModPartInfo();
             this.carPosition = _carPosition;
             this.carVersion = _carVersion;

@@ -62,7 +62,7 @@ namespace CMS21MP.ClientSide.DataHandle
             }
         #endregion
 
-        #region Movement and Rotation
+        #region Player info
 
             public static void SendPosition(Vector3Serializable position)
             {
@@ -81,6 +81,16 @@ namespace CMS21MP.ClientSide.DataHandle
                 {
                     _packet.Write(rotation);
                     
+                    SendTCPData(_packet);
+                }
+            }
+            
+            public static void SendSceneChange(string scene)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.playerSceneChange))
+                {
+                    _packet.Write(scene);
+
                     SendTCPData(_packet);
                 }
             }
@@ -200,17 +210,19 @@ namespace CMS21MP.ClientSide.DataHandle
         
 
         #endregion
+        
 
-        public static void SendSceneChange(string scene)
+        public static void SendTireChange(ModGroupItem modGroupItem, bool instant, bool connect)
         {
-            using (Packet _packet = new Packet((int)PacketTypes.playerSceneChange))
+            using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
             {
-                _packet.Write(scene);
+                _packet.Write(modGroupItem);
+                _packet.Write(instant);
+                _packet.Write(connect);
 
                 SendTCPData(_packet);
             }
         }
-        
     }
     
 }

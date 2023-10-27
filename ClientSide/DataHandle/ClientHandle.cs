@@ -145,7 +145,7 @@ namespace CMS21MP.ClientSide.DataHandle
             
             MelonLogger.Msg($"Received car info from server. ID:{car.carID} Version:{car.carVersion} Pos:{car.carPosition}, Scene:{car.carScene}");
             MelonLogger.Msg($"Received carLoaderId : {car.carLoaderID}");
-            var carLoader = ClientData.carLoaders[car.carLoaderID];
+            var carLoader = GameData.carLoaders[car.carLoaderID];
             
             if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
             {
@@ -190,7 +190,7 @@ namespace CMS21MP.ClientSide.DataHandle
             int carPosition = _packet.ReadInt();
             
             ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
-            ClientData.carLoaders[carLoaderID].ChangePosition(carPosition);
+            GameData.carLoaders[carLoaderID].ChangePosition(carPosition);
             _packet.Dispose();
         }
         
@@ -261,7 +261,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     if (!ModInventory.handledItem.Any(s => s.UID == _item.UID) )
                     {
                         ModInventory.handledItem.Add(_item);
-                        ClientData.localInventory.Add(_itemGame);
+                        GameData.localInventory.Add(_itemGame);
                     }
                 }
                 else
@@ -269,7 +269,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     if (ModInventory.handledItem.Any(s => s.UID == _item.UID))
                     {
                         ModInventory.handledItem.Remove(_item);
-                        ClientData.localInventory.Delete(_itemGame);
+                        GameData.localInventory.Delete(_itemGame);
                     }
                 }
             }
@@ -284,7 +284,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     if (!ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
                     {
                         ModInventory.handledGroupItem.Add(_item);
-                        ClientData.localInventory.AddGroup(_item.ToGame(_item));
+                        GameData.localInventory.AddGroup(_item.ToGame(_item));
                     }
                 }
                 else
@@ -293,7 +293,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     {
                         int index = ModInventory.handledGroupItem.FindIndex(s => s.UID == _item.UID);
                         ModInventory.handledGroupItem.Remove(ModInventory.handledGroupItem[index]);
-                        ClientData.localInventory.DeleteGroup(_item.UID);
+                        GameData.localInventory.DeleteGroup(_item.UID);
                     }
                 }
             }
@@ -315,11 +315,24 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 MelonLogger.Msg("Passed Lifter.");
                 MelonCoroutines.Start(GarageInteraction.PauseUpdating());
-                ClientData.carLoaders[_loaderId-1].lifter.Action(_action);
+                GameData.carLoaders[_loaderId-1].lifter.Action(_action);
                 ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
             }
             
-        }            
+        }           
+        public static void TireChange(Packet _packet)
+        {
+            ModGroupItem _item = _packet.Read<ModGroupItem>();
+            bool instant = _packet.ReadBool();
+            bool connect = _packet.ReadBool();
+            
+            MelonLogger.Msg("Received New Tire Change : " + 
+                            " action: " + connect + " instant: " + instant);
+            
+            GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
+            
+            
+        }           
 
         #endregion
     }

@@ -193,7 +193,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 /*if(!GameData.DataInitialzed)
                     MelonCoroutines.Start(GameData.InitializeGameData());*/
                 
-                while (ClientData.carLoaders.Length <= 3)
+                while (GameData.carLoaders.Length <= 3)
                     yield return  new WaitForEndOfFrame();
                 
                 yield return new WaitForSeconds(1.5f);
@@ -357,10 +357,21 @@ namespace CMS21MP.ServerSide.DataHandle
                     SendTCPDataToAll(_fromClient, _packet);
                 }
             }
+            public static void SendTireChange(int fromClient, ModGroupItem item, bool instant, bool connect)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
+                {
+                    _packet.Write(item);
+                    _packet.Write(instant);
+                    _packet.Write(connect);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
 
         
 
         #endregion
-        
+
     }
 }
