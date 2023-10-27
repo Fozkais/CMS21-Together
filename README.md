@@ -31,11 +31,11 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 
 *Here's every planned feature state :*
 
-* Implement Networking System (TCP/UDP) : 🔴 -> UDP as problem
+* Implement Networking System (TCP/UDP) : ✅ -> Fixed on 0.1.4
 * Implement Steam API Networking : ⏸️
 * Create a Lobby system : ✅
 * Add a Custom Save System : ✅ -> Fixed on 0.1.1
-* Sync players Position and Rotation : 🔴 -> Uses UDP
+* Sync players Position and Rotation : ✅ -> Fixed on 0.1.4
 * Sync Inventory : ✅ -> Fixed on 0.1.3
 * Sync Cars Spawning and position : ✅
 * Sync Garage Interaction : 🚧 (Lifter, Wheel Assembler, ect...)
