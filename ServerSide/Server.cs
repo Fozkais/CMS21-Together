@@ -70,6 +70,16 @@ namespace CMS21MP.ServerSide
             
             Client.PacketHandlers.Clear();
             GameData.DataInitialzed = false;
+
+            ClientData.carLoaders = null;
+            ClientData.carOnScene.Clear();
+            ClientData.serverPlayers.Clear();
+            ClientData.serverPlayerInstances.Clear();
+            ClientData.localInventory.DeleteAll();
+            ClientData.playerGroupInventory.Clear();
+            ClientData.playerInventory.Clear();
+            
+            
             MelonLogger.Msg("Server Closed.");
 
         }

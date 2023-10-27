@@ -147,17 +147,19 @@ namespace CMS21MP.ClientSide.DataHandle
             MelonLogger.Msg($"Received carLoaderId : {car.carLoaderID}");
             var carLoader = ClientData.carLoaders[car.carLoaderID];
             
-            if (ClientData.carOnScene.Any(s => s.carLoaderID == car.carLoaderID && s.carID == car.carID))
+            if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
             {
-                ClientData.carOnScene.Remove(ClientData.carOnScene.Find(s => s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition));
+                ClientData.carOnScene.Remove(ClientData.carOnScene.First(s => s.Value.carID == car.carID 
+                                                                              && s.Value.carVersion == car.carVersion 
+                                                                              && s.Value.carPosition == car.carPosition).Key);
                 carLoader.DeleteCar();
                 MelonLogger.Msg("Removing car...");
             }
             else
             {
-                ClientData.carOnScene.Add(car);
-                MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.Find(s =>
-                    s.carID == car.carID && s.carVersion == car.carVersion && s.carPosition == car.carPosition)));
+                ClientData.carOnScene.Add(car.carLoaderID, car);
+                MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.First(s =>
+                    s.Value.carID == car.carID && s.Value.carVersion == car.carVersion && s.Value.carPosition == car.carPosition).Value));
                 MelonLogger.Msg("Loading new car...");
                 carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
                 //carLoader.ConfigVersion = car.carVersion;
@@ -187,7 +189,7 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             int carPosition = _packet.ReadInt();
             
-            ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID).carPosition = carPosition;
+            ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
             ClientData.carLoaders[carLoaderID].ChangePosition(carPosition);
             _packet.Dispose();
         }
@@ -198,11 +200,11 @@ namespace CMS21MP.ClientSide.DataHandle
             ModPartScript carPart = _packet.Read<ModPartScript>();
 
            // MelonLogger.Msg("Received new PartScript");
-            if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
+            if (ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value != null)
             {
                // MelonLogger.Msg("Added PartScript to Buffer");
-                var car = ClientData.carOnScene.First(s => s.carLoaderID == carLoaderID);
-                car.partInfo.PartScriptsBuffer.Add(carPart);
+                var car = ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID);
+                car.Value.partInfo.PartScriptsBuffer.Add(carPart);
                // MelonLogger.Msg($"Count: {car.partInfo.PartScriptsBuffer.Count}!");
                // MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
             }
@@ -215,11 +217,11 @@ namespace CMS21MP.ClientSide.DataHandle
             ModCarPart carPart = _packet.Read<ModCarPart>();
 
             //MelonLogger.Msg("Received new BodyPart");
-            if (ClientData.carOnScene.Find(s => s.carLoaderID == carLoaderID) != null)
+            if (ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value != null)
             {
                // MelonLogger.Msg("Added BodyPart to Buffer");
-                var car = ClientData.carOnScene.First(s => s.carLoaderID == carLoaderID);
-                car.partInfo.CarPartsBuffer.Add(carPart);
+                var car = ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID);
+                car.Value.partInfo.CarPartsBuffer.Add(carPart);
                // MelonLogger.Msg($"Count: {car.partInfo.CarPartsBuffer.Count}!");
                
                 //MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, null, carPart));
@@ -309,7 +311,7 @@ namespace CMS21MP.ClientSide.DataHandle
             MelonLogger.Msg("Received New lifter pos to : " + _loaderId + 
                             " action: " + _action + " pos: " + _pos);
 
-            if (ClientData.carOnScene.Any(s => s.carLoaderID == _loaderId - 1))
+            if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == _loaderId - 1))
             {
                 MelonLogger.Msg("Passed Lifter.");
                 MelonCoroutines.Start(GarageInteraction.PauseUpdating());

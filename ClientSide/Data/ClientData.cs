@@ -14,7 +14,7 @@ namespace CMS21MP.ClientSide.Data
         public static Dictionary<int, Player> serverPlayers = new Dictionary<int, Player>();
         public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
         
-        public static List<ModCar> carOnScene = new List<ModCar>();
+        public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
         public static CarLoader[] carLoaders;
 
         public static List<Item> playerInventory = new List<Item>();

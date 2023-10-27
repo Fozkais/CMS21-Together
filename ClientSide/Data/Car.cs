@@ -28,9 +28,9 @@ namespace CMS21MP.ClientSide.Data
         {
             partUpdateHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
-            for (var i = 0; i < ClientData.carOnScene.Count; i++)
+
+            foreach (ModCar car in ClientData.carOnScene.Values)
             {
-                var car = ClientData.carOnScene[i];
                 MelonCoroutines.Start(UpdatePartsCoroutine(car)); // Classic Update
 
                 #region CarSpawn Buffer
@@ -480,12 +480,12 @@ namespace CMS21MP.ClientSide.Data
             {
                 foreach (var car in ClientData.carOnScene)
                 {
-                    if (!car.isFromServer)
+                    if (!car.Value.isFromServer)
                     {
-                        if (ClientData.carLoaders[car.carLoaderID].placeNo != car.carPosition && ClientData.carLoaders[car.carLoaderID].placeNo != -1)
+                        if (ClientData.carLoaders[car.Value.carLoaderID].placeNo != car.Value.carPosition && ClientData.carLoaders[car.Value.carLoaderID].placeNo != -1)
                         {
-                            ClientSend.SendCarPosition(car.carLoaderID, ClientData.carLoaders[car.carLoaderID].placeNo);
-                            car.carPosition = ClientData.carLoaders[car.carLoaderID].placeNo;
+                            ClientSend.SendCarPosition(car.Value.carLoaderID, ClientData.carLoaders[car.Value.carLoaderID].placeNo);
+                            car.Value.carPosition = ClientData.carLoaders[car.Value.carLoaderID].placeNo;
                         }
                     }
                     
@@ -495,14 +495,13 @@ namespace CMS21MP.ClientSide.Data
 
             public static void isCarStillLoaded()
             {
-                for (var index = 0; index < ClientData.carOnScene.Count; index++)
+                foreach (KeyValuePair<int,ModCar> car in ClientData.carOnScene)
                 {
-                    var car = ClientData.carOnScene[index];
-                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.carLoaderID].carToLoad) && ClientData.carLoaders[car.carLoaderID].carParts == null)
+                    if (String.IsNullOrEmpty(ClientData.carLoaders[car.Value.carLoaderID].carToLoad) && ClientData.carLoaders[car.Value.carLoaderID].carParts == null)
                     {
                         MelonLogger.Msg("Detected A removed car");
-                        ClientSend.SendCarInfo(car);
-                        ClientData.carOnScene.Remove(car);
+                        ClientSend.SendCarInfo(car.Value);
+                        ClientData.carOnScene.Remove(car.Key);
                     }
                 }
             }
@@ -522,7 +521,7 @@ namespace CMS21MP.ClientSide.Data
             yield return HandleNewCar;
             
             yield return new WaitForEndOfFrame();
-            if (ClientData.carOnScene.Any(s => s.carLoaderID == carLoaderID))
+            if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
                 ClientData.carOnScene[carLoaderID].isUpdated = true;
             }
@@ -531,7 +530,7 @@ namespace CMS21MP.ClientSide.Data
         public static IEnumerator HandleNewCar(int carLoaderID, List<ModPartScript> partScripts = null,
             List<ModCarPart> carParts = null)
         {
-            if (ClientData.carOnScene.Any(s => s.carLoaderID == carLoaderID))
+            if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
                 var car = ClientData.carOnScene[carLoaderID];
                 while (!car.isReferenced)
