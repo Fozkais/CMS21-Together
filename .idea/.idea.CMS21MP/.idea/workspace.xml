@@ -7,20 +7,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/GarageInteraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GarageInteraction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ModInventory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ModInventory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SharedData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/ModCar.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SharedData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/PacketTypes.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -53,14 +48,11 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/da/ed175c5a/TireChangerLogic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/ClientData.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Server.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -252,7 +244,7 @@
       <workItem from="1698097010401" duration="15957000" />
       <workItem from="1698164367830" duration="1075000" />
       <workItem from="1698227653783" duration="27408000" />
-      <workItem from="1698410994377" duration="865000" />
+      <workItem from="1698410994377" duration="7417000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -549,7 +541,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698367711129</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData">
+      <option name="closed" value="true" />
+      <created>1698412102645</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1698412102645</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -604,7 +604,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="-- Testing Build 4 -- &#10;- New system for car Handling &#10;-- Knowed Issue --&#10;- Dont work. (Index Issue)" />
     <MESSAGE value="-- Early Update 8 --&#10;- Major Refactor of &quot;playerManagement&quot;&#10;- playerManagement renamed to &quot;MPGameManager&quot;&#10;- Fully Handle Part (RealTime Update)&#10;-- Knowed Bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;-- Removed --&#10;- Engine part Handling&#10;- Suspension part Handling" />
     <MESSAGE value="-- Pre-Beta 1 --&#10;- Fully Handle EnginePart &#10;- Fully Handle SuspensionPart&#10;-- Knowed bug --&#10;- Possible error comming when a part is updated ( send -&gt; receive -&gt; send receive)&#10;- Not tested with multiple car&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fixed --&#10;- Insane freeze when loading seem fixed?" />
     <MESSAGE value="-- Pre-Release 0 --&#10;- No Addition&#10;-- Knowed Bug --&#10;- Possible Error caused by desync from item UID (p1 lastUid:1008, p2 lastUid:978)&#10;- server slot not update properly&#10;- Disconnecting from a server make you need to relaunch game to connect again&#10;- Host cannot stop hosting (crash)&#10;- client need to connect twice before being connected to server&#10;- client crash if wrong ip adress is typed&#10;-- Bug Fix --&#10;- Insane Freeze when car spawn.&#10;- Useless part update when received.&#10;- Multiple car Handling Fixed." />
@@ -629,7 +628,8 @@
     <MESSAGE value="B-2_0-Movement_1&#10;- Few Improvement on MovementSync" />
     <MESSAGE value="B-2_0-CarSpawnOnLoad_0&#10;- Try to fix implementation of car sync to allow to load a save with car already loaded in garage" />
     <MESSAGE value="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?" />
-    <option name="LAST_COMMIT_MESSAGE" value="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?" />
+    <MESSAGE value="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData" />
+    <option name="LAST_COMMIT_MESSAGE" value="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

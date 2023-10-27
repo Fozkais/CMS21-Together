@@ -18,13 +18,13 @@ namespace CMS21MP.ClientSide.Data
         #region Lifter
 
 
-            public static bool needToTrigger = true;
+            public static bool Lifter_needToTrigger = true;
 
             [HarmonyPatch(typeof(CarLifter), "Action")]
             [HarmonyPostfix]
             public static void LifterFix(int actionType, CarLifter __instance)
             {
-                if (needToTrigger)
+                if (Lifter_needToTrigger)
                 {
                     int PostLiftVal = (int)__instance.currentState + actionType;
                     MelonLogger.Msg("PostLiftVal :" + PostLiftVal);
@@ -34,25 +34,47 @@ namespace CMS21MP.ClientSide.Data
                     ClientSend.SendLifterNewPos(actionType, PostLiftVal,  convertedToInt);
                 }
             }
-            public static IEnumerator PauseUpdating()
+            public static IEnumerator LifterPauseUpdating()
             {
-                needToTrigger = false;
-                yield return new WaitForSeconds(0.25f);
-                needToTrigger = true;
+                Lifter_needToTrigger = false;
+                yield return new WaitForSeconds(0.10f);
+                Lifter_needToTrigger = true;
             }
         #endregion
         
         #region TireChanger
-        
+
+        private static bool TC_needToTrigger = true;
             
         [HarmonyPatch(typeof(TireChangerLogic), "SetGroupOnTireChanger")]
         [HarmonyPostfix]
         public static void TireChangerFix(GroupItem groupItem, bool instant, bool connect, TireChangerLogic __instance)
         {
-            if (groupItem == null) return;
-            MelonLogger.Msg($"Tire Changer Triggered! : {instant} , {connect}");
-            ClientSend.SendTireChange(new ModGroupItem(groupItem), instant,connect);
+            if (groupItem.ItemList.Count == 0) return;
+
+            if (TC_needToTrigger)
+            {
+                MelonLogger.Msg($"Tire Changer Triggered! : {instant} , {connect}");
+                ClientSend.SendTireChange(new ModGroupItem(groupItem), instant,connect);
+                
+            }
         }
+        
+        public static IEnumerator TC_PauseUpdating()
+        {
+            TC_needToTrigger = false;
+            yield return new WaitForSeconds(0.10f);
+            TC_needToTrigger = true;
+        }
+
+        [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_61")]
+        [HarmonyPostfix]
+        public static void TireRemoveActionFix(TireChangerLogic __instance)
+        {
+                MelonLogger.Msg($"Tire On Changer removed!");
+                ClientSend.SendTireChange_ResetAction();
+        }
+        
         
         #endregion
 

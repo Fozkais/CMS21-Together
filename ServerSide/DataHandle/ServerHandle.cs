@@ -165,6 +165,11 @@ namespace CMS21MP.ServerSide.DataHandle
 
             ServerSend.SendTireChange(_fromClient, item, instant, connect);
         }
+        
+        public static void TireChanger_ResetAction(int _fromClient, Packet _packet)
+        {
+            ServerSend.SendTireChanger_ResetAction(_fromClient);
+        }
 
         #endregion
         

@@ -314,7 +314,7 @@ namespace CMS21MP.ClientSide.DataHandle
             if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == _loaderId - 1))
             {
                 MelonLogger.Msg("Passed Lifter.");
-                MelonCoroutines.Start(GarageInteraction.PauseUpdating());
+                MelonCoroutines.Start(GarageInteraction.LifterPauseUpdating());
                 GameData.carLoaders[_loaderId-1].lifter.Action(_action);
                 ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
             }
@@ -326,12 +326,16 @@ namespace CMS21MP.ClientSide.DataHandle
             bool instant = _packet.ReadBool();
             bool connect = _packet.ReadBool();
             
+            MelonCoroutines.Start(GarageInteraction.TC_PauseUpdating());
+            
             MelonLogger.Msg("Received New Tire Change : " + 
                             " action: " + connect + " instant: " + instant);
             
             GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
-            
-            
+        }   
+        public static void TireChanger_ResetAction(Packet _packet)
+        {
+            GameData.tireChanger.ResetActions();
         }           
 
         #endregion

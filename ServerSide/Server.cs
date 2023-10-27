@@ -184,6 +184,7 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
                 {(int)PacketTypes.lifterPos, ServerHandle.LifterPos},
                 {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
+                {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

@@ -373,5 +373,12 @@ namespace CMS21MP.ServerSide.DataHandle
 
         #endregion
 
+        public static void SendTireChanger_ResetAction(int fromClient)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
+            {
+                SendTCPDataToAll(fromClient, _packet);
+            }
+        }
     }
 }

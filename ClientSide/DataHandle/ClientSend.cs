@@ -223,6 +223,14 @@ namespace CMS21MP.ClientSide.DataHandle
                 SendTCPData(_packet);
             }
         }
+
+        public static void SendTireChange_ResetAction()
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
+            {
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }
