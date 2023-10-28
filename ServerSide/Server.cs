@@ -184,7 +184,10 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
                 {(int)PacketTypes.lifterPos, ServerHandle.LifterPos},
                 {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
-                {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction}
+                {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction},
+                {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
+                {(int)PacketTypes.wheelBalancer_UpdateWheel, ServerHandle.WheelBalancer_UpdateWheel},
+                {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

@@ -380,5 +380,23 @@ namespace CMS21MP.ServerSide.DataHandle
                 SendTCPDataToAll(fromClient, _packet);
             }
         }
+
+        public static void SendWheelBalancer(int fromClient, ModGroupItem item)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
+            {
+                _packet.Write(item);
+
+                SendTCPDataToAll(fromClient, _packet);
+            }
+        }
+
+        public static void SendWheelBalancer_ResetAction(int fromClient)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_ResetAction))
+            {
+                SendTCPDataToAll(fromClient, _packet);
+            }
+        }
     }
 }

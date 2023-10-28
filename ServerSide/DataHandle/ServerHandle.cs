@@ -147,29 +147,48 @@ namespace CMS21MP.ServerSide.DataHandle
 
         #region Garage Interaction
 
-        public static void LifterPos(int _fromClient, Packet _packet)
-        {
-            int action = _packet.ReadInt();
-            int pos = _packet.ReadInt();
-            int _Loaderid = _packet.ReadInt();
+            public static void LifterPos(int _fromClient, Packet _packet)
+            {
+                int action = _packet.ReadInt();
+                int pos = _packet.ReadInt();
+                int _Loaderid = _packet.ReadInt();
 
-            MelonLogger.Msg("Received Lifter: " + _Loaderid + " action : " + action + " pos: " +  pos);
-            ServerSend.SendLifterPos(_fromClient, action, pos, _Loaderid);
-        }
-        
-        public static void TireChanger(int _fromClient, Packet _packet)
-        {
-            ModGroupItem item = _packet.Read<ModGroupItem>();
-            bool instant = _packet.ReadBool();
-            bool connect = _packet.ReadBool();
+                MelonLogger.Msg("Received Lifter: " + _Loaderid + " action : " + action + " pos: " +  pos);
+                ServerSend.SendLifterPos(_fromClient, action, pos, _Loaderid);
+            }
+            
+            public static void TireChanger(int _fromClient, Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+                bool instant = _packet.ReadBool();
+                bool connect = _packet.ReadBool();
 
-            ServerSend.SendTireChange(_fromClient, item, instant, connect);
-        }
+                ServerSend.SendTireChange(_fromClient, item, instant, connect);
+            }
+            
+            public static void TireChanger_ResetAction(int _fromClient, Packet _packet)
+            {
+                ServerSend.SendTireChanger_ResetAction(_fromClient);
+            }
+            public static void WheelBalancer(int _fromClient, Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+
+                ServerSend.SendWheelBalancer(_fromClient, item);
+            }
+            
+            public static void WheelBalancer_UpdateWheel(int _fromClient, Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+
+                ServerSend.SendWheelBalancer(_fromClient, item);
+            }
         
-        public static void TireChanger_ResetAction(int _fromClient, Packet _packet)
-        {
-            ServerSend.SendTireChanger_ResetAction(_fromClient);
-        }
+            public static void  WheelBalancer_ResetAction(int _fromClient, Packet _packet)
+            {
+                ServerSend.SendWheelBalancer_ResetAction(_fromClient);
+            }
+        
 
         #endregion
         

@@ -31,7 +31,10 @@ namespace CMS21MP.SharedData
             
             lifterPos,
             tireChanger,
-            tireChanger_ResetAction
+            tireChanger_ResetAction,
+            wheelBalancer,
+            wheelBalancer_UpdateWheel,
+            wheelBalancer_ResetAction
             
         #endregion
         

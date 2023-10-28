@@ -209,28 +209,55 @@ namespace CMS21MP.ClientSide.DataHandle
             }
         
 
+            public static void SendTireChange(ModGroupItem modGroupItem, bool instant, bool connect)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
+                {
+                    _packet.Write(modGroupItem);
+                    _packet.Write(instant);
+                    _packet.Write(connect);
+
+                    SendTCPData(_packet);
+                }
+            }
+
+            public static void SendTireChange_ResetAction()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
+                {
+                    SendTCPData(_packet);
+                }
+            }
+
+            public static void SendWheelBalance(ModGroupItem modGroupItem)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
+                {
+                    _packet.Write(modGroupItem);
+                    
+                    SendTCPData(_packet);
+                }
+            }
+            public static void SendWheelBalance_ResetAction()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_ResetAction))
+                {
+                    SendTCPData(_packet);
+                }
+            }
+            public static void SendUpdatedWheelFromBalancer(ModGroupItem modGroupItem)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_UpdateWheel))
+                {
+                    _packet.Write(modGroupItem);
+                    
+                    SendTCPData(_packet);
+                }
+            }
+            
         #endregion
-        
 
-        public static void SendTireChange(ModGroupItem modGroupItem, bool instant, bool connect)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
-            {
-                _packet.Write(modGroupItem);
-                _packet.Write(instant);
-                _packet.Write(connect);
 
-                SendTCPData(_packet);
-            }
-        }
-
-        public static void SendTireChange_ResetAction()
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
-            {
-                SendTCPData(_packet);
-            }
-        }
     }
     
 }

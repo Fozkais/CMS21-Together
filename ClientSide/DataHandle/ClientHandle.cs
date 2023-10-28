@@ -302,41 +302,56 @@ namespace CMS21MP.ClientSide.DataHandle
 
         #region Garage Interaction
 
-        public static void LifterPos(Packet _packet)
-        {
-            int _action = _packet.ReadInt();
-            int _pos = _packet.ReadInt();
-            int _loaderId = _packet.ReadInt();
-            
-            MelonLogger.Msg("Received New lifter pos to : " + _loaderId + 
-                            " action: " + _action + " pos: " + _pos);
-
-            if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == _loaderId - 1))
+            public static void LifterPos(Packet _packet)
             {
-                MelonLogger.Msg("Passed Lifter.");
-                MelonCoroutines.Start(GarageInteraction.LifterPauseUpdating());
-                GameData.carLoaders[_loaderId-1].lifter.Action(_action);
-                ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
-            }
-            
-        }           
-        public static void TireChange(Packet _packet)
-        {
-            ModGroupItem _item = _packet.Read<ModGroupItem>();
-            bool instant = _packet.ReadBool();
-            bool connect = _packet.ReadBool();
-            
-            MelonCoroutines.Start(GarageInteraction.TC_PauseUpdating());
-            
-            MelonLogger.Msg("Received New Tire Change : " + 
-                            " action: " + connect + " instant: " + instant);
-            
-            GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
-        }   
-        public static void TireChanger_ResetAction(Packet _packet)
-        {
-            GameData.tireChanger.ResetActions();
-        }           
+                int _action = _packet.ReadInt();
+                int _pos = _packet.ReadInt();
+                int _loaderId = _packet.ReadInt();
+                
+                MelonLogger.Msg("Received New lifter pos to : " + _loaderId + 
+                                " action: " + _action + " pos: " + _pos);
+
+                if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == _loaderId - 1))
+                {
+                    MelonLogger.Msg("Passed Lifter.");
+                    MelonCoroutines.Start(GarageInteraction.LifterPauseUpdating());
+                    GameData.carLoaders[_loaderId-1].lifter.Action(_action);
+                    ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
+                }
+                
+            }           
+            public static void TireChange(Packet _packet)
+            {
+                ModGroupItem _item = _packet.Read<ModGroupItem>();
+                bool instant = _packet.ReadBool();
+                bool connect = _packet.ReadBool();
+                
+                MelonCoroutines.Start(GarageInteraction.TC_PauseUpdating());
+                
+                MelonLogger.Msg("Received New Tire Change : " + 
+                                " action: " + connect + " instant: " + instant);
+                
+                GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
+            }   
+            public static void TireChanger_ResetAction(Packet _packet)
+            {
+                GameData.tireChanger.ResetActions();
+            }       
+        
+            public static void WheelBalancer(Packet _packet)
+            {
+                ModGroupItem _item = _packet.Read<ModGroupItem>();
+                
+                MelonCoroutines.Start(GarageInteraction.WB_PauseUpdating());
+                
+                MelonLogger.Msg("Received WheelBalance!");
+                
+                GameData.wheelBalancer.SetGroupOnWheelBalancer(_item.ToGame(_item), true);
+            }   
+            public static void WheelBalancer_ResetAction(Packet _packet)
+            {
+                GameData.wheelBalancer.ResetActions();
+            } 
 
         #endregion
     }

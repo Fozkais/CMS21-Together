@@ -11,6 +11,7 @@ namespace CMS21MP.ClientSide.Data
     {
         public static GameObject localPlayer;
         public static TireChangerLogic tireChanger;
+        public static WheelBalancerLogic wheelBalancer;
         public static CarLoader[] carLoaders;
         public static Inventory localInventory;
         public static bool DataInitialzed;
@@ -19,6 +20,7 @@ namespace CMS21MP.ClientSide.Data
         {
             localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
             tireChanger = Object.FindObjectOfType<TireChangerLogic>();
+            wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
             
             carLoaders = new[] // TODO: Reorganise order to match other scene loader organisation
             {
