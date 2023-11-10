@@ -5,6 +5,7 @@ using CMS21MP.ClientSide.Data;
 using CMS21MP.ServerSide;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
+using Il2Cpp;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
@@ -143,6 +144,10 @@ namespace CMS21MP
       public override void OnLateUpdate() // Runs once per frame after OnUpdate and OnFixedUpdate have finished.
       {
          modGUI.showGui();
+         if (Input.GetKeyDown(KeyCode.RightControl)) //Debug Mounting part simulteanously
+         {
+            Cursor3D.Get().BlockCursor(false);
+         }
       }
 
       public override void OnGUI() // Can run multiple times per frame. Mostly used for Unity's IMGUI.

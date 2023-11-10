@@ -8,6 +8,7 @@ using CMS21MP.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace CMS21MP.ClientSide.Data
 {
@@ -500,7 +501,7 @@ namespace CMS21MP.ClientSide.Data
                     if (String.IsNullOrEmpty(GameData.carLoaders[car.Value.carLoaderID].carToLoad) && GameData.carLoaders[car.Value.carLoaderID].carParts == null)
                     {
                         MelonLogger.Msg("Detected A removed car");
-                        ClientSend.SendCarInfo(car.Value);
+                        ClientSend.SendCarInfo(new ModCar(car.Value));
                         ClientData.carOnScene.Remove(car.Key);
                     }
                 }
@@ -684,9 +685,11 @@ namespace CMS21MP.ClientSide.Data
 
                         if (originalPart.IsUnmounted)
                         {
-                            originalPart.ShowBySaveGame();
+                            MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
+                            //originalPart.ShowBySaveGame();
                             originalPart.ShowMountAnimation();
                             originalPart.FastMount();
+                            //originalPart.StartCoroutine(originalPart.DoMount());
                         }
                         
                         //Wheel Handle
@@ -702,12 +705,14 @@ namespace CMS21MP.ClientSide.Data
                     else
                     {
                         originalPart.Quality = newpart.quality;
-                        //originalPart.SetCondition(newpart.condition);
-                        originalPart.Condition = newpart.condition;
+                        originalPart.SetCondition(newpart.condition);
+                       // originalPart.Condition = newpart.condition;
                         originalPart.UpdateDust(newpart.dust);
                         if (originalPart.IsUnmounted == false)
                         {
-                            originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderID]);
+                            MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
+                            originalPart.FastUnmount();
+                            //originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderID]);
                         }
                     }
                 }

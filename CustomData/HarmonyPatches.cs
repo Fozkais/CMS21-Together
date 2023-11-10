@@ -20,6 +20,7 @@ namespace CMS21MP.CustomData
     {
 
         private static bool ListenToFade;
+        public static bool ListenToCursorBlock;
         private static CarLoader LoaderToListen;
         
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
@@ -28,6 +29,19 @@ namespace CMS21MP.CustomData
         { 
             
             MelonCoroutines.Start(LoadCarCouroutine(__instance, name));
+        }
+        
+        [HarmonyPatch(typeof(Cursor3D), "BlockCursor")]
+        [HarmonyPrefix]
+        public static bool EnableGamepadMountObjectPatch(bool block, Cursor3D __instance)
+        {
+            if (ListenToCursorBlock)
+            {
+                MelonLogger.Msg("BlockCursor Bypass!");
+                return false;
+            }
+            MelonLogger.Msg("BlockCursor not Bypass!");
+            return true;
         }
         
             
@@ -62,7 +76,7 @@ namespace CMS21MP.CustomData
 
             if (loaderNumber == "1")
             {
-                ModCar newCar0 = new ModCar(0, __instance.ConfigVersion, SceneManager.GetActiveScene().name, __instance.placeNo);
+                ModCar newCar0 = new ModCar(0, __instance.ConfigVersion, SceneChecker.wichScene(SceneManager.GetActiveScene().name), __instance.placeNo);
                 if(!ClientData.carOnScene.Any(s => s.Value.carLoaderID == 0))
                 {
                     MelonLogger.Msg("Pass 1");
@@ -72,7 +86,7 @@ namespace CMS21MP.CustomData
             }
             else if (loaderNumber == "2")
             {
-                ModCar newCar1 = new ModCar(1, __instance.ConfigVersion, SceneManager.GetActiveScene().name,
+                ModCar newCar1 = new ModCar(1, __instance.ConfigVersion, SceneChecker.wichScene(SceneManager.GetActiveScene().name),
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == 1))
                 {
@@ -84,7 +98,7 @@ namespace CMS21MP.CustomData
             }
             else if (loaderNumber == "3")
             {
-                ModCar newCar2 = new ModCar(2, __instance.ConfigVersion, SceneManager.GetActiveScene().name,
+                ModCar newCar2 = new ModCar(2, __instance.ConfigVersion, SceneChecker.wichScene(SceneManager.GetActiveScene().name),
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == 2))
                 {
@@ -95,7 +109,7 @@ namespace CMS21MP.CustomData
             }
             else if (loaderNumber == "4")
             {
-                ModCar newCar3 = new ModCar(3, __instance.ConfigVersion, SceneManager.GetActiveScene().name,
+                ModCar newCar3 = new ModCar(3, __instance.ConfigVersion, SceneChecker.wichScene(SceneManager.GetActiveScene().name),
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == 3))
                 {
@@ -106,7 +120,7 @@ namespace CMS21MP.CustomData
             }
             else if (loaderNumber == "5")
             {
-                ModCar newCar4 = new ModCar(4, __instance.ConfigVersion, SceneManager.GetActiveScene().name,
+                ModCar newCar4 = new ModCar(4, __instance.ConfigVersion, SceneChecker.wichScene(SceneManager.GetActiveScene().name),
                     __instance.placeNo);
                 if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == 4))
                 {
@@ -192,6 +206,13 @@ namespace CMS21MP.CustomData
             }
 
             LoaderToListen = null;
+        }
+
+        public static IEnumerator ResetCursorBlockCoroutine()
+        {
+            ListenToCursorBlock = true;
+            yield return new WaitForSeconds(0.1f);
+            ListenToCursorBlock = false;
         }
     }
 }

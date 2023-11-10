@@ -347,6 +347,7 @@ namespace CMS21MP
                                     Server.Start();
                                 }
                                 showLobbyInterface = true;
+                                ShowLobbyInterface();
                             }
                             else
                             { 

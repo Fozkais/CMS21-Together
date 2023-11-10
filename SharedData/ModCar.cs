@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
+using CMS21MP.ServerSide;
 using Il2Cpp;
 using UnityEngine.Serialization;
 
@@ -16,7 +17,7 @@ namespace CMS21MP.SharedData
         
         public int carVersion;
         public int carPosition;
-        public string carScene;
+        public GameScene carScene;
         
         public int CarLifterState;
 
@@ -30,7 +31,7 @@ namespace CMS21MP.SharedData
         public List<ModCarPart> tempCarParts = new List<ModCarPart>();
         public List<ModPartScript> tempCarScripts = new List<ModPartScript>();
         
-        public ModCar(int _carLoaderID, int _carVersion, string  _carScene,int _carPosition=-1)
+        public ModCar(int _carLoaderID, int _carVersion, GameScene  _carScene,int _carPosition=-1)
         {
             this.carLoaderID = _carLoaderID;
             this.carID = GameData.carLoaders[_carLoaderID].carToLoad;
