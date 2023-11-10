@@ -38,7 +38,8 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync players Position and Rotation : ✅ -> Fixed on 0.1.4
 * Sync Inventory : ✅ -> Fixed on 0.1.3
 * Sync Cars Spawning and position : ✅
-* Sync Garage Interaction : 🚧 (Lifter, Wheel Assembler, ect...)
+* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer) -> Implemented on 0.2.0
+* Sync OutDoor Interaction : ❌ (Car Painting, Power bench and wheel alignment)
 * Sync Cars "mechanic" : ✅ -> Fixed on 0.1.2 (almost fully working?)
 * Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ❌
