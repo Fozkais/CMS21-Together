@@ -80,4 +80,15 @@ namespace CMS21MP.SharedData
         
         
     }
+    
+    [Serializable]
+    public enum GameScene
+    {
+        unknow,
+        garage,
+        junkyard,
+        auto_salon,
+        barn
+
+    }
 }

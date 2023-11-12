@@ -66,5 +66,26 @@ namespace CMS21MP.ClientSide.Data
                 MelonLogger.Msg("Sended Scene Update :" + scene);
             }
         }
+        
+        public static GameScene wichScene(string sceneName)
+        {
+            GameScene scene = GameScene.unknow;
+            switch (sceneName)
+            {
+                case "garage":
+                    scene = GameScene.garage;
+                    break;
+                case "Junkyard":
+                    scene = GameScene.junkyard;
+                    break;
+                case "Auto_salon":
+                    scene = GameScene.auto_salon;
+                    break;
+                case "Barn":
+                    scene = GameScene.barn;
+                    break;
+            }
+            return scene;
+        }
     }
 }

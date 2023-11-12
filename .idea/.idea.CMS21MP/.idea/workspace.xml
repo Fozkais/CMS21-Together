@@ -8,16 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ServerSide/ServerData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SharedData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/SharedData/ModCar.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
