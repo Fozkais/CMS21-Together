@@ -16,31 +16,31 @@ namespace CMS21MP.ServerSide.DataHandle
     {
 
         #region Functions
-            private static void SendTCPData(int _toClient, Packet _packet, SteamId steamId)
+            private static void SendTCPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
+                /*if (MainMod.usingSteamAPI)
                 {
                     PacketHandling.SendPacket(_packet, steamId);
                     MelonLogger.Msg("Send packet?");
                 }
                 else
-                {
+                {*/
                     Server.clients[_toClient].tcp.SendData(_packet);
-                }
+               // }
             }
 
-            private static void SendUDPData(int _toClient, Packet _packet, SteamId steamId)
+            private static void SendUDPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
+                /*if (MainMod.usingSteamAPI)
                 {
                     PacketHandling.SendPacket(_packet, steamId);
                 }
                 else
-                {
+                {*/
                     Server.clients[_toClient].udp.SendData(_packet);
-                }
+               // }
             }
 
             private static void SendTCPDataToAll(Packet _packet)
@@ -121,14 +121,14 @@ namespace CMS21MP.ServerSide.DataHandle
                     _packet.Write(_msg);
                     _packet.Write(_toClient);
 
-                    SendTCPData(_toClient, _packet, steamId);
+                    SendTCPData(_toClient, _packet);
                 }
                 using (Packet _packet = new Packet((int)PacketTypes.welcome))
                 {
                     _packet.Write("UDP Welcome!");
                     _packet.Write(_toClient);
 
-                    SendUDPData(_toClient, _packet, steamId);
+                    SendUDPData(_toClient, _packet);
                 }
             }
 
@@ -396,6 +396,14 @@ namespace CMS21MP.ServerSide.DataHandle
             using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_ResetAction))
             {
                 SendTCPDataToAll(fromClient, _packet);
+            }
+        }
+
+        public static void keepAlive(int fromclient)
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.keepAlive))
+            {
+                SendTCPData(fromclient, _packet);
             }
         }
     }

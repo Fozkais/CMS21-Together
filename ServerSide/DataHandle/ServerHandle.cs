@@ -27,6 +27,12 @@ namespace CMS21MP.ServerSide.DataHandle
                 Server.clients[_fromClient].SendToLobby(_username);
             }
             
+            public static void keepAlive(int _fromclient, Packet _packet)
+            {
+                ServerSend.keepAlive(_fromclient);
+                Server.clients[_fromclient].Alive = true;
+            }
+            
             public static void Disconnect(int _fromClient, Packet _packet)
             {
                 int id = _packet.ReadInt();

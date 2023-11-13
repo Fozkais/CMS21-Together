@@ -105,7 +105,8 @@ namespace CMS21MP.ClientSide
                 { (int)PacketTypes.tireChanger, ClientHandle.TireChange },
                 { (int)PacketTypes.tireChanger_ResetAction, ClientHandle.TireChanger_ResetAction },
                 { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer },
-                { (int)PacketTypes.wheelBalancer_ResetAction, ClientHandle.WheelBalancer_ResetAction }
+                { (int)PacketTypes.wheelBalancer_ResetAction, ClientHandle.WheelBalancer_ResetAction },
+                {(int)PacketTypes.keepAlive, ClientHandle.KeepAlive}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

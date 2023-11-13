@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Net;
 using System.Net.Sockets;
 using CMS21MP.ServerSide.DataHandle;
@@ -14,6 +15,7 @@ namespace CMS21MP.ServerSide
         public int id;
         public Player player;
         public bool isHosting = false;
+        public bool Alive = true;
         
         public ServerTCP tcp;
         public ServerUDP udp;
@@ -25,6 +27,27 @@ namespace CMS21MP.ServerSide
             udp = new ServerUDP(id);
         }
 
+        public IEnumerator isClientAlive()
+        {
+            
+            if (Alive)
+            {
+                yield return new WaitForSeconds(5);
+                Alive = false;
+            }
+            else
+            {
+                yield return new WaitForSeconds(12);
+                if (!Alive)
+                {
+                    MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
+                    Server.clients[id].Disconnect(id);
+                }
+            }
+            if(player != null)
+                MelonCoroutines.Start(isClientAlive());
+        }
+
 
         public void SendToLobby(string _playerName)
         {
@@ -34,7 +57,12 @@ namespace CMS21MP.ServerSide
             {
                 var client = Server.clients[i];
                 if (client.player != null)
+                {
                     ServerSend.SendPlayersInfo(client.player);
+                    MelonCoroutines.Start(isClientAlive());
+                }
+                
+                
             }
             
             foreach (ServerClient _client in Server.clients.Values)

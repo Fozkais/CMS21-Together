@@ -16,7 +16,8 @@ namespace CMS21MP.ClientSide.DataHandle
     {
 
         #region Lobby and connection
-        public static void Welcome(Packet _packet)
+        
+            public static void Welcome(Packet _packet)
             {
                 string _msg = _packet.ReadString();
                 int _myId = _packet.ReadInt();
@@ -26,6 +27,18 @@ namespace CMS21MP.ClientSide.DataHandle
 
                 ClientSend.WelcomeReceived();
                 _packet.Dispose();
+            }
+        
+            public static void KeepAlive(Packet _packet)
+            {
+                MelonCoroutines.Start(keepAlive());
+            }
+
+            private static IEnumerator keepAlive()
+            {
+                ClientData.isServerAlive = true;
+                yield return new WaitForSeconds(5);
+                ClientSend.KeepAlive();
             }
 
             public static void Disconnect(Packet _packet)
@@ -354,5 +367,6 @@ namespace CMS21MP.ClientSide.DataHandle
             } 
 
         #endregion
+        
     }
 }

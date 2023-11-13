@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using Il2Cpp;
@@ -15,6 +17,7 @@ namespace CMS21MP.ClientSide.Data
         public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
         
         public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
+        public static bool isServerAlive = true;
 
         public static List<Item> playerInventory = new List<Item>();
         public static List<GroupItem> playerGroupInventory = new List<GroupItem>();
@@ -38,6 +41,29 @@ namespace CMS21MP.ClientSide.Data
             Stats.HandleStats();
         }
 
+        private static IEnumerator isServer_alive()
+        {
+            if (isServerAlive)
+            {
+                yield return new WaitForSeconds(5);
+                isServerAlive = false;
+            }
+            else
+            {
+                yield return new WaitForSeconds(12);
+                if (!isServerAlive)
+                {
+                    MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
+                    if(SceneChecker.isNotInMenu())
+                        NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+                    Client.Instance.Disconnect();
+                    yield return null;
+                }
+            }
+            if(isServerAlive)
+                MelonCoroutines.Start(isServer_alive());
+        }
+
 
 
         public static void SpawnPlayer(Player player, int id)
@@ -57,6 +83,8 @@ namespace CMS21MP.ClientSide.Data
                 }
                 MelonLogger.Msg($"{player.username} is In-game");
                 serverPlayerInstances[id] = playerObject;
+                MelonCoroutines.Start(isServer_alive());
+                ClientSend.KeepAlive();
             }
             else
             {

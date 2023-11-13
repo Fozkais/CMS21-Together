@@ -5,6 +5,7 @@ namespace CMS21MP.SharedData
         #region Lobby and Connection
             empty = 0,
             welcome = 1,
+            keepAlive,
             disconnect,
             readyState,
             playerInfo,
@@ -37,6 +38,5 @@ namespace CMS21MP.SharedData
             wheelBalancer_ResetAction
             
         #endregion
-        
     }
 }

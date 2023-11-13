@@ -686,7 +686,7 @@ namespace CMS21MP.ClientSide.Data
                         if (originalPart.IsUnmounted)
                         {
                             MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
-                            //originalPart.ShowBySaveGame();
+                            originalPart.ShowBySaveGame();
                             originalPart.ShowMountAnimation();
                             originalPart.FastMount();
                             //originalPart.StartCoroutine(originalPart.DoMount());
@@ -712,7 +712,7 @@ namespace CMS21MP.ClientSide.Data
                         {
                             MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
                             originalPart.FastUnmount();
-                            //originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderID]);
+                            originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderID]);
                         }
                     }
                 }

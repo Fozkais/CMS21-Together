@@ -40,7 +40,7 @@ namespace CMS21MP.CustomData
                 MelonLogger.Msg("BlockCursor Bypass!");
                 return false;
             }
-            MelonLogger.Msg("BlockCursor not Bypass!");
+           // MelonLogger.Msg("BlockCursor not Bypass!");
             return true;
         }
         

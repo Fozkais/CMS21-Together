@@ -40,6 +40,14 @@ namespace CMS21MP.ClientSide.DataHandle
                 }
                 Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
             }
+            
+            public static void KeepAlive()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.keepAlive))
+                {
+                    SendTCPData(_packet);
+                }
+            }
 
             public static void SendReadyState(bool b, int number)
             {
@@ -258,7 +266,7 @@ namespace CMS21MP.ClientSide.DataHandle
             
         #endregion
 
-
+        
     }
     
 }

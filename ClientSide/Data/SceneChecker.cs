@@ -8,6 +8,13 @@ namespace CMS21MP.ClientSide.Data
     public static class SceneChecker
     {
         public static bool needToRefreshGarage;
+
+        public static bool isNotInMenu()
+        {
+            if (SceneManager.GetActiveScene().name != "Menu")
+                return true;
+            return false;
+        }
         public static bool isInGarage(Player player = null)
         {
             if (player == null)
