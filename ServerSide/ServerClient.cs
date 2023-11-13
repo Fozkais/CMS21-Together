@@ -37,7 +37,7 @@ namespace CMS21MP.ServerSide
             }
             else
             {
-                yield return new WaitForSeconds(12);
+                yield return new WaitForSeconds(6);
                 if (!Alive)
                 {
                     MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
@@ -59,7 +59,6 @@ namespace CMS21MP.ServerSide
                 if (client.player != null)
                 {
                     ServerSend.SendPlayersInfo(client.player);
-                    MelonCoroutines.Start(isClientAlive());
                 }
                 
                 

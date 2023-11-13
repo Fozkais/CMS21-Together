@@ -19,7 +19,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.2.2";
+      public const string ASSEMBLY_MOD_VERSION = "0.2.3";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -28,6 +28,8 @@ namespace CMS21MP
       public Client client;
       public ModUI modGUI;
       public ThreadManager threadManager;
+
+      public static bool isInitialized;
 
       public static bool isServer = false;
       public static bool isClient { get { return !isServer; } }
@@ -50,9 +52,9 @@ namespace CMS21MP
          client = new Client();
          client.Initialize();
 
-         LoggerInstance.Msg("Mod Initialized!");
          PreferencesManager.LoadPreferences();
-         //PreferencesManager.LoadAllModSaves();
+         isInitialized = true;
+         LoggerInstance.Msg("Mod Initialized!");
 
          SteamClient.Init(1190000);
          if (SteamClient.IsValid)
@@ -74,9 +76,10 @@ namespace CMS21MP
       public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
       {
          // MelonLogger.Msg("OnSceneWasLoaded: " + buildindex.ToString() + " | " + sceneName
+         
 
-         #region MultiplayerState
-
+         if (isInitialized)
+         {
             if (client.isConnected || isServer)
             {
                if(sceneName == "Menu" && client.isConnected && !isServer)
@@ -93,10 +96,9 @@ namespace CMS21MP
                {
                   ClientData.Init();
                }
-
+               
                SceneChecker.UpdatePlayerScene(sceneName);
                
-
                if (SceneChecker.isInGarage())
                {
                   foreach (KeyValuePair<int, Player> player in ClientData.serverPlayers)
@@ -108,9 +110,8 @@ namespace CMS21MP
                      }
                   }
                }
-               
             }
-            #endregion
+         }
       }
 
       public override void OnSceneWasInitialized(int buildindex, string sceneName) // Runs when a Scene has Initialized and is passed the Scene's Build Index and Name.
@@ -127,9 +128,21 @@ namespace CMS21MP
             {
                if(SceneChecker.isInGarage())
                   ClientData.UpdateClientInfo();
+
             }
          }
-         
+         if (Client.Instance.isConnected)
+         {
+            if (ClientData.needToKeepAlive)
+            {
+               if (!ClientData.isKeepingAlive)
+               {
+                  MelonCoroutines.Start(ClientData.keepClientAlive());
+                  MelonCoroutines.Start(ClientData.isServer_alive());
+               }
+            }
+         }
+
          threadManager.UpdateThread();
          
          if(SteamData.connectedToSteam) { SteamClient.RunCallbacks(); }

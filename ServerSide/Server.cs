@@ -55,7 +55,7 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
-            ServerSend.DisconnectClient(0, "Server is shutting down.");
+           // ServerSend.DisconnectClient(1, "Server is shutting down.");
             
             
             MainMod.isServer = false;

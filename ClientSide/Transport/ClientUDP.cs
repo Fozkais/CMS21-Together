@@ -106,7 +106,7 @@ namespace CMS21MP.ClientSide.Transport
         });
     }
 
-    private void Disconnect()
+    public void Disconnect()
     {
         if (socket != null)
         {

@@ -116,10 +116,13 @@ namespace CMS21MP.ClientSide
             if (isConnected)
             {
                 isConnected = false;
-                if(tcp.socket != null)
+                tcp.Disconnect();
+                udp.Disconnect();
+                ClientData.needToKeepAlive = false;
+                /*if(tcp.socket != null)
                     tcp.socket.Close();
                 if (udp.socket != null)
-                    udp.socket.Close();
+                    udp.socket.Close();*/
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }

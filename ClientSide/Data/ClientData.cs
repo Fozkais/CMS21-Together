@@ -18,6 +18,8 @@ namespace CMS21MP.ClientSide.Data
         
         public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
         public static bool isServerAlive = true;
+        public static bool needToKeepAlive = false;
+        public static bool isKeepingAlive;
 
         public static List<Item> playerInventory = new List<Item>();
         public static List<GroupItem> playerGroupInventory = new List<GroupItem>();
@@ -39,18 +41,29 @@ namespace CMS21MP.ClientSide.Data
             Car.UpdateCars();
             ModInventory.UpdateInventory();
             Stats.HandleStats();
+
         }
 
-        private static IEnumerator isServer_alive()
+        public static IEnumerator keepClientAlive()
+        {
+            isKeepingAlive = true;
+            ClientSend.KeepAlive();
+            MelonLogger.Msg("KeepinClientAlive!");
+            yield return new WaitForSeconds(5);
+            isKeepingAlive = false;
+        }
+
+        public static IEnumerator isServer_alive()
         {
             if (isServerAlive)
             {
+                MelonLogger.Msg("Server is Alive!");
                 yield return new WaitForSeconds(5);
                 isServerAlive = false;
             }
             else
             {
-                yield return new WaitForSeconds(12);
+                yield return new WaitForSeconds(6);
                 if (!isServerAlive)
                 {
                     MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
@@ -60,8 +73,6 @@ namespace CMS21MP.ClientSide.Data
                     yield return null;
                 }
             }
-            if(isServerAlive)
-                MelonCoroutines.Start(isServer_alive());
         }
 
 
@@ -83,8 +94,6 @@ namespace CMS21MP.ClientSide.Data
                 }
                 MelonLogger.Msg($"{player.username} is In-game");
                 serverPlayerInstances[id] = playerObject;
-                MelonCoroutines.Start(isServer_alive());
-                ClientSend.KeepAlive();
             }
             else
             {

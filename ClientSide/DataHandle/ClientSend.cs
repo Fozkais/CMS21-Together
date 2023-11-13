@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net;
+using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
@@ -39,6 +40,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     SendTCPData(_packet);
                 }
                 Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+                ClientSend.KeepAlive();
             }
             
             public static void KeepAlive()

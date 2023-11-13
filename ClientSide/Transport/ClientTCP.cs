@@ -151,7 +151,9 @@ namespace CMS21MP.ClientSide.Transport
         public void Disconnect()
         {
             ClientSend.Disconnect(Client.Instance.Id);
-
+            
+            socket.Close();
+            
             stream = null;
             receivedData = null;
             receiveBuffer = null;

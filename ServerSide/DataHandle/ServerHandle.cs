@@ -25,12 +25,14 @@ namespace CMS21MP.ServerSide.DataHandle
                     MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
                 }
                 Server.clients[_fromClient].SendToLobby(_username);
+                MelonCoroutines.Start( Server.clients[_fromClient].isClientAlive());
             }
             
             public static void keepAlive(int _fromclient, Packet _packet)
             {
                 ServerSend.keepAlive(_fromclient);
                 Server.clients[_fromclient].Alive = true;
+                MelonLogger.Msg($"Client:[{_fromclient}] is Alive!");
             }
             
             public static void Disconnect(int _fromClient, Packet _packet)

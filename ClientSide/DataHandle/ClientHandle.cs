@@ -31,15 +31,10 @@ namespace CMS21MP.ClientSide.DataHandle
         
             public static void KeepAlive(Packet _packet)
             {
-                MelonCoroutines.Start(keepAlive());
-            }
-
-            private static IEnumerator keepAlive()
-            {
                 ClientData.isServerAlive = true;
-                yield return new WaitForSeconds(5);
-                ClientSend.KeepAlive();
+                ClientData.needToKeepAlive = true;
             }
+            
 
             public static void Disconnect(Packet _packet)
             {
