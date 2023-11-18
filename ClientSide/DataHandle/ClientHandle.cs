@@ -31,6 +31,7 @@ namespace CMS21MP.ClientSide.DataHandle
         
             public static void KeepAlive(Packet _packet)
             {
+               // MelonLogger.Msg("Start Keeping Alive!");
                 ClientData.isServerAlive = true;
                 ClientData.needToKeepAlive = true;
             }
@@ -42,7 +43,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 MelonLogger.Msg($"Message from Server:{_msg}");
                 var name = SceneManager.GetActiveScene().name;
-                if(name == "garage" || name == "Junkyard" || name == "Auto_salon")
+                if (SceneChecker.isNotInMenu())
                     NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                 else
                     Client.Instance.Disconnect();
@@ -247,7 +248,7 @@ namespace CMS21MP.ClientSide.DataHandle
             MelonLogger.Msg("Received :" + carParts.Count + carParts[0].type.ToString());
 
             MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
-
+            _packet.Dispose();
         }
         public static void BodyParts(Packet _packet)
         {
@@ -255,7 +256,7 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             
             MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, null,carParts));
-            
+            _packet.Dispose();
         }
 
         #endregion
@@ -284,6 +285,7 @@ namespace CMS21MP.ClientSide.DataHandle
                         GameData.localInventory.Delete(_itemGame);
                     }
                 }
+                _packet.Dispose();
             }
             
             public static void InventoryGroupItem(Packet _packet)
@@ -308,6 +310,7 @@ namespace CMS21MP.ClientSide.DataHandle
                         GameData.localInventory.DeleteGroup(_item.UID);
                     }
                 }
+                _packet.Dispose();
             }
 
         #endregion
@@ -330,7 +333,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     GameData.carLoaders[_loaderId-1].lifter.Action(_action);
                     ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
                 }
-                
+                _packet.Dispose();
             }           
             public static void TireChange(Packet _packet)
             {
@@ -344,10 +347,12 @@ namespace CMS21MP.ClientSide.DataHandle
                                 " action: " + connect + " instant: " + instant);
                 
                 GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
+                _packet.Dispose();
             }   
             public static void TireChanger_ResetAction(Packet _packet)
             {
                 GameData.tireChanger.ResetActions();
+                _packet.Dispose();
             }       
         
             public static void WheelBalancer(Packet _packet)
@@ -359,10 +364,12 @@ namespace CMS21MP.ClientSide.DataHandle
                 MelonLogger.Msg("Received WheelBalance!");
                 
                 GameData.wheelBalancer.SetGroupOnWheelBalancer(_item.ToGame(_item), true);
+                _packet.Dispose();
             }   
             public static void WheelBalancer_ResetAction(Packet _packet)
             {
                 GameData.wheelBalancer.ResetActions();
+                _packet.Dispose();
             } 
 
         #endregion

@@ -29,6 +29,8 @@ namespace CMS21MP.ServerSide
 
         public IEnumerator isClientAlive()
         {
+            if(!MainMod.isServer)
+                yield break;
             
             if (Alive)
             {
@@ -40,8 +42,16 @@ namespace CMS21MP.ServerSide
                 yield return new WaitForSeconds(8);
                 if (!Alive)
                 {
-                    MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
-                    Server.clients[id].Disconnect(id);
+                    if(!MainMod.isServer)
+                        yield break;
+
+                    
+                    if (player != null)
+                    {
+                        MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
+                    }
+                        if(Server.clients.ContainsKey(id))
+                            Server.clients[id].Disconnect(id);
                 }
             }
             if(player != null)
@@ -80,7 +90,7 @@ namespace CMS21MP.ServerSide
         {
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
 
-            if(Server.clients.ContainsKey(_id))
+            if (Server.clients.ContainsKey(_id))
                 Server.clients.Remove(_id);
 
             player = null;

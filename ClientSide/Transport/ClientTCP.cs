@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.SharedData;
 using MelonLoader;
@@ -107,8 +108,6 @@ namespace CMS21MP.ClientSide.Transport
                         int _packetId = _packet.ReadInt();
                         if(Client.PacketHandlers.ContainsKey(_packetId))
                             Client.PacketHandlers[_packetId](_packet);
-                        else
-                            MelonLogger.Msg($"Invalid packetId: {_packetId} ");
                     }
                 });
                 _packetLenght = 0;
@@ -150,9 +149,8 @@ namespace CMS21MP.ClientSide.Transport
 
         public void Disconnect()
         {
-            ClientSend.Disconnect(Client.Instance.Id);
-            
-            socket.Close();
+            if(socket != null)
+                socket.Close();
             
             stream = null;
             receivedData = null;

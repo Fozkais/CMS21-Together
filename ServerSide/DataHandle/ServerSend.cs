@@ -19,43 +19,22 @@ namespace CMS21MP.ServerSide.DataHandle
             private static void SendTCPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-                /*if (MainMod.usingSteamAPI)
-                {
-                    PacketHandling.SendPacket(_packet, steamId);
-                    MelonLogger.Msg("Send packet?");
-                }
-                else
-                {*/
-                    Server.clients[_toClient].tcp.SendData(_packet);
-               // }
+                Server.clients[_toClient].tcp.SendData(_packet);
             }
 
             private static void SendUDPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-                /*if (MainMod.usingSteamAPI)
-                {
-                    PacketHandling.SendPacket(_packet, steamId);
-                }
-                else
-                {*/
-                    Server.clients[_toClient].udp.SendData(_packet);
-               // }
+
+                Server.clients[_toClient].udp.SendData(_packet);
             }
 
             private static void SendTCPDataToAll(Packet _packet)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
+                foreach (ServerClient client in Server.clients.Values)
                 {
-                   // PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
-                }
-                else
-                {
-                    for (int i = 1; i < Server.MaxPlayers; i++)
-                    {
-                        Server.clients[i].tcp.SendData(_packet);
-                    }
+                    client.tcp.SendData(_packet);
                 }
             }
 
@@ -68,10 +47,10 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
                 else
                 {
-                    for (int i = 1; i < Server.MaxPlayers; i++)
+                    foreach (ServerClient client in Server.clients.Values)
                     {
-                        if (i != _exceptClient)
-                            Server.clients[i].tcp.SendData(_packet);
+                        if (client.id != _exceptClient)
+                            client.tcp.SendData(_packet);
                     }
                 }
             }
@@ -85,9 +64,9 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
                 else
                 {
-                    for (int i = 1; i <= Server.MaxPlayers; i++)
+                    foreach (ServerClient client in Server.clients.Values)
                     {
-                        Server.clients[i].udp.SendData(_packet);
+                            client.udp.SendData(_packet);
                     }
                 }
             }
@@ -101,12 +80,10 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
                 else
                 {
-                    for (int i = 1; i <= Server.MaxPlayers; i++)
+                    foreach (ServerClient client in Server.clients.Values)
                     {
-                        if (i != _exceptClient)
-                        {
-                            Server.clients[i].udp.SendData(_packet);
-                        }
+                        if (client.id != _exceptClient)
+                            client.udp.SendData(_packet);
                     }
                 }
             }
@@ -138,7 +115,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 {
                     _packet.Write(_msg);
 
-                    SendTCPDataToAll(0, _packet);
+                    SendTCPData(id, _packet);
                 }
             }
             

@@ -80,7 +80,9 @@ namespace CMS21MP.ServerSide.Transport
                 }
                 catch (Exception _ex)
                 {
-                    MelonLogger.Msg($"Error receiving TCP data: {_ex}");
+                    if(_ex.InnerException is SocketException sockEx && sockEx.ErrorCode != 10054) {
+                        MelonLogger.Msg($"Error receiving TCP data: {_ex}"); 
+                    }
                     if (Server.clients.TryGetValue(id, out var client))
                     {
                         client.Disconnect(id);
@@ -109,7 +111,8 @@ namespace CMS21MP.ServerSide.Transport
                         using (Packet _packet = new Packet(_packetBytes))
                         {
                             int _packetId = _packet.ReadInt();
-                            Server.packetHandlers[_packetId](id, _packet);
+                            if(Server.packetHandlers.ContainsKey(_packetId))
+                                Server.packetHandlers[_packetId](id, _packet);
                         }
                     });
                     _packetLenght = 0;

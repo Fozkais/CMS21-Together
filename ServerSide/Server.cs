@@ -68,23 +68,34 @@ namespace CMS21MP.ServerSide
             MainMod.isServer = false;
             isStopping = true;
 
-            udpListener.Close();
-            tcpListener.Stop();
+            if(udpListener != null)
+                udpListener.Close();
+            if(tcpListener != null)
+                tcpListener.Stop();
             
+            if(clients != null)
+                clients.Clear();
+            if(packetHandlers != null)
+                packetHandlers.Clear();
             
-            clients.Clear();
-            packetHandlers.Clear();
-            
-            Client.PacketHandlers.Clear();
+            if(Client.PacketHandlers != null)
+                Client.PacketHandlers.Clear();
             GameData.DataInitialzed = false;
 
             GameData.carLoaders = null;
-            ClientData.carOnScene.Clear();
-            ClientData.serverPlayers.Clear();
-            ClientData.serverPlayerInstances.Clear();
-            GameData.localInventory.DeleteAll();
-            ClientData.playerGroupInventory.Clear();
-            ClientData.playerInventory.Clear();
+            
+            if(ClientData.carOnScene != null)
+                ClientData.carOnScene.Clear();
+            if(ClientData.serverPlayers != null)
+                ClientData.serverPlayers.Clear();
+            if(ClientData.serverPlayerInstances != null)
+                ClientData.serverPlayerInstances.Clear();
+            if(GameData.localInventory != null)
+                GameData.localInventory.DeleteAll();
+            if(ClientData.playerGroupInventory != null)
+                ClientData.playerGroupInventory.Clear();
+            if( ClientData.playerInventory != null)
+                ClientData.playerInventory.Clear();
             
             
             MelonLogger.Msg("Server Closed.");

@@ -143,6 +143,14 @@ namespace CMS21MP
             }
          }
 
+         if (MainMod.isServer)
+         {
+            if (Server.clients.Count == 0)
+            {
+               Server.Stop();
+            }
+         }
+
          threadManager.UpdateThread();
          
          if(SteamData.connectedToSteam) { SteamClient.RunCallbacks(); }

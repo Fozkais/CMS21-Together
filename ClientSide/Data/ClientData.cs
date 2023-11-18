@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace CMS21MP.ClientSide.Data
 {
-    public class ClientData : MonoBehaviour
+    public static class ClientData 
     {
         public static GameObject playerPrefab;
         public static Dictionary<int, Player> serverPlayers = new Dictionary<int, Player>();
@@ -46,15 +46,23 @@ namespace CMS21MP.ClientSide.Data
 
         public static IEnumerator keepClientAlive()
         {
-            isKeepingAlive = true;
-            ClientSend.KeepAlive();
-           // MelonLogger.Msg("KeepinClientAlive!");
-            yield return new WaitForSeconds(5);
+            if (Client.Instance.isConnected)
+            {
+                isKeepingAlive = true;
+                ClientSend.KeepAlive();
+               // MelonLogger.Msg("KeepinClientAlive!");
+                yield return new WaitForSeconds(5);
+                isKeepingAlive = false;
+            }
             isKeepingAlive = false;
         }
 
         public static IEnumerator isServer_alive()
         {
+            if (!Client.Instance.isConnected)
+                yield break;
+
+
             if (isServerAlive)
             {
                // MelonLogger.Msg("Server is Alive!");
@@ -66,11 +74,23 @@ namespace CMS21MP.ClientSide.Data
                 yield return new WaitForSeconds(8);
                 if (!isServerAlive)
                 {
-                    MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
-                    if(SceneChecker.isNotInMenu())
-                        NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
-                    Client.Instance.Disconnect();
-                    yield return null;
+                    if (!Client.Instance.isConnected)
+                    {
+                        if(SceneChecker.isNotInMenu())
+                            NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+                        Client.Instance.Disconnect();
+
+
+                    }
+                    else
+                    {
+                        MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
+                        if(SceneChecker.isNotInMenu())
+                            NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+                        Client.Instance.Disconnect();
+
+                    }
+                    
                 }
             }
         }
@@ -88,7 +108,7 @@ namespace CMS21MP.ClientSide.Data
                 }
                 else
                 {
-                    playerObject = Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
+                    playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
                     playerObject.transform.name = player.username;
                     
                 }
@@ -135,7 +155,7 @@ namespace CMS21MP.ClientSide.Data
                     
                     playerPrefab = model;
                     
-                    DontDestroyOnLoad(playerPrefab);
+                    Object.DontDestroyOnLoad(playerPrefab);
                     
                     playerModel.Unload(false);
                     playerTexture.Unload(false);
