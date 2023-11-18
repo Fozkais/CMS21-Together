@@ -8,6 +8,7 @@ using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
+using UnityEngine;
 
 namespace CMS21MP.ServerSide
 {
@@ -44,6 +45,8 @@ namespace CMS21MP.ServerSide
             MainMod.isServer = true;
             isStopping = false;
             
+            Application.runInBackground = true;
+            
             Client.Instance.ConnectToServer("127.0.0.1");
         }
 
@@ -55,7 +58,11 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
-           // ServerSend.DisconnectClient(1, "Server is shutting down.");
+            Application.runInBackground = false;
+            foreach (int id in Server.clients.Keys)
+            {
+                ServerSend.DisconnectClient(id, "Server is shutting down.");
+            }
             
             
             MainMod.isServer = false;

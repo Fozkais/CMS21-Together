@@ -115,6 +115,7 @@ namespace CMS21MP.ClientSide
         {
             if (isConnected)
             {
+                Application.runInBackground = false;
                 isConnected = false;
                 tcp.Disconnect();
                 udp.Disconnect();

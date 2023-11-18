@@ -90,8 +90,43 @@ namespace CMS21MP
         public void OnMPGUI()
         {
             UI_Utils();
-
             if (SceneManager.GetActiveScene().name == "Menu")
+            {
+                if(!showLobbyInterface && !showHostInterface)
+                {
+                    if (showMainInterface)
+                    {
+                        RenderMainInterface();
+                    }
+                }
+
+                if (!showHostInterface && !showMainInterface)
+                {
+                    if (showLobbyInterface)
+                    {
+                        RenderLobbyInterface();
+                    }
+                }
+
+                if (!showMainInterface && !showLobbyInterface)
+                {
+                    if (showHostInterface)
+                    {
+                        Rect hostWindowRect = new Rect(windowRect.position + hostInterfaceOffset, new Vector2(220, 300));
+                        RenderHostInterface(hostWindowRect);
+                    }
+                }
+            }
+            else
+            {
+                if (showMainInterface)
+                {
+                    RenderLobbyInterface();
+                }
+            }
+
+
+            /*f (SceneManager.GetActiveScene().name == "Menu")
             {
                 if (!MainMod.isServer || !Client.Instance.isConnected)
                 {
@@ -111,8 +146,10 @@ namespace CMS21MP
                 }
                 else
                 {
-                    if (showMainInterface && showLobbyInterface)
+                    if (showLobbyInterface)
+                    {
                         RenderLobbyInterface();
+                    }
                 }
             }
             else
@@ -120,9 +157,11 @@ namespace CMS21MP
                 if (MainMod.isServer || Client.Instance.isConnected)
                 {
                     if (showMainInterface)
+                    {
                         RenderLobbyInterface();
+                    }
                 }
-            }
+            }*/
 
         }
 
@@ -240,11 +279,13 @@ namespace CMS21MP
             if (GUILayout.Button("Join Lobby", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
                 JoinLobby();
+                ShowLobbyInterface();
             }
 
             if (GUILayout.Button("Host Game", buttonStyle, GUILayout.Width(190), GUILayout.Height(30)))
             {
                 showHostInterface = true;
+                showMainInterface = false;
                 PreferencesManager.LoadAllModSaves();
             }
 
@@ -378,67 +419,138 @@ namespace CMS21MP
             // Partie haute avec 3 colonnes
             GUILayout.BeginHorizontal();
 
-// Colonne 1 - Noms
-            GUILayout.BeginVertical(GUILayout.Width(100));
-            for (int i = 1; i < Server.clients.Count; i++)
+            if (MainMod.isServer)
             {
-                Player player = Server.clients[i].player;
-                if (player != null)
+                
+                // Colonne 1 - Noms
+                GUILayout.BeginVertical(GUILayout.Width(100));
+                foreach (int i in Server.clients.Keys)
                 {
-                    GUILayout.Label(player.username, textStyle);
-                }
-            }
-            GUILayout.EndVertical();
-
-            GUILayout.FlexibleSpace();
-
-// Colonne 2 - États  
-            GUILayout.BeginVertical(GUILayout.Width(50));
-            for (int i = 1; i < Server.clients.Count; i++)
-            {
-                Player player = Server.clients[i].player;
-
-                if (player != null)
-                {
-                    if (player.isReady)
+                    Player player = Server.clients[i].player;
+                    if (player != null)
                     {
-                        GUILayout.Label("Ready", textStyle);
-                    }
-                    else
-                    {
-                        GUILayout.Label("Not Ready", textStyle);
+                        GUILayout.Label("   " + player.username, textStyle);
+                        GUILayout.Space(35);
                     }
                 }
-            }
-            GUILayout.EndVertical();
+                GUILayout.EndVertical();
 
-            GUILayout.FlexibleSpace();
+                GUILayout.FlexibleSpace();
 
-            // Colonne 3 - Interactions
-            GUILayout.BeginVertical(GUILayout.Width(100));
-            for (int i = 1; i < Server.clients.Count; i++)
-            {
-                Player player = Server.clients[i].player;
-                if (player != null)
+                // Colonne 2 - États  
+                GUILayout.BeginVertical(GUILayout.Width(75));
+                foreach (int i in Server.clients.Keys)
                 {
-                    if (MainMod.isServer && player.id != 1) 
-                    {  
-                        if (GUILayout.Button("Kick", buttonStyle)) 
+                    Player player = Server.clients[i].player;
+
+                    if (player != null)
+                    {
+                        if (player.isReady)
                         {
-                            Server.clients[i].Disconnect(Server.clients[i].id);
+                            GUILayout.Label("Ready", textStyle);
+                        }
+                        else
+                        {
+                            GUILayout.Label("Not Ready", textStyle);
+                        }
+                        GUILayout.Space(25);
+                    }
+                }
+                GUILayout.EndVertical();
+
+                GUILayout.FlexibleSpace();
+
+                // Colonne 3 - Interactions
+                GUILayout.BeginVertical(GUILayout.Width(100));
+                foreach (int i in Server.clients.Keys)
+                {
+                    Player player = Server.clients[i].player;
+                    if (player != null)
+                    {
+                        if (MainMod.isServer && player.id != 1) 
+                        {  
+                            GUILayout.Space((i * 10));
+                            if (GUILayout.Button("Kick", buttonStyle)) 
+                            {
+                                ServerSend.DisconnectClient(i, "You've been kicked from server!");
+                                Server.clients[i].Disconnect(Server.clients[i].id);
+                            }
+                            GUILayout.Space(25);
+                        }
+
+                        if (Server.clients[i].id == Client.Instance.Id)
+                        {
+                            GUILayout.Space((i * 10));
+                            if (GUILayout.Button("Ready", buttonStyle)) 
+                            {
+                                player.isReady = !player.isReady;
+                                ClientSend.SendReadyState(player.isReady, i);
+                            }
+                        }
+                        
+                    }
+                } 
+            }
+            else
+            { 
+                // Colonne 1 - Noms
+                GUILayout.BeginVertical(GUILayout.Width(100));
+                foreach (int i in ClientData.serverPlayers.Keys)
+                {
+                    Player player =  ClientData.serverPlayers[i];
+                    if (player != null)
+                    {
+                        GUILayout.Label("   " + player.username, textStyle);
+                        GUILayout.Space(25);
+                    }
+                }
+                GUILayout.EndVertical();
+
+                GUILayout.FlexibleSpace();
+
+                // Colonne 2 - États  
+                GUILayout.BeginVertical(GUILayout.Width(75));
+                foreach (int i in ClientData.serverPlayers.Keys)
+                {
+                    Player player =  ClientData.serverPlayers[i];
+
+                    if (player != null)
+                    {
+                        if (player.isReady)
+                        {
+                            GUILayout.Label("Ready", textStyle);
+                        }
+                        else
+                        {
+                            GUILayout.Label("Not Ready", textStyle);
+                        }
+                        GUILayout.Space(25);
+                    }
+                }
+                GUILayout.EndVertical();
+
+                GUILayout.FlexibleSpace();
+
+                // Colonne 3 - Interactions
+                GUILayout.BeginVertical(GUILayout.Width(100));
+                foreach (int i in ClientData.serverPlayers.Keys)
+                {
+                    Player player =  ClientData.serverPlayers[i];
+                    if (player != null)
+                    {
+                        if (ClientData.serverPlayers[i].id == Client.Instance.Id)
+                        {
+                            GUILayout.Space((i * 30) + 15);
+                            if (GUILayout.Button("Ready", buttonStyle)) 
+                            {
+                                player.isReady = !player.isReady;
+                                ClientSend.SendReadyState(player.isReady, i);
+                            }
                         }
                     }
-                    
-                    if (GUILayout.Button("Ready", buttonStyle)) 
-                    {
-                        player.isReady = !player.isReady;
-                        ClientSend.SendReadyState(player.isReady, i);
-                    }
-                    
                 }
+            }
 
-
-            } 
             GUILayout.EndVertical();
 
             GUILayout.EndHorizontal();
@@ -477,7 +589,7 @@ namespace CMS21MP
             }
             else
             {
-                if(GUILayout.Button("Disconnect", buttonStyle, GUILayout.Width(100), GUILayout.Height(25))) 
+                if(GUILayout.Button("Disconnect", buttonStyle, GUILayout.Width(100), GUILayout.Height(35))) 
                 {
                     showLobbyInterface = false;
                     showHostInterface = false;
@@ -493,25 +605,19 @@ namespace CMS21MP
             GUILayout.EndArea();
         }
 
-        public async void JoinLobby()
+        public void JoinLobby()
         {
              if (!string.IsNullOrEmpty(ModUI.Instance.username) && !string.IsNullOrEmpty(ModUI.Instance.ipAddress))
             {
-                if (!MainMod.usingSteamAPI)
-                {
-                    Client.Instance.ConnectToServer(ModUI.Instance.ipAddress);
-                }
-                else
-                {
-                    await CallbackHandler.RefreshMultiplayerLobbies();
-                    ShowLobbyInterface();
-                }
+                Client.Instance.ConnectToServer(ModUI.Instance.ipAddress);
+                ShowLobbyInterface();
+                Application.runInBackground = true;
             }
         }
 
         public void ShowLobbyInterface()
         {
-            showMainInterface = true;
+            showMainInterface = false;
             showHostInterface = false;
             showLobbyInterface = true;
         }

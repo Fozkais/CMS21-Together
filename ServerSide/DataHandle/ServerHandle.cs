@@ -32,7 +32,7 @@ namespace CMS21MP.ServerSide.DataHandle
             {
                 ServerSend.keepAlive(_fromclient);
                 Server.clients[_fromclient].Alive = true;
-                MelonLogger.Msg($"Client:[{_fromclient}] is Alive!");
+               // MelonLogger.Msg($"Client:[{_fromclient}] is Alive!");
             }
             
             public static void Disconnect(int _fromClient, Packet _packet)

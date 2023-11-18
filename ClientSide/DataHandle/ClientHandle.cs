@@ -46,6 +46,8 @@ namespace CMS21MP.ClientSide.DataHandle
                     NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                 else
                     Client.Instance.Disconnect();
+                
+                Application.runInBackground = false;
                 _packet.Dispose();
             }
 
@@ -63,7 +65,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 Player info = _packet.Read<Player>();
                 ClientData.serverPlayers[info.id] = info;
                 
-                MelonLogger.Msg($"Received {info.username} info from server.");
+                MelonLogger.Msg($"Received {info.username}, {info.id} info from server.");
                 _packet.Dispose();
             }
             
@@ -241,6 +243,8 @@ namespace CMS21MP.ClientSide.DataHandle
         {
             List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
+            
+            MelonLogger.Msg("Received :" + carParts.Count + carParts[0].type.ToString());
 
             MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
 

@@ -48,7 +48,7 @@ namespace CMS21MP.ClientSide.Data
         {
             isKeepingAlive = true;
             ClientSend.KeepAlive();
-            MelonLogger.Msg("KeepinClientAlive!");
+           // MelonLogger.Msg("KeepinClientAlive!");
             yield return new WaitForSeconds(5);
             isKeepingAlive = false;
         }
@@ -57,13 +57,13 @@ namespace CMS21MP.ClientSide.Data
         {
             if (isServerAlive)
             {
-                MelonLogger.Msg("Server is Alive!");
+               // MelonLogger.Msg("Server is Alive!");
                 yield return new WaitForSeconds(5);
                 isServerAlive = false;
             }
             else
             {
-                yield return new WaitForSeconds(6);
+                yield return new WaitForSeconds(8);
                 if (!isServerAlive)
                 {
                     MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");

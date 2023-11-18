@@ -58,25 +58,28 @@ namespace CMS21MP.ClientSide.Transport
 
     private void ReceiveCallback(IAsyncResult _result)
     {
-        try
+        if (socket != null)
         {
-            IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] _data = socket.EndReceive(_result, ref receivedIP);
-
-            if (_data.Length < 4)
+            try
             {
-                MelonLogger.Msg("UDP Data invalid");
-               // Disconnect();
-                return;
+                IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
+                byte[] _data = socket.EndReceive(_result, ref receivedIP);
+
+                if (_data.Length < 4)
+                {
+                    MelonLogger.Msg("UDP Data invalid");
+                   // Disconnect();
+                    return;
+                }
+                
+                HandleData(_data);
+                socket.BeginReceive(ReceiveCallback, null);
             }
-            
-            HandleData(_data);
-            socket.BeginReceive(ReceiveCallback, null);
-        }
-        catch (SocketException ex)
-        {
-            MelonLogger.Msg("error while receiving data from server via UDP: " + ex);
-            //MelonCoroutines.Start(ResetConnection());
+            catch (SocketException ex)
+            {
+                MelonLogger.Msg("error while receiving data from server via UDP: " + ex);
+                //MelonCoroutines.Start(ResetConnection());
+            }
         }
     }
 

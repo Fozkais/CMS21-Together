@@ -39,15 +39,23 @@ namespace CMS21MP.ClientSide.Data
                 //MelonLogger.Msg("BufferPart!");
                 if (car.partInfo.CarPartsBuffer.Count > 0)
                 {
-                    MelonLogger.Msg("Found Bodypart in buffer!: " + car.partInfo.CarPartsBuffer.Count);
+                   // MelonLogger.Msg("Found Bodypart in buffer!: " + car.partInfo.CarPartsBuffer.Count);
                     if (car.isReady && car.isReferenced)
                     {
-                        MelonLogger.Msg("Car Ready! Updating..");
-                        for (var index = 0; index < car.partInfo.CarPartsBuffer.Count; index++)
+                        //MelonLogger.Msg("Car Ready! Updating..");
+                        try
                         {
-                            var part = car.partInfo.CarPartsBuffer[index];
-                            HandleNewPart(car.carLoaderID, null, part);
-                            car.partInfo.CarPartsBuffer.Remove(part);
+                            for (var index = 0; index < car.partInfo.CarPartsBuffer.Count; index++)
+                            {
+                                var part = car.partInfo.CarPartsBuffer[index];
+
+                                HandleNewPart(car.carLoaderID, null, part);
+                                car.partInfo.CarPartsBuffer.Remove(part);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MelonLogger.Msg("Error on CarPartUpdateHandle 28 - Body");
                         }
                     }
                     else
@@ -62,15 +70,24 @@ namespace CMS21MP.ClientSide.Data
 
                 if (car.partInfo.PartScriptsBuffer.Count > 0)
                 {
-                    MelonLogger.Msg("Found PartScript in buffer!: " + car.partInfo.PartScriptsBuffer.Count);
+                   // MelonLogger.Msg("Found PartScript in buffer!: " + car.partInfo.PartScriptsBuffer.Count);
                     if (car.isReady && car.isReferenced)
                     {
-                        MelonLogger.Msg("Car Ready! Updating..");
-                        for (var index = 0; index < car.partInfo.PartScriptsBuffer.Count; index++)
+                        try
                         {
-                            var part = car.partInfo.PartScriptsBuffer[index];
-                            HandleNewPart(car.carLoaderID, part);
-                            car.partInfo.PartScriptsBuffer.Remove(part);
+
+
+                          //  MelonLogger.Msg("Car Ready! Updating..");
+                            for (var index = 0; index < car.partInfo.PartScriptsBuffer.Count; index++)
+                            {
+                                var part = car.partInfo.PartScriptsBuffer[index];
+                                HandleNewPart(car.carLoaderID, part);
+                                car.partInfo.PartScriptsBuffer.Remove(part);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            MelonLogger.Msg("Error on CarPartUpdateHandle 28 - Part");
                         }
                     }
                     else
@@ -314,7 +331,7 @@ namespace CMS21MP.ClientSide.Data
                             if (hasDifferences(BodyParts[i], BodyPartsReferences[i]))
                             {
                                 BodyParts[i] = partConverted;
-                                MelonLogger.Msg("Body part updated");
+                               // MelonLogger.Msg("Body part updated");
                                 ClientSend.SendBodyPart(_car.carLoaderID, partConverted);
                             }
                         }
@@ -361,7 +378,7 @@ namespace CMS21MP.ClientSide.Data
                                 if (hasDifferences(suspensionParts[i][j], parts[j]))
                                 {
                                     suspensionParts[i][j] = partConverted;
-                                    MelonLogger.Msg("Suspension part updated");
+                                 //   MelonLogger.Msg("Suspension part updated");
                                     ClientSend.SendCarPart(_car.carLoaderID, partConverted);
                                 }
                             }
@@ -396,7 +413,7 @@ namespace CMS21MP.ClientSide.Data
                             if (hasDifferences(engineParts[i], EnginePartsReferences[i]))
                             {
                                 engineParts[i] = partConverted;
-                                MelonLogger.Msg("Engine part updated");
+                             //   MelonLogger.Msg("Engine part updated");
                                 ClientSend.SendCarPart(_car.carLoaderID, partConverted);
                                 
                             }
@@ -546,22 +563,29 @@ namespace CMS21MP.ClientSide.Data
                 yield return new WaitForEndOfFrame();
                 
                 MelonLogger.Msg($"Waiting car to be ready finished!.. : {car.isReady} , {car.isReferenced}");
-
-                if (partScripts != null)
+                try
                 {
-                    for (int i = 0; i < partScripts.Count; i++)
+                    if (partScripts != null)
                     {
-                        HandleNewPart(carLoaderID, partScripts[i]);
+                        for (int i = 0; i < partScripts.Count; i++)
+                        {
+                            HandleNewPart(carLoaderID, partScripts[i]);
+                        }
+                    }
+
+                    if (carParts != null)
+                    {
+                        for (int i = 0; i < carParts.Count; i++)
+                        {
+                            HandleNewPart(carLoaderID, null,carParts[i]);
+                        }
                     }
                 }
-
-                if (carParts != null)
+                catch (Exception e)
                 {
-                    for (int i = 0; i < carParts.Count; i++)
-                    {
-                        HandleNewPart(carLoaderID, null,carParts[i]);
-                    }
+                    MelonLogger.Msg("Error on HandleNewCar 531");
                 }
+
                 yield return null;
             }
         }
@@ -583,7 +607,7 @@ namespace CMS21MP.ClientSide.Data
                                         if (otherParts.Count >= _partScript.partIdNumber)
                                         {
                                             UpdatePart(otherParts[_partScript.partIdNumber], _partScript, _carLoaderID);
-                                            MelonLogger.Msg("Other part added");
+                                          //  MelonLogger.Msg("Other part added");
                                         }
                                         else
                                         {
@@ -600,7 +624,7 @@ namespace CMS21MP.ClientSide.Data
                                         .TryGetValue(_partScript.partID, out PartScript enginePart))
                                     {
                                         UpdatePart(enginePart, _partScript, _carLoaderID);
-                                        MelonLogger.Msg("Engine part added");
+                                       // MelonLogger.Msg("Engine part added");
                                     }
                                     else
                                     {
@@ -614,7 +638,7 @@ namespace CMS21MP.ClientSide.Data
                                         if (suspensionParts.Count >= _partScript.partIdNumber)
                                         {
                                             UpdatePart(suspensionParts[_partScript.partIdNumber], _partScript, _carLoaderID);
-                                            MelonLogger.Msg("Suspension part added");
+                                          //  MelonLogger.Msg("Suspension part added");
                                         }
                                         else
                                         {
