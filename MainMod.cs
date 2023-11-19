@@ -19,7 +19,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.2.4";
+      public const string ASSEMBLY_MOD_VERSION = "0.2.5";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -169,6 +169,11 @@ namespace CMS21MP
          {
             Cursor3D.Get().BlockCursor(false);
          }
+
+         if (Input.GetKeyDown(KeyCode.F4) && Input.GetKeyDown(KeyCode.LeftAlt))
+         {
+            PreferencesManager.SaveMelonLog();
+         }
       }
 
       public override void OnGUI() // Can run multiple times per frame. Mostly used for Unity's IMGUI.
@@ -179,13 +184,12 @@ namespace CMS21MP
 
       public override void OnDeinitializeMelon() // Called after preferenced saved and before application quit.
       {
-
+         
       }
 
       public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
       {
-         //Client.Instance.ClientOnApplicationQuit();
-         //PreferencesManager.SaveAllModSaves();
+         PreferencesManager.SaveMelonLog();
       }
 
       public override void OnPreferencesSaved() // Runs when Melon Preferences get saved.

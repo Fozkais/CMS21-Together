@@ -45,14 +45,14 @@ namespace CMS21MP.ClientSide.Data
                 var item = localInventory._items[i];
                 if(handledItem.Count == 0)
                 {
-                    MelonLogger.Msg("Adding Item");
+                    //MelonLogger.Msg("Adding Item");
                     var newItem = new ModItem(item);
                     handledItem.Add(newItem);
                     ClientSend.SendInventoryItem(newItem, true);
                 }
                 else if(!handledItem.Any(s => s.UID == item.UID))
                 {
-                    MelonLogger.Msg("Adding Item");
+                   // MelonLogger.Msg("Adding Item");
                     var newItem = new ModItem(item);
                     handledItem.Add(newItem);
                     ClientSend.SendInventoryItem(newItem, true);
@@ -68,14 +68,14 @@ namespace CMS21MP.ClientSide.Data
                 var item = localInventory._items[i];
                 if (handledGroupItem.Count == 0)
                 {
-                    MelonLogger.Msg("Adding GroupItem");
+                  //  MelonLogger.Msg("Adding GroupItem");
                     var newItem = new ModGroupItem(item);
                     handledGroupItem.Add(newItem);
                     ClientSend.SendInventoryGroupItem(newItem, true);
                 }
                 else if (!handledGroupItem.Any(s => s.UID == item.UID))
                 {
-                    MelonLogger.Msg("Adding GroupItem");
+                  //  MelonLogger.Msg("Adding GroupItem");
                     var newItem = new ModGroupItem(item);
                     handledGroupItem.Add(newItem);
                     ClientSend.SendInventoryGroupItem(newItem, true);
@@ -97,14 +97,14 @@ namespace CMS21MP.ClientSide.Data
                 
                 if (localInventory._items.Count == 0)
                 {
-                    MelonLogger.Msg("Local Inventory is empty");
-                    MelonLogger.Msg("Remove Item!");
+                  //  MelonLogger.Msg("Local Inventory is empty");
+                  //  MelonLogger.Msg("Remove Item!");
                     ClientSend.SendInventoryItem(item, false);
                     handledItem.Remove(item);
                 }   
                 else  if(!items.Any(s =>  s.UID == item.UID))
                 {
-                    MelonLogger.Msg("Remove Item");
+                   // MelonLogger.Msg("Remove Item");
                     ClientSend.SendInventoryItem(item, false);
                     handledItem.Remove(item);
                 }
@@ -126,15 +126,15 @@ namespace CMS21MP.ClientSide.Data
 
                 if (localInventory.Count == 0)
                 {
-                    MelonLogger.Msg("Local Inventory is empty");
-                    MelonLogger.Msg("Remove Item!");
+                   // MelonLogger.Msg("Local Inventory is empty");
+                   // MelonLogger.Msg("Remove Item!");
                     ClientSend.SendInventoryGroupItem(item, false);
                     handledGroupItem.Remove(item);
                     return;
                 }
                 else if(!items.Any(s => s.UID == item.UID))
                 {
-                    MelonLogger.Msg("Remove GroupItem");
+                    //MelonLogger.Msg("Remove GroupItem");
                     ClientSend.SendInventoryGroupItem(item, false);
                     handledGroupItem.Remove(item);
                 }

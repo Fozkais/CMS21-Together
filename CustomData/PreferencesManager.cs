@@ -166,6 +166,39 @@ public static class PreferencesManager
         
         MelonLogger.Msg("Saved Successfully!");
     }
+
+
+    public static void SaveMelonLog()
+    {
+         string LogFilePath = @"MelonLoader\Latest.log";
+         string NewLogDestination = @"Mods\togetherMod\log\";
+        // Répertoire de destination
+
+        // Créer le répertoire de destination s'il n'existe pas
+        if (!Directory.Exists(NewLogDestination))
+        {
+            Directory.CreateDirectory(NewLogDestination);
+        }
+
+        // Obtenez la date et l'heure actuelles pour inclure dans le nouveau nom de fichier
+        string dateHeureCourante = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+        // Obtenez le nom du fichier à partir du chemin du fichier source
+        string nomFichier = Path.GetFileName(LogFilePath);
+
+        // Construisez le nouveau chemin du fichier avec la date et l'heure
+        string nouveauCheminFichier = Path.Combine(NewLogDestination, $"{dateHeureCourante}_{nomFichier}.txt");
+
+        try
+        {
+            // Copier le fichier
+            File.Copy(LogFilePath, nouveauCheminFichier);
+        }
+        catch (Exception ex)
+        {
+            MelonLogger.Msg($"Erreur while saving mod log : {ex.Message}");
+        }
+    }
 }
 
 public class Preferences

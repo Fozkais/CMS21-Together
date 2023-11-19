@@ -40,15 +40,26 @@ namespace CMS21MP.ClientSide.DataHandle
             public static void Disconnect(Packet _packet)
             {
                 string _msg = _packet.ReadString();
+                int id = _packet.ReadInt();
+                
                 
                 MelonLogger.Msg($"Message from Server:{_msg}");
-                var name = SceneManager.GetActiveScene().name;
-                if (SceneChecker.isNotInMenu())
-                    NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+                if (id != Client.Instance.Id)
+                {
+                    if(ClientData.serverPlayers.ContainsKey(id))
+                        ClientData.serverPlayers[id].Disconnect();
+                }
                 else
-                    Client.Instance.Disconnect();
+                {
+                    var name = SceneManager.GetActiveScene().name;
+                    if (SceneChecker.isNotInMenu())
+                        NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+                    else
+                        Client.Instance.Disconnect();
+                    
+                    Application.runInBackground = false;
+                }
                 
-                Application.runInBackground = false;
                 _packet.Dispose();
             }
 
@@ -170,28 +181,32 @@ namespace CMS21MP.ClientSide.DataHandle
             {
                 ClientData.carOnScene.Add(car.carLoaderID, car);
                 MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.First(s =>
-                    s.Value.carID == car.carID && s.Value.carVersion == car.carVersion && s.Value.carPosition == car.carPosition).Value));
+                    s.Value.carID == car.carID && s.Value.carVersion == car.carVersion && s.Value.carPosition == car.carPosition).Value,  carLoader));
                 MelonLogger.Msg("Loading new car...");
-                carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
-                //carLoader.ConfigVersion = car.carVersion;
-                //carLoader.StartCoroutine(carLoader.LoadCar(car.carID));
-               // carLoader.StartCoroutine(carLoader.gameObject.GetComponentInChildren<CarDebug>()
-                //    .RunLoadCar(car.carID, car.carVersion));
-
-                carLoader.placeNo = car.carPosition; // TODO: Change this to a better way
-                carLoader.PlaceAtPosition();
-                carLoader.ChangePosition(car.carPosition);
             }
             _packet.Dispose();
         }
         
-        private static IEnumerator StartFadeIn(ModCar car)
+        private static IEnumerator StartFadeIn(ModCar car, CarLoader carLoader)
         {
             ScreenFader.Get().NormalFadeIn();
-            while (!car.isReady && !car.isReferenced && !car.isUpdated)
+            Car.aCarIsSpawning = true;
+            yield return new WaitForSeconds(0.5f);
+            Car.aCarIsSpawning = false;
+            carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
+
+            carLoader.placeNo = car.carPosition; // TODO: Change this to a better way
+            carLoader.PlaceAtPosition();
+            carLoader.ChangePosition(car.carPosition);
+
+            int count = 0;
+            
+            while (!car.isReady && !car.isReferenced && !car.isUpdated || count < 10)
             {
+                count += 1;
                 yield return new WaitForSeconds(0.5f);
             }
+            yield return new WaitForSeconds(1f);
             ScreenFader.Get().NormalFadeOut();
         }
         
@@ -245,9 +260,11 @@ namespace CMS21MP.ClientSide.DataHandle
             List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
             
-            MelonLogger.Msg("Received :" + carParts.Count + carParts[0].type.ToString());
+            MelonLogger.Msg("Received :" + carParts.Count + " " + carParts[0].type.ToString());
+                
 
-            MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
+            MelonCoroutines.Start(Car.SetCarToReadyAndUpdated(carLoaderID, carParts));
+            //MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
             _packet.Dispose();
         }
         public static void BodyParts(Packet _packet)
@@ -255,7 +272,8 @@ namespace CMS21MP.ClientSide.DataHandle
             List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
             int carLoaderID = _packet.ReadInt();
             
-            MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, null,carParts));
+            MelonCoroutines.Start(Car.SetCarToReadyAndUpdated(carLoaderID, null, carParts));
+            //MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, null,carParts));
             _packet.Dispose();
         }
 

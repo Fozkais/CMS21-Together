@@ -19,14 +19,15 @@ namespace CMS21MP.ServerSide.DataHandle
             private static void SendTCPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-                Server.clients[_toClient].tcp.SendData(_packet);
+                if(Server.clients.ContainsKey(_toClient))
+                    Server.clients[_toClient].tcp.SendData(_packet);
             }
 
             private static void SendUDPData(int _toClient, Packet _packet)//, SteamId steamId)
             {
                 _packet.WriteLength();
-
-                Server.clients[_toClient].udp.SendData(_packet);
+                if(Server.clients.ContainsKey(_toClient))
+                    Server.clients[_toClient].udp.SendData(_packet);
             }
 
             private static void SendTCPDataToAll(Packet _packet)
@@ -41,50 +42,30 @@ namespace CMS21MP.ServerSide.DataHandle
             private static void SendTCPDataToAll(int _exceptClient, Packet _packet)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
-                {
-                  //  PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
-                }
-                else
-                {
+
                     foreach (ServerClient client in Server.clients.Values)
                     {
                         if (client.id != _exceptClient)
                             client.tcp.SendData(_packet);
                     }
-                }
             }
 
             private static void SendUDPDataToAll(Packet _packet)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
+                foreach (ServerClient client in Server.clients.Values)
                 {
-                  //  PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
-                }
-                else
-                {
-                    foreach (ServerClient client in Server.clients.Values)
-                    {
-                            client.udp.SendData(_packet);
-                    }
+                        client.udp.SendData(_packet);
                 }
             }
 
             private static void SendUDPDataToAll(int _exceptClient, Packet _packet)
             {
                 _packet.WriteLength();
-                if (MainMod.usingSteamAPI)
+                foreach (ServerClient client in Server.clients.Values)
                 {
-                  //  PacketHandling.SendPacket(_packet, CallbackHandler.lobbyID);
-                }
-                else
-                {
-                    foreach (ServerClient client in Server.clients.Values)
-                    {
-                        if (client.id != _exceptClient)
-                            client.udp.SendData(_packet);
-                    }
+                    if (client.id != _exceptClient)
+                        client.udp.SendData(_packet);
                 }
             }
         #endregion
@@ -114,8 +95,9 @@ namespace CMS21MP.ServerSide.DataHandle
                 using (Packet _packet = new Packet((int)PacketTypes.disconnect))
                 {
                     _packet.Write(_msg);
+                    _packet.Write(id);
 
-                    SendTCPData(id, _packet);
+                    SendTCPDataToAll(_packet);
                 }
             }
             

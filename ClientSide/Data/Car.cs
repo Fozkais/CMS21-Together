@@ -16,6 +16,7 @@ namespace CMS21MP.ClientSide.Data
     {
         private static bool partUpdateHandleRunning;
         private static bool carMovementHandleRunning;
+        public static bool aCarIsSpawning;
         public static void UpdateCars()
         {
             if(!partUpdateHandleRunning)
@@ -112,7 +113,7 @@ namespace CMS21MP.ClientSide.Data
             carMovementHandleRunning = true;
             yield return new WaitForSeconds(updateRate);
             HandleCarPos();
-            isCarStillLoaded();
+            MelonCoroutines.Start(isCarStillLoaded());
             yield return new WaitForEndOfFrame();
             carMovementHandleRunning = false;
         }
@@ -281,14 +282,20 @@ namespace CMS21MP.ClientSide.Data
                     {
                         car.isReady = true;
                         MelonLogger.Msg("Car Ready !");
+
+                        if (!car.isFromServer)
+                        {
+                            ClientSend.SendPartScripts(car.tempOther, car.carLoaderID);
+                            car.tempOther = null;
+                            ClientSend.SendPartScripts(car.tempEngine, car.carLoaderID);
+                            car.tempEngine = null;
+                            ClientSend.SendPartScripts(car.tempSuspension, car.carLoaderID);
+                            car.tempSuspension = null;
+                            
+                            ClientSend.SendBodyParts(car.tempBody, car.carLoaderID);
+                            car.tempBody = null;
+                        }
                         
-                        ClientSend.SendPartScripts(car.tempCarScripts, car.carLoaderID);
-                        ClientSend.SendBodyParts(car.tempCarParts, car.carLoaderID);
-                        
-                        car.tempCarParts.Clear();
-                        car.tempCarParts = null;
-                        car.tempCarScripts.Clear();
-                        car.tempCarScripts = null;
                         if (car.isFromServer)
                         {
                             yield return new WaitForSeconds(1.5f);
@@ -320,7 +327,7 @@ namespace CMS21MP.ClientSide.Data
                         {
                             //MelonLogger.Msg("Send new Body part");
                             //ClientSend.SendBodyPart(_car.carLoaderID, partConverted); Instead Send all in one ?
-                            _car.tempCarParts.Add(partConverted);
+                            _car.tempBody.Add(partConverted);
                         }
                     }
                             
@@ -367,7 +374,7 @@ namespace CMS21MP.ClientSide.Data
                             {
                                 //MelonLogger.Msg("Send new suspension part");
                                 //ClientSend.SendCarPart(_car.carLoaderID, partConverted);
-                                _car.tempCarScripts.Add(partConverted);
+                                _car.tempSuspension.Add(partConverted);
                             }
                         }
                             
@@ -403,7 +410,7 @@ namespace CMS21MP.ClientSide.Data
                         {
                            // MelonLogger.Msg("Send new engine part");
                             // ClientSend.SendCarPart(_car.carLoaderID, partConverted);
-                            _car.tempCarScripts.Add(partConverted);
+                            _car.tempEngine.Add(partConverted);
                         }
                     }
                     else
@@ -449,7 +456,7 @@ namespace CMS21MP.ClientSide.Data
                             {
                                 //MelonLogger.Msg("Send new other part");
                                 //ClientSend.SendCarPart(_car.carLoaderID, partConverted);
-                                _car.tempCarScripts.Add(partConverted);
+                                _car.tempOther.Add(partConverted);
                             }
                         }
                             
@@ -511,17 +518,22 @@ namespace CMS21MP.ClientSide.Data
                 }
             }
 
-            public static void isCarStillLoaded()
+            public static IEnumerator isCarStillLoaded()
             {
                 foreach (KeyValuePair<int,ModCar> car in ClientData.carOnScene)
                 {
+                    if (aCarIsSpawning)
+                        yield return new WaitForSeconds(1);
                     if (String.IsNullOrEmpty(GameData.carLoaders[car.Value.carLoaderID].carToLoad) && GameData.carLoaders[car.Value.carLoaderID].carParts == null)
                     {
+                        
                         MelonLogger.Msg("Detected A removed car");
                         ClientSend.SendCarInfo(new ModCar(car.Value));
                         ClientData.carOnScene.Remove(car.Key);
                     }
                 }
+
+                yield return null;
             }
         
         
@@ -539,9 +551,11 @@ namespace CMS21MP.ClientSide.Data
             yield return HandleNewCar;
             
             yield return new WaitForEndOfFrame();
+            
             if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
                 ClientData.carOnScene[carLoaderID].isUpdated = true;
+                MelonLogger.Msg("Car as been Updated!");
             }
         }
 
@@ -562,7 +576,7 @@ namespace CMS21MP.ClientSide.Data
                 
                 yield return new WaitForEndOfFrame();
                 
-                MelonLogger.Msg($"Waiting car to be ready finished!.. : {car.isReady} , {car.isReferenced}");
+                MelonLogger.Msg($"Car is ready! : {car.isReady} , {car.isReferenced}");
                 try
                 {
                     if (partScripts != null)
@@ -584,6 +598,8 @@ namespace CMS21MP.ClientSide.Data
                 catch (Exception e)
                 {
                     MelonLogger.Msg("Error on HandleNewCar 531");
+                    MelonLogger.Msg("Error:" + e);
+                    MelonLogger.Msg("");
                 }
 
                 yield return null;
@@ -673,6 +689,7 @@ namespace CMS21MP.ClientSide.Data
                     catch (Exception e)
                     {
                         MelonLogger.Msg("Error while handling new part: " + e.Message + " " + e.StackTrace + " " + _partScript.type + " " + _partScript.partID + " " + _partScript.partIdNumber);
+                        MelonLogger.Msg("Error : " + e);
                         throw;
                     }
             }

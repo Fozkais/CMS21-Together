@@ -1,5 +1,7 @@
 using System;
+using CMS21MP.ClientSide.Data;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CMS21MP.SharedData
 {
@@ -22,6 +24,12 @@ namespace CMS21MP.SharedData
             position = new Vector3Serializable(_spawnPosition);
             rotation = new QuaternionSerializable(Quaternion.identity);
             scene = "garage";
+        }
+
+        public void Disconnect()
+        {
+            Object.Destroy(ClientData.serverPlayerInstances[id]);
+            ClientData.serverPlayers.Remove(id);
         }
     }
 

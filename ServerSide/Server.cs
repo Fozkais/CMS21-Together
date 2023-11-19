@@ -96,6 +96,8 @@ namespace CMS21MP.ServerSide
                 ClientData.playerGroupInventory.Clear();
             if( ClientData.playerInventory != null)
                 ClientData.playerInventory.Clear();
+
+            ClientData.asGameStarted = false;
             
             
             MelonLogger.Msg("Server Closed.");
@@ -111,22 +113,22 @@ namespace CMS21MP.ServerSide
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
            // MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
 
-            for (int i = 1; i <= MaxPlayers; i++)
-            {
-                if (clients[i].tcp.socket == null)
-                {
-                    clients[i].tcp.Connect(_client);
-                    return;
-                }
-            }
+           foreach (int ClientID in clients.Keys)
+           {
+               if (clients[ClientID].tcp.socket == null)
+               {
+                   clients[ClientID].tcp.Connect(_client);
+                   return;
+               }
+           }
 
             MelonLogger.Msg($"{_client.Client.RemoteEndPoint} failed to connect: Server full!");
         }
         
         private static void UDPReceiveCallback(IAsyncResult result)
         {
-            if(isStopping)
-                return;
+                if(isStopping)
+                    return;
                 try
                 {
                     IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);

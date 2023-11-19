@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
 using MelonLoader;
@@ -18,14 +19,22 @@ namespace CMS21MP.ServerSide.DataHandle
                 int _clientIdCheck = _packet.ReadInt();
                 string _username = _packet.ReadString();
 
-                MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
-
-                if (_fromClient != _clientIdCheck)
+                if (!ClientData.asGameStarted)
                 {
-                    MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
+                    MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
+
+                    if (_fromClient != _clientIdCheck)
+                    {
+                        MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
+                    }
+                    Server.clients[_fromClient].SendToLobby(_username);
+                    MelonCoroutines.Start( Server.clients[_fromClient].isClientAlive());
                 }
-                Server.clients[_fromClient].SendToLobby(_username);
-                MelonCoroutines.Start( Server.clients[_fromClient].isClientAlive());
+                else
+                {
+                    ServerSend.DisconnectClient(_fromClient, "Player couldn't connect a already started game!");
+                }
+
             }
             
             public static void keepAlive(int _fromclient, Packet _packet)

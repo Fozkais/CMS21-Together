@@ -125,6 +125,29 @@ namespace CMS21MP.ClientSide
                 if (udp.socket != null)
                     udp.socket.Close();*/
                 
+                if(Client.PacketHandlers != null)
+                    Client.PacketHandlers.Clear();
+                GameData.DataInitialzed = false;
+                
+                GameData.carLoaders = null;
+            
+                if(ClientData.carOnScene != null)
+                    ClientData.carOnScene.Clear();
+                if(ClientData.serverPlayers != null)
+                    ClientData.serverPlayers.Clear();
+                if(ClientData.serverPlayerInstances != null)
+                    ClientData.serverPlayerInstances.Clear();
+                if(GameData.localInventory != null)
+                    GameData.localInventory.DeleteAll();
+                if(ClientData.playerGroupInventory != null)
+                    ClientData.playerGroupInventory.Clear();
+                if( ClientData.playerInventory != null)
+                    ClientData.playerInventory.Clear();
+
+                ClientData.asGameStarted = false;
+
+                ModUI.Instance.ShowMainInterface();
+                
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
         }

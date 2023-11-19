@@ -7,17 +7,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="B-2_4-UI_Fix-0">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="--- 0.2.4 ---&#10;1. UI&#10; -&gt; Fixed Lobby-UI for client&#10; -&gt; Corrected Button Placement for both client/host&#10;2. keepAlive&#10; -&gt; Fixed keepAlive Function from softlocking mod usage&#10;3. Stability&#10; -&gt; Fixed All knowed bug about connecting/Disconnecting&#10; -&gt; Fixed All knowed bug about UI&#10;4. Other&#10; -&gt; Cleared some old Unused code&#10; -&gt; Fixed possible Index bug from SendTCPToAll and">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ModInventory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ModInventory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/ModCar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/PreferencesManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/PreferencesManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/ServerClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -265,7 +272,7 @@
       <workItem from="1699559255431" duration="2619000" />
       <workItem from="1699635788231" duration="1997000" />
       <workItem from="1700080171171" duration="3768000" />
-      <workItem from="1700330821694" duration="8806000" />
+      <workItem from="1700330821694" duration="18155000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -626,7 +633,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700343576600</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="--- 0.2.4 ---&#10;1. UI&#10; -&gt; Fixed Lobby-UI for client&#10; -&gt; Corrected Button Placement for both client/host&#10;2. keepAlive&#10; -&gt; Fixed keepAlive Function from softlocking mod usage&#10;3. Stability&#10; -&gt; Fixed All knowed bug about connecting/Disconnecting&#10; -&gt; Fixed All knowed bug about UI&#10;4. Other&#10; -&gt; Cleared some old Unused code&#10; -&gt; Fixed possible Index bug from SendTCPToAll and">
+      <option name="closed" value="true" />
+      <created>1700351243235</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1700351243235</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -681,7 +696,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="New UI / CustomSave" />
     <MESSAGE value="- Lobby 1/2 + Refacto" />
     <MESSAGE value="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---" />
     <MESSAGE value="--- 0.1.2 ---&#10;1. Fix Car sync issue , &#10;   -&gt; Almost fully working on Garage , probably broken on Junkyard, Car_Dealer and Barn&#10;2. Few change on Game-Data-Initialization.&#10;--- End ---" />
@@ -706,7 +720,8 @@
     <MESSAGE value="--- 0.2.2 ---&#10;1. Introduce a keepAlive function&#10; -&gt; Should avoid total desync but not disconnected&#10;2. Small refacto on mod organization&#10;3. Car sync bug fix&#10; -&gt; sometimes , whole piece or screws where not hidden even if there were unmounted&#10;4. Also fix a miss from 0.2.1 making impossible to compile&#10; -&gt; Introduced the missing &quot;GameScene&quot; enum for SceneChecker" />
     <MESSAGE value="--- 0.2.3 ---&#10;1. Lobby UI Improvement&#10; -&gt; Reworked a bit Lobby-UI &#10; -&gt; Also fix a small bug where lobby wont open automaticaly after hosting a game&#10;2. Client Disconnecting Fix&#10; -&gt; Modified Disconnecting logic&#10;   -&gt; Should prevent game from crashing when disconnecting from server&#10;3. Client bug fix&#10; -&gt; a error was appearing at start because client was called before mod as finished initializing&#10;4. keepAlive function Fix&#10; -&gt; KeepAlive was bugged and wasn't working properling (leading to being disconnected every 5-6sec)&#10;   -&gt; logic is fixed and should work as intended" />
     <MESSAGE value="B-2_4-UI_Fix-0" />
-    <option name="LAST_COMMIT_MESSAGE" value="B-2_4-UI_Fix-0" />
+    <MESSAGE value="--- 0.2.4 ---&#10;1. UI&#10; -&gt; Fixed Lobby-UI for client&#10; -&gt; Corrected Button Placement for both client/host&#10;2. keepAlive&#10; -&gt; Fixed keepAlive Function from softlocking mod usage&#10;3. Stability&#10; -&gt; Fixed All knowed bug about connecting/Disconnecting&#10; -&gt; Fixed All knowed bug about UI&#10;4. Other&#10; -&gt; Cleared some old Unused code&#10; -&gt; Fixed possible Index bug from SendTCPToAll and" />
+    <option name="LAST_COMMIT_MESSAGE" value="--- 0.2.4 ---&#10;1. UI&#10; -&gt; Fixed Lobby-UI for client&#10; -&gt; Corrected Button Placement for both client/host&#10;2. keepAlive&#10; -&gt; Fixed keepAlive Function from softlocking mod usage&#10;3. Stability&#10; -&gt; Fixed All knowed bug about connecting/Disconnecting&#10; -&gt; Fixed All knowed bug about UI&#10;4. Other&#10; -&gt; Cleared some old Unused code&#10; -&gt; Fixed possible Index bug from SendTCPToAll and" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -28,6 +28,8 @@ namespace CMS21MP.ClientSide.Data
         public static int playerScrap;
         public static int playerExp;
 
+        public static bool asGameStarted;
+
         public static void Init()
         {
             MelonCoroutines.Start(GameData.InitializeGameData());

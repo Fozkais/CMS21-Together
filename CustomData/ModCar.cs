@@ -26,10 +26,19 @@ namespace CMS21MP.SharedData
         public bool isReady;
         public bool isUpdated;
 
+
+        public bool ReceivedOther = false;
+        public bool ReceivedSuspension = false;
+        public bool ReceivedEngine = false;
+        public bool ReceivedBody = false;
+        
+
         public bool isFromServer;
         
-        public List<ModCarPart> tempCarParts = new List<ModCarPart>();
-        public List<ModPartScript> tempCarScripts = new List<ModPartScript>();
+        public List<ModCarPart> tempBody = new List<ModCarPart>();
+        public List<ModPartScript> tempOther = new List<ModPartScript>();
+        public List<ModPartScript> tempEngine = new List<ModPartScript>();
+        public List<ModPartScript> tempSuspension = new List<ModPartScript>();
         
         public ModCar(int _carLoaderID, int _carVersion, GameScene  _carScene,int _carPosition=-1)
         {

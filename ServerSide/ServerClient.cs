@@ -49,6 +49,7 @@ namespace CMS21MP.ServerSide
                     if (player != null)
                     {
                         MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
+                        ServerSend.DisconnectClient(id, $"{player.username} as disconnected!");
                     }
                         if(Server.clients.ContainsKey(id))
                             Server.clients[id].Disconnect(id);
@@ -89,7 +90,7 @@ namespace CMS21MP.ServerSide
         public void Disconnect(int _id)
         {
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-
+            ServerSend.DisconnectClient(id, $"{player.username} as disconnected!");
             if (Server.clients.ContainsKey(_id))
                 Server.clients.Remove(_id);
 

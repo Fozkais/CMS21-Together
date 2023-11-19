@@ -87,6 +87,13 @@ namespace CMS21MP
             InitializeStyles();
         }
 
+        public void ShowMainInterface()
+        {
+            showHostInterface = false;
+            showLobbyInterface = false;
+            showMainInterface = true;
+        }
+
         public void OnMPGUI()
         {
             UI_Utils();
