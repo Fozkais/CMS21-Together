@@ -5,7 +5,7 @@ namespace CMS21MP.SharedData
         #region Lobby and Connection
             empty = 0,
             welcome = 1,
-            keepAlive,
+            keepAlive = 2,
             disconnect,
             readyState,
             playerInfo,

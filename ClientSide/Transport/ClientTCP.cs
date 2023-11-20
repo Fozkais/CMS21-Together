@@ -103,7 +103,7 @@ namespace CMS21MP.ClientSide.Transport
             while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
             {
                 byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
-               // MelonLogger.Msg("Reading packet lenght:" + _packetBytes);
+                //MelonLogger.Msg("Reading packet lenght:" + _packetBytes);
                 ThreadManager.ExecuteOnMainThread(() =>
                 {
                    // MelonLogger.Msg("Creating packet from bytes!" );
@@ -111,8 +111,13 @@ namespace CMS21MP.ClientSide.Transport
                     {
                         int _packetId = _packet.ReadInt();
                        // MelonLogger.Msg("Received a packet with id:" + _packetId + " !");
-                        if(Client.PacketHandlers.ContainsKey(_packetId))
+                        if (Client.PacketHandlers.ContainsKey(_packetId))
+                        {
                             Client.PacketHandlers[_packetId](_packet);
+                            //MelonLogger.Msg("Should have been Handled?");   
+                        }
+                        else
+                            MelonLogger.Msg("packet is Invalid !!!");
                     }
                 });
                 _packetLenght = 0;

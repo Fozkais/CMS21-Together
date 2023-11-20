@@ -90,7 +90,7 @@ namespace CMS21MP.ServerSide
         public void Disconnect(int _id)
         {
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-            ServerSend.DisconnectClient(id, $"{player.username} as disconnected!");
+            ServerSend.DisconnectClient(_id, $"{player.username} as disconnected!");
             if (Server.clients.ContainsKey(_id))
                 Server.clients.Remove(_id);
 

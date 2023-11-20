@@ -44,14 +44,13 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 
                 MelonLogger.Msg($"Message from Server:{_msg}");
-                if (id != Client.Instance.Id)
+                if (id != Client.Instance.Id && id != 1)
                 {
                     if(ClientData.serverPlayers.ContainsKey(id))
                         ClientData.serverPlayers[id].Disconnect();
                 }
                 else
                 {
-                    var name = SceneManager.GetActiveScene().name;
                     if (SceneChecker.isNotInMenu())
                         NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                     else
