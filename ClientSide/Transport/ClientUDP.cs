@@ -91,7 +91,7 @@ namespace CMS21MP.ClientSide.Transport
             _data = _packet.ReadBytes(_packetLength);
         }
 
-        ThreadManager.ExecuteOnMainThread(() =>
+        ThreadManager.ExecuteOnMainThread<Exception>(ex =>
         {
             using (Packet _packet = new Packet(_data))
             {
@@ -106,7 +106,7 @@ namespace CMS21MP.ClientSide.Transport
                     MelonLogger.Msg($"Packet with id {_packetId} not found in packetHandlers dictionary.");
                 }
             }
-        });
+        }, null);
     }
 
     public void Disconnect()

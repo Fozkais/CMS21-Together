@@ -36,14 +36,14 @@ namespace CMS21MP.ServerSide.Transport
             int _packetLength = _packetData.ReadInt();
             byte[] _packetBytes = _packetData.ReadBytes(_packetLength);
 
-            ThreadManager.ExecuteOnMainThread(() =>
+            ThreadManager.ExecuteOnMainThread<Exception>(ex =>
             {
                 using (Packet _packet = new Packet(_packetBytes))
                 {
                     int _packetId = _packet.ReadInt();
                     Server.packetHandlers[_packetId](id, _packet);
                 }
-            });
+            }, null);
         }
 
         public void Disconnect()
