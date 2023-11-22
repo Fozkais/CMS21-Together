@@ -548,7 +548,7 @@ namespace CMS21MP.ClientSide.Data
         #region PartUpdate
 
 
-        public static IEnumerator SetCarToReadyAndUpdated(int carLoaderID, List<ModPartScript> partScripts = null,
+        public static IEnumerator SetCarReadyAndUpdated(int carLoaderID, List<ModPartScript> partScripts = null,
             List<ModCarPart> carParts = null)
         {
             var HandleNewCar = MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, partScripts, carParts));
@@ -608,7 +608,7 @@ namespace CMS21MP.ClientSide.Data
                 }
                 catch (Exception e)
                 {
-                    MelonLogger.Msg("Error on HandleNewCar 531");
+                    MelonLogger.Msg("Error on HandleNewCar 567");
                     MelonLogger.Msg("Error:" + e);
                     MelonLogger.Msg("");
                 }
@@ -748,70 +748,76 @@ namespace CMS21MP.ClientSide.Data
                 return;
             }
 
-            if (!GameData.carLoaders.Any(s => s.gameObject.name[10].ToString() == carLoaderId.ToString()))
+            if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderId))
             {
                 MelonLogger.Msg("Invalid CarLoaderID!" + carLoaderId);
+                MelonLogger.Msg("Valid LoaderID:");
+                foreach (var modCar in ClientData.carOnScene.Values)
+                {
+                    MelonLogger.Msg("LoaderID: " + modCar.carLoaderID);
+                }
                 return;
             }
-
+            
             if (!String.IsNullOrEmpty(updatedPart.tunedID))
             {
                 if (originalPart.tunedID != updatedPart.tunedID)
                 {
                     GameData.carLoaders[carLoaderId].TunePart(originalPart.tunedID, updatedPart.tunedID);
                 }
+            }
 
-                originalPart.IsExamined = updatedPart.isExamined;
+            originalPart.IsExamined = updatedPart.isExamined;
 
-                if (!updatedPart.unmounted)
+            if (!updatedPart.unmounted)
+            {
+                originalPart.IsPainted = updatedPart.isPainted;
+                if (updatedPart.isPainted)
                 {
-                    originalPart.IsPainted = updatedPart.isPainted;
-                    if (updatedPart.isPainted)
+                    originalPart.CurrentPaintType = (PaintType)updatedPart.paintType;
+                    originalPart.CurrentPaintData = new ModPaintData().ToGame(updatedPart.paintData);
+                    originalPart.SetColor(ModColor.ToColor(updatedPart.color));
+                    if ((PaintType)updatedPart.paintType == PaintType.Custom)
                     {
-                        originalPart.CurrentPaintType = (PaintType)updatedPart.paintType;
-                        originalPart.CurrentPaintData = new ModPaintData().ToGame(updatedPart.paintData);
-                        originalPart.SetColor(ModColor.ToColor(updatedPart.color));
-                        if ((PaintType)updatedPart.paintType == PaintType.Custom)
-                        {
-                            PaintHelper.SetCustomPaintType(originalPart.gameObject, updatedPart.paintData.ToGame(updatedPart.paintData), false);
-                        }
-                        else
-                        {
-                            PaintHelper.SetPaintType(originalPart.gameObject, (PaintType)updatedPart.paintType, false);
-                        }
+                        PaintHelper.SetCustomPaintType(originalPart.gameObject, updatedPart.paintData.ToGame(updatedPart.paintData), false);
                     }
-                    originalPart.Quality = updatedPart.quality;
-                    originalPart.SetCondition(updatedPart.condition);
-                    originalPart.UpdateDust(updatedPart.dust, true);
-                    if (originalPart.IsUnmounted)
+                    else
                     {
-                        MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
-                        originalPart.ShowBySaveGame();
-                        originalPart.ShowMountAnimation();
-                        originalPart.FastMount();
+                        PaintHelper.SetPaintType(originalPart.gameObject, (PaintType)updatedPart.paintType, false);
                     }
-                        
-                    //Wheel Handle
-                    var wheelData =  GameData.carLoaders[carLoaderId].WheelsData;
-                    for (int i = 0; i <  GameData.carLoaders[carLoaderId].WheelsData.Wheels.Count; i++)
-                    {
-                        GameData.carLoaders[carLoaderId].SetWheelSize((int)wheelData.Wheels[i].Width, 
-                            (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
-                        GameData.carLoaders[carLoaderId].SetET((WheelType)i, wheelData.Wheels[i].ET);
-                    }
-                    GameData.carLoaders[carLoaderId].SetWheelSizes();
                 }
-                else
+                originalPart.Quality = updatedPart.quality;
+                originalPart.SetCondition(updatedPart.condition);
+                originalPart.UpdateDust(updatedPart.dust, true);
+                if (originalPart.IsUnmounted)
                 {
-                    originalPart.Quality = updatedPart.quality;
-                    originalPart.SetCondition(updatedPart.condition);
-                    originalPart.UpdateDust(updatedPart.dust, true);
-                    if (originalPart.IsUnmounted == false)
-                    {
-                        MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
-                        originalPart.FastUnmount();
-                        originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderId]);
-                    }
+                    MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
+                    originalPart.ShowBySaveGame();
+                    originalPart.ShowMountAnimation();
+                    originalPart.FastMount();
+                }
+                    
+                //Wheel Handle
+                var wheelData =  GameData.carLoaders[carLoaderId].WheelsData;
+                for (int i = 0; i <  GameData.carLoaders[carLoaderId].WheelsData.Wheels.Count; i++)
+                {
+                    GameData.carLoaders[carLoaderId].SetWheelSize((int)wheelData.Wheels[i].Width, 
+                        (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
+                    GameData.carLoaders[carLoaderId].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                }
+                GameData.carLoaders[carLoaderId].SetWheelSizes();
+            }
+            else
+            {
+                
+                originalPart.Quality = updatedPart.quality;
+                originalPart.SetCondition(updatedPart.condition);
+                originalPart.UpdateDust(updatedPart.dust, true);
+                if (originalPart.IsUnmounted == false)
+                {
+                    MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
+                    originalPart.FastUnmount();
+                    originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderId]);
                 }
             }
         }
@@ -830,9 +836,14 @@ namespace CMS21MP.ClientSide.Data
                 return;
             }
 
-            if (!GameData.carLoaders.Any(s => s.gameObject.name[10].ToString() == carLoaderId.ToString()))
+            if (!ClientData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderId))
             {
-                MelonLogger.Msg("Invalid CarLoaderID! : " + carLoaderId);
+                MelonLogger.Msg("Invalid CarLoaderID!" + carLoaderId);
+                MelonLogger.Msg("Valid LoaderID:");
+                foreach (var modCar in ClientData.carOnScene.Values)
+                {
+                    MelonLogger.Msg("LoaderID: " + modCar.carLoaderID);
+                }
                 return;
             }
             
@@ -862,9 +873,12 @@ namespace CMS21MP.ClientSide.Data
                GameData.carLoaders[carLoaderId].SetCarColor(originalPart, color);
             }
             GameData.carLoaders[carLoaderId].SetCarLivery(originalPart, updatedPart.livery, updatedPart.liveryStrength);
-            
-            if(!originalPart.Unmounted && updatedPart.unmounted)
+
+            if (!originalPart.Unmounted && updatedPart.unmounted)
+            {
                 GameData.carLoaders[carLoaderId].TakeOffCarPartFromSave(updatedPart.name);
+            }
+            
             if (originalPart.Unmounted && !updatedPart.unmounted)
             {
                 GameData.carLoaders[carLoaderId].TakeOnCarPartFromSave(updatedPart.name);

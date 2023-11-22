@@ -7,13 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerTCP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Transport/ServerUDP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ThreadManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ThreadManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,6 +52,8 @@
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientUDP.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/PacketTypes.cs" root0="SKIP_HIGHLIGHTING" />
@@ -62,6 +61,9 @@
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/ServerClient.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Transport/ServerTCP.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Transport/ServerUDP.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ThreadManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -83,31 +85,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Dev",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "discord-application",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dev&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "rider.external.source.directories": [
-      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
-      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
-      "C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src"
+  &quot;keyToStringList&quot;: {
+    &quot;rider.external.source.directories&quot;: [
+      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="CMS21MP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -263,7 +265,8 @@
       <workItem from="1699635788231" duration="1997000" />
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
-      <workItem from="1700427166400" duration="13979000" />
+      <workItem from="1700427166400" duration="17417000" />
+      <workItem from="1700592912308" duration="3038000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -439,14 +442,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00029" summary="B-1_4-UDP_0&#10;- Fix SaveSystem bug">
-      <option name="closed" value="true" />
-      <created>1698063850889</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1698063850889</updated>
     </task>
     <task id="LOCAL-00030" summary="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves">
       <option name="closed" value="true" />
@@ -632,7 +627,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700500619096</updated>
     </task>
-    <option name="localTasksCounter" value="53" />
+    <task id="LOCAL-00053" summary="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working">
+      <option name="closed" value="true" />
+      <created>1700503120756</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1700503120756</updated>
+    </task>
+    <option name="localTasksCounter" value="54" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -687,7 +690,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="--- 0.1.3 ---&#10;1. Fully rewritten Inventory sync&#10;    -&gt; fully working inventory sync&#10;2. Small fix on ModUI&#10;    -&gt; when host create a game, lobby wasn't showing automatically&#10;--- End ---" />
     <MESSAGE value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
     <MESSAGE value="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves" />
     <MESSAGE value="B-2_0_Lifter_0" />
@@ -712,7 +714,8 @@
     <MESSAGE value="--- 0.2.5 ---&#10;1. Debug&#10; - To simplify debugging added a log folder inside mod folder&#10;  -&gt; Save all session log in separate folder&#10;2. Stability&#10;  -&gt; Fix crash happening (sometimes) when client connect &#10;  -&gt; Client now Disconnect properly (all data being reset)&#10;3. UI&#10; -&gt; Fix bug where being disconnected wasn't refreshing UI&#10; -&gt; Fix Name displayed for client being wrong in Lobby&#10;4. Car&#10; -&gt; Fix the black screen soft lock when a car is spawning with error&#10; -&gt; Fix black screen was disappearing before car was synced and ready&#10;5. Player&#10; -&gt; Fix other player weren't disappearing when disconnected&#10;6. Networking&#10; -&gt; Should have fix network &quot;soft lock&quot;, clients should no longer have total desync leading into a disconnection from server." />
     <MESSAGE value="--- 0.2.6 ---&#10;1. Networking&#10; -&gt; Fix bug where client where not disconnected when server is shutting down&#10; -&gt; Fix bug with keep Alive, causing disconnected client to remain &quot;connected&quot; for other players&#10;2. Stability &#10;  -&gt; Correct Packet Types Indexes being messed up." />
     <MESSAGE value="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar" />
-    <option name="LAST_COMMIT_MESSAGE" value="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar" />
+    <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
