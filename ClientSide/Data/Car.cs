@@ -816,7 +816,6 @@ namespace CMS21MP.ClientSide.Data
                 if (originalPart.IsUnmounted == false)
                 {
                     MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
-                    originalPart.FastUnmount();
                     originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderId]);
                 }
             }

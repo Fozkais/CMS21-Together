@@ -7,10 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="UpdatePart/UpdateBodyPart Rewrite">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/Packet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/Packet.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,24 +47,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/da/ed175c5a/TireChangerLogic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientUDP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/PacketTypes.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/ServerClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Transport/ServerTCP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Transport/ServerUDP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ThreadManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -266,7 +254,7 @@
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
-      <workItem from="1700592912308" duration="3038000" />
+      <workItem from="1700592912308" duration="5594000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -442,14 +430,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00030" summary="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves">
-      <option name="closed" value="true" />
-      <created>1698070219140</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1698070219140</updated>
     </task>
     <task id="LOCAL-00031" summary="B-2_0_Lifter_0">
       <option name="closed" value="true" />
@@ -635,7 +615,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700503120756</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="UpdatePart/UpdateBodyPart Rewrite">
+      <option name="closed" value="true" />
+      <created>1700677373557</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1700677373557</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -670,17 +658,6 @@
                   <entry key="Table.Space.CommitStatus.ColumnIdWidth" value="15" />
                 </map>
               </option>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/MainMod" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
             </State>
           </value>
         </entry>
@@ -690,7 +667,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
     <MESSAGE value="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves" />
     <MESSAGE value="B-2_0_Lifter_0" />
     <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
@@ -715,7 +691,8 @@
     <MESSAGE value="--- 0.2.6 ---&#10;1. Networking&#10; -&gt; Fix bug where client where not disconnected when server is shutting down&#10; -&gt; Fix bug with keep Alive, causing disconnected client to remain &quot;connected&quot; for other players&#10;2. Stability &#10;  -&gt; Correct Packet Types Indexes being messed up." />
     <MESSAGE value="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar" />
     <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
-    <option name="LAST_COMMIT_MESSAGE" value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
+    <MESSAGE value="UpdatePart/UpdateBodyPart Rewrite" />
+    <option name="LAST_COMMIT_MESSAGE" value="UpdatePart/UpdateBodyPart Rewrite" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -119,21 +119,6 @@ namespace CMS21MP.ClientSide.Transport
                     }
                 },  null);
                 
-                /*ThreadManager.ExecuteOnMainThread<Exception>(() =>
-                {
-                    // MelonLogger.Msg("Creating packet from bytes!" );
-                    using (Packet _packet = new Packet(_packetBytes))
-                    {
-                        int _packetId = _packet.ReadInt();
-                        // MelonLogger.Msg("Received a packet with id:" + _packetId + " !");
-                        if (Client.PacketHandlers.ContainsKey(_packetId))
-                        {
-                            Client.PacketHandlers[_packetId](_packet);
-                        }
-                        else
-                            MelonLogger.Msg("packet is Invalid !!!");
-                    }
-                }); */
                 _packetLenght = 0;
                 if (receivedData.UnreadLength() >= 4)
                 {

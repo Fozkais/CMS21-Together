@@ -398,13 +398,22 @@ namespace CMS21MP.SharedData
 
         private object ByteArrayToObject(byte[] arrBytes)
         {
-            MemoryStream memStream = new MemoryStream();
-            BinaryFormatter binForm = new BinaryFormatter();
-            memStream.Write(arrBytes, 0, arrBytes.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-            object obj = (object) binForm.Deserialize(memStream);
+            try
+            {
+                MemoryStream memStream = new MemoryStream();
+                BinaryFormatter binForm = new BinaryFormatter();
+                memStream.Write(arrBytes, 0, arrBytes.Length);
+                memStream.Seek(0, SeekOrigin.Begin);
+                object obj = binForm.Deserialize(memStream);
 
-            return obj;
+                return obj;
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Msg("Error while deserializing");
+            }
+
+            return null;
         }
         
         #endregion
