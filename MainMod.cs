@@ -97,8 +97,6 @@ namespace CMS21MP
                   ClientData.Init();
                }
                
-               SceneChecker.UpdatePlayerScene(sceneName);
-               
                if (SceneChecker.isInGarage())
                {
                   foreach (KeyValuePair<int, Player> player in ClientData.serverPlayers)
