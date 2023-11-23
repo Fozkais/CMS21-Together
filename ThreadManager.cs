@@ -18,7 +18,7 @@ namespace CMS21MP
 
         /// <summary>Sets an action to be executed on the main thread.</summary>
         /// <param name="_action">The action to be executed on the main thread.</param>
-        public static void ExecuteOnMainThread(Action _action)
+        public static void ExecuteOnMainThread<T>(Action<T> _action, T exception)
         {
             if (_action == null)
             {
@@ -28,7 +28,17 @@ namespace CMS21MP
 
             lock (executeOnMainThread)
             {
-                executeOnMainThread.Add(_action);
+                executeOnMainThread.Add(() =>
+                {
+                    try
+                    {
+                        _action(exception);
+                    }
+                    catch (Exception e)
+                    {
+                        MelonLogger.Msg("EncouteredExceptionInMainThread: " + e);
+                    }
+                });
                 actionToExecuteOnMainThread = true;
             }
         }

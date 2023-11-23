@@ -7,16 +7,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="Fix ghost part">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Transport/ClientTCP.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/ModCar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/PacketTypes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/ServerClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerClient.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Steam/LobbyIDGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Steam/LobbyIDGenerator.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,7 +24,7 @@
     <option name="PUSH_AUTO_UPDATE" value="true" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="Rewrite" />
+        <entry key="$PROJECT_DIR$" value="MainMod" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -52,16 +48,14 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/da/ed175c5a/TireChangerLogic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/PacketTypes.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/Packet.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/ServerClient.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -90,7 +84,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;MainMod&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Dev&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -263,7 +257,8 @@
       <workItem from="1699635788231" duration="1997000" />
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
-      <workItem from="1700427166400" duration="11564000" />
+      <workItem from="1700427166400" duration="17417000" />
+      <workItem from="1700592912308" duration="9127000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -440,46 +435,6 @@
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
     </task>
-    <task id="LOCAL-00027" summary="--- 0.1.2 ---&#10;1. Fix Car sync issue , &#10;   -&gt; Almost fully working on Garage , probably broken on Junkyard, Car_Dealer and Barn&#10;2. Few change on Game-Data-Initialization.&#10;--- End ---">
-      <option name="closed" value="true" />
-      <created>1696263219308</created>
-      <option name="number" value="00027" />
-      <option name="presentableId" value="LOCAL-00027" />
-      <option name="project" value="LOCAL" />
-      <updated>1696263219308</updated>
-    </task>
-    <task id="LOCAL-00028" summary="--- 0.1.3 ---&#10;1. Fully rewritten Inventory sync&#10;    -&gt; fully working inventory sync&#10;2. Small fix on ModUI&#10;    -&gt; when host create a game, lobby wasn't showing automatically&#10;--- End ---">
-      <option name="closed" value="true" />
-      <created>1696277147331</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1696277147331</updated>
-    </task>
-    <task id="LOCAL-00029" summary="B-1_4-UDP_0&#10;- Fix SaveSystem bug">
-      <option name="closed" value="true" />
-      <created>1698063850889</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1698063850889</updated>
-    </task>
-    <task id="LOCAL-00030" summary="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves">
-      <option name="closed" value="true" />
-      <created>1698070219140</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1698070219140</updated>
-    </task>
-    <task id="LOCAL-00031" summary="B-2_0_Lifter_0">
-      <option name="closed" value="true" />
-      <created>1698087434641</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1698087434641</updated>
-    </task>
     <task id="LOCAL-00032" summary="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart">
       <option name="closed" value="true" />
       <created>1698147175831</created>
@@ -632,7 +587,47 @@
       <option name="project" value="LOCAL" />
       <updated>1700398164431</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="--- 0.2.6 ---&#10;1. Networking&#10; -&gt; Fix bug where client where not disconnected when server is shutting down&#10; -&gt; Fix bug with keep Alive, causing disconnected client to remain &quot;connected&quot; for other players&#10;2. Stability &#10;  -&gt; Correct Packet Types Indexes being messed up.">
+      <option name="closed" value="true" />
+      <created>1700500485444</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1700500485445</updated>
+    </task>
+    <task id="LOCAL-00052" summary="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar">
+      <option name="closed" value="true" />
+      <created>1700500619095</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1700500619096</updated>
+    </task>
+    <task id="LOCAL-00053" summary="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working">
+      <option name="closed" value="true" />
+      <created>1700503120756</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1700503120756</updated>
+    </task>
+    <task id="LOCAL-00054" summary="UpdatePart/UpdateBodyPart Rewrite">
+      <option name="closed" value="true" />
+      <created>1700677373557</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1700677373557</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Fix ghost part">
+      <option name="closed" value="true" />
+      <created>1700682679799</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1700682679799</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -667,17 +662,6 @@
                   <entry key="Table.Space.CommitStatus.ColumnIdWidth" value="15" />
                 </map>
               </option>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="origin/MainMod" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
             </State>
           </value>
         </entry>
@@ -687,11 +671,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="--- Together 0.1.1 ---&#10;1. Total Rewrite of Custom Save System &#10;-&gt; Fixing the major issue he as ( it was only working on my pc -_- )&#10;--- End ---" />
-    <MESSAGE value="--- 0.1.2 ---&#10;1. Fix Car sync issue , &#10;   -&gt; Almost fully working on Garage , probably broken on Junkyard, Car_Dealer and Barn&#10;2. Few change on Game-Data-Initialization.&#10;--- End ---" />
-    <MESSAGE value="--- 0.1.3 ---&#10;1. Fully rewritten Inventory sync&#10;    -&gt; fully working inventory sync&#10;2. Small fix on ModUI&#10;    -&gt; when host create a game, lobby wasn't showing automatically&#10;--- End ---" />
-    <MESSAGE value="B-1_4-UDP_0&#10;- Fix SaveSystem bug" />
-    <MESSAGE value="--- 0.1.4 ---&#10;- Fix UDP Networking&#10;- Re-enable Movement Sync&#10; -&gt; Also fix it because it was broken&#10;- Re-enable Rotation Sync&#10; -&gt; Also fix it because it was broken&#10;- Fix small bug with save system&#10; -&gt; Mod Save file wasn't created so restarting game would reset all mod saves" />
     <MESSAGE value="B-2_0_Lifter_0" />
     <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
     <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
@@ -712,7 +691,12 @@
     <MESSAGE value="B-2_4-UI_Fix-0" />
     <MESSAGE value="--- 0.2.4 ---&#10;1. UI&#10; -&gt; Fixed Lobby-UI for client&#10; -&gt; Corrected Button Placement for both client/host&#10;2. keepAlive&#10; -&gt; Fixed keepAlive Function from softlocking mod usage&#10;3. Stability&#10; -&gt; Fixed All knowed bug about connecting/Disconnecting&#10; -&gt; Fixed All knowed bug about UI&#10;4. Other&#10; -&gt; Cleared some old Unused code&#10; -&gt; Fixed possible Index bug from SendTCPToAll and" />
     <MESSAGE value="--- 0.2.5 ---&#10;1. Debug&#10; - To simplify debugging added a log folder inside mod folder&#10;  -&gt; Save all session log in separate folder&#10;2. Stability&#10;  -&gt; Fix crash happening (sometimes) when client connect &#10;  -&gt; Client now Disconnect properly (all data being reset)&#10;3. UI&#10; -&gt; Fix bug where being disconnected wasn't refreshing UI&#10; -&gt; Fix Name displayed for client being wrong in Lobby&#10;4. Car&#10; -&gt; Fix the black screen soft lock when a car is spawning with error&#10; -&gt; Fix black screen was disappearing before car was synced and ready&#10;5. Player&#10; -&gt; Fix other player weren't disappearing when disconnected&#10;6. Networking&#10; -&gt; Should have fix network &quot;soft lock&quot;, clients should no longer have total desync leading into a disconnection from server." />
-    <option name="LAST_COMMIT_MESSAGE" value="--- 0.2.5 ---&#10;1. Debug&#10; - To simplify debugging added a log folder inside mod folder&#10;  -&gt; Save all session log in separate folder&#10;2. Stability&#10;  -&gt; Fix crash happening (sometimes) when client connect &#10;  -&gt; Client now Disconnect properly (all data being reset)&#10;3. UI&#10; -&gt; Fix bug where being disconnected wasn't refreshing UI&#10; -&gt; Fix Name displayed for client being wrong in Lobby&#10;4. Car&#10; -&gt; Fix the black screen soft lock when a car is spawning with error&#10; -&gt; Fix black screen was disappearing before car was synced and ready&#10;5. Player&#10; -&gt; Fix other player weren't disappearing when disconnected&#10;6. Networking&#10; -&gt; Should have fix network &quot;soft lock&quot;, clients should no longer have total desync leading into a disconnection from server." />
+    <MESSAGE value="--- 0.2.6 ---&#10;1. Networking&#10; -&gt; Fix bug where client where not disconnected when server is shutting down&#10; -&gt; Fix bug with keep Alive, causing disconnected client to remain &quot;connected&quot; for other players&#10;2. Stability &#10;  -&gt; Correct Packet Types Indexes being messed up." />
+    <MESSAGE value="--- Initial Work on 0.2.7 ---&#10;1. Rewritten UpdatePart / UpdateBodyPart&#10;2. Rewritten HandleNewPart and HandleNewCar" />
+    <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
+    <MESSAGE value="UpdatePart/UpdateBodyPart Rewrite" />
+    <MESSAGE value="Fix ghost part" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix ghost part" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
 using CMS21MP.SharedData;
@@ -23,6 +24,26 @@ namespace CMS21MP.CustomData
         public static bool ListenToCursorBlock;
         private static CarLoader LoaderToListen;
         
+        
+
+        [HarmonyPatch(typeof(NotificationCenter), "SelectSceneToLoad", 
+            new Type[]{ typeof(string), typeof(SceneType), typeof(bool), typeof(bool)})]
+        [HarmonyPrefix]
+        public static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
+        {
+            MelonLogger.Msg("SceneChange trigered! : " + newSceneName );
+            if (Client.Instance.isConnected || MainMod.isServer)
+            {
+                if (newSceneName == "Menu")
+                {
+                    Client.Instance.Disconnect();
+                    Application.runInBackground = false;
+                }
+                
+                SceneChecker.UpdatePlayerScene(newSceneName);
+            }
+        }
+
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPostfix]
         public static void LoadCarPatch(string name, CarLoader __instance)

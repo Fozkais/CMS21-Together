@@ -27,10 +27,7 @@ namespace CMS21MP.SharedData
         public bool isUpdated;
 
 
-        public bool ReceivedOther = false;
-        public bool ReceivedSuspension = false;
-        public bool ReceivedEngine = false;
-        public bool ReceivedBody = false;
+        public bool asBeenSent;
         
 
         public bool isFromServer;

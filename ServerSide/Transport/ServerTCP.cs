@@ -106,7 +106,7 @@ namespace CMS21MP.ServerSide.Transport
                 while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
                 {
                     byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
-                    ThreadManager.ExecuteOnMainThread(() =>
+                    ThreadManager.ExecuteOnMainThread<Exception>(ex =>
                     {
                         using (Packet _packet = new Packet(_packetBytes))
                         {
@@ -114,7 +114,7 @@ namespace CMS21MP.ServerSide.Transport
                             if(Server.packetHandlers.ContainsKey(_packetId))
                                 Server.packetHandlers[_packetId](id, _packet);
                         }
-                    });
+                    }, null);
                     _packetLenght = 0;
                     if (receivedData.UnreadLength() >= 4)
                     {

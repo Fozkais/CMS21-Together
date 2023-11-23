@@ -170,17 +170,16 @@ namespace CMS21MP.ClientSide.DataHandle
             
             if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
             {
-                ClientData.carOnScene.Remove(ClientData.carOnScene.First(s => s.Value.carID == car.carID 
-                                                                              && s.Value.carVersion == car.carVersion 
-                                                                              && s.Value.carPosition == car.carPosition).Key);
+                ClientData.carOnScene.Remove(ClientData.carOnScene.First(s => s.Value.carLoaderID == car.carLoaderID 
+                                                                              && s.Value.carID == car.carID).Key);
                 carLoader.DeleteCar();
                 MelonLogger.Msg("Removing car...");
             }
             else
             {
                 ClientData.carOnScene.Add(car.carLoaderID, car);
-                MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.First(s =>
-                    s.Value.carID == car.carID && s.Value.carVersion == car.carVersion && s.Value.carPosition == car.carPosition).Value,  carLoader));
+                MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.First(s 
+                    => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value,  carLoader));
                 MelonLogger.Msg("Loading new car...");
             }
             _packet.Dispose();
@@ -260,9 +259,10 @@ namespace CMS21MP.ClientSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             
             MelonLogger.Msg("Received :" + carParts.Count + " " + carParts[0].type.ToString());
+            MelonLogger.Msg("Received LoaderID: " + carLoaderID);
                 
 
-            MelonCoroutines.Start(Car.SetCarToReadyAndUpdated(carLoaderID, carParts));
+            MelonCoroutines.Start(Car.SetCarReadyAndUpdated(carLoaderID, carParts));
             //MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
             _packet.Dispose();
         }
@@ -271,7 +271,7 @@ namespace CMS21MP.ClientSide.DataHandle
             List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
             int carLoaderID = _packet.ReadInt();
             
-            MelonCoroutines.Start(Car.SetCarToReadyAndUpdated(carLoaderID, null, carParts));
+            MelonCoroutines.Start(Car.SetCarReadyAndUpdated(carLoaderID, null, carParts));
             //MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, null,carParts));
             _packet.Dispose();
         }
