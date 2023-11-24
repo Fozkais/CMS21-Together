@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
+    <Compile Include="ClientSide\ClientDebug.cs" />
     <Compile Include="ClientSide\DataHandle\ClientHandle.cs" />
     <Compile Include="ClientSide\DataHandle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\Car.cs" />

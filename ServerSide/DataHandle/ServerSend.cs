@@ -279,24 +279,30 @@ namespace CMS21MP.ServerSide.DataHandle
         #endregion
 
         #region Inventory
-            public static void SendInventoryItem(int _fromClient, ModItem _item, bool _status)
+            public static void SendInventoryItem(int _fromClient, ModItem _item, bool _status, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
                 {
                     _packet.Write(_item);
                     _packet.Write(_status);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(_fromClient, _packet);
+                    else
+                        SendTCPData(_fromClient, _packet);
                 }
             }
-            public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status)
+            public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
                 {
                     _packet.Write(_item);
                     _packet.Write(_status);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(_fromClient, _packet);
+                    else
+                        SendTCPData(_fromClient, _packet);
                 }
             }
 

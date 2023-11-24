@@ -164,16 +164,13 @@ namespace CMS21MP
          {
             Cursor3D.Get().BlockCursor(false);
          }
-
-         if (Input.GetKeyDown(KeyCode.F4) && Input.GetKeyDown(KeyCode.LeftAlt))
-         {
-            PreferencesManager.SaveMelonLog();
-         }
+         
       }
 
       public override void OnGUI() // Can run multiple times per frame. Mostly used for Unity's IMGUI.
       {
          modGUI.OnMPGUI();
+         ClientDebug.HandleDebug();
       }
 
 

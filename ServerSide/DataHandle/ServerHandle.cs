@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
 using CMS21MP.SharedData;
@@ -150,16 +151,71 @@ namespace CMS21MP.ServerSide.DataHandle
             {
                 ModItem item = _packet.Read<ModItem>();
                 bool status = _packet.ReadBool();
-                
-                ServerSend.SendInventoryItem(_fromClient, item, status);
+                bool resync = _packet.ReadBool();
+
+                if (!resync)
+                {
+                    if (status)
+                    {
+                        if (!ServerData.itemInventory.Any(s => s.UID == item.UID))
+                        {
+                            MelonLogger.Msg("SV: Added to Inventory!");
+                            ModInventory.handledItem.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        if (ServerData.itemInventory.Any(s => s.UID == item.UID))
+                        {
+                            MelonLogger.Msg("SV: Removed from Inventory!");
+                            ModInventory.handledItem.Remove(item);
+                        }
+                    }
+                    ServerSend.SendInventoryItem(_fromClient, item, status);
+                    return;
+                }
+
+                foreach (ModItem _modItem in ServerData.itemInventory)
+                {
+                    MelonLogger.Msg("SV: SendingResync!");
+                    ServerSend.SendInventoryItem(_fromClient, _modItem, true, true);
+                }
             }
             
             public static void InventoryGroupItem(int _fromClient, Packet _packet)
             {
-                ModGroupItem item = _packet.Read<ModGroupItem>();
+                ModGroupItem _item = _packet.Read<ModGroupItem>();
                 bool status = _packet.ReadBool();
+                bool resync = _packet.ReadBool();
+
+                if (!resync)
+                {
+                    if (status)
+                    {
+                        if (!ServerData.groupItemInventory.Any(s => s.UID == _item.UID))
+                        {
+                            MelonLogger.Msg("SV: Added to GroupInventory!");
+                            ServerData.groupItemInventory.Add(_item);
+                        }
+                    }
+                    else
+                    {
+                        if (ServerData.groupItemInventory.Any(s => s.UID == _item.UID))
+                        {
+                            MelonLogger.Msg("SV: Removed from GroupInventory!");
+                            int index = ServerData.groupItemInventory.FindIndex(s => s.UID == _item.UID);
+                            ServerData.groupItemInventory.Remove(ServerData.groupItemInventory[index]);
+                        }
+                    }
+                    ServerSend.SendInventoryGroupItem(_fromClient, _item, status);
+                    return;
+                }
                 
-                ServerSend.SendInventoryGroupItem(_fromClient, item, status);
+                foreach (ModGroupItem _modGroupItem in ServerData.groupItemInventory)
+                {
+                    MelonLogger.Msg("SV: SendingResync!");
+                    ServerSend.SendInventoryGroupItem(_fromClient, _modGroupItem, true, true);
+                }
             }
 
         #endregion
