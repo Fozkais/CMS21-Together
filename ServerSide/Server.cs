@@ -42,7 +42,7 @@ namespace CMS21MP.ServerSide
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
             MelonLogger.Msg($"Server started successfully !");
-            MainMod.isServer = true;
+            ServerData.isRunning = true;
             isStopping = false;
             
             Application.runInBackground = true;
@@ -53,7 +53,7 @@ namespace CMS21MP.ServerSide
         public static void StartSteamServer()
         {
             InitializeServerData();
-            MainMod.isServer = true;
+            ServerData.isRunning = true;
         }
 
         public static void Stop()
@@ -64,8 +64,8 @@ namespace CMS21MP.ServerSide
                 ServerSend.DisconnectClient(id, "Server is shutting down.");
             }
             
-            
-            MainMod.isServer = false;
+            ServerData.isRunning = false;
+            ServerData.ResetData();
             isStopping = true;
 
             if(udpListener != null)
@@ -77,28 +77,7 @@ namespace CMS21MP.ServerSide
                 clients.Clear();
             if(packetHandlers != null)
                 packetHandlers.Clear();
-            
-            if(Client.PacketHandlers != null)
-                Client.PacketHandlers.Clear();
-            GameData.DataInitialzed = false;
 
-            GameData.carLoaders = null;
-            
-            if(ClientData.carOnScene != null)
-                ClientData.carOnScene.Clear();
-            if(ClientData.serverPlayers != null)
-                ClientData.serverPlayers.Clear();
-            if(ClientData.serverPlayerInstances != null)
-                ClientData.serverPlayerInstances.Clear();
-            if(GameData.localInventory != null)
-                GameData.localInventory.DeleteAll();
-            if(ClientData.playerGroupInventory != null)
-                ClientData.playerGroupInventory.Clear();
-            if( ClientData.playerInventory != null)
-                ClientData.playerInventory.Clear();
-
-            ClientData.asGameStarted = false;
-            
             
             MelonLogger.Msg("Server Closed.");
 

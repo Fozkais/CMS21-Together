@@ -29,7 +29,7 @@ namespace CMS21MP.SharedData
         public void Disconnect()
         {
             Object.Destroy(ClientData.serverPlayerInstances[id]);
-            ClientData.serverPlayers.Remove(id);
+            ClientData.players.Remove(id);
         }
     }
 

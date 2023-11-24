@@ -13,7 +13,6 @@ namespace CMS21MP.ServerSide
     public class ServerClient
     {
         public int id;
-        public Player player;
         public bool isHosting = false;
         public bool Alive = true;
         
@@ -29,7 +28,7 @@ namespace CMS21MP.ServerSide
 
         public IEnumerator isClientAlive()
         {
-            if(!MainMod.isServer)
+            if(!ServerData.isRunning)
                 yield break;
             
             if (Alive)
@@ -42,46 +41,46 @@ namespace CMS21MP.ServerSide
                 yield return new WaitForSeconds(8);
                 if (!Alive)
                 {
-                    if(!MainMod.isServer)
+                    if(!ServerData.isRunning)
                         yield break;
 
-                    
-                    if (player != null)
+                    if (ServerData.players.ContainsKey(id))
                     {
-                        MelonLogger.Msg($"SV:  Client[{id}], username:{player.username} no longer alive! Disconnecting...");
-                        ServerSend.DisconnectClient(id, $"{player.username} as disconnected!");
+                        MelonLogger.Msg($"SV:  Client[{id}], username:{ServerData.players[id].username} no longer alive! Disconnecting...");
+                        ServerSend.DisconnectClient(id, $"{ServerData.players[id].username} as disconnected!");
                     }
-                        if(Server.clients.ContainsKey(id))
-                            Server.clients[id].Disconnect(id);
+                    
+                    if(Server.clients.ContainsKey(id))
+                        Server.clients[id].Disconnect(id);
                 }
             }
-            if(player != null)
+            if(ServerData.players[id] != null)
                 MelonCoroutines.Start(isClientAlive());
         }
 
 
         public void SendToLobby(string _playerName)
         {
-            player = new Player(id, _playerName, new Vector3(0, 0, 0));
+            ServerData.players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
 
             for (int i = 1; i < Server.clients.Count; i++)
             {
                 var client = Server.clients[i];
-                if (client.player != null)
+                if (ServerData.players.ContainsKey(client.id))
                 {
-                    ServerSend.SendPlayersInfo(client.player);
+                    ServerData.players[client.id] = ServerData.players[id];
+                    ServerSend.SendPlayersInfo(ServerData.players[id]);
                 }
-                
-                
             }
             
             foreach (ServerClient _client in Server.clients.Values)
             {
-                if (_client.player != null)
+                if (ServerData.players.ContainsKey(_client.id))
                 {
                     if (_client.id != id)
                     {
-                        ServerSend.SendPlayersInfo(player);
+                        ServerData.players[_client.id] = ServerData.players[id];
+                        ServerSend.SendPlayersInfo(ServerData.players[id]);
                     }
                 }
             }
@@ -90,12 +89,14 @@ namespace CMS21MP.ServerSide
         public void Disconnect(int _id)
         {
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-            ServerSend.DisconnectClient(_id, $"{player.username} as disconnected!");
+            ServerSend.DisconnectClient(_id, $"{ ServerData.players[_id].username} as disconnected!");
             if (Server.clients.ContainsKey(_id))
                 Server.clients.Remove(_id);
-
-            player = null;
+            
+            if(ServerData.players.ContainsKey(_id))
+                ServerData.players.Remove(_id);
             tcp.Disconnect();
+            
             udp.Disconnect();
         }
     }

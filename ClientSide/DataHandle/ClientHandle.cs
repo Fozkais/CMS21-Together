@@ -46,8 +46,8 @@ namespace CMS21MP.ClientSide.DataHandle
                 MelonLogger.Msg($"Message from Server:{_msg}");
                 if (id != Client.Instance.Id && id != 1)
                 {
-                    if(ClientData.serverPlayers.ContainsKey(id))
-                        ClientData.serverPlayers[id].Disconnect();
+                    if(ClientData.players.ContainsKey(id))
+                        ClientData.players[id].Disconnect();
                 }
                 else
                 {
@@ -67,14 +67,14 @@ namespace CMS21MP.ClientSide.DataHandle
                 bool _ready = _packet.ReadBool();
                 int _id = _packet.ReadInt();
 
-                ClientData.serverPlayers[_id].isReady = _ready;
+                ClientData.players[_id].isReady = _ready;
                 _packet.Dispose();
             }
             
             public static void PlayersInfo(Packet _packet)
             {
                 Player info = _packet.Read<Player>();
-                ClientData.serverPlayers[info.id] = info;
+                ClientData.players[info.id] = info;
                 
                 MelonLogger.Msg($"Received {info.username}, {info.id} info from server.");
                 _packet.Dispose();
@@ -93,9 +93,9 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 Player _player = _packet.Read<Player>();
                 int _id = _packet.ReadInt();
-                ClientData.serverPlayers[_id] = _player;
+                ClientData.players[_id] = _player;
                 MelonLogger.Msg($"Received {_player.username} spawn info from server.");
-                if (ClientData.serverPlayers.TryGetValue(_id, out var player))
+                if (ClientData.players.TryGetValue(_id, out var player))
                 {
                     if(!ClientData.serverPlayerInstances.ContainsKey(player.id))
                         ClientData.SpawnPlayer(_player, _id);
@@ -130,7 +130,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 MelonLogger.Msg("Received Scene Update :" + scene);
 
-                if (ClientData.serverPlayers.TryGetValue(id, out var player))
+                if (ClientData.players.TryGetValue(id, out var player))
                 {
                     player.scene = scene;
                     if (player.scene != SceneManager.GetActiveScene().name)

@@ -64,6 +64,7 @@
     <Compile Include="ServerSide\DataHandle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\ServerData.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
     <Compile Include="Steam\CallbackHandler.cs" />

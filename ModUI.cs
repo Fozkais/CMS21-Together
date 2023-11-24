@@ -387,7 +387,7 @@ namespace CMS21MP
                         if (GUILayout.Button(modSaveData.Name, buttonStyle, GUILayout.Width(160), GUILayout.Height(buttonHeight)))
                         {
                             
-                            if(!MainMod.isServer)
+                            if(!ServerData.isRunning)
                                 Server.Start();
                             else
                             {
@@ -412,7 +412,7 @@ namespace CMS21MP
         {
             Rect lobbyWindowRect;
             
-            if (MainMod.isServer || Client.Instance.isConnected)
+            if (ServerData.isRunning || Client.Instance.isConnected)
                 lobbyWindowRect = new Rect(Screen.width / 2f - 100, Screen.height / 2f - 100, 400, 400);
             else
                 lobbyWindowRect = windowRect;
@@ -426,134 +426,13 @@ namespace CMS21MP
             // Partie haute avec 3 colonnes
             GUILayout.BeginHorizontal();
 
-            if (MainMod.isServer)
+            if (ServerData.isRunning)
             {
-                
-                // Colonne 1 - Noms
-                GUILayout.BeginVertical(GUILayout.Width(70));
-                foreach (int i in Server.clients.Keys)
-                {
-                    Player player = Server.clients[i].player;
-                    if (player != null)
-                    {
-                        GUILayout.Label("   " + player.username, textStyle);
-                        GUILayout.Space(5);
-                    }
-                }
-                GUILayout.EndVertical();
-
-                GUILayout.FlexibleSpace();
-
-                // Colonne 2 - États  
-                GUILayout.BeginVertical(GUILayout.Width(90));
-                foreach (int i in Server.clients.Keys)
-                {
-                    Player player = Server.clients[i].player;
-
-                    if (player != null)
-                    {
-                        if (player.isReady)
-                        {
-                            GUILayout.Label("Ready", textStyle);
-                        }
-                        else
-                        {
-                            GUILayout.Label("Not Ready", textStyle);
-                        }
-                        GUILayout.Space(25);
-                    }
-                }
-                GUILayout.EndVertical();
-
-                GUILayout.FlexibleSpace();
-
-                // Colonne 3 - Interactions
-                GUILayout.BeginVertical(GUILayout.Width(100));
-                foreach (int i in Server.clients.Keys)
-                {
-                    Player player = Server.clients[i].player;
-                    if (player != null)
-                    {
-                        if (MainMod.isServer && player.id != 1) 
-                        {  
-                            GUILayout.Space(25);
-                            if (GUILayout.Button("Kick", buttonStyle)) 
-                            {
-                                ServerSend.DisconnectClient(i, "You've been kicked from server!");
-                                Server.clients[i].Disconnect(Server.clients[i].id);
-                            }
-                        }
-
-                        if (Server.clients[i].id == Client.Instance.Id)
-                        {
-                            if (GUILayout.Button("Ready", buttonStyle)) 
-                            {
-                                player.isReady = !player.isReady;
-                                ClientSend.SendReadyState(player.isReady, i);
-                            }
-                        }
-                        
-                    }
-                } 
+                HostLobbyDisplaying();
             }
             else
             { 
-                // Colonne 1 - Noms
-                GUILayout.BeginVertical(GUILayout.Width(70));
-                foreach (int i in ClientData.serverPlayers.Keys)
-                {
-                    Player player =  ClientData.serverPlayers[i];
-                    if (player != null)
-                    {
-                        GUILayout.Label("   " + player.username, textStyle);
-                        GUILayout.Space(5);
-                    }
-                }
-                GUILayout.EndVertical();
-
-                GUILayout.FlexibleSpace();
-
-                // Colonne 2 - États  
-                GUILayout.BeginVertical(GUILayout.Width(90));
-                foreach (int i in ClientData.serverPlayers.Keys)
-                {
-                    Player player =  ClientData.serverPlayers[i];
-
-                    if (player != null)
-                    {
-                        if (player.isReady)
-                        {
-                            GUILayout.Label("Ready", textStyle);
-                        }
-                        else
-                        {
-                            GUILayout.Label("Not Ready", textStyle);
-                        }
-                        GUILayout.Space(25);
-                    }
-                }
-                GUILayout.EndVertical();
-
-                GUILayout.FlexibleSpace();
-
-                // Colonne 3 - Interactions
-                GUILayout.BeginVertical(GUILayout.Width(100));
-                foreach (int i in ClientData.serverPlayers.Keys)
-                {
-                    Player player =  ClientData.serverPlayers[i];
-                    if (player != null)
-                    {
-                        if (ClientData.serverPlayers[i].id == Client.Instance.Id)
-                        {
-                            GUILayout.Space((i * 25));
-                            if (GUILayout.Button("Ready", buttonStyle)) 
-                            {
-                                player.isReady = !player.isReady;
-                                ClientSend.SendReadyState(player.isReady, i);
-                            }
-                        }
-                    }
-                }
+                ClientLobbyDisplaying();
             }
 
             GUILayout.EndVertical();
@@ -564,13 +443,13 @@ namespace CMS21MP
 
             GUILayout.BeginHorizontal();
 
-            if (MainMod.isServer)
+            if (ServerData.isRunning)
             {
                 if(GUILayout.Button("Start Game", buttonStyle, GUILayout.Width(175), GUILayout.Height(35))) 
                 {
-                    foreach (var client in Server.clients)
+                    foreach (var player in ServerData.players.Values)
                     {
-                        if (client.Value.player != null && !client.Value.player.isReady)
+                        if (player != null && !player.isReady)
                         {
                             return;
                         }
@@ -605,9 +484,136 @@ namespace CMS21MP
                 }
             }
             
+            GUILayout.Space(15);
+            
             GUILayout.EndHorizontal();
 
             GUILayout.EndArea();
+        }
+
+        private void HostLobbyDisplaying()
+        {
+            // Colonne 1 - Noms
+            GUILayout.BeginVertical(GUILayout.Width(70));
+            foreach (Player player in ServerData.players.Values)
+            {
+                if (player != null)
+                {
+                    GUILayout.Label("   " + player.username, textStyle);
+                    GUILayout.Space(5);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+
+            // Colonne 2 - États  
+            GUILayout.BeginVertical(GUILayout.Width(90));
+            foreach (Player player in ServerData.players.Values)
+            {
+                if (player != null)
+                {
+                    if (player.isReady)
+                    {
+                        GUILayout.Label("Ready", textStyle);
+                    }
+                    else
+                    {
+                        GUILayout.Label("Not Ready", textStyle);
+                    }
+                    GUILayout.Space(25);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+
+            // Colonne 3 - Interactions
+            GUILayout.BeginVertical(GUILayout.Width(100));
+            foreach (Player player in ServerData.players.Values)
+            {
+                if (player != null)
+                {
+                    if (ServerData.isRunning && player.id != 1) 
+                    {  
+                        GUILayout.Space(25);
+                        if (GUILayout.Button("Kick", buttonStyle)) 
+                        {
+                            ServerSend.DisconnectClient(player.id, "You've been kicked from server!");
+                            Server.clients[player.id].Disconnect(player.id);
+                        }
+                    }
+
+                    if (player.id == Client.Instance.Id)
+                    {
+                        if (GUILayout.Button("Ready", buttonStyle)) 
+                        {
+                            player.isReady = !player.isReady;
+                            ClientSend.SendReadyState(player.isReady, player.id);
+                        }
+                    }
+                    
+                }
+            } 
+        }
+        private void ClientLobbyDisplaying()
+        {
+         // Colonne 1 - Noms
+            GUILayout.BeginVertical(GUILayout.Width(70));
+            foreach (int i in ClientData.players.Keys)
+            {
+                Player player =  ClientData.players[i];
+                if (player != null)
+                {
+                    GUILayout.Label("   " + player.username, textStyle);
+                    GUILayout.Space(5);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+
+            // Colonne 2 - États  
+            GUILayout.BeginVertical(GUILayout.Width(90));
+            foreach (int i in ClientData.players.Keys)
+            {
+                Player player =  ClientData.players[i];
+
+                if (player != null)
+                {
+                    if (player.isReady)
+                    {
+                        GUILayout.Label("Ready", textStyle);
+                    }
+                    else
+                    {
+                        GUILayout.Label("Not Ready", textStyle);
+                    }
+                    GUILayout.Space(25);
+                }
+            }
+            GUILayout.EndVertical();
+
+            GUILayout.FlexibleSpace();
+
+            // Colonne 3 - Interactions
+            GUILayout.BeginVertical(GUILayout.Width(100));
+            foreach (int i in ClientData.players.Keys)
+            {
+                Player player =  ClientData.players[i];
+                if (player != null)
+                {
+                    if (ClientData.players[i].id == Client.Instance.Id)
+                    {
+                        GUILayout.Space((i * 25));
+                        if (GUILayout.Button("Ready", buttonStyle)) 
+                        {
+                            player.isReady = !player.isReady;
+                            ClientSend.SendReadyState(player.isReady, i);
+                        }
+                    }
+                }
+            }
         }
 
         public void JoinLobby()

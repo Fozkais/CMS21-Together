@@ -40,6 +40,7 @@ namespace CMS21MP.ServerSide.DataHandle
             public static void keepAlive(int _fromclient, Packet _packet)
             {
                 ServerSend.keepAlive(_fromclient);
+                
                 Server.clients[_fromclient].Alive = true;
                // MelonLogger.Msg($"Client:[{_fromclient}] is Alive!");
             }
@@ -57,7 +58,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 bool _ready = _packet.ReadBool();
                 int _id = _packet.ReadInt();
 
-                Server.clients[_id].player.isReady = _ready;
+                ServerData.players[_id].isReady = _ready;
 
                 ServerSend.SendReadyState(_fromClient,_ready, _id);
             }
@@ -69,7 +70,7 @@ namespace CMS21MP.ServerSide.DataHandle
             public static void playerPosition(int _fromClient, Packet _packet)
             {
                 Vector3Serializable _position = _packet.Read<Vector3Serializable>();
-                Server.clients[_fromClient].player.position = _position;
+                ServerData.players[_fromClient].position = _position;
                 
                 ServerSend.SendPosition(_fromClient, _position);
                // MelonLogger.Msg("Received position from:" + Server.clients[_fromClient].player.username);
@@ -78,7 +79,7 @@ namespace CMS21MP.ServerSide.DataHandle
             public static void playerRotation(int _fromClient, Packet _packet)
             {
                 QuaternionSerializable _rotation = _packet.Read<QuaternionSerializable>();
-                Server.clients[_fromClient].player.rotation = _rotation;
+                ServerData.players[_fromClient].rotation = _rotation;
                 
                 ServerSend.SendRotation(_fromClient, _rotation);
             }
@@ -86,7 +87,8 @@ namespace CMS21MP.ServerSide.DataHandle
             public static void playerSceneChange(int _fromClient, Packet _packet)
             {
                 string scene = _packet.ReadString();
-                
+
+                ServerData.players[_fromClient].scene = scene;
                 ServerSend.SendPlayerSceneChange(_fromClient, scene);
             }
         

@@ -68,7 +68,7 @@ namespace CMS21MP.ClientSide.Data
             MelonLogger.Msg("Trigger UpdateScene : " + scene);
             if (GameData.DataInitialzed)
             {
-                ClientData.serverPlayers[Client.Instance.Id].scene = scene;
+                ClientData.players[Client.Instance.Id].scene = scene;
                 ClientSend.SendSceneChange(scene);
                 MelonLogger.Msg("Sended Scene Update :" + scene);
             }

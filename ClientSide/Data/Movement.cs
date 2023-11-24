@@ -16,7 +16,7 @@ namespace CMS21MP.ClientSide.Data
 
         public static void UpdatePlayersRotation(int id, QuaternionSerializable _rotation)
         {
-            if (ClientData.serverPlayers[id].scene == SceneManager.GetActiveScene().name)
+            if (ClientData.players[id].scene == SceneManager.GetActiveScene().name)
             {
                 if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
                 {
@@ -34,7 +34,7 @@ namespace CMS21MP.ClientSide.Data
         public static void UpdatePlayersPosition(int id, Vector3Serializable _position)
         {
 
-            if (ClientData.serverPlayers[id].scene == SceneManager.GetActiveScene().name)
+            if (ClientData.players[id].scene == SceneManager.GetActiveScene().name)
             {
                 if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
                 {

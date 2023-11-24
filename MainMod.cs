@@ -19,7 +19,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.2.7";
+      public const string ASSEMBLY_MOD_VERSION = "0.3.0";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -30,9 +30,6 @@ namespace CMS21MP
       public ThreadManager threadManager;
 
       public static bool isInitialized;
-
-      public static bool isServer = false;
-      public static bool isClient { get { return !isServer; } }
       
 
       public override void OnInitializeMelon() // Runs during Game Initialization.
@@ -80,14 +77,14 @@ namespace CMS21MP
 
          if (isInitialized)
          {
-            if (client.isConnected || isServer)
+            if (client.isConnected || ServerData.isRunning)
             {
-               if(sceneName == "Menu" && client.isConnected && !isServer)
+               if(sceneName == "Menu" && client.isConnected && !ServerData.isRunning)
                {
                   Client.Instance.Disconnect();
                   Application.runInBackground = false;
                }
-               if(sceneName == "Menu" && isServer)
+               if(sceneName == "Menu" && ServerData.isRunning)
                {
                   Server.Stop();
                   Application.runInBackground = false;
@@ -99,7 +96,7 @@ namespace CMS21MP
                
                if (SceneChecker.isInGarage())
                {
-                  foreach (KeyValuePair<int, Player> player in ClientData.serverPlayers)
+                  foreach (KeyValuePair<int, Player> player in ClientData.players)
                   {
                      if (SceneChecker.isInGarage(player.Value))
                      {
@@ -141,7 +138,7 @@ namespace CMS21MP
             }
          }
 
-         if (MainMod.isServer)
+         if (ServerData.isRunning)
          {
             if (Server.clients.Count == 0)
             {

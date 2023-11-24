@@ -133,8 +133,8 @@ namespace CMS21MP.ClientSide
             
                 if(ClientData.carOnScene != null)
                     ClientData.carOnScene.Clear();
-                if(ClientData.serverPlayers != null)
-                    ClientData.serverPlayers.Clear();
+                if(ClientData.players != null)
+                    ClientData.players.Clear();
                 if(ClientData.serverPlayerInstances != null)
                     ClientData.serverPlayerInstances.Clear();
                 if(GameData.localInventory != null)

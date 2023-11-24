@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CMS21MP.ClientSide;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.ClientSide.DataHandle;
+using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using HarmonyLib;
 using Il2Cpp;
@@ -32,7 +33,7 @@ namespace CMS21MP.CustomData
         public static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
         {
             MelonLogger.Msg("SceneChange trigered! : " + newSceneName );
-            if (Client.Instance.isConnected || MainMod.isServer)
+            if (Client.Instance.isConnected || ServerData.isRunning)
             {
                 if (newSceneName == "Menu")
                 {

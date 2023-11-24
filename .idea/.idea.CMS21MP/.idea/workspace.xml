@@ -7,12 +7,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="Fix ghost part">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="Fix disconnect causing car desync&#10;Improve SceneChange Detection">
+      <change afterPath="$PROJECT_DIR$/ServerSide/ServerData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/Player.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Steam/LobbyIDGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Steam/LobbyIDGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ModUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ModUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/ServerClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerClient.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,11 +62,16 @@
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/Packet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/Steam/LobbyIDGenerator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -258,7 +274,7 @@
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
-      <workItem from="1700592912308" duration="9127000" />
+      <workItem from="1700592912308" duration="15221000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -434,14 +450,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00032" summary="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart">
-      <option name="closed" value="true" />
-      <created>1698147175831</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1698147175831</updated>
     </task>
     <task id="LOCAL-00033" summary="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync">
       <option name="closed" value="true" />
@@ -627,7 +635,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700682679799</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Fix disconnect causing car desync&#10;Improve SceneChange Detection">
+      <option name="closed" value="true" />
+      <created>1700762843398</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1700762843398</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -671,7 +687,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0_Lifter_0" />
     <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
     <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
     <MESSAGE value="B-2_0-CarSync-0" />
@@ -696,7 +711,8 @@
     <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
     <MESSAGE value="UpdatePart/UpdateBodyPart Rewrite" />
     <MESSAGE value="Fix ghost part" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ghost part" />
+    <MESSAGE value="Fix disconnect causing car desync&#10;Improve SceneChange Detection" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix disconnect causing car desync&#10;Improve SceneChange Detection" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

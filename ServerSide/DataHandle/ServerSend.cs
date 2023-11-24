@@ -160,13 +160,13 @@ namespace CMS21MP.ServerSide.DataHandle
                 
                 foreach (ServerClient _client in Server.clients.Values)
                     {
-                        if (_client.player != null)
+                        if (ServerData.players.ContainsKey(_client.id))
                         {
                             if (_client.id != Client.Instance.Id)
                             {
-                                ServerSend.SpawnPlayer(_client.id, _client.player);
+                                ServerSend.SpawnPlayer(_client.id, ServerData.players[_client.id]);
                             }
-                            ServerSend.SpawnPlayer(Client.Instance.Id, _client.player);
+                            ServerSend.SpawnPlayer(Client.Instance.Id, ServerData.players[_client.id]);
                         }
                     }
             }
