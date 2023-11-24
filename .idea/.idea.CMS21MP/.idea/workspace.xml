@@ -7,15 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- PlayerData - ServerSide">
-      <change afterPath="$PROJECT_DIR$/ClientSide/ClientDebug.cs" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- WIP Inventory ServerSide">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/ClientDebug.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/ClientDebug.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/ServerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerData.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -277,7 +272,7 @@
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
-      <workItem from="1700592912308" duration="17494000" />
+      <workItem from="1700592912308" duration="18798000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -453,14 +448,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00034" summary="B-2_0-CarSync-0">
-      <option name="closed" value="true" />
-      <created>1698161244945</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1698161244945</updated>
     </task>
     <task id="LOCAL-00035" summary="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?">
       <option name="closed" value="true" />
@@ -646,7 +633,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700850634623</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="-0.3.0- WIP Inventory ServerSide">
+      <option name="closed" value="true" />
+      <created>1700852727348</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1700852727348</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -690,7 +685,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
     <MESSAGE value="B-2_0-CarSync-0" />
     <MESSAGE value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
     <MESSAGE value="B-2_0-CarSync_1" />
@@ -715,7 +709,8 @@
     <MESSAGE value="Fix ghost part" />
     <MESSAGE value="Fix disconnect causing car desync&#10;Improve SceneChange Detection" />
     <MESSAGE value="-0.3.0- PlayerData - ServerSide" />
-    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- PlayerData - ServerSide" />
+    <MESSAGE value="-0.3.0- WIP Inventory ServerSide" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- WIP Inventory ServerSide" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

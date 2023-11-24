@@ -40,7 +40,7 @@ namespace CMS21MP.ClientSide
             {
                 ModInventory.handledItem.Clear();
                 ModInventory.handledGroupItem.Clear();
-                GameData.localInventory.DeleteAll();
+                GameData.localInventory.DeleteAllInventory();
 
                 ClientSend.SendInventoryItem(new ModItem(), false, true);
                 ClientSend.SendInventoryGroupItem(new ModGroupItem(), false, true);

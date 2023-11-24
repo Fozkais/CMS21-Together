@@ -152,6 +152,8 @@ namespace CMS21MP.ServerSide.DataHandle
                 ModItem item = _packet.Read<ModItem>();
                 bool status = _packet.ReadBool();
                 bool resync = _packet.ReadBool();
+                
+                MelonLogger.Msg("ReceivedItem: " + status + " , " + resync);
 
                 if (!resync)
                 {
@@ -160,7 +162,7 @@ namespace CMS21MP.ServerSide.DataHandle
                         if (!ServerData.itemInventory.Any(s => s.UID == item.UID))
                         {
                             MelonLogger.Msg("SV: Added to Inventory!");
-                            ModInventory.handledItem.Add(item);
+                            ServerData.itemInventory.Add(item);
                         }
                     }
                     else
@@ -168,7 +170,7 @@ namespace CMS21MP.ServerSide.DataHandle
                         if (ServerData.itemInventory.Any(s => s.UID == item.UID))
                         {
                             MelonLogger.Msg("SV: Removed from Inventory!");
-                            ModInventory.handledItem.Remove(item);
+                            ServerData.itemInventory.Remove(item);
                         }
                     }
                     ServerSend.SendInventoryItem(_fromClient, item, status);
