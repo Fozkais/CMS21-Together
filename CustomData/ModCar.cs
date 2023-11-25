@@ -36,7 +36,9 @@ namespace CMS21MP.SharedData
         public List<ModPartScript> tempOther = new List<ModPartScript>();
         public List<ModPartScript> tempEngine = new List<ModPartScript>();
         public List<ModPartScript> tempSuspension = new List<ModPartScript>();
-        
+
+        public ModCar() {}
+
         public ModCar(int _carLoaderID, int _carVersion, GameScene  _carScene,int _carPosition=-1)
         {
             this.carLoaderID = _carLoaderID;

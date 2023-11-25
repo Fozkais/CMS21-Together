@@ -164,8 +164,8 @@ namespace CMS21MP.ClientSide.DataHandle
         {
             ModCar car = _packet.Read<ModCar>();
             
-            MelonLogger.Msg($"Received car info from server. ID:{car.carID} Version:{car.carVersion} Pos:{car.carPosition}, Scene:{car.carScene}");
-            MelonLogger.Msg($"Received carLoaderId : {car.carLoaderID}");
+            MelonLogger.Msg($"CL: Received car info from server. ID:{car.carID} Version:{car.carVersion} Pos:{car.carPosition}, Scene:{car.carScene}");
+            MelonLogger.Msg($"CL: Received carLoaderId : {car.carLoaderID}");
             var carLoader = GameData.carLoaders[car.carLoaderID];
             
             if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
@@ -173,14 +173,14 @@ namespace CMS21MP.ClientSide.DataHandle
                 ClientData.carOnScene.Remove(ClientData.carOnScene.First(s => s.Value.carLoaderID == car.carLoaderID 
                                                                               && s.Value.carID == car.carID).Key);
                 carLoader.DeleteCar();
-                MelonLogger.Msg("Removing car...");
+                MelonLogger.Msg("CL: Removing car...");
             }
             else
             {
                 ClientData.carOnScene.Add(car.carLoaderID, car);
                 MelonCoroutines.Start(StartFadeIn(ClientData.carOnScene.First(s 
                     => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value,  carLoader));
-                MelonLogger.Msg("Loading new car...");
+                MelonLogger.Msg("CL: Loading new car...");
             }
             _packet.Dispose();
         }
@@ -258,8 +258,8 @@ namespace CMS21MP.ClientSide.DataHandle
             List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
             
-            MelonLogger.Msg("Received :" + carParts.Count + " " + carParts[0].type.ToString());
-            MelonLogger.Msg("Received LoaderID: " + carLoaderID);
+            MelonLogger.Msg("CL: Received :" + carParts.Count + " " + carParts[0].type.ToString());
+            MelonLogger.Msg("CL: Received LoaderID: " + carLoaderID);
                 
 
             MelonCoroutines.Start(Car.SetCarReadyAndUpdated(carLoaderID, carParts));
@@ -340,12 +340,12 @@ namespace CMS21MP.ClientSide.DataHandle
                 int _pos = _packet.ReadInt();
                 int _loaderId = _packet.ReadInt();
                 
-                MelonLogger.Msg("Received New lifter pos to : " + _loaderId + 
+                MelonLogger.Msg("CL: Received New lifter pos to : " + _loaderId + 
                                 " action: " + _action + " pos: " + _pos);
 
                 if (ClientData.carOnScene.Any(s => s.Value.carLoaderID == _loaderId - 1))
                 {
-                    MelonLogger.Msg("Passed Lifter.");
+                    MelonLogger.Msg("CL: Passed Lifter.");
                     MelonCoroutines.Start(GarageInteraction.LifterPauseUpdating());
                     GameData.carLoaders[_loaderId-1].lifter.Action(_action);
                     ClientData.carOnScene[_loaderId-1].CarLifterState = _pos;
@@ -360,7 +360,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 MelonCoroutines.Start(GarageInteraction.TC_PauseUpdating());
                 
-                MelonLogger.Msg("Received New Tire Change : " + 
+                MelonLogger.Msg("CL: Received New Tire Change : " + 
                                 " action: " + connect + " instant: " + instant);
                 
                 GameData.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
@@ -378,7 +378,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 
                 MelonCoroutines.Start(GarageInteraction.WB_PauseUpdating());
                 
-                MelonLogger.Msg("Received WheelBalance!");
+                MelonLogger.Msg("CL: Received WheelBalance!");
                 
                 GameData.wheelBalancer.SetGroupOnWheelBalancer(_item.ToGame(_item), true);
                 _packet.Dispose();

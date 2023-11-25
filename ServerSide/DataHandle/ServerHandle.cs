@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
+using CMS21MP.ServerSide.Data;
 using CMS21MP.SharedData;
+using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21MP.ServerSide.DataHandle
@@ -22,11 +24,11 @@ namespace CMS21MP.ServerSide.DataHandle
 
                 if (!ClientData.asGameStarted)
                 {
-                    MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
+                    MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
 
                     if (_fromClient != _clientIdCheck)
                     {
-                        MelonLogger.Msg($"Player \"{_username}\" (ID:{_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
+                        MelonLogger.Msg($" SV: Player \"{_username}\" (ID:{_fromClient}) has assumed the wrong client ID ({_clientIdCheck})!");
                     }
                     Server.clients[_fromClient].SendToLobby(_username);
                     MelonCoroutines.Start( Server.clients[_fromClient].isClientAlive());
@@ -51,7 +53,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 int id = _packet.ReadInt();
                 
                 Server.clients[_fromClient].Disconnect(id);
-                MelonLogger.Msg($"{Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} " + $"has disconnected.");
+                MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} " + $"has disconnected.");
             }
             
             public static void ReadyState(int _fromClient, Packet _packet)
@@ -100,14 +102,71 @@ namespace CMS21MP.ServerSide.DataHandle
         public static void CarInfo(int _fromClient, Packet _packet)
         {
             ModCar car = _packet.Read<ModCar>();
+            bool resync = _packet.ReadBool();
 
-            ServerSend.CarInfo(_fromClient, car);
+            if (!resync)
+            {
+                if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
+                {
+                    ServerData.carOnScene.Remove(ServerData.carOnScene.First(s => s.Value.carLoaderID == car.carLoaderID 
+                                                                                  && s.Value.carID == car.carID).Key);
+                }
+                else
+                {
+                    ServerData.carOnScene.Add(car.carLoaderID, car);
+                }
+                ServerSend.CarInfo(_fromClient, car);
+            }
+            else
+            {
+                foreach (ModCar _car in ServerData.carOnScene.Values)
+                {
+                    ServerSend.CarInfo(_fromClient, _car, true);
+                    List<ModPartScript> otherParts = new List<ModPartScript>();
+                    for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
+                    {
+                        for (int j = 0; j < _car.partInfo.OtherParts[i].Count; j++)
+                        {
+                            otherParts.Add(_car.partInfo.OtherParts[i][j]);
+                        }
+                    }
+                    List<ModPartScript> suspensionPart = new List<ModPartScript>();
+                    for (int i = 0; i < _car.partInfo.SuspensionParts.Count; i++)
+                    {
+                        for (int j = 0; j < _car.partInfo.SuspensionParts[i].Count; j++)
+                        {
+                            suspensionPart.Add(_car.partInfo.SuspensionParts[i][j]);
+                        }
+                    }
+                    List<ModPartScript> enginePart = new List<ModPartScript>();
+                    for (int i = 0; i < _car.partInfo.EngineParts.Count; i++)
+                    {
+                        enginePart.Add(_car.partInfo.EngineParts[i]);
+                    }
+                    
+                    List<ModCarPart> carParts = new List<ModCarPart>();
+                    for (int i = 0; i < _car.partInfo.BodyParts.Count; i++)
+                    {
+                        carParts.Add(_car.partInfo.BodyParts[i]);
+                    }
+                    
+                    ServerSend.PartScripts(_fromClient, otherParts, _car.carLoaderID, true);
+                    ServerSend.PartScripts(_fromClient, enginePart, _car.carLoaderID, true);
+                    ServerSend.PartScripts(_fromClient, suspensionPart, _car.carLoaderID, true);
+                    ServerSend.BodyParts(_fromClient, carParts, _car.carLoaderID, true);
+                    
+                }
+                
+            }
+
         }
         
         public static void CarPosition(int _fromClient, Packet _packet)
         {
             int carLoaderID = _packet.ReadInt();
             int carPosition = _packet.ReadInt();
+            
+            ServerData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
             
             ServerSend.CarPosition(_fromClient, carLoaderID, carPosition);
         }
@@ -117,12 +176,40 @@ namespace CMS21MP.ServerSide.DataHandle
             int carLoaderID = _packet.ReadInt();
             ModPartScript carPart = _packet.Read<ModPartScript>();
             
+            if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
+            {
+                // MelonLogger.Msg("Added PartScript to Buffer");
+                var car = ServerData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value;
+
+                CarPartHandle.HandlePart(carPart, car);
+                
+            }
+            
             ServerSend.CarPart(_fromClient, carLoaderID, carPart);
         }
         public static void BodyPart(int _fromClient, Packet _packet)
         {
             int carLoaderID = _packet.ReadInt();
             ModCarPart carPart = _packet.Read<ModCarPart>();
+            
+            if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
+            {
+                // MelonLogger.Msg("Added PartScript to Buffer");
+                var car = ServerData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value;
+
+                if (car.partInfo != null)
+                {
+                    var partInfo = car.partInfo.BodyParts;
+                    if (partInfo == null)
+                        partInfo = new Dictionary<int, ModCarPart>();
+                    
+                    partInfo[carPart.carPartID] = carPart;
+                }
+            }
+            else
+            {
+                MelonLogger.Msg("SV: Car Wont Exist!");
+            }
             
             ServerSend.BodyPart(_fromClient, carLoaderID, carPart);
         }
@@ -132,12 +219,36 @@ namespace CMS21MP.ServerSide.DataHandle
             List<ModPartScript> carParts = _packet.Read< List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
             
+            if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
+            {
+                ModCar car = ServerData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                foreach (ModPartScript part in carParts)
+                {
+                    CarPartHandle.HandlePart(part, car);
+                }
+            }
             ServerSend.PartScripts(_fromClient, carParts, carLoaderID);
         }
         public static void BodyParts(int _fromClient, Packet _packet)
         {
             List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
             int carLoaderID = _packet.ReadInt();
+            
+            if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
+            {
+                ModCar car = ServerData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                foreach (ModCarPart carPart in carParts)
+                {
+                    if (car.partInfo != null)
+                    {
+                        var partInfo = car.partInfo.BodyParts;
+                        if (partInfo == null)
+                            partInfo = new Dictionary<int, ModCarPart>();
+                    
+                        partInfo[carPart.carPartID] =  carPart;
+                    }
+                }
+            }
             
             ServerSend.BodyParts(_fromClient, carParts, carLoaderID);
         }
@@ -153,7 +264,6 @@ namespace CMS21MP.ServerSide.DataHandle
                 bool status = _packet.ReadBool();
                 bool resync = _packet.ReadBool();
                 
-                MelonLogger.Msg("ReceivedItem: " + status + " , " + resync);
 
                 if (!resync)
                 {
@@ -161,7 +271,6 @@ namespace CMS21MP.ServerSide.DataHandle
                     {
                         if (!ServerData.itemInventory.Any(s => s.UID == item.UID))
                         {
-                            MelonLogger.Msg("SV: Added to Inventory!");
                             ServerData.itemInventory.Add(item);
                         }
                     }
@@ -169,7 +278,6 @@ namespace CMS21MP.ServerSide.DataHandle
                     {
                         if (ServerData.itemInventory.Any(s => s.UID == item.UID))
                         {
-                            MelonLogger.Msg("SV: Removed from Inventory!");
                             ServerData.itemInventory.Remove(item);
                         }
                     }
@@ -179,7 +287,6 @@ namespace CMS21MP.ServerSide.DataHandle
 
                 foreach (ModItem _modItem in ServerData.itemInventory)
                 {
-                    MelonLogger.Msg("SV: SendingResync!");
                     ServerSend.SendInventoryItem(_fromClient, _modItem, true, true);
                 }
             }

@@ -110,11 +110,12 @@ namespace CMS21MP.ClientSide.DataHandle
 
         #region Car
 
-            public static void SendCarInfo(ModCar _car)
+            public static void SendCarInfo(ModCar _car, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carInfo))
                 {
                     _packet.Write(_car);
+                    _packet.Write(resync);
 
                     SendTCPData(_packet);
                 }

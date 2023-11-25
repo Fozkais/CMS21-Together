@@ -211,13 +211,16 @@ namespace CMS21MP.ServerSide.DataHandle
         #endregion
 
         #region Car
-            public static void CarInfo(int _fromClient, ModCar _car)
+            public static void CarInfo(int _fromClient, ModCar _car, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carInfo))
                 {
                     _packet.Write(_car);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(_fromClient, _packet);
+                    else
+                        SendTCPData(_fromClient, _packet);
                 }
             }
             public static void CarPosition(int _fromClient, int _carLoaderID, int _carPosition)
@@ -251,27 +254,33 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
             }
             
-            public static void PartScripts(int _fromClient, List<ModPartScript> tempCarScripts, int carCarLoaderID)
+            public static void PartScripts(int _fromClient, List<ModPartScript> tempCarScripts, int carCarLoaderID, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carParts))
                 {
-                    MelonLogger.Msg($"Sending: {tempCarScripts.Count} parts");
+                   // MelonLogger.Msg($"Sending: {tempCarScripts.Count} parts");
                     _packet.Write(tempCarScripts);
                     _packet.Write(carCarLoaderID);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(_fromClient, _packet);
+                    else
+                        SendTCPData(_fromClient, _packet);
                 }
             }
 
-            public static void BodyParts(int _fromClient, List<ModCarPart> tempCarParts, int carCarLoaderID)
+            public static void BodyParts(int _fromClient, List<ModCarPart> tempCarParts, int carCarLoaderID, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.bodyParts))
                 {
-                    MelonLogger.Msg($"Sending: {tempCarParts.Count} bodyParts");
+                  //  MelonLogger.Msg($"Sending: {tempCarParts.Count} bodyParts");
                     _packet.Write(tempCarParts);
                     _packet.Write(carCarLoaderID);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    if (!resync)
+                        SendTCPDataToAll(_fromClient, _packet);
+                    else
+                        SendTCPData(_fromClient, _packet);
                 }
             }
             
