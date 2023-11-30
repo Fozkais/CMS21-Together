@@ -18,6 +18,8 @@ namespace CMS21MP.SharedData
         public static Il2CppReferenceArray<ProfileData> profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1); // unneded? 
         public static  Il2CppReferenceArray<SaveData> saveData = new Il2CppReferenceArray<SaveData>(4); // unneded?
 
+        public static string currentSaveName;
+
         public static void GetVanillaSaves() // Run on game startup
         {
             for (int i = 0; i <= 3; i++) 
@@ -59,8 +61,8 @@ namespace CMS21MP.SharedData
             MelonLogger.Msg("Selected Profile : " +  Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             
             MelonLogger.Msg("---[END OF DEFAULT LOAD INFO]---");
-            
 
+            currentSaveName = saveName;
             int validIndex = -1;
             
             if (ModSaves[index].alreadyLoaded)

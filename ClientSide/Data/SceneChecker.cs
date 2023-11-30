@@ -15,6 +15,20 @@ namespace CMS21MP.ClientSide.Data
                 return true;
             return false;
         }
+
+        public static GameScene currentScene()
+        {
+            if (isInBarn())
+                return GameScene.barn;
+            if (isInGarage())
+                return GameScene.garage;
+            if (isInJunkyard())
+                return GameScene.junkyard;
+            if (isInDealer())
+                return GameScene.auto_salon;
+            
+            return GameScene.unknow;
+        }
         public static bool isInGarage(Player player = null)
         {
             if (player == null)

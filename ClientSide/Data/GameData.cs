@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using CMS21MP.ClientSide.DataHandle;
+using CMS21MP.SharedData;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;
@@ -33,6 +35,11 @@ namespace CMS21MP.ClientSide.Data
             if (SceneChecker.isInGarage())
             {
                 localInventory = GameScript.Get().GetComponent<Inventory>();
+                if (ClientData.refreshCars)
+                {
+                    ClientSend.SendCarInfo(new ModCar(), true);
+                    ClientData.refreshCars = false;
+                }
             }
 
             ClientData.asGameStarted = true;

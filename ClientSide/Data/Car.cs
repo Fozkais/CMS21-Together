@@ -531,9 +531,11 @@ namespace CMS21MP.ClientSide.Data
                         yield return new WaitForSeconds(1);
                     if (String.IsNullOrEmpty(GameData.carLoaders[car.Value.carLoaderID].carToLoad) && GameData.carLoaders[car.Value.carLoaderID].carParts == null)
                     {
-                        
-                        MelonLogger.Msg("Detected A removed car");
-                        ClientSend.SendCarInfo(new ModCar(car.Value));
+                        if (car.Value.carScene == SceneChecker.currentScene())
+                        {
+                            MelonLogger.Msg("Detected A removed car");
+                            ClientSend.SendCarInfo(new ModCar(car.Value));
+                        }
                         ClientData.carOnScene.Remove(car.Key);
                     }
                 }

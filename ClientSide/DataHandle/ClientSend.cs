@@ -138,6 +138,7 @@ namespace CMS21MP.ClientSide.DataHandle
                 {
                     _packet.Write(_carLoaderID);
                     _packet.Write(_partConverted);
+                    _packet.Write(SceneChecker.currentScene());
 
                     SendTCPData(_packet);
                 }
@@ -162,6 +163,7 @@ namespace CMS21MP.ClientSide.DataHandle
                     MelonLogger.Msg($"Sending: {tempCarParts.Count} bodyParts");
                     _packet.Write(tempCarParts);
                     _packet.Write(carCarLoaderID);
+                    _packet.Write(SceneChecker.currentScene());
 
                     SendTCPData(_packet);
                 }

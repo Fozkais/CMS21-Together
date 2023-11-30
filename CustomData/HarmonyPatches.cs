@@ -11,6 +11,7 @@ using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using HarmonyLib;
 using Il2Cpp;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -39,6 +40,28 @@ namespace CMS21MP.CustomData
                 {
                     Client.Instance.Disconnect();
                     Application.runInBackground = false;
+                }
+
+                try
+                {
+                    if (newSceneName == "garage" && ClientData.asGameStarted)
+                    {
+                        var profiles = Singleton<GameManager>.Instance.ProfileManager.GetProfiles();
+
+                        foreach (var profile in profiles)
+                        {
+                            if (profile.Name == SaveSystem.currentSaveName)
+                            {
+                                profile.carsInGarage = new Il2CppReferenceArray<NewCarData>(profile.carsInGarage.Count);
+                            }
+                        }
+
+                        ClientData.refreshCars = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg("Error on sceneChange: " + e);
                 }
                 
                 SceneChecker.UpdatePlayerScene(newSceneName);

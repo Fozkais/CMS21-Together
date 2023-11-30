@@ -233,22 +233,24 @@ namespace CMS21MP.ServerSide.DataHandle
                     SendTCPDataToAll(_fromClient, _packet);
                 }
             }
-            public static void CarPart(int _fromClient, int _carLoaderID, ModPartScript _carPart)
+            public static void CarPart(int _fromClient, int _carLoaderID, ModPartScript _carPart, GameScene scene)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carPart))
                 {
                     _packet.Write(_carLoaderID);
                     _packet.Write(_carPart);
+                    _packet.Write(scene);
 
                     SendTCPDataToAll(_fromClient, _packet);
                 }
             }
-            public static void BodyPart(int _fromClient, int _carLoaderID, ModCarPart _carPart)
+            public static void BodyPart(int _fromClient, int _carLoaderID, ModCarPart _carPart, GameScene scene)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.bodyPart))
                 {
                     _packet.Write(_carLoaderID);
                     _packet.Write(_carPart);
+                    _packet.Write(scene);
 
                     SendTCPDataToAll(_fromClient, _packet);
                 }

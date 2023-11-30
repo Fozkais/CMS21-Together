@@ -7,10 +7,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- WIP ServerSide Car + ResyncDebug">
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/GameData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/SceneChecker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/HarmonyPatches.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CustomData/SaveSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/SaveSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -253,7 +261,7 @@
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
       <workItem from="1700592912308" duration="24566000" />
-      <workItem from="1701366256917" duration="807000" />
+      <workItem from="1701366256917" duration="6616000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -429,14 +437,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00037" summary="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn">
-      <option name="closed" value="true" />
-      <created>1698271277915</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1698271277915</updated>
     </task>
     <task id="LOCAL-00038" summary="B-2_0-Movement_1&#10;- Few Improvement on MovementSync">
       <option name="closed" value="true" />
@@ -622,7 +622,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700913204316</updated>
     </task>
-    <option name="localTasksCounter" value="61" />
+    <task id="LOCAL-00061" summary="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync">
+      <option name="closed" value="true" />
+      <created>1701367160326</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1701367160326</updated>
+    </task>
+    <option name="localTasksCounter" value="62" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -666,7 +674,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0-CarSync_1" />
     <MESSAGE value="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn" />
     <MESSAGE value="B-2_0-Movement_1&#10;- Few Improvement on MovementSync" />
     <MESSAGE value="B-2_0-CarSpawnOnLoad_0&#10;- Try to fix implementation of car sync to allow to load a save with car already loaded in garage" />
@@ -691,7 +698,8 @@
     <MESSAGE value="-0.3.0- WIP Inventory ServerSide" />
     <MESSAGE value="-0.3.0- Inventory ServerSide + ClientResyncDebug" />
     <MESSAGE value="-0.3.0- WIP ServerSide Car + ResyncDebug" />
-    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- WIP ServerSide Car + ResyncDebug" />
+    <MESSAGE value="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

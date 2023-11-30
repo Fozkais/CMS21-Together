@@ -175,6 +175,7 @@ namespace CMS21MP.ServerSide.DataHandle
         {
             int carLoaderID = _packet.ReadInt();
             ModPartScript carPart = _packet.Read<ModPartScript>();
+            GameScene scene = _packet.Read<GameScene>();
             
             if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
@@ -185,12 +186,13 @@ namespace CMS21MP.ServerSide.DataHandle
                 
             }
             
-            ServerSend.CarPart(_fromClient, carLoaderID, carPart);
+            ServerSend.CarPart(_fromClient, carLoaderID, carPart, scene);
         }
         public static void BodyPart(int _fromClient, Packet _packet)
         {
             int carLoaderID = _packet.ReadInt();
             ModCarPart carPart = _packet.Read<ModCarPart>();
+            GameScene scene = _packet.Read<GameScene>();
             
             if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
@@ -211,7 +213,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 MelonLogger.Msg("SV: Car Wont Exist!");
             }
             
-            ServerSend.BodyPart(_fromClient, carLoaderID, carPart);
+            ServerSend.BodyPart(_fromClient, carLoaderID, carPart, scene);
         }
         
         public static void PartScripts(int _fromClient, Packet _packet)
