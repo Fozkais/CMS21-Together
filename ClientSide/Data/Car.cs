@@ -870,6 +870,7 @@ namespace CMS21MP.ClientSide.Data
                // GameData.carLoaders[carLoaderId].SetCustomCarPaintType(originalPart, updatedPart.paintData.ToGame(updatedPart.paintData));  
                // GameData.carLoaders[carLoaderId].SetCarColorAndPaintType(originalPart, color, (PaintType)updatedPart.paintType);
                GameData.carLoaders[carLoaderId].SetCarColor(originalPart, color);
+               GameData.carLoaders[carLoaderId].SetCarPaintType(originalPart, (PaintType)updatedPart.paintType);
             }
             GameData.carLoaders[carLoaderId].SetCarLivery(originalPart, updatedPart.livery, updatedPart.liveryStrength);
 
@@ -889,6 +890,8 @@ namespace CMS21MP.ClientSide.Data
 
             if(updatedPart.isTinted)
                 PaintHelper.SetWindowProperties(originalPart.handle, (int)(updatedPart.TintColor.a * 255), tintColor);
+            
+            GameData.carLoaders[carLoaderId].Update();
         }
            
         

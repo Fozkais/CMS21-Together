@@ -7,17 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- Inventory ServerSide + ClientResyncDebug">
-      <change afterPath="$PROJECT_DIR$/ServerSide/Data/CarPartHandle.cs" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- WIP ServerSide Car + ResyncDebug">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMS21MP.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/CMS21MP.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/ClientDebug.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/ClientDebug.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/ModCar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/ModCar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/ServerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/ServerData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,34 +47,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Client.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/ClientDebug.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/ClientDebug.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/ClientData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Movement.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/SceneChecker.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Transport/ClientTCP.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/ModCar.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/Packet.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/Player.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/MainMod.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ModUI.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/Server.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/ServerClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/ServerData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/Steam/LobbyIDGenerator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -284,7 +252,8 @@
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
-      <workItem from="1700592912308" duration="23931000" />
+      <workItem from="1700592912308" duration="24566000" />
+      <workItem from="1701366256917" duration="807000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -460,14 +429,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00036" summary="B-2_0-CarSync_1">
-      <option name="closed" value="true" />
-      <created>1698271059126</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1698271059126</updated>
     </task>
     <task id="LOCAL-00037" summary="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn">
       <option name="closed" value="true" />
@@ -653,7 +614,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700869173397</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="-0.3.0- WIP ServerSide Car + ResyncDebug">
+      <option name="closed" value="true" />
+      <created>1700913204316</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1700913204316</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -697,7 +666,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
     <MESSAGE value="B-2_0-CarSync_1" />
     <MESSAGE value="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn" />
     <MESSAGE value="B-2_0-Movement_1&#10;- Few Improvement on MovementSync" />
@@ -722,7 +690,8 @@
     <MESSAGE value="-0.3.0- PlayerData - ServerSide" />
     <MESSAGE value="-0.3.0- WIP Inventory ServerSide" />
     <MESSAGE value="-0.3.0- Inventory ServerSide + ClientResyncDebug" />
-    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- Inventory ServerSide + ClientResyncDebug" />
+    <MESSAGE value="-0.3.0- WIP ServerSide Car + ResyncDebug" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- WIP ServerSide Car + ResyncDebug" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

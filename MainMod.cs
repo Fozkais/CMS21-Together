@@ -160,17 +160,13 @@ namespace CMS21MP
       public override void OnLateUpdate() // Runs once per frame after OnUpdate and OnFixedUpdate have finished.
       {
          modGUI.showGui();
-         if (Input.GetKeyDown(KeyCode.RightControl)) //Debug Mounting part simulteanously
-         {
-            Cursor3D.Get().BlockCursor(false);
-         }
+         ClientDebug.HandleDebug();
          
       }
 
       public override void OnGUI() // Can run multiple times per frame. Mostly used for Unity's IMGUI.
       {
          modGUI.OnMPGUI();
-         ClientDebug.HandleDebug();
       }
 
 
