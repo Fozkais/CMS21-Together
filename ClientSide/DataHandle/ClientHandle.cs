@@ -224,16 +224,20 @@ namespace CMS21MP.ClientSide.DataHandle
         {
             int carLoaderID = _packet.ReadInt();
             ModPartScript carPart = _packet.Read<ModPartScript>();
+            GameScene scene = _packet.Read<GameScene>();
 
-           // MelonLogger.Msg("Received new PartScript");
-            if (ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value != null)
+            if (scene == SceneChecker.currentScene())
             {
-               // MelonLogger.Msg("Added PartScript to Buffer");
-                var car = ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID);
-                car.Value.partInfo.PartScriptsBuffer.Add(carPart);
-               // MelonLogger.Msg($"Count: {car.partInfo.PartScriptsBuffer.Count}!");
-               // MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
+                if (ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID).Value != null)
+                {
+                   // MelonLogger.Msg("Added PartScript to Buffer");
+                    var car = ClientData.carOnScene.First(s => s.Value.carLoaderID == carLoaderID);
+                    car.Value.partInfo.PartScriptsBuffer.Add(carPart);
+                   // MelonLogger.Msg($"Count: {car.partInfo.PartScriptsBuffer.Count}!");
+                   // MelonCoroutines.Start(Car.HandleNewPart(carLoaderID, carPart));
+                }
             }
+            // MelonLogger.Msg("Received new PartScript");
             _packet.Dispose();
         }
         
@@ -263,12 +267,18 @@ namespace CMS21MP.ClientSide.DataHandle
         {
             List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
-            
-            MelonLogger.Msg("CL: Received :" + carParts.Count + " " + carParts[0].type.ToString());
-            MelonLogger.Msg("CL: Received LoaderID: " + carLoaderID);
-                
+            GameScene scene = _packet.Read<GameScene>();
 
-            MelonCoroutines.Start(Car.SetCarReadyAndUpdated(carLoaderID, carParts));
+            if (scene == SceneChecker.currentScene())
+            {
+
+                MelonLogger.Msg("CL: Received :" + carParts.Count + " " + carParts[0].type.ToString());
+                MelonLogger.Msg("CL: Received LoaderID: " + carLoaderID);
+
+
+                MelonCoroutines.Start(Car.SetCarReadyAndUpdated(carLoaderID, carParts));
+            }
+
             //MelonCoroutines.Start(Car.HandleNewCar(carLoaderID, carParts));
             _packet.Dispose();
         }

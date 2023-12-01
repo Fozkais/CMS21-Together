@@ -150,10 +150,10 @@ namespace CMS21MP.ServerSide.DataHandle
                         carParts.Add(_car.partInfo.BodyParts[i]);
                     }
                     
-                    ServerSend.PartScripts(_fromClient, otherParts, _car.carLoaderID, true);
-                    ServerSend.PartScripts(_fromClient, enginePart, _car.carLoaderID, true);
-                    ServerSend.PartScripts(_fromClient, suspensionPart, _car.carLoaderID, true);
-                    ServerSend.BodyParts(_fromClient, carParts, _car.carLoaderID, true);
+                    ServerSend.PartScripts(_fromClient, otherParts, _car.carLoaderID, car.carScene,true);
+                    ServerSend.PartScripts(_fromClient, enginePart, _car.carLoaderID, car.carScene,true);
+                    ServerSend.PartScripts(_fromClient, suspensionPart, _car.carLoaderID, car.carScene,true);
+                    ServerSend.BodyParts(_fromClient, carParts, _car.carLoaderID, car.carScene, true);
                     
                 }
                 
@@ -220,6 +220,7 @@ namespace CMS21MP.ServerSide.DataHandle
         {
             List<ModPartScript> carParts = _packet.Read< List<ModPartScript>>();
             int carLoaderID = _packet.ReadInt();
+            GameScene scene = _packet.Read<GameScene>();
             
             if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
@@ -229,12 +230,13 @@ namespace CMS21MP.ServerSide.DataHandle
                     CarPartHandle.HandlePart(part, car);
                 }
             }
-            ServerSend.PartScripts(_fromClient, carParts, carLoaderID);
+            ServerSend.PartScripts(_fromClient, carParts, carLoaderID, scene);
         }
         public static void BodyParts(int _fromClient, Packet _packet)
         {
             List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
             int carLoaderID = _packet.ReadInt();
+            GameScene scene = _packet.Read<GameScene>();
             
             if (ServerData.carOnScene.Any(s => s.Value.carLoaderID == carLoaderID))
             {
@@ -252,7 +254,7 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
             }
             
-            ServerSend.BodyParts(_fromClient, carParts, carLoaderID);
+            ServerSend.BodyParts(_fromClient, carParts, carLoaderID, scene);
         }
         
 

@@ -16,32 +16,39 @@ namespace CMS21MP.ClientSide.Data
 
         public static void UpdatePlayersRotation(int id, QuaternionSerializable _rotation)
         {
-            if (ClientData.players[id].scene == SceneManager.GetActiveScene().name)
+            if (ClientData.players.TryGetValue(id, out var player))
             {
-                if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
+                if (player.scene == SceneManager.GetActiveScene().name)
                 {
-                    if (instance != null)
+                    if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
                     {
-                        if (ClientData.serverPlayerInstances.ContainsKey(id))
-                            ClientData.serverPlayerInstances[id].transform.rotation =
-                                Quaternion.Lerp(ClientData.serverPlayerInstances[id].transform.rotation,
-                                    _rotation.toQuaternion(), 0.15f);
+                        if (instance != null)
+                        {
+                            if (ClientData.serverPlayerInstances.ContainsKey(id))
+                            {
+                                ClientData.serverPlayerInstances[id].transform.rotation =
+                                    Quaternion.Lerp(ClientData.serverPlayerInstances[id].transform.rotation,_rotation.toQuaternion(), 0.15f);
+                                
+                            }
+                        }
                     }
                 }
             }
         }
-
         public static void UpdatePlayersPosition(int id, Vector3Serializable _position)
         {
 
-            if (ClientData.players[id].scene == SceneManager.GetActiveScene().name)
+            if (ClientData.players.TryGetValue(id, out var player))
             {
-                if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
+                if (player.scene == SceneManager.GetActiveScene().name)
                 {
-                    if (instance != null)
+                    if (ClientData.serverPlayerInstances.TryGetValue(id, out GameObject instance))
                     {
-                        Vector3 pos = new Vector3(_position.x, _position.y - 0.75f, _position.z);
-                        ClientData.serverPlayerInstances[id].transform.position = pos;
+                        if (instance != null)
+                        {
+                            Vector3 pos = new Vector3(_position.x, _position.y - 0.75f, _position.z);
+                            ClientData.serverPlayerInstances[id].transform.position = pos;
+                        }
                     }
                 }
             }
