@@ -32,6 +32,10 @@ namespace CMS21MP.ClientSide.Data
                             }
                         }
                     }
+                    else
+                    {
+                        ClientData.SpawnPlayer(player, id);
+                    }
                 }
             }
         }
@@ -49,6 +53,10 @@ namespace CMS21MP.ClientSide.Data
                             Vector3 pos = new Vector3(_position.x, _position.y - 0.75f, _position.z);
                             ClientData.serverPlayerInstances[id].transform.position = pos;
                         }
+                    }
+                    else
+                    {
+                        ClientData.SpawnPlayer(player, id);
                     }
                 }
             }

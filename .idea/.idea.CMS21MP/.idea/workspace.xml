@@ -7,7 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- Bug fixes&#10;- Mod Car load being called outside of garage&#10;- Movement/Rotation being done with a null player instance" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Movement.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +46,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Movement.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
@@ -255,7 +259,7 @@
       <workItem from="1700427166400" duration="17417000" />
       <workItem from="1700592912308" duration="24566000" />
       <workItem from="1701366256917" duration="6725000" />
-      <workItem from="1701419741827" duration="1360000" />
+      <workItem from="1701419741827" duration="1960000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -431,14 +435,6 @@
       <option name="presentableId" value="LOCAL-00025" />
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
-    </task>
-    <task id="LOCAL-00040" summary="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?">
-      <option name="closed" value="true" />
-      <created>1698367711129</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1698367711129</updated>
     </task>
     <task id="LOCAL-00041" summary="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData">
       <option name="closed" value="true" />
@@ -624,7 +620,15 @@
       <option name="project" value="LOCAL" />
       <updated>1701421105168</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server">
+      <option name="closed" value="true" />
+      <created>1701421378222</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1701421378222</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -668,7 +672,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0-CarSpawnOnLoad_0&#10;- Try to fix implementation of car sync to allow to load a save with car already loaded in garage" />
     <MESSAGE value="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?" />
     <MESSAGE value="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData" />
     <MESSAGE value="B-2_0-TireChanger_1&#10;- Fix TireChanger Sync" />
@@ -693,7 +696,8 @@
     <MESSAGE value="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync" />
     <MESSAGE value="-0.3.0- HandleSceneChange + Auto Car-Resync" />
     <MESSAGE value="-0.3.0- Bug fixes&#10;- Mod Car load being called outside of garage&#10;- Movement/Rotation being done with a null player instance" />
-    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- Bug fixes&#10;- Mod Car load being called outside of garage&#10;- Movement/Rotation being done with a null player instance" />
+    <MESSAGE value="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
