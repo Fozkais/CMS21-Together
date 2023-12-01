@@ -563,6 +563,8 @@ namespace CMS21MP.ClientSide.Data
             {
                 ClientData.carOnScene[carLoaderID].isUpdated = true;
                 MelonLogger.Msg("Car as been Updated!");
+                yield return new WaitForSeconds(1);
+                Singleton<GameManager>.Instance.GameDataManager.Save(PlayerPrefs.GetInt("selectedProfile"));
             }
         }
 
