@@ -45,7 +45,6 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync Quest : ❌
 * Sync garage upgrade : ❌
 * Sync garage Customization : ❌
-* Sync other Map : ❌
 * Add Mod Support : ❌
 * Add Animation to players : ❌
 
