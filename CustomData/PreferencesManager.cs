@@ -6,6 +6,7 @@ using Il2Cpp;
 using MelonLoader;
 using System.IO;
 using System.Threading.Tasks;
+using CMS21Together.CustomData;
 using Il2CppCMS.ContainersSave;
 using Il2CppCMS.Platforms.Base;
 using Il2CppCMS.Platforms.Steam;
@@ -13,7 +14,7 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Newtonsoft.Json;
 using UnityEngine;
 
-namespace CMS21MP.SharedData
+namespace CMS21Together.SharedData
 {
 
 public static class PreferencesManager
@@ -120,7 +121,7 @@ public static class PreferencesManager
                         Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(SaveSystem.saveData);
                         ProfileData data = Singleton<GameManager>.Instance.GameDataManager.ProfileData[3];
                         
-                        ProfileData copiedData = DeepCopy.Copy(data);
+                        ProfileData copiedData = DataHelper.Copy(data);
                         
                         tempProfileData[modSaveData.saveIndex] = copiedData;
                       //  MelonLogger.Msg("Added to tempProfileData:" + tempProfileData[modSaveData.saveIndex].carsInGarage[0].carToLoad);

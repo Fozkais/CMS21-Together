@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
-using CMS21MP.ServerSide.DataHandle;
-using CMS21MP.ServerSide.Transport;
-using CMS21MP.SharedData;
+using CMS21Together.SharedData;
+using CMS21Together.ServerSide.DataHandle;
+using CMS21Together.ServerSide.Transport;
 using UnityEngine;
 using MelonLoader;
 
-namespace CMS21MP.ServerSide
+namespace CMS21Together.ServerSide
 {
     public class ServerClient
     {

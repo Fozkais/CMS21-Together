@@ -6,7 +6,7 @@ using System.Text;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.SharedData
+namespace CMS21Together.SharedData
 {
     public class Packet : IDisposable
     {

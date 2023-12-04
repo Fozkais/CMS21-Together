@@ -1,4 +1,4 @@
-namespace CMS21MP.SharedData
+namespace CMS21Together.SharedData
 {
     public enum PacketTypes
     {

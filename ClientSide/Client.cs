@@ -2,14 +2,14 @@
 using UnityEngine;
 using System;
 using System.Net;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ClientSide.Transport;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.ClientSide.Transport;
+using CMS21Together.SharedData;
 using MelonLoader;
 
 
-namespace CMS21MP.ClientSide
+namespace CMS21Together.ClientSide
 {
     public class Client : MonoBehaviour
     {

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using CMS21MP.CustomData;
-using CMS21MP.SharedData;
+using CMS21Together.CustomData;
+using CMS21Together.SharedData;
 using Il2Cpp;
 
-namespace CMS21MP.ServerSide
+namespace CMS21Together.ServerSide
 {
     public static class ServerData
     {

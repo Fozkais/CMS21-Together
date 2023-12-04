@@ -3,13 +3,13 @@ using System.Collections;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.SharedData;
 using Il2CppSystem.Threading.Tasks;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide.Transport
+namespace CMS21Together.ClientSide.Transport
 {
    public class ClientUDP
 {

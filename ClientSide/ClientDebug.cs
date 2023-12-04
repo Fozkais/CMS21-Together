@@ -1,13 +1,13 @@
 using System;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.CustomData;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.CustomData;
+using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide
+namespace CMS21Together.ClientSide
 {
     public static class ClientDebug
     {

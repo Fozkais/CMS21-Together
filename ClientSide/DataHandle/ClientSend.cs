@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Net;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.CustomData;
-using CMS21MP.ServerSide;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.CustomData;
+using CMS21Together.ServerSide;
+using CMS21Together.SharedData;
 using MelonLoader;
 
-namespace CMS21MP.ClientSide.DataHandle
+namespace CMS21Together.ClientSide.DataHandle
 {
     public static class ClientSend
     {

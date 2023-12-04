@@ -1,14 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ServerSide;
-using CMS21MP.SharedData;
+using System.IO;
+using System.Reflection;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.CustomData;
+using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
-using Steamworks;
+//using Steamworks;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
     public static class ClientData 
     {
@@ -129,9 +131,12 @@ namespace CMS21MP.ClientSide.Data
 
         public static void playerInit()
         {
-            AssetBundle playerModel = AssetBundle.LoadFromFile(@"Mods\togetherMod\playermodel");
-            AssetBundle playerTexture = AssetBundle.LoadFromFile(@"Mods\togetherMod\playertexture");
-
+            AssetBundle playerModel;
+            AssetBundle playerTexture;
+            
+            playerModel = AssetBundle.LoadFromStream(DataHelper.DeepCopy(LoadContent("CMS21Together.Assets.playermodel.asset"))); 
+            playerTexture = AssetBundle.LoadFromStream(DataHelper.DeepCopy(LoadContent("CMS21Together.Assets.playertexture.asset")));
+            
             if (playerModel)
             {
                 Mesh mesh = playerModel.LoadAsset<GameObject>("playermodel").GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
@@ -170,7 +175,15 @@ namespace CMS21MP.ClientSide.Data
             
         }
         
-        public static void ReceivePacket()
+        private static Stream LoadContent(string assemblyPath)
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            Stream stream = assembly.GetManifestResourceStream(assemblyPath);
+            
+            return stream;
+        }
+        
+        /*public static void ReceivePacket()
         {
             while (SteamNetworking.IsP2PPacketAvailable())
             {
@@ -181,6 +194,6 @@ namespace CMS21MP.ClientSide.Data
                     PacketHandling.HandlePacket(packet.Value.Data);
                 }
             }
-        }
+        }*/
     }
 }

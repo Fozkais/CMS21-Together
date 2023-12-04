@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using CMS21MP.CustomData;
-using CMS21MP.SharedData;
+using CMS21Together.CustomData;
+using CMS21Together.SharedData;
 
-namespace CMS21MP.ServerSide.Data
+namespace CMS21Together.ServerSide.Data
 {
     public class CarPartHandle
     {

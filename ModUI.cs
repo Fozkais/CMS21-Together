@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CMS21MP.ClientSide;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ServerSide;
-using CMS21MP.ServerSide.DataHandle;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.SharedData;
+using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.DataHandle;
 using MelonLoader;
-using Steamworks;
+//using Steamworks;
 using UnityEngine;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
-namespace CMS21MP
+namespace CMS21Together
 {
     public class ModUI : MonoBehaviour
     {
@@ -272,7 +272,7 @@ namespace CMS21MP
             {
                 GUILayout.Label("Lobby ID:", textStyle);
                 
-                CallbackHandler.lobbyCodeString = GUILayout.TextField(CallbackHandler.lobbyCodeString, textFieldStyle, GUILayout.Width(190));
+               // CallbackHandler.lobbyCodeString = GUILayout.TextField(CallbackHandler.lobbyCodeString, textFieldStyle, GUILayout.Width(190));
             }
 
             GUILayout.Space(10);

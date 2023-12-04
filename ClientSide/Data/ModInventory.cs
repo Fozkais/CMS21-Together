@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.CustomData;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.CustomData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
     public static class ModInventory
     {

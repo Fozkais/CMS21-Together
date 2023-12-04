@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.CustomData;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.CustomData;
+using CMS21Together.SharedData;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppCMS.UI.Windows;
@@ -10,7 +10,7 @@ using Il2CppSystem;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
     [HarmonyPatch]
     public static class GarageInteraction

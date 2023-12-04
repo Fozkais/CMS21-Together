@@ -1,18 +1,18 @@
 using System;
 using System.Collections;
 using System.Linq;
-using CMS21MP.ClientSide;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ServerSide;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.ServerSide;
+using CMS21Together.SharedData;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.CustomData
+namespace CMS21Together.CustomData
 {
     [HarmonyPatch]
     public class HarmonyPatches
@@ -64,21 +64,26 @@ namespace CMS21MP.CustomData
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPostfix]
         public static void LoadCarPatch(string name, CarLoader __instance)
-        { 
-            if(SceneChecker.currentScene() == GameScene.garage)
-                MelonCoroutines.Start(LoadCarCouroutine(__instance, name));
+        {
+            if (Client.Instance.isConnected)
+            {
+                if (SceneChecker.currentScene() == GameScene.garage)
+                    MelonCoroutines.Start(LoadCarCouroutine(__instance, name));
+            }
         }
         
         [HarmonyPatch(typeof(Cursor3D), "BlockCursor")]
         [HarmonyPrefix]
         public static bool EnableGamepadMountObjectPatch(bool block, Cursor3D __instance)
         {
-            if (ListenToCursorBlock)
+            if (Client.Instance.isConnected)
             {
-                MelonLogger.Msg("BlockCursor Bypass!");
-                return false;
+                if (ListenToCursorBlock)
+                {
+                    MelonLogger.Msg("BlockCursor Bypass!");
+                    return false;
+                }
             }
-           // MelonLogger.Msg("BlockCursor not Bypass!");
             return true;
         }
         
@@ -87,8 +92,11 @@ namespace CMS21MP.CustomData
         [HarmonyPostfix]
         public static void LoadCarFromFilePatch(NewCarData carDataCheck, CarLoader __instance)
         {
-            if(SceneChecker.currentScene() == GameScene.garage)
-                MelonCoroutines.Start(LoadCarCouroutine(__instance, carDataCheck.carToLoad));
+            if (Client.Instance.isConnected)
+            {
+                if (SceneChecker.currentScene() == GameScene.garage)
+                    MelonCoroutines.Start(LoadCarCouroutine(__instance, carDataCheck.carToLoad));
+            }
         }
 
         private static IEnumerator LoadCarCouroutine(CarLoader __instance, string name)
@@ -175,10 +183,13 @@ namespace CMS21MP.CustomData
         [HarmonyPostfix]
         public static void NormalFadeOutPatch()
         {
-            MelonLogger.Msg("FadeOut Called!");
-            if (ListenToFade)
+            if (Client.Instance.isConnected)
             {
-                MelonCoroutines.Start(HandleLoadedCar());
+                MelonLogger.Msg("FadeOut Called!");
+                if (ListenToFade)
+                {
+                    MelonCoroutines.Start(HandleLoadedCar());
+                }
             }
         }
         
@@ -186,8 +197,11 @@ namespace CMS21MP.CustomData
         [HarmonyPostfix]
         public static void SetEnginePatch(CarLoader __instance)
         {
-            if(SceneChecker.currentScene() == GameScene.garage)
-                MelonCoroutines.Start(HandleLoadedCar(__instance));
+            if (Client.Instance.isConnected)
+            {
+                if (SceneChecker.currentScene() == GameScene.garage)
+                    MelonCoroutines.Start(HandleLoadedCar(__instance));
+            }
         }
 
         private static IEnumerator HandleLoadedCar(CarLoader _loader=null)

@@ -1,10 +1,10 @@
 using System;
 using System.Net;
-using CMS21MP.ClientSide;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide;
+using CMS21Together.SharedData;
 using MelonLoader;
 
-namespace CMS21MP.ServerSide.Transport
+namespace CMS21Together.ServerSide.Transport
 {
     public class ServerUDP
     {

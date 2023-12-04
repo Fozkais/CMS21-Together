@@ -1,8 +1,8 @@
-using CMS21MP.ClientSide.DataHandle;
+using CMS21Together.ClientSide.DataHandle;
 using Il2Cpp;
 using MelonLoader;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
     public static class Stats
     {

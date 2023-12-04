@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.CustomData;
-using CMS21MP.ServerSide;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.CustomData;
+using CMS21Together.ServerSide;
+using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace CMS21MP.ClientSide.DataHandle
+namespace CMS21Together.ClientSide.DataHandle
 {
     public class ClientHandle : MonoBehaviour
     {

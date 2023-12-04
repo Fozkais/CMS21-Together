@@ -1,9 +1,9 @@
 using System;
-using CMS21MP.ClientSide.Data;
+using CMS21Together.ClientSide.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace CMS21MP.SharedData
+namespace CMS21Together.SharedData
 {
     [Serializable]
     public class Player

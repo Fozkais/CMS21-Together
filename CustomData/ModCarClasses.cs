@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Il2Cpp;
 using UnityEngine;
 
-namespace CMS21MP.CustomData
+namespace CMS21Together.CustomData
 {
 
     public enum partType

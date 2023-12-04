@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP
+namespace CMS21Together
 {
     public class ThreadManager : MonoBehaviour
     {

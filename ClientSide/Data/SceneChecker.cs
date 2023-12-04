@@ -1,9 +1,9 @@
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.SharedData;
 using MelonLoader;
 using UnityEngine.SceneManagement;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
     public static class SceneChecker
     {
