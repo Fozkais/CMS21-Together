@@ -26,6 +26,7 @@ namespace CMS21Together.SharedData
             carParts,
             bodyPart,
             bodyParts,
+            carList,
             
             inventoryItem,
             inventoryGroupItem,
@@ -39,5 +40,6 @@ namespace CMS21Together.SharedData
             carWash
             
         #endregion
+
     }
 }

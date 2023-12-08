@@ -189,6 +189,7 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.wheelBalancer_UpdateWheel, ServerHandle.WheelBalancer_UpdateWheel},
                 {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction},
                 {(int)PacketTypes.carWash, ServerHandle.carWash},
+                {(int)PacketTypes.carList, ServerHandle.carList}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

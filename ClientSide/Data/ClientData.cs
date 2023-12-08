@@ -19,6 +19,7 @@ namespace CMS21Together.ClientSide.Data
         public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
         
         public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
+        public static List<(int, string)> tempCarList = new List<(int, string)>();
         public static bool isServerAlive = true;
         public static bool needToKeepAlive = false;
         public static bool isKeepingAlive;

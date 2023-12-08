@@ -383,9 +383,14 @@ namespace CMS21Together.ServerSide.DataHandle
                 
                 ServerSend.SendCarWash(_fromClient, _id);
             }
+            
         
 
         #endregion
+            public static void  carList(int _fromClient, Packet _packet)
+            {
+                ServerSend.SendCarList(_fromClient);
+            }
         
     }
 }

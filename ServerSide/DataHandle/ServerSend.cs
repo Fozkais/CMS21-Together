@@ -395,5 +395,21 @@ namespace CMS21Together.ServerSide.DataHandle
             }
         }
 
+        public static void SendCarList(int _fromClient)
+        {
+            List<(int, string)> carList = new List<(int, string)>();
+
+            foreach (var car in ServerData.carOnScene)
+            {
+                carList.Add((car.Key, car.Value.carID));
+            }
+            
+            using (Packet _packet = new Packet((int)PacketTypes.carList))
+            {
+                _packet.Write(carList);
+                
+                SendTCPData(_fromClient, _packet);
+            }
+        }
     }
 }

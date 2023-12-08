@@ -45,7 +45,10 @@ namespace CMS21Together.CustomData
                         {
                             if (profile.Name == SaveSystem.currentSaveName)
                             {
-                                profile.carsInGarage = new Il2CppReferenceArray<NewCarData>(profile.carsInGarage.Count);
+                                //profile.carsInGarage = new Il2CppReferenceArray<NewCarData>(profile.carsInGarage.Count);
+                                ClientSend.SendAskForCarList();
+                                MelonCoroutines.Start(SceneChangeCarPatch(profile));
+                                ClientData.tempCarList.Clear();
                             }
                         }
 
@@ -58,6 +61,22 @@ namespace CMS21Together.CustomData
                 }
                 
                 SceneChecker.UpdatePlayerScene(newSceneName);
+            }
+        }
+
+
+        private static IEnumerator SceneChangeCarPatch(ProfileData profile)
+        {
+            yield return new WaitForSeconds(0.5f);
+
+            for (var index = 0; index < profile.carsInGarage.Count; index++)
+            {
+                var car = profile.carsInGarage[index];
+                
+                if (ClientData.tempCarList.Contains((car.index, car.carToLoad)))
+                {
+                    car = new NewCarData();
+                }
             }
         }
 

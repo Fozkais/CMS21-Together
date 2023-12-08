@@ -426,5 +426,12 @@ namespace CMS21Together.ClientSide.DataHandle
 
         #endregion
         
+        public static void carList(Packet _packet)
+        {
+            ClientData.tempCarList = _packet.Read<List<(int, string)>>();
+            
+            _packet.Dispose();
+        } 
+        
     }
 }

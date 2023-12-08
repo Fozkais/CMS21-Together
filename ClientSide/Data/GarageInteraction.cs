@@ -17,22 +17,24 @@ namespace CMS21Together.ClientSide.Data
     {
 
         #region Lifter
-
-
+        
             public static bool Lifter_needToTrigger = true;
 
             [HarmonyPatch(typeof(CarLifter), "Action")]
             [HarmonyPostfix]
             public static void LifterFix(int actionType, CarLifter __instance)
             {
-                if (Lifter_needToTrigger)
+                if (Client.Instance.isConnected)
                 {
-                    int PostLiftVal = (int)__instance.currentState + actionType;
-                    MelonLogger.Msg("PostLiftVal :" + PostLiftVal);
-                    int convertedToInt = __instance.connectedCarLoader.gameObject.name[10] - '0';
-                    MelonLogger.Msg("Sended New lifter pos to : " + convertedToInt + 
-                                    " action: " + actionType + " pos: " + PostLiftVal);
-                    ClientSend.SendLifterNewPos(actionType, PostLiftVal,  convertedToInt);
+                    if (Lifter_needToTrigger)
+                    {
+                        int PostLiftVal = (int)__instance.currentState + actionType;
+                        MelonLogger.Msg("PostLiftVal :" + PostLiftVal);
+                        int convertedToInt = __instance.connectedCarLoader.gameObject.name[10] - '0';
+                        MelonLogger.Msg("Sended New lifter pos to : " + convertedToInt +
+                                        " action: " + actionType + " pos: " + PostLiftVal);
+                        ClientSend.SendLifterNewPos(actionType, PostLiftVal, convertedToInt);
+                    }
                 }
             }
             public static IEnumerator LifterPauseUpdating()
@@ -51,13 +53,16 @@ namespace CMS21Together.ClientSide.Data
         [HarmonyPostfix]
         public static void TireChangerFix(GroupItem groupItem, bool instant, bool connect, TireChangerLogic __instance)
         {
-            if (groupItem.ItemList.Count == 0) return;
-
-            if (TC_needToTrigger)
+            if (Client.Instance.isConnected)
             {
-                MelonLogger.Msg($"Tire Changer Triggered! : {instant} , {connect}");
-                ClientSend.SendTireChange(new ModGroupItem(groupItem), instant,connect);
-                
+                if (groupItem.ItemList.Count == 0) return;
+
+                if (TC_needToTrigger)
+                {
+                    MelonLogger.Msg($"Tire Changer Triggered! : {instant} , {connect}");
+                    ClientSend.SendTireChange(new ModGroupItem(groupItem), instant, connect);
+
+                }
             }
         }
         
@@ -73,8 +78,11 @@ namespace CMS21Together.ClientSide.Data
         [HarmonyPostfix]
         public static void TC_TireRemoveActionFix(TireChangerLogic __instance)
         {
+            if (Client.Instance.isConnected)
+            {
                 MelonLogger.Msg($"Tire On Changer removed!");
                 ClientSend.SendTireChange_ResetAction();
+            }
         }
         
         
@@ -88,14 +96,17 @@ namespace CMS21Together.ClientSide.Data
             [HarmonyPrefix]
             public static void WheelBalancerFix(GroupItem groupItem, bool instant, WheelBalancerLogic __instance)
             {
-                if (groupItem.ItemList.Count == 0) return;
-
-                if (WB_needToTrigger)
+                if (Client.Instance.isConnected)
                 {
-                    MelonLogger.Msg($"Wheel Balance Triggered!");
-                    instant = true;
-                    ClientSend.SendWheelBalance(new ModGroupItem(groupItem));
-                    
+                    if (groupItem.ItemList.Count == 0) return;
+
+                    if (WB_needToTrigger)
+                    {
+                        MelonLogger.Msg($"Wheel Balance Triggered!");
+                        instant = true;
+                        ClientSend.SendWheelBalance(new ModGroupItem(groupItem));
+
+                    }
                 }
             }
             
@@ -103,10 +114,14 @@ namespace CMS21Together.ClientSide.Data
             [HarmonyPrefix]
             public static void WheelBalancer2Fix(WheelBalanceWindow __instance)
             {
-                MelonCoroutines.Start(WB_BalanceWheel(__instance));
+                if (Client.Instance.isConnected)
+                {
+                    MelonCoroutines.Start(WB_BalanceWheel(__instance));
+                }
             }
             public static IEnumerator WB_BalanceWheel(WheelBalanceWindow __instance)
             {
+                
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForSeconds(0.1f);
@@ -140,8 +155,11 @@ namespace CMS21Together.ClientSide.Data
             [HarmonyPostfix]
             public static void WB_TireRemoveActionFix(TireChangerLogic __instance)
             {
-                MelonLogger.Msg($"Tire On Wheel Balancer removed!");
-                ClientSend.SendWheelBalance_ResetAction();
+                if (Client.Instance.isConnected)
+                {
+                    MelonLogger.Msg($"Tire On Wheel Balancer removed!");
+                    ClientSend.SendWheelBalance_ResetAction();
+                }
             }
 
         #endregion
@@ -154,10 +172,13 @@ namespace CMS21Together.ClientSide.Data
         [HarmonyPrefix]
         public static void CarWashFix(CarLoader carLoader,CarWashLogic __instance)
         {
-            if (WashLogic_NeedToTrigeer)
+            if (Client.Instance.isConnected)
             {
-                ClientSend.SendCarWash(carLoader.gameObject.name[10]);
-                WashLogic_NeedToTrigeer = true;
+                if (WashLogic_NeedToTrigeer)
+                {
+                    ClientSend.SendCarWash(carLoader.gameObject.name[10]);
+                    WashLogic_NeedToTrigeer = true;
+                }
             }
         }
         

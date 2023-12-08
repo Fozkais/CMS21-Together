@@ -284,6 +284,13 @@ namespace CMS21Together.ClientSide.DataHandle
             
         #endregion
 
+        public static void SendAskForCarList()
+        {
+            using (Packet _packet = new Packet((int)PacketTypes.carList))
+            {
+                SendTCPData(_packet);
+            }
+        }
     }
     
 }
