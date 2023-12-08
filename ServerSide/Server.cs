@@ -187,7 +187,8 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction},
                 {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
                 {(int)PacketTypes.wheelBalancer_UpdateWheel, ServerHandle.WheelBalancer_UpdateWheel},
-                {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction}
+                {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction},
+                {(int)PacketTypes.carWash, ServerHandle.carWash},
             };
             MelonLogger.Msg("Initialized Packets!");
         }

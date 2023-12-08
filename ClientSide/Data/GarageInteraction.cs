@@ -146,5 +146,23 @@ namespace CMS21Together.ClientSide.Data
 
         #endregion
 
+        #region CarWash
+
+        public static bool WashLogic_NeedToTrigeer;
+        
+        [HarmonyPatch(typeof(CarWashLogic), "__n__0")]
+        [HarmonyPrefix]
+        public static void CarWashFix(CarLoader carLoader,CarWashLogic __instance)
+        {
+            if (WashLogic_NeedToTrigeer)
+            {
+                ClientSend.SendCarWash(carLoader.gameObject.name[10]);
+                WashLogic_NeedToTrigeer = true;
+            }
+        }
+        
+
+        #endregion
+
     }
 }

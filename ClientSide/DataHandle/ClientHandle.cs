@@ -409,6 +409,20 @@ namespace CMS21Together.ClientSide.DataHandle
                 GameData.wheelBalancer.ResetActions();
                 _packet.Dispose();
             } 
+            
+            public static void carWash(Packet _packet)
+            {
+                char _id = _packet.Read<char>();
+
+                if (ClientData.carOnScene.Any(s => s.Key.ToString() == _id.ToString()))
+                {
+                    int id = ClientData.carOnScene.First(s => s.Key.ToString() == _id.ToString()).Key;
+                    CarLoader loader = GameData.carLoaders[id];
+                    GarageInteraction.WashLogic_NeedToTrigeer = false;
+                    GameData.carWash.__n__0(loader);
+                }
+                _packet.Dispose();
+            } 
 
         #endregion
         

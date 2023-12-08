@@ -349,33 +349,43 @@ namespace CMS21Together.ServerSide.DataHandle
 
         
 
+            public static void SendTireChanger_ResetAction(int fromClient)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
+                {
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+
+            public static void SendWheelBalancer(int fromClient, ModGroupItem item)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
+                {
+                    _packet.Write(item);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+
+            public static void SendWheelBalancer_ResetAction(int fromClient)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_ResetAction))
+                {
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            public static void SendCarWash(int _fromClient, char _id)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carWash))
+                {
+                    _packet.Write(_id);
+                    
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            
         #endregion
 
-        public static void SendTireChanger_ResetAction(int fromClient)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.tireChanger_ResetAction))
-            {
-                SendTCPDataToAll(fromClient, _packet);
-            }
-        }
-
-        public static void SendWheelBalancer(int fromClient, ModGroupItem item)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
-            {
-                _packet.Write(item);
-
-                SendTCPDataToAll(fromClient, _packet);
-            }
-        }
-
-        public static void SendWheelBalancer_ResetAction(int fromClient)
-        {
-            using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer_ResetAction))
-            {
-                SendTCPDataToAll(fromClient, _packet);
-            }
-        }
 
         public static void keepAlive(int fromclient)
         {
@@ -384,5 +394,6 @@ namespace CMS21Together.ServerSide.DataHandle
                 SendTCPData(fromclient, _packet);
             }
         }
+
     }
 }

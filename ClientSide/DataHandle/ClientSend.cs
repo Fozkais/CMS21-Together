@@ -272,9 +272,18 @@ namespace CMS21Together.ClientSide.DataHandle
                     SendTCPData(_packet);
                 }
             }
+            public static void SendCarWash(char _c)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carWash))
+                {
+                    _packet.Write(_c);
+                    
+                    SendTCPData(_packet);
+                }
+            }
             
         #endregion
-        
+
     }
     
 }

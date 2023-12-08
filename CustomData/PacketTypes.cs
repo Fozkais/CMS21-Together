@@ -35,7 +35,8 @@ namespace CMS21Together.SharedData
             tireChanger_ResetAction,
             wheelBalancer,
             wheelBalancer_UpdateWheel,
-            wheelBalancer_ResetAction
+            wheelBalancer_ResetAction,
+            carWash
             
         #endregion
     }

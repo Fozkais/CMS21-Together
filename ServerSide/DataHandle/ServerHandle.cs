@@ -376,6 +376,13 @@ namespace CMS21Together.ServerSide.DataHandle
             {
                 ServerSend.SendWheelBalancer_ResetAction(_fromClient);
             }
+            
+            public static void  carWash(int _fromClient, Packet _packet)
+            {
+                char _id = _packet.Read<char>();
+                
+                ServerSend.SendCarWash(_fromClient, _id);
+            }
         
 
         #endregion
