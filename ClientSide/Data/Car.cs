@@ -566,6 +566,23 @@ namespace CMS21Together.ClientSide.Data
                 yield return new WaitForSeconds(1);
                 Singleton<GameManager>.Instance.GameDataManager.Save(PlayerPrefs.GetInt("selectedProfile"));
             }
+            else
+            {
+                MelonLogger.Msg("Received a part from non existing car!");
+                MelonLogger.Msg("Resyncinc from server...");
+                ClientData.carOnScene.Clear();
+
+                ScreenFader.Get().NormalFadeIn();
+                foreach (CarLoader loader in GameData.carLoaders)
+                {
+                    if (!String.IsNullOrEmpty(loader.carToLoad))
+                        loader.DeleteCar();
+                }
+                
+                ClientSend.SendCarInfo(new ModCar(), true);
+                yield return new WaitForSeconds(2);
+                ScreenFader.Get().NormalFadeOut();
+            }
         }
 
         public static IEnumerator HandleNewCar(int carLoaderID, List<ModPartScript> partScripts = null,
