@@ -1,6 +1,6 @@
 using System;
 using System.Net.Sockets;
-using CMS21Together.SharedData;
+using CMS21Together.BothSide;
 using CMS21Together.ServerSide.DataHandle;
 using MelonLoader;
 //using Steamworks;

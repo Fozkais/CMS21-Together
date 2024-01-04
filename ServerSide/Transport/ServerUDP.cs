@@ -1,7 +1,7 @@
 using System;
 using System.Net;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide;
-using CMS21Together.SharedData;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Transport

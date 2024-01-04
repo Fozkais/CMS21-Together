@@ -1,20 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Il2Cpp;
-using MelonLoader;
 using System.IO;
-using System.Threading.Tasks;
-using CMS21Together.CustomData;
+using Il2Cpp;
 using Il2CppCMS.ContainersSave;
-using Il2CppCMS.Platforms.Base;
 using Il2CppCMS.Platforms.Steam;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using MelonLoader;
 using Newtonsoft.Json;
-using UnityEngine;
 
-namespace CMS21Together.SharedData
+namespace CMS21Together.BothSide
 {
 
 public static class PreferencesManager

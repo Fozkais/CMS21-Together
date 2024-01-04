@@ -5,14 +5,12 @@ using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.DataHandle;
 using CMS21Together.ServerSide;
-using CMS21Together.SharedData;
 using HarmonyLib;
 using Il2Cpp;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.CustomData
+namespace CMS21Together.BothSide
 {
     [HarmonyPatch]
     public class HarmonyPatches

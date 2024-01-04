@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.SharedData;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.DataHandle;
 using MelonLoader;
@@ -600,12 +600,12 @@ namespace CMS21Together
             GUILayout.BeginVertical(GUILayout.Width(100));
             foreach (int i in ClientData.players.Keys)
             {
+                //GUILayout.Space(5);
                 Player player =  ClientData.players[i];
                 if (player != null)
                 {
                     if (ClientData.players[i].id == Client.Instance.Id)
                     {
-                        GUILayout.Space((i * 25));
                         if (GUILayout.Button("Ready", buttonStyle)) 
                         {
                             player.isReady = !player.isReady;
@@ -613,6 +613,7 @@ namespace CMS21Together
                         }
                     }
                 }
+                GUILayout.Space(45);
             }
         }
 

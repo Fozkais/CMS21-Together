@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.CustomData;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 //using Steamworks;
@@ -111,13 +110,24 @@ namespace CMS21Together.ServerSide.DataHandle
                     SendTCPDataToAll(_fromClient, _packet);
                 }
             }
-
-            public static void SendPlayersInfo(Player info) 
+            
+            public static void SendPlayerInfo(Player info) 
             {
                 using (Packet _packet = new Packet((int)PacketTypes.playerInfo))
                 {
                     _packet.Write(info);
-                    // TODO: Handle Disconnection (remove player from dict)
+                    MelonLogger.Msg("SV: Sended a Player Info!");
+
+                    SendTCPDataToAll(_packet);
+                }
+            }
+
+            public static void SendPlayersInfo(Dictionary<int, Player> info) 
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.playersInfo))
+                {
+                    _packet.Write(info);
+                    MelonLogger.Msg("SV: Sended All Players Info!");
 
                     SendTCPDataToAll(_packet);
                 }

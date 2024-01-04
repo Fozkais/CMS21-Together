@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.DataHandle;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 //using Steamworks;

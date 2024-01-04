@@ -3,7 +3,7 @@ using CMS21Together.ClientSide.Data;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace CMS21Together.SharedData
+namespace CMS21Together.BothSide
 {
     [Serializable]
     public class Player

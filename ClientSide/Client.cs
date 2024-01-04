@@ -2,10 +2,10 @@
 using UnityEngine;
 using System;
 using System.Net;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.DataHandle;
 using CMS21Together.ClientSide.Transport;
-using CMS21Together.SharedData;
 using MelonLoader;
 
 
@@ -88,7 +88,8 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
                 { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
                 { (int)PacketTypes.readyState, ClientHandle.ReadyState },
-                { (int)PacketTypes.playerInfo, ClientHandle.PlayersInfo },
+                { (int)PacketTypes.playerInfo, ClientHandle.PlayerInfo },
+                { (int)PacketTypes.playersInfo, ClientHandle.PlayersInfo },
                 { (int)PacketTypes.startGame, ClientHandle.StartGame },
                 { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
                 { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },

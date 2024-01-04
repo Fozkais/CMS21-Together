@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using MelonLoader;

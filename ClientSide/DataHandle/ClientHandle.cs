@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.CustomData;
 using CMS21Together.ServerSide;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
@@ -71,12 +70,23 @@ namespace CMS21Together.ClientSide.DataHandle
                 _packet.Dispose();
             }
             
-            public static void PlayersInfo(Packet _packet)
+            public static void PlayerInfo(Packet _packet)
             {
                 Player info = _packet.Read<Player>();
                 ClientData.players[info.id] = info;
                 
                 MelonLogger.Msg($"Received {info.username}, {info.id} info from server.");
+                _packet.Dispose();
+            }
+            public static void PlayersInfo(Packet _packet)
+            {
+                Dictionary<int, Player> info = _packet.Read<Dictionary<int, Player>>();
+                if(info != null)
+                    ClientData.players = info;
+                else
+                    MelonLogger.Msg("Received player info is null!");
+                
+                MelonLogger.Msg($"Received players info from server.");
                 _packet.Dispose();
             }
             

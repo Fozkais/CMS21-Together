@@ -1,5 +1,5 @@
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;

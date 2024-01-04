@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Net;
 using System.Net.Sockets;
-using CMS21Together.SharedData;
+using CMS21Together.BothSide;
 using CMS21Together.ServerSide.DataHandle;
 using CMS21Together.ServerSide.Transport;
 using UnityEngine;
@@ -62,17 +62,16 @@ namespace CMS21Together.ServerSide
         public void SendToLobby(string _playerName)
         {
             ServerData.players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
+            MelonLogger.Msg($"SV: New player ! {_playerName}, ID:{id}");
 
-            for (int i = 1; i < Server.clients.Count; i++)
+            /*for (int i = 1; i < Server.clients.Count; i++)
             {
                 var client = Server.clients[i];
                 if (ServerData.players.ContainsKey(client.id))
                 {
-                    ServerData.players[client.id] = ServerData.players[id];
-                    ServerSend.SendPlayersInfo(ServerData.players[id]);
+                    ServerData.players[client.id] = ServerData.players[id];   broken / useless ?
                 }
             }
-            
             foreach (ServerClient _client in Server.clients.Values)
             {
                 if (ServerData.players.ContainsKey(_client.id))
@@ -80,10 +79,12 @@ namespace CMS21Together.ServerSide
                     if (_client.id != id)
                     {
                         ServerData.players[_client.id] = ServerData.players[id];
-                        ServerSend.SendPlayersInfo(ServerData.players[id]);
+                       // ServerSend.SendPlayersInfo(ServerData.players[id]);
                     }
                 }
-            }
+            }*/
+            
+            ServerSend.SendPlayersInfo(ServerData.players);
         }
 
         public void Disconnect(int _id)

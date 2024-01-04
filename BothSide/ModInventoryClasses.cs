@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Il2Cpp;
 
-namespace CMS21Together.CustomData
+namespace CMS21Together.BothSide
 {
     [Serializable]
     public class ModItem

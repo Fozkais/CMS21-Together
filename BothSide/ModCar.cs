@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.CustomData;
-using CMS21Together.ServerSide;
 using Il2Cpp;
-using UnityEngine.Serialization;
 
-namespace CMS21Together.SharedData
+namespace CMS21Together.BothSide
 {
     [Serializable]
     public class ModCar

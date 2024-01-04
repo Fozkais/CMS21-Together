@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using CMS21Together.CustomData;
-using CMS21Together.SharedData;
+using CMS21Together.BothSide;
 
 namespace CMS21Together.ServerSide.Data
 {

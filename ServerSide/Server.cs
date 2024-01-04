@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
 using System.Net;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.SharedData;
 using CMS21Together.ServerSide.DataHandle;
 using UnityEngine;
 

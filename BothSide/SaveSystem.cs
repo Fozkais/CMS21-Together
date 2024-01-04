@@ -8,7 +8,7 @@ using MelonLoader;
 using UnityEngine;
 using BinaryWriter = Il2CppSystem.IO.BinaryWriter;
 
-namespace CMS21Together.SharedData
+namespace CMS21Together.BothSide
 {
     [HarmonyPatch]
     public static class SaveSystem

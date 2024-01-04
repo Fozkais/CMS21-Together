@@ -3,7 +3,7 @@ using System.IO;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace CMS21Together.CustomData
+namespace CMS21Together.BothSide
 {
     public static class DataHelper
     { 

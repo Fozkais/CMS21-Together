@@ -2,9 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.BothSide;
 using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.CustomData;
-using CMS21Together.SharedData;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
@@ -581,6 +580,7 @@ namespace CMS21Together.ClientSide.Data
                 
                 ClientSend.SendCarInfo(new ModCar(), true);
                 yield return new WaitForSeconds(2);
+
                 ScreenFader.Get().NormalFadeOut();
             }
         }

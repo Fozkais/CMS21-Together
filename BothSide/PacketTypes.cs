@@ -1,4 +1,4 @@
-namespace CMS21Together.SharedData
+namespace CMS21Together.BothSide
 {
     public enum PacketTypes
     {
@@ -8,6 +8,7 @@ namespace CMS21Together.SharedData
             keepAlive = 2,
             disconnect,
             readyState,
+            playersInfo,
             playerInfo,
             startGame,
             spawnPlayer,
