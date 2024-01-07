@@ -31,16 +31,16 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 
 *Here's every planned feature state :*
 
-* Implement Networking System (TCP/UDP) : ✅ -> Fixed on 0.1.4
-* Implement Steam API Networking : ⏸️
+* Implement Networking System (TCP/UDP) : ✅
+* Implement Steam API Networking : ❌
 * Create a Lobby system : ✅
-* Add a Custom Save System : ✅ -> Fixed on 0.1.1
-* Sync players Position and Rotation : ✅ -> Fixed on 0.1.4
-* Sync Inventory : ✅ -> Fixed on 0.1.3
+* Add a Custom Save System : ✅
+* Sync players Position and Rotation : ✅
+* Sync Inventory : ✅ 
 * Sync Cars Spawning and position : ✅
-* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer) -> Implemented on 0.2.0
-* Sync OutDoor Interaction : ❌ (Car Painting, Power bench and wheel alignment)
-* Sync Cars "mechanic" : ✅ -> Fixed on 0.1.2 (almost fully working?)
+* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer)
+* Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash,Power bench and wheel alignment)
+* Sync Cars "mechanic" : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ❌
 * Sync garage upgrade : ❌
@@ -58,9 +58,6 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 <br/>
 ⏸️: "Paused" / Some new can appear but it's not the main focus.
 <br/>
--> : Mean there's some issue with it
-<br/>
-🔴 : As been implemented and worked at a time but now as some unexplained Issues
 
 You can join the project Discord if you want to talk or ask for help : 
 https://discord.gg/rMz4tGbrc6
