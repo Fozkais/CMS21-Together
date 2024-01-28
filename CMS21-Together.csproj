@@ -35,44 +35,76 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
-    <Compile Include="ClientSide\ClientDebug.cs" />
-    <Compile Include="ClientSide\DataHandle\ClientHandle.cs" />
-    <Compile Include="ClientSide\DataHandle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\Car.cs" />
+    <Compile Include="ClientSide\Data\Car\CarHarmonyPatches.cs" />
+    <Compile Include="ClientSide\Data\Car\CarInitialization.cs" />
+    <Compile Include="ClientSide\Data\Car\CarManagement.cs" />
+    <Compile Include="ClientSide\Data\Car\CarUpdate.cs" />
+    <Compile Include="ClientSide\Data\Car\PartsHandle.cs" />
+    <Compile Include="ClientSide\Data\Car\PartsReferences.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Data\ContentManager.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomMainMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModCarWashLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModLifterLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModTireChangerLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />
     <Compile Include="ClientSide\Data\ModInventory.cs" />
     <Compile Include="ClientSide\Data\Movement.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\ModInventory.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
     <Compile Include="ClientSide\Data\SceneChecker.cs" />
     <Compile Include="ClientSide\Data\Stats.cs" />
+    <Compile Include="ClientSide\Handle\ClientHandle.cs" />
+    <Compile Include="ClientSide\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
-    <Compile Include="BothSide\DataHelper.cs" />
-    <Compile Include="BothSide\HarmonyPatches.cs" />
-    <Compile Include="BothSide\ModCar.cs" />
-    <Compile Include="BothSide\ModCarClasses.cs" />
-    <Compile Include="BothSide\ModInventoryClasses.cs" />
-    <Compile Include="BothSide\Packet.cs" />
-    <Compile Include="BothSide\PacketTypes.cs" />
-    <Compile Include="BothSide\Player.cs" />
-    <Compile Include="BothSide\PreferencesManager.cs" />
-    <Compile Include="BothSide\SaveSystem.cs" />
     <Compile Include="MainMod.cs" />
-    <Compile Include="ModUI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServerSide\DataHandle\ServerHandle.cs" />
-    <Compile Include="ServerSide\DataHandle\ServerSend.cs" />
     <Compile Include="ServerSide\Data\CarPartHandle.cs" />
+    <Compile Include="ServerSide\Data\ServerData.cs" />
+    <Compile Include="ServerSide\Handle\ServerHandle.cs" />
+    <Compile Include="ServerSide\Handle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
-    <Compile Include="ServerSide\ServerData.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
-    <Compile Include="Steam\CallbackHandler.cs" />
-    <Compile Include="Steam\LobbyIDGenerator.cs" />
-    <Compile Include="Steam\PacketHandling.cs" />
-    <Compile Include="Steam\SteamData.cs" />
+    <Compile Include="Shared\DataHelper.cs" />
+    <Compile Include="Shared\Data\GameScene.cs" />
+    <Compile Include="Shared\Data\ModCar.cs" />
+    <Compile Include="Shared\Data\ModCarPart.cs" />
+    <Compile Include="Shared\Data\ModColor.cs" />
+    <Compile Include="Shared\Data\ModDifficultyLevel.cs" />
+    <Compile Include="Shared\Data\ModGearboxData.cs" />
+    <Compile Include="Shared\Data\ModGroupItem.cs" />
+    <Compile Include="Shared\Data\ModItem.cs" />
+    <Compile Include="Shared\Data\ModLifterState.cs" />
+    <Compile Include="Shared\Data\ModLPData.cs" />
+    <Compile Include="Shared\Data\ModMountObject.cs" />
+    <Compile Include="Shared\Data\ModNewInventoryData.cs" />
+    <Compile Include="Shared\Data\ModPaintData.cs" />
+    <Compile Include="Shared\Data\ModPartScript.cs" />
+    <Compile Include="Shared\Data\ModPartType.cs" />
+    <Compile Include="Shared\Data\ModProfileData.cs" />
+    <Compile Include="Shared\Data\ModSaveData.cs" />
+    <Compile Include="Shared\Data\ModStats.cs" />
+    <Compile Include="Shared\Data\ModTuningData.cs" />
+    <Compile Include="Shared\Data\ModWheelBalancerActionType.cs" />
+    <Compile Include="Shared\Data\ModWheelData.cs" />
+    <Compile Include="Shared\ModSceneManager.cs" />
+    <Compile Include="Shared\ModUI.cs" />
+    <Compile Include="Shared\Packet.cs" />
+    <Compile Include="Shared\PacketTypes.cs" />
+    <Compile Include="Shared\Player.cs" />
+    <Compile Include="Shared\PreferencesManager.cs" />
+    <Compile Include="Shared\SavesManager.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,62 +113,83 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\0Harmony.dll</HintPath>
+      <HintPath>Libs\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+      <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
     </Reference>
     <Reference Include="MelonLoader">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\net6\MelonLoader.dll</HintPath>
+      <HintPath>Libs\MelonLoader.dll</HintPath>
     </Reference>
-    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
+      <HintPath>Libs\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextCoreModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.TextCoreModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
+      <HintPath>Libs\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UIElementsModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIElementsNativeModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UIElementsNativeModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Car Mechanic Simulator 2021\MelonLoader\Il2CppAssemblies\UnityEngine.UIModule.dll</HintPath>
+      <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Assets\playermodel.asset" />
     <EmbeddedResource Include="Assets\playertexture.asset" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Libs\0Harmony.dll" />
+    <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <Content Include="Libs\Il2CppInterop.Runtime.dll" />
+    <Content Include="Libs\Il2Cppmscorlib.dll" />
+    <Content Include="Libs\MelonLoader.dll" />
+    <Content Include="Libs\Newtonsoft.Json.dll" />
+    <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
+    <Content Include="Libs\UnityEngine.CoreModule.dll" />
+    <Content Include="Libs\UnityEngine.dll" />
+    <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
+    <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
+    <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
+    <Content Include="Libs\UnityEngine.InputModule.dll" />
+    <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
+    <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
+    <Content Include="Libs\UnityEngine.UI.dll" />
+    <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,24 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using CMS21Together.BothSide;
-using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.ClientSide.Data.Car;
+using CMS21Together.ClientSide.Data.PlayerData;
+using CMS21Together.ClientSide.Handle;
+using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using Il2Cpp;
 using MelonLoader;
-//using Steamworks;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data
 {
-    public static class ClientData 
+    public static class ClientData
     {
         public static GameObject playerPrefab;
         public static Dictionary<int, Player> players = new Dictionary<int, Player>();
-        public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
+        public static Dictionary<int, GameObject> PlayersGameObjects = new Dictionary<int, GameObject>();
         
-        public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
+        public static Dictionary<int, ModCar> LoadedCars = new Dictionary<int, ModCar>();
         public static List<(int, string)> tempCarList = new List<(int, string)>();
+        
         public static bool isServerAlive = true;
         public static bool needToKeepAlive = false;
         public static bool isKeepingAlive;
@@ -32,37 +33,38 @@ namespace CMS21Together.ClientSide.Data
 
         public static bool asGameStarted;
         public static bool refreshCars;
-
+        
         public static void Init()
         {
-            MelonCoroutines.Start(GameData.InitializeGameData());
-            
+            GameData data = new GameData();
+            MelonCoroutines.Start(data.Initialize());
         }
-        
-        public static void UpdateClientInfo()
+        public static void UpdateClient() // Run Only if player is connected and in scene:"garage" 
         {
-            Movement.SendMovement();
-            Movement.SendRotation();
+            CarManagement.UpdateCars();
             
-            Car.UpdateCars();
+            Movement.SendPosition();
+            Rotation.SendRotation();
+            
+            Stats.HandleExp();
+            Stats.HandleMoney();
+            Stats.HandleScrap();
+            
             ModInventory.UpdateInventory();
-            Stats.HandleStats();
 
         }
-
         public static IEnumerator keepClientAlive()
         {
             if (Client.Instance.isConnected)
             {
                 isKeepingAlive = true;
                 ClientSend.KeepAlive();
-               // MelonLogger.Msg("KeepinClientAlive!");
-                yield return new WaitForSeconds(5);
+                // MelonLogger.Msg("KeepinClientAlive!");
+                yield return new WaitForSeconds(1.5f);
                 isKeepingAlive = false;
             }
             isKeepingAlive = false;
         }
-
         public static IEnumerator isServer_alive()
         {
             if (!Client.Instance.isConnected)
@@ -71,18 +73,18 @@ namespace CMS21Together.ClientSide.Data
 
             if (isServerAlive)
             {
-               // MelonLogger.Msg("Server is Alive!");
-                yield return new WaitForSeconds(5);
+                // MelonLogger.Msg("Server is Alive!");
+                yield return new WaitForSeconds(2);
                 isServerAlive = false;
             }
             else
             {
-                yield return new WaitForSeconds(8);
+                yield return new WaitForSeconds(3);
                 if (!isServerAlive)
                 {
                     if (!Client.Instance.isConnected)
                     {
-                        if(SceneChecker.isNotInMenu())
+                        if(!ModSceneManager.isInMenu())
                             NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                         Client.Instance.Disconnect();
 
@@ -91,7 +93,7 @@ namespace CMS21Together.ClientSide.Data
                     else
                     {
                         MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
-                        if(SceneChecker.isNotInMenu())
+                        if(!ModSceneManager.isInMenu())
                             NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                         Client.Instance.Disconnect();
 
@@ -100,15 +102,12 @@ namespace CMS21Together.ClientSide.Data
                 }
             }
         }
-
-
-
-        public static void SpawnPlayer(Player player, int id)
+        public static void SpawnPlayer(Player player)
         {
             if (playerPrefab != null)
             {
                 GameObject playerObject;
-                if (id == Client.Instance.Id)
+                if (player.id == Client.Instance.Id)
                 {
                     playerObject = GameData.localPlayer;
                 }
@@ -119,23 +118,23 @@ namespace CMS21Together.ClientSide.Data
                     
                 }
                 MelonLogger.Msg($"{player.username} is In-game");
-                serverPlayerInstances[id] = playerObject;
+                PlayersGameObjects[player.id] = playerObject;
             }
             else
             {
                 MelonLogger.Msg("playerPrefab is not set! aborting...");
-                playerInit();
-                SpawnPlayer(player, id);
+                playerPrefabSetup();
+                SpawnPlayer(player);
             }
         }
-
-        public static void playerInit()
+        
+        public static void playerPrefabSetup()
         {
             AssetBundle playerModel;
             AssetBundle playerTexture;
             
-            playerModel = AssetBundle.LoadFromStream(DataHelper.DeepCopy(LoadContent("CMS21Together.Assets.playermodel.asset"))); 
-            playerTexture = AssetBundle.LoadFromStream(DataHelper.DeepCopy(LoadContent("CMS21Together.Assets.playertexture.asset")));
+            playerModel = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21_Together.Assets.playermodel.asset"))); 
+            playerTexture = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21_Together.Assets.playertexture.asset")));
             
             if (playerModel)
             {
@@ -175,25 +174,5 @@ namespace CMS21Together.ClientSide.Data
             
         }
         
-        private static Stream LoadContent(string assemblyPath)
-        {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            Stream stream = assembly.GetManifestResourceStream(assemblyPath);
-            
-            return stream;
-        }
-        
-        /*public static void ReceivePacket()
-        {
-            while (SteamNetworking.IsP2PPacketAvailable())
-            {
-                MelonLogger.Msg("Packet received");
-                var packet = SteamNetworking.ReadP2PPacket();
-                if (packet.HasValue)
-                {
-                    PacketHandling.HandlePacket(packet.Value.Data);
-                }
-            }
-        }*/
     }
 }

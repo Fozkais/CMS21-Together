@@ -1,21 +1,20 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
 using System;
-using System.Net;
-using CMS21Together.BothSide;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.ClientSide.Handle;
 using CMS21Together.ClientSide.Transport;
+using CMS21Together.Shared;
 using MelonLoader;
-
+using UnityEngine;
 
 namespace CMS21Together.ClientSide
 {
-    public class Client : MonoBehaviour
+    public class Client: MonoBehaviour
     {
         public static Client Instance;
         public static int dataBufferSize = 4096;
 
+        public string username = "player";
         public string ip = "127.0.0.1";
         public int port;
         public int Id;
@@ -31,7 +30,7 @@ namespace CMS21Together.ClientSide
 
         public ThreadManager threadManager;
 
-        public void Initialize()
+        public void Awake()
         {
             if (Instance == null)
             {
@@ -44,13 +43,11 @@ namespace CMS21Together.ClientSide
             }
             tcp = new ClientTCP();
             udp = new ClientUDP();
-
-            threadManager = new ThreadManager();
         }
 
         public void ClientOnApplicationQuit()
         {
-            ClientSend.Disconnect(Instance.Id);
+           // ClientSend.Disconnect(Instance.Id); TODO:FIX
         }
 
 
@@ -92,24 +89,24 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.playersInfo, ClientHandle.PlayersInfo },
                 { (int)PacketTypes.startGame, ClientHandle.StartGame },
                 { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
+                
                 { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
-                { (int)PacketTypes.playerRotation, ClientHandle.playerRotation },
-                { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange },
+                { (int)PacketTypes.playerRotation, ClientHandle.playerRotation},
+                { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange},
+                { (int)PacketTypes.stats, ClientHandle.playerStats},
+                { (int)PacketTypes.inventoryItem, ClientHandle.InventoryItem},
+                { (int)PacketTypes.inventoryGroupItem, ClientHandle.InventoryGroupItem},
+                
+                { (int)PacketTypes.lifter, ClientHandle.Lifter},
+                { (int)PacketTypes.tireChanger, ClientHandle.TireChange},
+                { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer},
+                
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
                 { (int)PacketTypes.carPart, ClientHandle.CarPart},
                 { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
-                { (int)PacketTypes.carParts, ClientHandle.PartScripts},
+                { (int)PacketTypes.carParts, ClientHandle.CarParts},
                 { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
-                { (int)PacketTypes.inventoryItem, ClientHandle.InventoryItem},
-                { (int)PacketTypes.inventoryGroupItem, ClientHandle.InventoryGroupItem},
-                { (int)PacketTypes.lifterPos, ClientHandle.LifterPos },
-                { (int)PacketTypes.tireChanger, ClientHandle.TireChange },
-                { (int)PacketTypes.tireChanger_ResetAction, ClientHandle.TireChanger_ResetAction },
-                { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer },
-                { (int)PacketTypes.wheelBalancer_ResetAction, ClientHandle.WheelBalancer_ResetAction },
-                { (int)PacketTypes.carWash, ClientHandle.carWash },
-                { (int)PacketTypes.carList, ClientHandle.carList }
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -123,33 +120,34 @@ namespace CMS21Together.ClientSide
                 tcp.Disconnect();
                 udp.Disconnect();
                 ClientData.needToKeepAlive = false;
-                /*if(tcp.socket != null)
+                if(tcp.socket != null)
                     tcp.socket.Close();
                 if (udp.socket != null)
-                    udp.socket.Close();*/
+                    udp.socket.Close();
                 
-                if(Client.PacketHandlers != null)
+                if(Client.PacketHandlers != null) 
                     Client.PacketHandlers.Clear();
                 GameData.DataInitialzed = false;
                 
-                GameData.carLoaders = null;
+                GameData.Instance.carLoaders = null;
             
-                if(ClientData.carOnScene != null)
-                    ClientData.carOnScene.Clear();
+                if(ClientData.LoadedCars != null)
+                    ClientData.LoadedCars.Clear();
                 if(ClientData.players != null)
                     ClientData.players.Clear();
-                if(ClientData.serverPlayerInstances != null)
-                    ClientData.serverPlayerInstances.Clear();
-                if(GameData.localInventory != null)
-                    GameData.localInventory.DeleteAll();
+                if(ClientData.PlayersGameObjects != null)
+                    ClientData.PlayersGameObjects.Clear();
+                if(GameData.Instance.localInventory != null)
+                    GameData.Instance.localInventory.DeleteAll();
                 if(ClientData.playerGroupInventory != null)
                     ClientData.playerGroupInventory.Clear();
                 if( ClientData.playerInventory != null)
                     ClientData.playerInventory.Clear();
 
                 ClientData.asGameStarted = false;
+                GameData.Instance = null;
 
-                ModUI.Instance.ShowMainInterface();
+                ModUI.Instance.window = guiWindow.main;
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }

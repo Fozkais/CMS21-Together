@@ -1,18 +1,18 @@
 using System.Collections.Generic;
-using CMS21Together.BothSide;
+using CMS21Together.Shared.Data;
 
 namespace CMS21Together.ServerSide.Data
 {
     public class CarPartHandle
     {
-        public static void HandlePart(ModPartScript carPart, ModCar car)
+         public static void HandlePart(ModPartScript carPart, ModCar car)
         {
             if (car.partInfo != null)
             {
                 var partInfo = car.partInfo;
                 switch (carPart.type)
                 {
-                    case partType.other:
+                    case ModPartType.other:
                         if (partInfo.OtherParts == null)
                             partInfo.OtherParts = new Dictionary<int, List<ModPartScript>>();
                         if (partInfo.OtherParts.ContainsKey(carPart.partID))
@@ -28,13 +28,13 @@ namespace CMS21Together.ServerSide.Data
                             partInfo.OtherParts[carPart.partID].Add(carPart);
                         }
                         break;
-                    case partType.engine:
+                    case ModPartType.engine:
                         if (partInfo.EngineParts == null)
                             partInfo.EngineParts = new Dictionary<int, ModPartScript>();
                         
                         partInfo.EngineParts[carPart.partID] = carPart;
                         break;
-                    case partType.suspension:
+                    case ModPartType.suspension:
                         if (partInfo.SuspensionParts == null)
                             partInfo.SuspensionParts = new Dictionary<int, List<ModPartScript>>();
                         if (partInfo.SuspensionParts.ContainsKey(carPart.partID))

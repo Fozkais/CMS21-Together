@@ -1,12 +1,10 @@
-using System;
 using System.Collections;
-using System.Net;
-using System.Net.Sockets;
-using CMS21Together.BothSide;
-using CMS21Together.ServerSide.DataHandle;
+using CMS21Together.ServerSide.Data;
+using CMS21Together.ServerSide.Handle;
 using CMS21Together.ServerSide.Transport;
-using UnityEngine;
+using CMS21Together.Shared;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ServerSide
 {
@@ -33,12 +31,12 @@ namespace CMS21Together.ServerSide
             
             if (Alive)
             {
-                yield return new WaitForSeconds(5);
+                yield return new WaitForSeconds(2);
                 Alive = false;
             }
             else
             {
-                yield return new WaitForSeconds(8);
+                yield return new WaitForSeconds(3);
                 if (!Alive)
                 {
                     if(!ServerData.isRunning)
@@ -46,16 +44,21 @@ namespace CMS21Together.ServerSide
 
                     if (ServerData.players.ContainsKey(id))
                     {
-                        MelonLogger.Msg($"SV:  Client[{id}], username:{ServerData.players[id].username} no longer alive! Disconnecting...");
+                        MelonLogger.Msg($"SV:  Client[{id}], username:{ServerData.players[id].username} asn't responded for to long!");
                         ServerSend.DisconnectClient(id, $"{ServerData.players[id].username} as disconnected!");
                     }
-                    
                     if(Server.clients.ContainsKey(id))
                         Server.clients[id].Disconnect(id);
+                    
+                    yield break;
                 }
             }
-            if(ServerData.players[id] != null)
-                MelonCoroutines.Start(isClientAlive());
+
+            if (ServerData.players.TryGetValue(id, out var player))
+            {
+                if (player != null)
+                    MelonCoroutines.Start(isClientAlive());
+            }
         }
 
 
@@ -63,27 +66,8 @@ namespace CMS21Together.ServerSide
         {
             ServerData.players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
             MelonLogger.Msg($"SV: New player ! {_playerName}, ID:{id}");
-
-            /*for (int i = 1; i < Server.clients.Count; i++)
-            {
-                var client = Server.clients[i];
-                if (ServerData.players.ContainsKey(client.id))
-                {
-                    ServerData.players[client.id] = ServerData.players[id];   broken / useless ?
-                }
-            }
-            foreach (ServerClient _client in Server.clients.Values)
-            {
-                if (ServerData.players.ContainsKey(_client.id))
-                {
-                    if (_client.id != id)
-                    {
-                        ServerData.players[_client.id] = ServerData.players[id];
-                       // ServerSend.SendPlayersInfo(ServerData.players[id]);
-                    }
-                }
-            }*/
             
+            MelonCoroutines.Start(isClientAlive());
             ServerSend.SendPlayersInfo(ServerData.players);
         }
 

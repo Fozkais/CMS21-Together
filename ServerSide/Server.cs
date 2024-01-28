@@ -1,18 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using MelonLoader;
 using System.Net;
-using CMS21Together.BothSide;
+using System.Net.Sockets;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
-using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.DataHandle;
-using CMS21Together.ServerSide.DataHandle;
+using CMS21Together.ServerSide.Handle;
+using CMS21Together.Shared;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ServerSide
 {
-    public class Server
+     public class Server
     {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
@@ -78,7 +77,7 @@ namespace CMS21Together.ServerSide
             if(packetHandlers != null)
                 packetHandlers.Clear();
 
-            
+            ModUI.Instance.window = guiWindow.main;
             MelonLogger.Msg("Server Closed.");
 
         }
@@ -171,25 +170,25 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
                 {(int)PacketTypes.readyState, ServerHandle.ReadyState},
                 {(int)PacketTypes.keepAlive, ServerHandle.keepAlive},
+                {(int)PacketTypes.disconnect, ServerHandle.Disconnect},
+                
                 {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
                 {(int)PacketTypes.playerRotation, ServerHandle.playerRotation},
                 {(int)PacketTypes.playerSceneChange, ServerHandle.playerSceneChange},
+                {(int)PacketTypes.stats, ServerHandle.playerStats},
+                {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
+                {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
+                
+                {(int)PacketTypes.lifter, ServerHandle.Lifter},
+                {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
+                {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
+                
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},
+                {(int)PacketTypes.carParts, ServerHandle.CarParts},
                 {(int)PacketTypes.bodyPart, ServerHandle.BodyPart},
-                {(int)PacketTypes.carParts, ServerHandle.PartScripts},
                 {(int)PacketTypes.bodyParts, ServerHandle.BodyParts},
-                {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
-                {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
-                {(int)PacketTypes.lifterPos, ServerHandle.LifterPos},
-                {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
-                {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction},
-                {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
-                {(int)PacketTypes.wheelBalancer_UpdateWheel, ServerHandle.WheelBalancer_UpdateWheel},
-                {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction},
-                {(int)PacketTypes.carWash, ServerHandle.carWash},
-                {(int)PacketTypes.carList, ServerHandle.carList}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

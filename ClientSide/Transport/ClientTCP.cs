@@ -1,15 +1,13 @@
 using System;
 using System.Net.Sockets;
-using CMS21Together.BothSide;
-using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.DataHandle;
+using CMS21Together.Shared;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Transport
 {
     public class ClientTCP
     {
-         public TcpClient socket = new TcpClient();
+        public TcpClient socket = new TcpClient();
 
         private NetworkStream stream;
         private Packet receivedData;
@@ -48,7 +46,7 @@ namespace CMS21Together.ClientSide.Transport
                     return;
                 }
                 
-                ModUI.Instance.ShowLobbyInterface();
+               // ModUI.Instance.ShowLobbyInterface();  TODO: Fix
                 stream = socket.GetStream();
                 receivedData = new Packet();
 
