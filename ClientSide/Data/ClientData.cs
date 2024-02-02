@@ -5,7 +5,6 @@ using CMS21MP.ServerSide;
 using CMS21MP.SharedData;
 using Il2Cpp;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 
 namespace CMS21MP.ClientSide.Data
@@ -166,19 +165,6 @@ namespace CMS21MP.ClientSide.Data
                 
             }
             
-        }
-        
-        public static void ReceivePacket()
-        {
-            while (SteamNetworking.IsP2PPacketAvailable())
-            {
-                MelonLogger.Msg("Packet received");
-                var packet = SteamNetworking.ReadP2PPacket();
-                if (packet.HasValue)
-                {
-                    PacketHandling.HandlePacket(packet.Value.Data);
-                }
-            }
         }
     }
 }

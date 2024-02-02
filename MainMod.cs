@@ -7,7 +7,6 @@ using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
 using Il2Cpp;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Client = CMS21MP.ClientSide.Client;
@@ -19,7 +18,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.2.7";
+      public const string ASSEMBLY_MOD_VERSION = "0.2.8";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -55,22 +54,7 @@ namespace CMS21MP
          PreferencesManager.LoadPreferences();
          isInitialized = true;
          LoggerInstance.Msg("Mod Initialized!");
-
-         SteamClient.Init(1190000);
-         if (SteamClient.IsValid)
-         {
-            CallbackHandler.InitializeCallbacks();
-            SteamData.Name = SteamClient.Name;
-            SteamData.steamID = SteamClient.SteamId;
-            SteamData.steamIDString = SteamClient.SteamId.ToString();
-            SteamData.connectedToSteam = true;
-            
-            MelonLogger.Msg("Steam Initialized! :" + SteamData.Name);
-         }
-         else
-         {
-            MelonLogger.Msg("Steam not Initialized!");
-         }
+         
       }
 
       public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
@@ -150,9 +134,6 @@ namespace CMS21MP
          }
 
          threadManager.UpdateThread();
-         
-         if(SteamData.connectedToSteam) { SteamClient.RunCallbacks(); }
-         if(SteamData.StartReceivingPacket) { ClientData.ReceivePacket(); }
       }
 
       public override void OnFixedUpdate() // Can run multiple times per frame. Mostly used for Physics.

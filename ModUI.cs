@@ -8,7 +8,6 @@ using CMS21MP.ServerSide;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
@@ -271,8 +270,6 @@ namespace CMS21MP
             else
             {
                 GUILayout.Label("Lobby ID:", textStyle);
-                
-                CallbackHandler.lobbyCodeString = GUILayout.TextField(CallbackHandler.lobbyCodeString, textFieldStyle, GUILayout.Width(190));
             }
 
             GUILayout.Space(10);

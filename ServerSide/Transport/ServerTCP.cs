@@ -3,7 +3,6 @@ using System.Net.Sockets;
 using CMS21MP.ServerSide.DataHandle;
 using CMS21MP.SharedData;
 using MelonLoader;
-using Steamworks;
 
 namespace CMS21MP.ServerSide.Transport
 {
@@ -40,7 +39,7 @@ namespace CMS21MP.ServerSide.Transport
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 
 
-                ServerSend.Welcome(new SteamId(), id, "Welcome to the server!");
+                ServerSend.Welcome(id, "Welcome to the server!");
             }
 
             public void SendData(Packet _packet)
