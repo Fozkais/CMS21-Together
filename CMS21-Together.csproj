@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
-    <Compile Include="ClientSide\Data\Car.cs" />
     <Compile Include="ClientSide\Data\Car\CarHarmonyPatches.cs" />
     <Compile Include="ClientSide\Data\Car\CarInitialization.cs" />
     <Compile Include="ClientSide\Data\Car\CarManagement.cs" />
@@ -48,20 +47,15 @@
     <Compile Include="ClientSide\Data\CustomUI\CustomMainMenu.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
-    <Compile Include="ClientSide\Data\GarageInteraction.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModCarWashLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModLifterLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModTireChangerLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />
-    <Compile Include="ClientSide\Data\ModInventory.cs" />
-    <Compile Include="ClientSide\Data\Movement.cs" />
     <Compile Include="ClientSide\Data\PlayerData\ModInventory.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
     <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
-    <Compile Include="ClientSide\Data\SceneChecker.cs" />
-    <Compile Include="ClientSide\Data\Stats.cs" />
     <Compile Include="ClientSide\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
@@ -109,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -129,9 +122,6 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
@@ -173,6 +163,8 @@
     <EmbeddedResource Include="Assets\playertexture.asset" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
+    <EmbeddedResource Include="Assets\peoples.png" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
@@ -190,6 +182,19 @@
     <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
     <Content Include="Libs\UnityEngine.UI.dll" />
     <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.StringTools" Version="17.6.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

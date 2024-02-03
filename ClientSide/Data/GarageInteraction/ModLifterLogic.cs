@@ -19,9 +19,16 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         {
             if(!listenToLifter) return;
 
-            int postLiftValue = (int)__instance.currentState + actionType;
+            int validAction = 0;
+
+            if (actionType == 0) validAction = 1;
+            if (actionType == 1) validAction = -1;
+
+            int postLiftValue = (int)__instance.currentState + validAction;
             int carLoaderID = __instance.connectedCarLoader.gameObject.name[10] - '0';
             ModLifterState state = GetStateFromValue(postLiftValue);
+            MelonLogger.Msg("ActionType: " + validAction);
+            MelonLogger.Msg("New Lifter state: " + state + " Value: " + postLiftValue);
             ClientSend.SendLifter(state, carLoaderID);
             MelonLogger.Msg("Sending lifter info!");
         }
@@ -29,7 +36,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         public static IEnumerator ResetLifterListen()
         {
             listenToLifter = false;
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(0.1f);
             listenToLifter = true;
         }
 

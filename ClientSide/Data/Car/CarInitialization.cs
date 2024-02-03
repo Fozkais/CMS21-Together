@@ -41,7 +41,7 @@ namespace CMS21Together.ClientSide.Data.Car
             return convertedLoaderID;
         }
         
-        public static IEnumerator InitializeCar(CarLoader carLoader, string name)
+        public static IEnumerator InitializePrePatch(CarLoader carLoader, string name)
         {
             if(String.IsNullOrEmpty(name))
                 yield break;
@@ -54,15 +54,37 @@ namespace CMS21Together.ClientSide.Data.Car
 
             string carLoaderID = carLoader.gameObject.name[10].ToString();
             MelonLogger.Msg($"A car is being loaded! : {name}, ID:{carLoaderID}");
-
-            ModCar newCar;
+            
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
             
-            newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
             if (!ClientData.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
             {
-                ClientData.LoadedCars.Add(convertedLoaderID, newCar);
+                ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
                 ClientSend.SendModCar(new ModCar(newCar));
+            }
+          
+        }
+        
+        public static IEnumerator InitializePostPatch(CarLoader carLoader, string name)
+        {
+            if(String.IsNullOrEmpty(name))
+                yield break;
+
+            while(GameData.DataInitialzed == false) // DO NOT REMOVE!
+                yield return new WaitForSeconds(1);
+            
+            yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
+
+            string carLoaderID = carLoader.gameObject.name[10].ToString();
+            MelonLogger.Msg($"A car is being loaded! : {name}, ID:{carLoaderID}");
+            
+            int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
+            
+            if (!ClientData.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
+            {
+                ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
+                ClientData.LoadedCars.Add(convertedLoaderID, newCar);
             }
           
         }

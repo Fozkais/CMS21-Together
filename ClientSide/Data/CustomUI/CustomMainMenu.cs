@@ -78,7 +78,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpTransform.anchoredPosition = new Vector2(95, 58);
             mpTransform.sizeDelta = new Vector2(53, 53);
 
-            Texture2D myTexture = DataHelper.LoadCustomTexture("CMS21_Together.Assets.peoples.png");
+            Texture2D myTexture = DataHelper.LoadCustomTexture("CMS21Together.Assets.peoples.png");
             Sprite mpSprite = Sprite.Create(myTexture, new Rect(0, 0, myTexture.width, myTexture.height),
                 new Vector2(0, 0));
 

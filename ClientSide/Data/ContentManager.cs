@@ -55,7 +55,7 @@ namespace CMS21Together.ClientSide.Data
 
         public void LoadCustomlogo()
         {
-            Stream stream = DataHelper.LoadContent("CMS21_Together.Assets.CMS21TogetherLogo.png");
+            Stream stream = DataHelper.LoadContent("CMS21Together.Assets.cms21TogetherLogo.png");
 
             byte[] buffer = new byte[stream.Length];
             stream.Read(buffer, 0, (int)stream.Length);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.Shared.Data;
@@ -8,11 +9,12 @@ using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.GarageInteraction
 {
+    [HarmonyPatch]
     public static class ModTireChangerLogic
     {
         private static bool listenToTC = true;
         
-        [HarmonyPatch(typeof(ModTireChangerLogic), "SetGroupOnTireChanger")]
+        [HarmonyPatch(typeof(TireChangerLogic), "SetGroupOnTireChanger", new Type[]{ typeof(GroupItem), typeof(bool), typeof(bool)})]
         [HarmonyPostfix]
         public static void TireChangerFix(GroupItem groupItem, bool instant, bool connect, TireChangerLogic __instance)
         {

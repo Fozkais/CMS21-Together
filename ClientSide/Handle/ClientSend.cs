@@ -148,7 +148,7 @@ namespace CMS21Together.ClientSide.Handle
             }
             public static void TireChanger(ModGroupItem modGroupItem=null, bool instant=false, bool connect=false, bool resetAction=false)
             {
-                using (Packet _packet = new Packet((int)PacketTypes.lifter))
+                using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
                 {
 
                     _packet.Write(modGroupItem);

@@ -282,7 +282,7 @@ namespace CMS21Together.ServerSide.Handle
             }
             public static void WheelBalancer(int fromClient, ModWheelBalancerActionType aType, ModGroupItem item=null)
             {
-                using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
+                using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
                 {
                     _packet.Write(aType);
                     if(item != null)   {_packet.Write(item);}

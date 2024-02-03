@@ -133,8 +133,8 @@ namespace CMS21Together.ClientSide.Data
             AssetBundle playerModel;
             AssetBundle playerTexture;
             
-            playerModel = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21_Together.Assets.playermodel.asset"))); 
-            playerTexture = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21_Together.Assets.playertexture.asset")));
+            playerModel = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.playermodel.asset"))); 
+            playerTexture = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.playertexture.asset")));
             
             if (playerModel)
             {

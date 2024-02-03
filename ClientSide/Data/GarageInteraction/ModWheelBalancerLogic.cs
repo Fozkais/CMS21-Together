@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.GarageInteraction
 {
+    [HarmonyPatch]
     public static class ModWheelBalancerLogic
     {
          private static bool listentoWB = true;

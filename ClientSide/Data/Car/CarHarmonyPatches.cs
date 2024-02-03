@@ -16,22 +16,44 @@ namespace CMS21Together.ClientSide.Data.Car
         
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPrefix]
-        public static void LoadCarPatch(string name, CarLoader __instance)
+        public static void LoadCarPrePatch(string name, CarLoader __instance)
         {
             if (Client.Instance.isConnected)
             {
                 if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializeCar(__instance, name));
+                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, name));
             }
         }
-        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
-        [HarmonyPrefix]
-        public static void LoadCarFromFilePatch(NewCarData carDataCheck, CarLoader __instance)
+        [HarmonyPatch(typeof(CarLoader), "LoadCar")]
+        [HarmonyPostfix]
+        public static void LoadCarPostPatch(string name, CarLoader __instance)
         {
             if (Client.Instance.isConnected)
             {
                 if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializeCar(__instance, carDataCheck.carToLoad));
+                    MelonCoroutines.Start(CarInitialization.InitializePostPatch(__instance, name));
+            }
+        }
+        
+        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
+        [HarmonyPrefix]
+        public static void LoadCarFromFilePrePatch(NewCarData carDataCheck, CarLoader __instance)
+        {
+            if (Client.Instance.isConnected)
+            {
+                if (ModSceneManager.currentScene() == GameScene.garage)
+                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, carDataCheck.carToLoad));
+            }
+        }
+        
+        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
+        [HarmonyPostfix]
+        public static void LoadCarFromFilePostPatch(NewCarData carDataCheck, CarLoader __instance)
+        {
+            if (Client.Instance.isConnected)
+            {
+                if (ModSceneManager.currentScene() == GameScene.garage)
+                    MelonCoroutines.Start(CarInitialization.InitializePostPatch(__instance, carDataCheck.carToLoad));
             }
         }
         

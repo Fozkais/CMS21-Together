@@ -244,17 +244,22 @@ namespace CMS21Together.ClientSide.Handle
                 int carLoaderID = _packet.ReadInt();
 
                 MelonLogger.Msg("Received lifter info!");
-
-                var lifter = GameData.Instance.carLoaders[carLoaderID-1].lifter;
-                while (state != ModLifterLogic.GetStateFromValue((int)lifter.currentState))
+                MelonLogger.Msg("State :" + state + "ID: " + carLoaderID);
+                
+                if (ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID - 1))
                 {
-                    MelonLogger.Msg("Here!");
-                    MelonCoroutines.Start( ModLifterLogic.ResetLifterListen());
+                    var lifter = GameData.Instance.carLoaders[carLoaderID-1].lifter;
+                    MelonLogger.Msg("Passed Lifter.");
+                    MelonCoroutines.Start(ModLifterLogic.ResetLifterListen());
                     if((int)state > (int)lifter.currentState)
-                        lifter.Action(-1);
-                    else if((int)state < (int)lifter.currentState)
-                        lifter.Action(0);
+                        lifter.Action((0));
+                    else
+                    {
+                        lifter.Action((1));
+                    }
+                    ClientData.LoadedCars[carLoaderID-1].CarLifterState = (int)state;
                 }
+
                 
                 _packet.Dispose();
             }
@@ -277,6 +282,7 @@ namespace CMS21Together.ClientSide.Handle
                 }
                 else
                 {
+                    MelonLogger.Msg("Reset TireChange!");
                     GameData.Instance.tireChanger.ResetActions();
                 }
                 
@@ -365,6 +371,11 @@ namespace CMS21Together.ClientSide.Handle
                 
                 var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
 
+                foreach (ModPartScript part in carParts)
+                {
+                    MelonCoroutines.Start(CarUpdate.HandleNewPart(part, carLoaderID));
+                }
+                
                 switch (carParts[0].type)
                 {
                     case ModPartType.other:
@@ -378,10 +389,6 @@ namespace CMS21Together.ClientSide.Handle
                         break;
                 }
 
-                foreach (ModPartScript part in carParts)
-                {
-                    MelonCoroutines.Start(CarUpdate.HandleNewPart(part, carLoaderID));
-                }
                 _packet.Dispose();
             }
             public static void BodyPart(Packet _packet)
@@ -400,13 +407,15 @@ namespace CMS21Together.ClientSide.Handle
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
 
-                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                car.receivedBodyParts = true;
                 
                 foreach (ModCarPart part in carParts)
                 {
                     MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(part, carLoaderID));
                 }
+                
+                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                car.receivedBodyParts = true;
+                
                 _packet.Dispose();
             }
 

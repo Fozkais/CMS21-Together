@@ -25,7 +25,7 @@ namespace CMS21Together.ClientSide.Data.Car
             }
             int _count = 0;
             while (!(car.receivedOtherParts && car.receivedEngineParts 
-                                           && car.receivedSuspensionParts && car.receivedBodyParts) && _count < 20)
+                                           && car.receivedSuspensionParts && car.receivedBodyParts) && _count < 25)
             {
                 _count += 1;
                 yield return new WaitForSeconds(0.1f);
@@ -92,6 +92,9 @@ namespace CMS21Together.ClientSide.Data.Car
 
         private static void UpdatePart(int carLoaderID, ModPartScript part, PartScript reference)
         {
+            
+            
+            if( part == null || reference == null) { MelonLogger.Msg("Invalid part!"); return;}
             
             MelonLogger.Msg("Updating Part.");
             
