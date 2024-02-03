@@ -95,8 +95,22 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpButton.OnClick.AddListener(openMenu);
             mpButton.AssignAction(openMenu);
             
+            // Fix Singleplayer button
+
+            section.buttons[0].OnClick = new MainMenuButton.ButtonEvent();
+            Action openSinglePlayer = delegate { OpenSingleplayer(); };
             
-            
+            section.buttons[0].OnClick.AddListener(openSinglePlayer);
+            section.buttons[0].AssignAction(openSinglePlayer);
+
+
+
+        }
+
+        private static void OpenSingleplayer()
+        {
+            section.gameObject.SetActive(false);
+            section.transform.parent.Find("PlayButtons").gameObject.SetActive(true);
         }
 
         public static void MultiplayerMenu()
