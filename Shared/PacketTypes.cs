@@ -17,6 +17,7 @@ namespace CMS21Together.Shared
 
         #region In-Game
 
+            playerInitialPos,
             playerPosition,
             playerRotation,
             playerSceneChange,

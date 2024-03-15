@@ -15,6 +15,7 @@ namespace CMS21Together.Shared
         public bool isReady;
 
         public Vector3Serializable position;
+        public Vector3Serializable desiredPosition = new Vector3Serializable(0,0,0);
         public QuaternionSerializable rotation;
 
         public GameScene scene;
@@ -30,8 +31,12 @@ namespace CMS21Together.Shared
 
         public void Disconnect()
         {
-            Object.Destroy(ClientData.PlayersGameObjects[id]);
-            ClientData.players.Remove(id);
+            if(ClientData.PlayersGameObjects != null)
+                if(ClientData.PlayersGameObjects.TryGetValue(id, out var o))
+                    Object.Destroy(o);
+            if(ClientData.players != null)
+                if(ClientData.players.ContainsKey(id))
+                    ClientData.players.Remove(id);
         }
     }
 
@@ -41,6 +46,15 @@ namespace CMS21Together.Shared
         public float x;
         public float y;
         public float z;
+
+        public static Vector3Serializable Subtract(Vector3Serializable a, Vector3Serializable b)
+        {
+            return new Vector3Serializable(
+                a.x - b.x, 
+                a.y - b.y,
+                a.z - b.z
+            );
+        }
         
         public Vector3Serializable(float _x, float _y, float _z)
         {
@@ -60,7 +74,15 @@ namespace CMS21Together.Shared
         {
             return new Vector3(x, y, z);
         }
-        
+
+        public static Vector3Serializable Add(Vector3Serializable a, Vector3Serializable b)
+        {
+            return new Vector3Serializable(
+                a.x + b.x, 
+                a.y + b.y,
+                a.z + b.z
+            );
+        }
     }
     [Serializable]
     public class QuaternionSerializable

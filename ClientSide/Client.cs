@@ -91,6 +91,7 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
                 
                 { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
+                { (int)PacketTypes.playerInitialPos, ClientHandle.playerInitialPos },
                 { (int)PacketTypes.playerRotation, ClientHandle.playerRotation},
                 { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange},
                 { (int)PacketTypes.stats, ClientHandle.playerStats},

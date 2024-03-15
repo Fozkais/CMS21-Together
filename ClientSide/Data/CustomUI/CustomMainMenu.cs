@@ -49,7 +49,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 defaultButton.Add(section.buttons[i]);
             }
 
-            section.buttons = new Il2CppReferenceArray<MainMenuButton>(30);
+            section.buttons = new Il2CppReferenceArray<MainMenuButton>(31);
             for (int i = 0; i < defaultButton.Count; i++)
             {
                 section.buttons[i] = defaultButton[i];

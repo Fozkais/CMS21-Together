@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Shared
@@ -29,6 +30,8 @@ namespace CMS21Together.Shared
             
             ImageConversion.LoadImage(reference, buffer);
 
+            if(reference != null)
+                MelonLogger.Msg("Texture Loaded.");
             return reference;
         }
         public static Il2CppSystem.IO.Stream DeepCopy(Stream sourceStream)

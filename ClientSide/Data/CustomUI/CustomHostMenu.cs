@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using Il2CppCMS.MainMenu;
 using Il2CppCMS.MainMenu.Controls;
@@ -62,7 +64,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i > 11)
+                    if (i > 11 && i < 26)
                     {
                         if(CustomMainMenu.section.buttons[i] != null) 
                             CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
@@ -103,9 +105,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             loadTransform.parent = parent;
             loadTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
-            loadButton.Y = 13;
+            loadButton.Y = 12;
             loadButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[13] = loadButton;
+            CustomMainMenu.section.buttons[12] = loadButton;
 
             loadTransform.anchoredPosition = new Vector2(-5, 58);
             loadTransform.sizeDelta = new Vector2(288, 55);
@@ -136,9 +138,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             backTransform.parent = parent;
             backTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
-            backButton.Y = 14;
+            backButton.Y = 13;
             backButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[14] = backButton;
+            CustomMainMenu.section.buttons[13] = backButton;
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
             backTransform.sizeDelta = new Vector2(288, 55);
@@ -189,9 +191,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
                 saveTransform.parent = parent;
                 saveTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
-                saveButton.Y = 15+i;
+                saveButton.Y = 14+i;
                 saveButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
-                CustomMainMenu.section.buttons[15+i] = saveButton;
+                CustomMainMenu.section.buttons[14+i] = saveButton;
                 
                 saveTransform.anchoredPosition = new Vector2(buttonPos[i].Item1,buttonPos[i].Item2);
                 saveTransform.sizeDelta = new Vector2(288, 55);
@@ -203,17 +205,28 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     MelonLogger.Msg($"Save: {SavesManager.ModSaves[index1].Name}");
                     saveButton.GetComponentInChildren<Text>().text = SavesManager.ModSaves[index1].Name;
                     
-                    Action selectSave = delegate { SelectSaves(index1); };
+                    Action selectSave = delegate
+                    {
+                        SelectSaves(index1); 
+                        CustomLobbyMenu.saveIndex = index1;
+                        CustomLobbyMenu.OpenLobby();
+                    };
                     saveButton.OnClick.AddListener(selectSave);
                     
                     saveButton.isDisabled = false;
                     saveButton.DoStateTransition(SelectionState.Normal, true);
+                    
                 }
                 else
                 {
                     saveButton.GetComponentInChildren<Text>().text = "New Game";
                     int _i = i;
-                    Action newSave = delegate { ChoseSaveName(15+_i,index1); };
+                    Action newSave = delegate 
+                    { 
+                        ChoseSaveName(14+_i,index1);  
+                        CustomLobbyMenu.OpenLobby();
+                        
+                    };
                     saveButton.OnClick.AddListener(newSave);
                 }
                 saveObject.SetActive(true);
@@ -245,9 +258,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             cancelTransform.parent = parent;
             cancelTransform.parentInternal = parent;
-            cancelButton.Y = 24;
+            cancelButton.Y = 23;
             cancelButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[24] = cancelButton;
+            CustomMainMenu.section.buttons[23] = cancelButton;
                 
             cancelTransform.anchoredPosition = new Vector2(-68,-120);
             cancelTransform.sizeDelta = new Vector2(144, 55);
@@ -267,9 +280,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             confirmsTransform.parent = parent;
             confirmsTransform.parentInternal = parent;
-            confirmButton.Y = 23;
+            confirmButton.Y = 24;
             confirmButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[23] = confirmButton;
+            CustomMainMenu.section.buttons[24] = confirmButton;
                 
             confirmsTransform.anchoredPosition = new Vector2(58,-120);
             confirmsTransform.sizeDelta = new Vector2(144, 55);
@@ -306,7 +319,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i > 22 && i <= 24)
+                    if (i > 22 && i <= 25)
                     {
                         if (CustomMainMenu.section.buttons[i] != null)
                         {
@@ -325,7 +338,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i > 22 && i <= 24)
+                    if (i > 22 && i <= 25)
                     {
                         if (CustomMainMenu.section.buttons[i] != null)
                         {
@@ -338,7 +351,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
                 window.gameObject.SetActive(true);
                 
-                var confirmButton = CustomMainMenu.section.buttons[23];
+                var confirmButton = CustomMainMenu.section.buttons[25];
                 
                 confirmButton.OnClick = new MainMenuButton.ButtonEvent();
                 Action confirmAction;
@@ -353,33 +366,37 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             if(alreadyExist) { MelonLogger.Msg("A save with the same name already exists."); }
             else
             {
-                for (int i = 4; i < SavesManager.ModSaves.Count; i++)
-                {
-                        
-                    var save = SavesManager.ModSaves[i];
+                    var save = SavesManager.ModSaves[index];
                     if (save.Name == "EmptySave")
                     {
-                        MelonLogger.Msg("Found a valid save slot!: " + i);
-                        SavesManager.LoadSave(i, name);
-                        break;
+                        MelonLogger.Msg("Found a valid save slot!: " + index);
+                        SavesManager.LoadSave(index, name);
                     }
-                }
             }
         }
 
         private static void SelectSaves(int index)
         {
-            throw new NotImplementedException();
+                                        
+            if(!ServerData.isRunning)
+                Server.Start();
+            else
+            {
+                Server.Stop();
+                Server.Start();
+            }
+                            
+            SavesManager.LoadSave(SavesManager.ModSaves[index].saveIndex, SavesManager.ModSaves[index].Name);
         }
         
-        private static void DisableSavesMenu()
+        public static void DisableSavesMenu()
         {
             displaySaves = false;
             if (CustomMainMenu.section != null)
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i > 14 && i <= 22)
+                    if (i >= 14 && i <= 25)
                     {
                         if (CustomMainMenu.section.buttons[i] != null)
                         {
@@ -399,7 +416,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i > 11)
+                    if (i > 11 && i < 26)
                     {
                         if (CustomMainMenu.section.buttons[i] != null)
                         {

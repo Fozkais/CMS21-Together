@@ -1,4 +1,6 @@
+using CMS21Together.Shared;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.CustomUI
 {
@@ -8,6 +10,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if(scene == "Menu")
             {
+                CustomLobbyMenu.lobbyPBorder = DataHelper.LoadCustomTexture("CMS21Together.Assets.lobbyBorder.png");
+                CustomHostMenu.isSet = false;
+                CustomHostMenu.isSavesSet = false;
+                CustomHostMenu.isnewSaveSet = false;
+                CustomLobbyMenu.isSet = false;
                 MelonCoroutines.Start(CustomMainMenu.DefaultMenuPatch());
             }
         }

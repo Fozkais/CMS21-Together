@@ -14,6 +14,7 @@ namespace CMS21Together.ClientSide.Data
         public static bool DataInitialzed;
         
         public static GameObject localPlayer;
+        public static FPSInputController playerController;
         public TireChangerLogic tireChanger;
         public WheelBalancerLogic wheelBalancer;
         public CarWashLogic carWash;
@@ -25,8 +26,9 @@ namespace CMS21Together.ClientSide.Data
             if (Instance == null)
             {
                 Instance = this;
-                
-                localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
+
+                playerController = Object.FindObjectOfType<FPSInputController>();
+                localPlayer = playerController.gameObject;
                 tireChanger = Object.FindObjectOfType<TireChangerLogic>();
                 wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
                 carWash = Object.FindObjectOfType<CarWashLogic>();

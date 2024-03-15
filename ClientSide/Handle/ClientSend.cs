@@ -70,6 +70,16 @@ namespace CMS21Together.ClientSide.Handle
 
 
         #region PlayerData
+        
+            public static void SendInitialPosition(Vector3Serializable position)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.playerInitialPos))
+                {
+                    _packet.Write(position);
+                        
+                    SendUDPData(_packet);
+                }
+            }
             public static void SendPosition(Vector3Serializable position)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
@@ -150,7 +160,6 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.tireChanger))
                 {
-
                     _packet.Write(modGroupItem);
                     _packet.Write(instant);
                     _packet.Write(connect);

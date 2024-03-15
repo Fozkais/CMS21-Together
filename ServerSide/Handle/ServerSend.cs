@@ -184,6 +184,17 @@ namespace CMS21Together.ServerSide.Handle
 
         #region PlayerData
         
+            public static void SendInitialPosition(int _fromClient, Vector3Serializable _position)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.playerInitialPos))
+                {
+                    _packet.Write(_fromClient);
+                    _packet.Write(_position);
+                    
+                    SendUDPDataToAll(_fromClient, _packet);
+                }
+            }
+        
             public static void SendPosition(int fromClient, Vector3Serializable position)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.playerPosition))
@@ -359,6 +370,6 @@ namespace CMS21Together.ServerSide.Handle
             }
             
         #endregion
-
+        
     }
 }

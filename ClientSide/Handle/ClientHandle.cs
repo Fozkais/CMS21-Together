@@ -110,12 +110,23 @@ namespace CMS21Together.ClientSide.Handle
                     if(!ClientData.PlayersGameObjects.ContainsKey(player.id))
                         ClientData.SpawnPlayer(_player);
                 }
+                
+                ClientSend.SendInitialPosition(new Vector3Serializable(GameData.localPlayer.transform.position));
+                
                 _packet.Dispose();
             }
             
         #endregion
 
         #region PlayerData
+        
+            public static void playerInitialPos(Packet _packet)
+            {
+                int _id = _packet.ReadInt();
+                Vector3Serializable _position = _packet.Read<Vector3Serializable>();
+                Movement.SetInitialPosition(_id, _position);
+                _packet.Dispose();
+            }
 
             public static void playerPosition(Packet _packet)
             {

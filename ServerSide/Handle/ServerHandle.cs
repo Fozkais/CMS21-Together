@@ -85,6 +85,14 @@ namespace CMS21Together.ServerSide.Handle
         #endregion
 
         #region PlayerData
+        
+            public static void playerInitialPosition(int _fromClient, Packet _packet)
+            {
+                Vector3Serializable _position = _packet.Read<Vector3Serializable>();
+                ServerData.players[_fromClient].position = _position;
+                    
+                ServerSend.SendInitialPosition(_fromClient, _position);
+            }
 
             public static void playerPosition(int _fromClient, Packet _packet)
             {

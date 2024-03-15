@@ -44,6 +44,7 @@
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\ContentManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomLobbyMenu.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomMainMenu.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
@@ -53,6 +54,7 @@
     <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />
     <Compile Include="ClientSide\Data\PlayerData\ModInventory.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\PlayerAnimController.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
     <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
@@ -124,8 +126,17 @@
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="UnityEditor">
+      <HintPath>Libs\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.CoreModule">
+      <HintPath>Libs\UnityEditor.CoreModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
       <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
@@ -145,6 +156,9 @@
     <Reference Include="UnityEngine.InputModule">
       <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.TextCoreModule">
       <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
     </Reference>
@@ -159,12 +173,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Assets\playermodel.asset" />
-    <EmbeddedResource Include="Assets\playertexture.asset" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
     <EmbeddedResource Include="Assets\peoples.png" />
+    <EmbeddedResource Include="Assets\player.assets" />
+    <EmbeddedResource Include="Assets\lobbyBorder.png" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
@@ -178,6 +190,7 @@
     <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
     <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
     <Content Include="Libs\UnityEngine.InputModule.dll" />
+    <Content Include="Libs\UnityEngine.PhysicsModule.dll" />
     <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
     <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
     <Content Include="Libs\UnityEngine.UI.dll" />

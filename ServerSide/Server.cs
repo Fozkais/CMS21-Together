@@ -173,6 +173,7 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.disconnect, ServerHandle.Disconnect},
                 
                 {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
+                {(int)PacketTypes.playerInitialPos, ServerHandle.playerInitialPosition},
                 {(int)PacketTypes.playerRotation, ServerHandle.playerRotation},
                 {(int)PacketTypes.playerSceneChange, ServerHandle.playerSceneChange},
                 {(int)PacketTypes.stats, ServerHandle.playerStats},

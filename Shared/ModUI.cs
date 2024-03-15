@@ -355,7 +355,7 @@ namespace CMS21Together.Shared
                         }
                     }
                 }
-                GUILayout.Space(50);
+                GUILayout.Space(40);
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();

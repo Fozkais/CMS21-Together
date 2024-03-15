@@ -68,6 +68,10 @@ namespace CMS21Together.Shared
                 MelonLogger.Msg("-------------------------------------------------");
                 return index;
             }
+            else
+            {
+                MelonLogger.Msg("-------------------------------------------------");
+            }
 
             BinaryWriter writer = new BinaryWriter();
             ProfileData save = new ProfileData();
