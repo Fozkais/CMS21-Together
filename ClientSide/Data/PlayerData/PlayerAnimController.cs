@@ -8,7 +8,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
     [RegisterTypeInIl2Cpp]
     public class PlayerAnimController : MonoBehaviour
     {
-        private Rigidbody _characterController;
+        private CharacterController _characterController;
         private Animator _animator;
 
         public float speedSmoothTime = 0.05f; // Temps lissage de la transition
@@ -19,10 +19,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
 
         private void Awake()
         {
-            _characterController = GetComponent<Rigidbody>();
+            _characterController = GetComponent<CharacterController>();
             _animator = GetComponent<Animator>();
-            
-            _characterController.freezeRotation = true;
         }
 
         public void UpdatePlayer()
@@ -37,11 +35,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                     Vector3 moveDirection = (player.desiredPosition.toVector3() - gameObject.transform.position).normalized;
 
                     // Apply the movement direction to the GameObject
-                    _characterController.AddForce(moveDirection * (speed * Time.deltaTime), ForceMode.Force);
-                }
-                else
-                {
-                    _characterController.velocity = Vector3.zero;
+                    _characterController.Move(moveDirection * (speed * Time.deltaTime));
                 }
                     
                 float verticalSpeed = Vector3.Dot(transform.forward, _characterController.velocity); 

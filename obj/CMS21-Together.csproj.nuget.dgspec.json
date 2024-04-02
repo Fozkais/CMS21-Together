@@ -1,21 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Brandon\\RiderProjects\\CMS21-Together\\CMS21-Together.csproj": {}
+    "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Brandon\\RiderProjects\\CMS21-Together\\CMS21-Together.csproj": {
+    "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Brandon\\RiderProjects\\CMS21-Together\\CMS21-Together.csproj",
+        "projectUniqueName": "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj",
         "projectName": "CMS21-Together",
-        "projectPath": "C:\\Users\\Brandon\\RiderProjects\\CMS21-Together\\CMS21-Together.csproj",
-        "packagesPath": "C:\\Users\\Brandon\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Brandon\\RiderProjects\\CMS21-Together\\obj\\",
+        "projectPath": "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj",
+        "packagesPath": "C:\\Users\\brand\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\brand\\CMS21-Together\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
-          "C:\\Users\\Brandon\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\brand\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net472"

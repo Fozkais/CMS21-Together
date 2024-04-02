@@ -96,17 +96,17 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 }
             }
             isSet = true;
-            Transform parent = CustomMainMenu.templateObject.transform;
+            Transform parent = CustomMainMenu.templateButtonObject.transform;
             
             
-            var LoadObject = Object.Instantiate(CustomMainMenu.templateObject);
+            var LoadObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
             RectTransform  loadTransform =  LoadObject.GetComponent<RectTransform>();
             MainMenuButton  loadButton = LoadObject.GetComponent<MainMenuButton>();
 
             loadTransform.parent = parent;
-            loadTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
+            loadTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             loadButton.Y = 12;
-            loadButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            loadButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             CustomMainMenu.section.buttons[12] = loadButton;
 
             loadTransform.anchoredPosition = new Vector2(-5, 58);
@@ -132,14 +132,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             LoadObject.SetActive(true);
             
             
-            var backObject = Object.Instantiate(CustomMainMenu.templateObject);
+            var backObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
             RectTransform backTransform =  backObject.GetComponent<RectTransform>();
             MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
 
             backTransform.parent = parent;
-            backTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
+            backTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 13;
-            backButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             CustomMainMenu.section.buttons[13] = backButton;
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
@@ -171,7 +171,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             
             displaySaves = true;
             isSavesSet = true;
-            Transform parent = CustomMainMenu.templateObject.transform;
+            Transform parent = CustomMainMenu.templateButtonObject.transform;
             
             MainMenuManager manager = CustomMainMenu.section.menuManager;
             manager.HideAds();
@@ -185,14 +185,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                         break;
                 }
                 
-                var saveObject = Object.Instantiate(CustomMainMenu.templateObject);
+                var saveObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
                 RectTransform saveTransform =  saveObject.GetComponent<RectTransform>();
                 MainMenuButton saveButton = saveObject.GetComponent<MainMenuButton>();
 
                 saveTransform.parent = parent;
-                saveTransform.parentInternal = CustomMainMenu.templateObject.GetComponent<RectTransform>().parentInternal;
+                saveTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
                 saveButton.Y = 14+i;
-                saveButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+                saveButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
                 CustomMainMenu.section.buttons[14+i] = saveButton;
                 
                 saveTransform.anchoredPosition = new Vector2(buttonPos[i].Item1,buttonPos[i].Item2);
@@ -252,14 +252,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             
             Transform parent = window.transform;
             
-            var cancelObject = Object.Instantiate(CustomMainMenu.templateObject);
+            var cancelObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
             RectTransform cancelTransform =  cancelObject.GetComponent<RectTransform>();
             MainMenuButton cancelButton = cancelObject.GetComponent<MainMenuButton>();
 
             cancelTransform.parent = parent;
             cancelTransform.parentInternal = parent;
             cancelButton.Y = 23;
-            cancelButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            cancelButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             CustomMainMenu.section.buttons[23] = cancelButton;
                 
             cancelTransform.anchoredPosition = new Vector2(-68,-120);
@@ -274,14 +274,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             cancelButton.OnClick.AddListener(backtoMenu);
             cancelObject.SetActive(true);
             
-            var confirmObject = Object.Instantiate(CustomMainMenu.templateObject);
+            var confirmObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
             RectTransform confirmsTransform =  confirmObject.GetComponent<RectTransform>();
             MainMenuButton confirmButton = confirmObject.GetComponent<MainMenuButton>();
 
             confirmsTransform.parent = parent;
             confirmsTransform.parentInternal = parent;
             confirmButton.Y = 24;
-            confirmButton.OnMouseHover = CustomMainMenu.templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            confirmButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             CustomMainMenu.section.buttons[24] = confirmButton;
                 
             confirmsTransform.anchoredPosition = new Vector2(58,-120);

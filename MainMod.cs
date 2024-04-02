@@ -107,6 +107,11 @@ namespace CMS21Together
                         MelonCoroutines.Start(ClientData.isServer_alive());
                     }
                 }
+
+                if (ModSceneManager.isInMenu())
+                {
+                    CustomUIManager.UpdateLobby();
+                }
             }
 
             if (ServerData.isRunning)

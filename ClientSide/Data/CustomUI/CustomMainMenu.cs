@@ -21,7 +21,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     public static class CustomMainMenu
     {
         public static MainSection section;
-        public static GameObject templateObject;
+        public static GameObject templateButtonObject;
+        public static GameObject templateTextObject;
         private static GameObject multiplayerObject;
         public static Texture2D mpIcon;
         private static bool isSet;
@@ -39,8 +40,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
             
-            templateObject = GameObject.Find("MainMenuButton");
-            RectTransform playTransform = templateObject.GetComponent<RectTransform>();
+            templateButtonObject = GameObject.Find("MainMenuButton");
+            templateTextObject = templateButtonObject.GetComponentInChildren<Text>().gameObject;
+            RectTransform playTransform = templateButtonObject.GetComponent<RectTransform>();
 
             section = GameObject.Find("MainButtons").GetComponent<MainSection>();
             List<MainMenuButton> defaultButton = new List<MainMenuButton>();
@@ -58,7 +60,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             playTransform.anchoredPosition = new Vector2(-26, 58);
             playTransform.sizeDelta = new Vector2(180, 44);
 
-            multiplayerObject = Object.Instantiate(templateObject);
+            multiplayerObject = Object.Instantiate(templateButtonObject);
             GameObject imageObj = new GameObject("Image");
             imageObj.transform.parent = multiplayerObject.transform;
             imageObj.AddComponent<Image>();
@@ -72,7 +74,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpTransform.parent = playTransform.parent;
             mpTransform.parentInternal = playTransform.parentInternal;
             mpButton.Y = 6;
-            mpButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            mpButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[6] = mpButton;
 
             mpTransform.anchoredPosition = new Vector2(95, 58);
@@ -127,16 +129,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     section.buttons[i].gameObject.SetActive(false);
             }
             
-            var hostObject = Object.Instantiate(templateObject);
+            var hostObject = Object.Instantiate(templateButtonObject);
             RectTransform  hostTransform =  hostObject.GetComponent<RectTransform>();
             MainMenuButton hostButton = hostObject.GetComponent<MainMenuButton>();
 
-            var parent = templateObject.transform.parent;
+            var parent = templateButtonObject.transform.parent;
             
             hostTransform.parent = parent;
-            hostTransform.parentInternal = templateObject.GetComponent<RectTransform>().parentInternal;
+            hostTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             hostButton.Y = 7;
-            hostButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            hostButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[7] = hostButton;
 
             hostTransform.anchoredPosition = new Vector2(-5, 58);
@@ -147,14 +149,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             hostButton.OnClick.AddListener(hostMenu);
             hostObject.SetActive(true);
             
-            var joinObject = Object.Instantiate(templateObject);
+            var joinObject = Object.Instantiate(templateButtonObject);
             RectTransform  joinTransform =  joinObject.GetComponent<RectTransform>();
             MainMenuButton joinButton = joinObject.GetComponent<MainMenuButton>();
 
             joinTransform.parent = parent;
-            joinTransform.parentInternal = templateObject.GetComponent<RectTransform>().parentInternal;
+            joinTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             joinButton.Y = 8;
-            joinButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            joinButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[8] = joinButton;
 
             joinTransform.anchoredPosition = new Vector2(-5, 10);
@@ -165,14 +167,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             joinButton.OnClick.AddListener(joinMenu);
             joinObject.SetActive(true);
             
-            var networkObject = Object.Instantiate(templateObject);
+            var networkObject = Object.Instantiate(templateButtonObject);
             RectTransform networkTransform =  networkObject.GetComponent<RectTransform>();
             MainMenuButton networkButton = networkObject.GetComponent<MainMenuButton>();
 
             networkTransform.parent = parent;
-            networkTransform.parentInternal = templateObject.GetComponent<RectTransform>().parentInternal;
+            networkTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             networkButton.Y = 9;
-            networkButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            networkButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[9] = networkButton;
 
             networkTransform.anchoredPosition = new Vector2(-5, -38);
@@ -185,14 +187,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             networkButton.OnClick.AddListener(networkChange);
             networkObject.SetActive(true);
             
-            var settingObject = Object.Instantiate(templateObject);
+            var settingObject = Object.Instantiate(templateButtonObject);
             RectTransform settingTransform =  settingObject.GetComponent<RectTransform>();
             MainMenuButton settingButton = settingObject.GetComponent<MainMenuButton>();
 
             settingTransform.parent = parent;
-            settingTransform.parentInternal = templateObject.GetComponent<RectTransform>().parentInternal;
+            settingTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             settingButton.Y = 10;
-            settingButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            settingButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[10] = settingButton;
 
             settingTransform.anchoredPosition = new Vector2(-5, -152);
@@ -205,14 +207,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             settingButton.OnClick.AddListener(settingChange);
             settingObject.SetActive(true);
             
-            var backObject = Object.Instantiate(templateObject);
+            var backObject = Object.Instantiate(templateButtonObject);
             RectTransform backTransform =  backObject.GetComponent<RectTransform>();
             MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
 
             backTransform.parent = parent;
-            backTransform.parentInternal = templateObject.GetComponent<RectTransform>().parentInternal;
+            backTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 11;
-            backButton.OnMouseHover = templateObject.GetComponent<MainMenuButton>().OnMouseHover;
+            backButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[11] = backButton;
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
