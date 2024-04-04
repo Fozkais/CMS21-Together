@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using CMS21MP.ClientSide.Data;
 using CMS21MP.CustomData;
@@ -36,12 +37,16 @@ namespace CMS21MP.ServerSide.DataHandle
                 }
 
             }
+        
             
             public static void keepAlive(int _fromclient, Packet _packet)
             {
                 ServerSend.keepAlive(_fromclient);
                 Server.clients[_fromclient].Alive = true;
-               // MelonLogger.Msg($"Client:[{_fromclient}] is Alive!");
+                ServerSend.SendKeepAliveConfirmation(_fromclient);
+
+                // Mettre à jour la dernière activité du client
+                Server.lastClientActivity[_fromclient] = DateTime.Now;
             }
             
             public static void Disconnect(int _fromClient, Packet _packet)

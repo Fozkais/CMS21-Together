@@ -206,6 +206,14 @@ namespace CMS21MP.ServerSide.DataHandle
                     SendTCPDataToAll(fromClient, _packet);
                 }
             }
+            
+            public static void SendKeepAliveConfirmation(int toClient)
+            {
+                using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
+                {
+                    SendTCPData(toClient, packet);
+                }
+            }
 
         #endregion
 

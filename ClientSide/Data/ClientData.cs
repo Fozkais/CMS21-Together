@@ -63,35 +63,23 @@ namespace CMS21MP.ClientSide.Data
             if (!Client.Instance.isConnected)
                 yield break;
 
-
             if (isServerAlive)
             {
-               // MelonLogger.Msg("Server is Alive!");
-                yield return new WaitForSeconds(5);
+                yield return new WaitForSeconds(30);
                 isServerAlive = false;
             }
             else
             {
-                yield return new WaitForSeconds(8);
+                yield return new WaitForSeconds(35);
                 if (!isServerAlive)
                 {
+            
                     if (!Client.Instance.isConnected)
                     {
-                        if(SceneChecker.isNotInMenu())
+                        if (SceneChecker.isNotInMenu())
                             NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                         Client.Instance.Disconnect();
-
-
                     }
-                    else
-                    {
-                        MelonLogger.Msg($"CL: Server no longer alive! Disconnecting...");
-                        if(SceneChecker.isNotInMenu())
-                            NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
-                        Client.Instance.Disconnect();
-
-                    }
-                    
                 }
             }
         }

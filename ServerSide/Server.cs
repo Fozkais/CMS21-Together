@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using MelonLoader;
@@ -19,7 +20,7 @@ namespace CMS21MP.ServerSide
         public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
 
         public delegate void packetHandler(int _fromClient, Packet _packet);
-
+        public static Dictionary<int, DateTime> lastClientActivity = new Dictionary<int, DateTime>();
         public static Dictionary<int, packetHandler> packetHandlers;
 
         public static TcpListener tcpListener;
@@ -50,10 +51,33 @@ namespace CMS21MP.ServerSide
             Client.Instance.ConnectToServer("127.0.0.1");
         }
 
-        public static void StartSteamServer()
+        public static void CheckForInactiveClients()
         {
-            InitializeServerData();
-            MainMod.isServer = true;
+            // Délai maximum d'inactivité (en secondes)
+            int maxInactivityDelay = 60;
+
+            foreach (KeyValuePair<int, DateTime> entry in lastClientActivity)
+            {
+                int clientId = entry.Key;
+                DateTime lastActivity = entry.Value;
+
+                if ((DateTime.Now - lastActivity).TotalSeconds > maxInactivityDelay)
+                {
+                    // Le client est inactif depuis trop longtemps, le déconnecter
+                    ServerSend.DisconnectClient(clientId, "Client Inactive for too long...");
+                    clients.Remove(clientId);
+                    lastClientActivity.Remove(clientId);
+                }
+            }
+        }
+        
+        public static IEnumerator CheckForInactiveClientsRoutine()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(10); // Vérifier toutes les 10 secondes
+                CheckForInactiveClients();
+            }
         }
 
         public static void Stop()

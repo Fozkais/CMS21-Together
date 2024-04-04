@@ -793,6 +793,7 @@ namespace CMS21MP.ClientSide.Data
                 {
                     MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
                     originalPart.ShowBySaveGame();
+                    originalPart.SetCondition(updatedPart.condition);
                     originalPart.ShowMountAnimation();
                     originalPart.FastMount();
                 }
@@ -816,6 +817,7 @@ namespace CMS21MP.ClientSide.Data
                 if (originalPart.IsUnmounted == false)
                 {
                     MelonCoroutines.Start(HarmonyPatches.ResetCursorBlockCoroutine());
+                    originalPart.SetCondition(updatedPart.condition);
                     originalPart.HideBySavegame(false, GameData.carLoaders[carLoaderId]);
                 }
             }
@@ -889,6 +891,8 @@ namespace CMS21MP.ClientSide.Data
 
             if(updatedPart.isTinted)
                 PaintHelper.SetWindowProperties(originalPart.handle, (int)(updatedPart.TintColor.a * 255), tintColor);
+            
+            GameData.carLoaders[carLoaderId].SetCondition(originalPart, updatedPart.condition);
         }
            
         

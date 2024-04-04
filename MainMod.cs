@@ -18,7 +18,7 @@ namespace CMS21MP
       public const int MAX_SAVE_COUNT = 16;
       public const int MAX_PLAYER = 4;
       public const int PORT = 7777;
-      public const string ASSEMBLY_MOD_VERSION = "0.2.8";
+      public const string ASSEMBLY_MOD_VERSION = "0.2.9";
       public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
       public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
       
@@ -121,6 +121,7 @@ namespace CMS21MP
                {
                   MelonCoroutines.Start(ClientData.keepClientAlive());
                   MelonCoroutines.Start(ClientData.isServer_alive());
+                  MelonCoroutines.Start(Server.CheckForInactiveClientsRoutine());
                }
             }
          }
