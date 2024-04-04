@@ -7,16 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="Fix ghost part">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CMS21MP/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/Car.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/Car.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Data/ClientData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CustomData/PacketTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CustomData/PacketTypes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MainMod.cs" beforeDir="false" afterPath="$PROJECT_DIR$/MainMod.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerHandle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ServerSide/Server.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ServerSide/Server.cs" afterDir="false" />
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed">
+      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,18 +40,12 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/cc/d3525dfa/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/da/ed175c5a/TireChangerLogic.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/822ccf11fa5d4520b97256606adca28490bc00/3c/a432951f/SteamSave.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/Rider Project/CMS21-Together/ClientSide/Data/ClientData.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/brand/Desktop/CMS21-Together-MainMod/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://F:/Rider Project/CMS21-Together/ServerSide/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://F:/Rider Project/CMS21-Together/ServerSide/Transport/ServerTCP.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -438,14 +424,6 @@
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
     </task>
-    <task id="LOCAL-00032" summary="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart">
-      <option name="closed" value="true" />
-      <created>1698147175831</created>
-      <option name="number" value="00032" />
-      <option name="presentableId" value="LOCAL-00032" />
-      <option name="project" value="LOCAL" />
-      <updated>1698147175831</updated>
-    </task>
     <task id="LOCAL-00033" summary="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync">
       <option name="closed" value="true" />
       <created>1698149031335</created>
@@ -630,7 +608,15 @@
       <option name="project" value="LOCAL" />
       <updated>1700682679799</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed">
+      <option name="closed" value="true" />
+      <created>1712255743042</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1712255743043</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -674,7 +660,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0_Lifter_0" />
     <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
     <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
     <MESSAGE value="B-2_0-CarSync-0" />
@@ -699,7 +684,8 @@
     <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
     <MESSAGE value="UpdatePart/UpdateBodyPart Rewrite" />
     <MESSAGE value="Fix ghost part" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix ghost part" />
+    <MESSAGE value="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed" />
+    <option name="LAST_COMMIT_MESSAGE" value="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
