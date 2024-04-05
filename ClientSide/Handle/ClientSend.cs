@@ -179,6 +179,16 @@ namespace CMS21Together.ClientSide.Handle
                     SendTCPData(_packet);
                 }
             }
+            
+            public static void SendEngineAngle(float newAngle)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
+                {
+                    _packet.Write(newAngle);
+                        
+                    SendTCPData(_packet);
+                }
+            }
                 
         #endregion
 
@@ -248,6 +258,6 @@ namespace CMS21Together.ClientSide.Handle
             }
 
         #endregion
-
+        
     }
 }

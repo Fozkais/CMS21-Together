@@ -261,7 +261,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     var lifter = GameData.Instance.carLoaders[carLoaderID-1].lifter;
                     MelonLogger.Msg("Passed Lifter.");
-                    MelonCoroutines.Start(ModLifterLogic.ResetLifterListen());
+                    ModLifterLogic.listenToLifter = false;
                     if((int)state > (int)lifter.currentState)
                         lifter.Action((0));
                     else
@@ -269,6 +269,7 @@ namespace CMS21Together.ClientSide.Handle
                         lifter.Action((1));
                     }
                     ClientData.LoadedCars[carLoaderID-1].CarLifterState = (int)state;
+                    ModLifterLogic.listenToLifter = true;
                 }
 
                 
@@ -284,12 +285,12 @@ namespace CMS21Together.ClientSide.Handle
 
                 if (!resetAction)
                 {
-                    MelonCoroutines.Start(ModTireChangerLogic.ResetTCListen());
                     
                     MelonLogger.Msg("CL: Received New Tire Change : " + 
                                     " action: " + connect + " instant: " + instant);
-                    
+                    ModTireChangerLogic.listenToTC = false;
                     GameData.Instance.tireChanger.SetGroupOnTireChanger(_item.ToGame(_item), instant, connect);
+                    ModTireChangerLogic.listenToTC = true;
                 }
                 else
                 {
@@ -320,6 +321,17 @@ namespace CMS21Together.ClientSide.Handle
                         // ReSharper disable once PossibleNullReferenceException
                         GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(_item.ToGame(_item), true);
                 }
+                
+                _packet.Dispose();
+            }   
+            
+            public static void EngineStandAngle(Packet _packet)
+            {
+                int angle = _packet.ReadInt();
+                
+                ModEngineStandLogic.listenToEngineStandLogic = false;
+                GameData.Instance.engineStand.SetEngineStandAngle(angle);
+                ModEngineStandLogic.listenToEngineStandLogic = true;
                 
                 _packet.Dispose();
             }   

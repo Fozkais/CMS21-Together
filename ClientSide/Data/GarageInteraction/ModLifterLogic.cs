@@ -33,13 +33,6 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             MelonLogger.Msg("Sending lifter info!");
         }
 
-        public static IEnumerator ResetLifterListen()
-        {
-            listenToLifter = false;
-            yield return new WaitForSeconds(0.1f);
-            listenToLifter = true;
-        }
-
 
         public static ModLifterState GetStateFromValue(int value)
         {

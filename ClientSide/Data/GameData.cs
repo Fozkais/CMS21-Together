@@ -18,6 +18,7 @@ namespace CMS21Together.ClientSide.Data
         public TireChangerLogic tireChanger;
         public WheelBalancerLogic wheelBalancer;
         public CarWashLogic carWash;
+        public EngineStandLogic engineStand;
         public CarLoader[] carLoaders;
         public Inventory localInventory;
         
@@ -32,6 +33,7 @@ namespace CMS21Together.ClientSide.Data
                 tireChanger = Object.FindObjectOfType<TireChangerLogic>();
                 wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
                 carWash = Object.FindObjectOfType<CarWashLogic>();
+                engineStand = Object.FindObjectOfType<EngineStandLogic>();
             
                 carLoaders = new[]
                 {

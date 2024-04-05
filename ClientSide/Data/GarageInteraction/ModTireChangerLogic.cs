@@ -12,7 +12,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
     [HarmonyPatch]
     public static class ModTireChangerLogic
     {
-        private static bool listenToTC = true;
+        public static bool listenToTC = true;
         
         [HarmonyPatch(typeof(TireChangerLogic), "SetGroupOnTireChanger", new Type[]{ typeof(GroupItem), typeof(bool), typeof(bool)})]
         [HarmonyPostfix]
@@ -26,12 +26,6 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
                 ClientSend.TireChanger(new ModGroupItem(groupItem), instant, connect);
 
             }
-        }
-        public static IEnumerator ResetTCListen()
-        {
-            listenToTC = false;
-            yield return new WaitForSeconds(0.10f);
-            listenToTC = true;
         }
 
         [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_61")]

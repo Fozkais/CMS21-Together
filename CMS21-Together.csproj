@@ -49,6 +49,7 @@
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModCarWashLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModEngineStandLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModLifterLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModTireChangerLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />

@@ -29,7 +29,6 @@ namespace CMS21Together.Shared
             carParts,
             bodyPart,
             bodyParts,
-            carList,
             
             inventoryItem,
             inventoryGroupItem,
@@ -37,7 +36,7 @@ namespace CMS21Together.Shared
             lifter,
             tireChanger,
             wheelBalancer,
-            carWash
+            engineStandAngle
             
         #endregion
 

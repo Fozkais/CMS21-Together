@@ -302,6 +302,16 @@ namespace CMS21Together.ServerSide.Handle
                 }
             }
             
+            public static void SendEngineAngle(int fromClient, int newAngle)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
+                {
+                    _packet.Write(newAngle);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
         #endregion
 
         #region CarData

@@ -101,6 +101,7 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.lifter, ClientHandle.Lifter},
                 { (int)PacketTypes.tireChanger, ClientHandle.TireChange},
                 { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer},
+                { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
                 
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},

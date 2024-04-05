@@ -233,6 +233,13 @@ namespace CMS21Together.ServerSide.Handle
                 ServerSend.WheelBalancer(_fromClient, aType);
             }
             
+            public static void EngineStandAngle(int _fromClient, Packet _packet)
+            {
+                int newAngle = _packet.ReadInt();
+
+                ServerSend.SendEngineAngle(_fromClient, newAngle);
+            }
+            
 
         #endregion
 

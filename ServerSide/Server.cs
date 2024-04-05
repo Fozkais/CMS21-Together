@@ -183,6 +183,7 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.lifter, ServerHandle.Lifter},
                 {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
                 {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
+                {(int)PacketTypes.engineStandAngle, ServerHandle.EngineStandAngle},
                 
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
