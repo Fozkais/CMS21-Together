@@ -4,6 +4,7 @@ namespace CMS21Together.Shared.Data
     {
         engine,
         suspension,
-        other
+        other,
+        driveshaft
     }
 }

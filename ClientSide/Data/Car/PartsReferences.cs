@@ -21,11 +21,13 @@ namespace CMS21Together.ClientSide.Data.Car
             {
                 IEnumerator getOtherPartsCoroutine = GetOtherPartsReferences(car);
                 IEnumerator getEnginePartsCoroutine = GetEnginePartsReferences(car);
+                IEnumerator getDriveshaftPartsCoroutine = GetDriveshaftPartsReferences(car);
                 IEnumerator getSuspensionPartsCoroutine = GetSuspensionPartsReferences(car);
                 IEnumerator getBodyPartsCoroutine = GetBodyPartsReferences(car);
 
                 yield return getOtherPartsCoroutine;
                 yield return getEnginePartsCoroutine;
+                yield return getDriveshaftPartsCoroutine;
                 yield return getSuspensionPartsCoroutine;
                 yield return getBodyPartsCoroutine;
 
@@ -75,6 +77,22 @@ namespace CMS21Together.ClientSide.Data.Car
             {
                 if(!reference.ContainsKey(i))
                     reference.Add(i, engineParts[i]);
+            }
+        }
+        
+        private static IEnumerator GetDriveshaftPartsReferences(ModCar car)
+        {
+            yield return new WaitForEndOfFrame();
+            
+            var driveshaft =GameData.Instance.carLoaders[car.carLoaderID].ds_h;
+            var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
+
+            var reference = car.partInfo.EnginePartsReferences;
+
+            for (int i = 0; i < driveshaftParts.Count; i++) 
+            {
+                if(!reference.ContainsKey(i))
+                    reference.Add(i, driveshaftParts[i]);
             }
         }
         private static IEnumerator GetSuspensionPartsReferences(ModCar car)

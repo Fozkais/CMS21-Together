@@ -19,11 +19,13 @@ namespace CMS21Together.ClientSide.Data.Car
             {
                 List<ModPartScript> otherPartsBuffer = null;
                 List<ModPartScript> enginePartsBuffer = null;
+                List<ModPartScript> driveshaftPartsBuffer = null;
                 List<ModPartScript> suspensionPartsBuffer = null;
                 List<ModCarPart> bodyPartsBuffer = null;
                 
                 object handleOtherPartsCoroutine;
                 object handleEnginePartsCoroutine;
+                object handleDriveshaftPartsCoroutine;
                 object handleSuspensionpartsCoroutine;
                 object handleBodyPartsCoroutine;
                 
@@ -31,11 +33,13 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     otherPartsBuffer = new List<ModPartScript>();
                     enginePartsBuffer = new List<ModPartScript>();
+                    driveshaftPartsBuffer = new List<ModPartScript>();
                     suspensionPartsBuffer = new List<ModPartScript>();
                     bodyPartsBuffer = new List<ModCarPart>();
                     
                     handleOtherPartsCoroutine = MelonCoroutines.Start(HandleOtherPartsCoroutine(car,otherPartsBuffer));
                     handleEnginePartsCoroutine = MelonCoroutines.Start(HandleEnginePartsCoroutine(car, enginePartsBuffer));
+                    handleDriveshaftPartsCoroutine = MelonCoroutines.Start(HandleDriveshaftPartsCoroutine(car, driveshaftPartsBuffer));
                     handleSuspensionpartsCoroutine = MelonCoroutines.Start(HandleSuspensionpartsCoroutine(car, suspensionPartsBuffer));
                     handleBodyPartsCoroutine = MelonCoroutines.Start(HandleBodyPartsCoroutine(car, bodyPartsBuffer));
                 }
@@ -43,6 +47,7 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     handleOtherPartsCoroutine = MelonCoroutines.Start(HandleOtherPartsCoroutine(car));
                     handleEnginePartsCoroutine = MelonCoroutines.Start(HandleEnginePartsCoroutine(car));
+                    handleDriveshaftPartsCoroutine = MelonCoroutines.Start(HandleDriveshaftPartsCoroutine(car));
                     handleSuspensionpartsCoroutine = MelonCoroutines.Start(HandleSuspensionpartsCoroutine(car));
                     handleBodyPartsCoroutine = MelonCoroutines.Start(HandleBodyPartsCoroutine(car));
                 }
@@ -50,6 +55,7 @@ namespace CMS21Together.ClientSide.Data.Car
 
                 yield return handleOtherPartsCoroutine;
                 yield return handleEnginePartsCoroutine;
+                yield return handleDriveshaftPartsCoroutine;
                 yield return handleSuspensionpartsCoroutine;
                 yield return handleBodyPartsCoroutine;
 
@@ -62,6 +68,7 @@ namespace CMS21Together.ClientSide.Data.Car
                     {
                         ClientSend.SendPartsScript(otherPartsBuffer, car.carLoaderID);
                         ClientSend.SendPartsScript(enginePartsBuffer, car.carLoaderID);
+                        ClientSend.SendPartsScript(driveshaftPartsBuffer, car.carLoaderID);
                         ClientSend.SendPartsScript(suspensionPartsBuffer, car.carLoaderID);
                         ClientSend.SendBodyParts(bodyPartsBuffer, car.carLoaderID);
                     }
@@ -73,6 +80,35 @@ namespace CMS21Together.ClientSide.Data.Car
                         car.isFromServer = false;
                     }
                     MelonLogger.Msg($"{car.carID} is handled !");
+                }
+            }
+        }
+
+        private static IEnumerator HandleDriveshaftPartsCoroutine(ModCar car, List<ModPartScript> buffer=null)
+        {
+            yield return new WaitForEndOfFrame();
+            
+            var references = car.partInfo.DriveshaftPartsReferences;
+            var handle = car.partInfo.DriveshaftParts;
+
+            for (int i = 0; i < references.Count; i++)
+            {
+                if (!car.isHandled)
+                {
+                    ModPartScript newPart = new ModPartScript(references[i], i, -1, ModPartType.driveshaft);
+                        
+                    if(!handle.ContainsKey(i))
+                        handle.Add(i, newPart);
+                    if (!car.isFromServer)
+                        buffer.Add(newPart);
+                }
+                else
+                {
+                    if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
+                    {
+                        //MelonLogger.Msg("Differences Found!");
+                        ClientSend.SendCarPart(car.carLoaderID, handle[i]);
+                    }
                 }
             }
         }

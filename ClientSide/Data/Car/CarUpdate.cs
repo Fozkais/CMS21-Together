@@ -51,6 +51,7 @@ namespace CMS21Together.ClientSide.Data.Car
                     count += 1;
                     yield return new WaitForSeconds(0.1f);
                 }
+                
                 int _count = 0;
                 while (!(car.receivedOtherParts && car.receivedEngineParts && car.receivedSuspensionParts) && _count < 20)
                 {
@@ -78,6 +79,10 @@ namespace CMS21Together.ClientSide.Data.Car
                     reference = car.partInfo.EnginePartsReferences[part.partID];
                     car.partInfo.EngineParts[part.partID] = part;
                     break;
+                case ModPartType.driveshaft:
+                    reference = car.partInfo.DriveshaftPartsReferences[part.partID];
+                    car.partInfo.DriveshaftParts[part.partID] = part;
+                    break;
                 case ModPartType.suspension:
                     reference = car.partInfo.SuspensionPartsReferences[part.partID][part.partIdNumber];
                     car.partInfo.SuspensionParts[part.partID][part.partIdNumber] = part;
@@ -92,8 +97,6 @@ namespace CMS21Together.ClientSide.Data.Car
 
         private static void UpdatePart(int carLoaderID, ModPartScript part, PartScript reference)
         {
-            
-            
             if( part == null || reference == null) { MelonLogger.Msg("Invalid part!"); return;}
             
             MelonLogger.Msg("Updating Part.");

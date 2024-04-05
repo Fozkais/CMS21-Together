@@ -380,7 +380,7 @@ namespace CMS21Together.ClientSide.Handle
                 List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
                 int carLoaderID = _packet.ReadInt();
                 
-                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
 
                 foreach (ModPartScript part in carParts)
                 {
@@ -397,6 +397,9 @@ namespace CMS21Together.ClientSide.Handle
                         break;
                     case ModPartType.suspension:
                         car.receivedSuspensionParts = true;
+                        break;
+                    case ModPartType.driveshaft:
+                        car.receivedDriveshaftParts = true;
                         break;
                 }
 

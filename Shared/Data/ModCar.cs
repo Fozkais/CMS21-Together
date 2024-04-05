@@ -24,6 +24,7 @@ namespace CMS21Together.Shared.Data
         public bool isFromServer;
         public bool receivedOtherParts = true;
         public bool receivedEngineParts = true;
+        public bool receivedDriveshaftParts = true;
         public bool receivedSuspensionParts = true;
         public bool receivedBodyParts = true;
         
@@ -55,6 +56,7 @@ namespace CMS21Together.Shared.Data
             this.isReferenced = false;
             this.receivedOtherParts = false;
             this.receivedEngineParts = false;
+            this.receivedDriveshaftParts = false;
             this.receivedSuspensionParts = false;
             this.receivedBodyParts = false;
         }
@@ -66,11 +68,13 @@ namespace CMS21Together.Shared.Data
         public Dictionary<int, List<ModPartScript>> OtherParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, List<ModPartScript>> SuspensionParts = new Dictionary<int, List<ModPartScript>>();
         public Dictionary<int, ModPartScript> EngineParts = new Dictionary<int, ModPartScript>();
+        public Dictionary<int, ModPartScript> DriveshaftParts = new Dictionary<int, ModPartScript>();
         public Dictionary<int, ModCarPart> BodyParts = new Dictionary<int, ModCarPart>();
         
         public Dictionary<int, List<PartScript>> OtherPartsReferences = new Dictionary<int, List<PartScript>>();
         public Dictionary<int, List<PartScript>> SuspensionPartsReferences  = new Dictionary<int, List<PartScript>>();
         public Dictionary<int, PartScript> EnginePartsReferences  = new Dictionary<int, PartScript>();
+        public Dictionary<int, PartScript> DriveshaftPartsReferences  = new Dictionary<int, PartScript>();
         public Dictionary<int, CarPart> BodyPartsReferences  = new Dictionary<int, CarPart>();
         
     }
