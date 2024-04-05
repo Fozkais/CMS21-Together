@@ -79,7 +79,10 @@ namespace CMS21Together
                         if (ModSceneManager.isInGarage(player.Value))
                         {
                             MelonLogger.Msg($"Player: {player.Value.username} in garage, Spawning...");
-                            ClientData.SpawnPlayer(player.Value);
+                            if (!ClientData.PlayersGameObjects.ContainsKey(player.Value.id))
+                            {
+                                ClientData.SpawnPlayer(player.Value);
+                            }
                         }
                     }
                 }

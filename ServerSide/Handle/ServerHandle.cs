@@ -17,7 +17,6 @@ namespace CMS21Together.ServerSide.Handle
             {
             }
             
-            [Obfuscation]
             public static void WelcomeReceived(int _fromClient, Packet _packet)
             {
                 int _clientIdCheck = _packet.ReadInt();

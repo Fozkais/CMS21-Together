@@ -70,47 +70,42 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             Transform textParent = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parent;
             
             
-            float startYPosition = 100f; // Vous pouvez ajuster cette valeur selon votre interface
-            float rowHeight = 60f; // Vous pouvez ajuster cette valeur selon votre interface
+            float startYPosition = 100f;
+            float rowHeight = 60f; 
             
             Color backgroundColor = new Color(0.3f, 0.3f, 0.3f, 0.4f);
             
             GameObject backgroundPanel2Object = new GameObject("BackgroundPanel");
             RectTransform backgroundPanel2Transform = backgroundPanel2Object.AddComponent<RectTransform>();
             Image backgroundPanel2Image = backgroundPanel2Object.AddComponent<Image>();
-
-            // Définir le parent du panneau rectangulaire
+            
             backgroundPanel2Transform.parent = textParent;
                 
-            backgroundPanel2Transform.anchoredPosition = new Vector2(385, 150); // Position en Y en fonction de l'index
-            backgroundPanel2Transform.localScale = new Vector3(3.4f,0.4f,1); // Échelle par défaut
+            backgroundPanel2Transform.anchoredPosition = new Vector2(385, 150); 
+            backgroundPanel2Transform.localScale = new Vector3(3.4f,0.4f,1); 
                 
             backgroundPanel2Image.color = backgroundColor;
             
-            var textObject = Object.Instantiate(CustomMainMenu.templateTextObject); // Assurez-vous que textTemplate soit un GameObject contenant un composant Text
+            var textObject = Object.Instantiate(CustomMainMenu.templateTextObject); 
             RectTransform textTransform = textObject.GetComponent<RectTransform>();
             Text textComponent = textObject.GetComponent<Text>();
-
-// Définir le parent de l'objet texte
-            textTransform.parent = textParent; // 'parent' est le parent souhaité pour le texte
-
-// Définir la position et la taille du texte
-            textTransform.anchoredPosition = new Vector2(430, 150); // Définir les coordonnées x et y souhaitées
-            textTransform.sizeDelta = new Vector2(288, 55); // Définir la largeur et la hauteur souhaitées
-
-// Définir le contenu du texte
-            textComponent.text = "Usernames :"; // Modifier "Votre texte ici" selon le texte souhaité
-// Activer l'objet texte
+            
+            textTransform.parent = textParent; 
+            
+            textTransform.anchoredPosition = new Vector2(430, 150); 
+            textTransform.sizeDelta = new Vector2(288, 55); 
+            
+            textComponent.text = "Usernames :"; 
             textObject.SetActive(true);
             
-            var text2Object = Object.Instantiate(CustomMainMenu.templateTextObject); // Assurez-vous que textTemplate soit un GameObject contenant un composant Text
+            var text2Object = Object.Instantiate(CustomMainMenu.templateTextObject); 
             RectTransform text2Transform = text2Object.GetComponent<RectTransform>();
             Text text2Component = text2Object.GetComponent<Text>();
             
-            text2Transform.parent = textParent; // 'parent' est le parent souhaité pour le texte
+            text2Transform.parent = textParent;
             
-            text2Transform.anchoredPosition = new Vector2(550, 150); // Définir les coordonnées x et y souhaitées
-            text2Transform.sizeDelta = new Vector2(288, 55); // Définir la largeur et la hauteur souhaitées
+            text2Transform.anchoredPosition = new Vector2(550, 150); 
+            text2Transform.sizeDelta = new Vector2(288, 55);
             
             text2Component.text = "Ready State :"; 
             text2Object.SetActive(true);
@@ -118,16 +113,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             
             for (int i = 0; i < 4; i++)
             {
-                // Création du panneau rectangulaire pour le fond gris semi-transparent
                 GameObject backgroundPanelObject = new GameObject("BackgroundPanel");
                 RectTransform backgroundPanelTransform = backgroundPanelObject.AddComponent<RectTransform>();
                 Image backgroundPanelImage = backgroundPanelObject.AddComponent<Image>();
-
-                // Définir le parent du panneau rectangulaire
+                
                 backgroundPanelTransform.parent = textParent;
                 
-                backgroundPanelTransform.anchoredPosition = new Vector2(385, startYPosition - (i * rowHeight)); // Position en Y en fonction de l'index
-                backgroundPanelTransform.localScale = new Vector3(3.4f,0.6f,1); // Échelle par défaut
+                backgroundPanelTransform.anchoredPosition = new Vector2(385, startYPosition - (i * rowHeight)); 
+                backgroundPanelTransform.localScale = new Vector3(3.4f,0.6f,1); 
                 
                 backgroundPanelImage.color = backgroundColor;
                 
@@ -141,7 +134,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 pseudoTextTransform.parent = textParent;
                 
                 pseudoTextTransform.anchoredPosition = new Vector2(358, startYPosition - (i * rowHeight));
-                pseudoTextTransform.sizeDelta = new Vector2(100, 30); // Ajustez la taille en conséquence
+                pseudoTextTransform.sizeDelta = new Vector2(100, 30); 
 
                 pseudoTextComponent.text = "player.username"; 
 
@@ -156,35 +149,27 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 readyTextTransform.parent = textParent;
                 
                 readyTextTransform.anchoredPosition = new Vector2(500, startYPosition - (i * rowHeight));
-                readyTextTransform.sizeDelta = new Vector2(100, 30); // Ajustez la taille en conséquence
+                readyTextTransform.sizeDelta = new Vector2(100, 30); 
                 
-                readyTextComponent.text = false ? "Ready" : "Not Ready"; // Supposons que chaque PlayerData a une propriété 'ready' indiquant l'état de disponibilité
+                readyTextComponent.text = false ? "Ready" : "Not Ready"; 
                 readyTextObject.SetActive(true);
                 
                 readyText.Add(readyTextObject);
 
                 // Création du bouton pour "Kick"
-                GameObject kickButtonObject = Object.Instantiate(template); // Supposons que CustomMainMenu.templateButtonObject soit un bouton préfabriqué
+                GameObject kickButtonObject = Object.Instantiate(template); 
                 RectTransform kickButtonTransform = kickButtonObject.GetComponent<RectTransform>();
                 MainMenuButton kickButtonComponent = kickButtonObject.GetComponent<MainMenuButton>();
                 
                 kickButtonTransform.parent = textParent;
                 
                 kickButtonTransform.anchoredPosition = new Vector2(510, startYPosition - (i * rowHeight));
-                kickButtonTransform.sizeDelta = new Vector2(80, 30); // Ajustez la taille en conséquence
+                kickButtonTransform.sizeDelta = new Vector2(80, 30);
                 
-                kickButtonComponent.GetComponentInChildren<Text>().text = "Kick"; // Vous pouvez ajuster le texte du bouton selon vos besoins
-                /*Action  kickAction = delegate 
-                {
-                    ServerSend.DisconnectClient(player.id, "You've been kicked from server!");
-                    Server.clients[player.id].Disconnect(player.id);
-                };
-                kickButtonComponent.OnClick.AddListener(kickAction);*/
+                kickButtonComponent.GetComponentInChildren<Text>().text = "Kick"; 
                 kickButtonObject.SetActive(true);
-                
                 kickButtons.Add(kickButtonObject);
-
-                // Ajoutez ici le gestionnaire d'événements pour le bouton "Kick" si nécessaire
+                
             }
 
             

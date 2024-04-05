@@ -1,3 +1,4 @@
+using System.Linq;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
@@ -25,23 +26,23 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void UpdateLobby()
         {
-            if(!InLobbyWindow) return;
-            
-            for (int i = 0; i < CustomLobbyMenu.backgrounds.Count; i++)
+            if (!InLobbyWindow) return;
+
+            for (int i = 0; i < 4; i++)
             {
-                int correctIndex;
-                if (i == 0) correctIndex = 1;
-                else correctIndex = i - 1;
-                if (ClientData.players.TryGetValue(correctIndex, out var player))
+                if (ClientData.players.TryGetValue(i + 1, out var player))
                 {
-                    if (!CustomLobbyMenu.backgrounds[i].active)
+                    if (CustomLobbyMenu.usernameText.All(s => s.GetComponent<Text>().text != player.username))
                     {
-                        CustomLobbyMenu.backgrounds[i].SetActive(true);
-                        CustomLobbyMenu.usernameText[i].SetActive(true);
-                        CustomLobbyMenu.usernameText[i].GetComponent<Text>().text = player.username;
-                        CustomLobbyMenu.readyText[i].SetActive(true);
-                        CustomLobbyMenu.kickButtons[i].SetActive(true);
-                        
+                        if (!CustomLobbyMenu.backgrounds[i].active)
+                        {
+                            CustomLobbyMenu.backgrounds[i].SetActive(true);
+                            CustomLobbyMenu.usernameText[i].SetActive(true);
+                            CustomLobbyMenu.usernameText[i].GetComponent<Text>().text = player.username;
+                            CustomLobbyMenu.readyText[i].SetActive(true);
+                            CustomLobbyMenu.kickButtons[i].SetActive(true);
+
+                        }
                     }
                     else
                     {
@@ -49,18 +50,18 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                             CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Ready";
                         else
                             CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Not Ready";
-                        
+
                     }
                 }
                 else
                 {
-                    if(CustomLobbyMenu.backgrounds[i].active)
+                    if (CustomLobbyMenu.backgrounds[i].active)
                         CustomLobbyMenu.backgrounds[i].SetActive(false);
-                    if(CustomLobbyMenu.usernameText[i].active)
+                    if (CustomLobbyMenu.usernameText[i].active)
                         CustomLobbyMenu.usernameText[i].SetActive(false);
-                    if(CustomLobbyMenu.readyText[i].active)
+                    if (CustomLobbyMenu.readyText[i].active)
                         CustomLobbyMenu.readyText[i].SetActive(false);
-                    if(CustomLobbyMenu.kickButtons[i].active)
+                    if (CustomLobbyMenu.kickButtons[i].active)
                         CustomLobbyMenu.kickButtons[i].SetActive(false);
                 }
             }

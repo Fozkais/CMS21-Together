@@ -175,8 +175,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
     <EmbeddedResource Include="Assets\peoples.png" />
-    <EmbeddedResource Include="Assets\player.assets" />
     <EmbeddedResource Include="Assets\lobbyBorder.png" />
+    <EmbeddedResource Include="Assets\player.assets" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />

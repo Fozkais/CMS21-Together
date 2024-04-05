@@ -54,8 +54,7 @@ namespace CMS21Together.ClientSide.Data
             Stats.HandleScrap();
             
             ModInventory.UpdateInventory();
-
-            foreach (var player in PlayersGameObjects)
+            foreach (var player in ClientData.PlayersGameObjects)
             {
                 if (player.Value != null && player.Key != Client.Instance.Id)
                 {
@@ -124,9 +123,13 @@ namespace CMS21Together.ClientSide.Data
                 }
                 else
                 {
-                    playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
-                    playerObject.transform.name = player.username;
-
+                    if (!ClientData.PlayersGameObjects.ContainsKey(player.id))
+                    {
+                        playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
+                        playerObject.transform.name = player.username;
+                        PlayersGameObjects[player.id] = playerObject;
+                    }
+                    return;
                 }
                 MelonLogger.Msg($"{player.username} is In-game");
                 PlayersGameObjects[player.id] = playerObject;
@@ -167,10 +170,10 @@ namespace CMS21Together.ClientSide.Data
                 Nplayer.GetComponentInChildren<SkinnedMeshRenderer>().material = material;
                 
                 Nplayer.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
-                Nplayer.transform.position = new Vector3(0, 0, 0);
+                Nplayer.transform.position = new Vector3(0, -10, 0);
                 Nplayer.transform.rotation = new Quaternion(0, 180, 0, 0);
                     
-                playerPrefab = Nplayer;
+                playerPrefab = Nplayer; 
                     
                 Object.DontDestroyOnLoad(playerPrefab);
                     

@@ -7,6 +7,7 @@ using HarmonyLib;
 using Il2CppCMS.MainMenu;
 using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.MainMenu.Sections;
+using Il2CppCMS.MainMenu.Windows;
 using Il2CppCMS.UI.Logic;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -36,10 +37,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomHostMenu.isSet = false;
             CustomHostMenu.isSavesSet = false;
             CustomHostMenu.isnewSaveSet = false;
-            
+
 
             GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
-            
+
             templateButtonObject = GameObject.Find("MainMenuButton");
             templateTextObject = templateButtonObject.GetComponentInChildren<Text>().gameObject;
             RectTransform playTransform = templateButtonObject.GetComponent<RectTransform>();
@@ -76,6 +77,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpButton.Y = 6;
             mpButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             section.buttons[6] = mpButton;
+            mpTransform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
             mpTransform.anchoredPosition = new Vector2(95, 58);
             mpTransform.sizeDelta = new Vector2(53, 53);
@@ -88,20 +90,20 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             imageObj.transform.position = new Vector3(0, 0, 0);
             imageObj.transform.localPosition = new Vector3(0, 0, 0);
             imageObj.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f);
-            
+
             mpButton.AssignAction(null);
             mpButton.OnClick = new MainMenuButton.ButtonEvent();
 
             Action openMenu = delegate { MultiplayerMenu(); };
-            
+
             mpButton.OnClick.AddListener(openMenu);
             mpButton.AssignAction(openMenu);
-            
+
             // Fix Singleplayer button
 
             section.buttons[0].OnClick = new MainMenuButton.ButtonEvent();
             Action openSinglePlayer = delegate { OpenSingleplayer(); };
-            
+
             section.buttons[0].OnClick.AddListener(openSinglePlayer);
             section.buttons[0].AssignAction(openSinglePlayer);
 
@@ -125,16 +127,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             for (int i = 0; i < 7; i++)
             {
-                if(section.buttons[i] != null)
+                if (section.buttons[i] != null)
                     section.buttons[i].gameObject.SetActive(false);
             }
-            
+
             var hostObject = Object.Instantiate(templateButtonObject);
-            RectTransform  hostTransform =  hostObject.GetComponent<RectTransform>();
+            RectTransform hostTransform = hostObject.GetComponent<RectTransform>();
             MainMenuButton hostButton = hostObject.GetComponent<MainMenuButton>();
 
             var parent = templateButtonObject.transform.parent;
-            
+
             hostTransform.parent = parent;
             hostTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             hostButton.Y = 7;
@@ -148,9 +150,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             Action hostMenu = delegate { CustomHostMenu.CreateHostMenu(); };
             hostButton.OnClick.AddListener(hostMenu);
             hostObject.SetActive(true);
-            
+
             var joinObject = Object.Instantiate(templateButtonObject);
-            RectTransform  joinTransform =  joinObject.GetComponent<RectTransform>();
+            RectTransform joinTransform = joinObject.GetComponent<RectTransform>();
             MainMenuButton joinButton = joinObject.GetComponent<MainMenuButton>();
 
             joinTransform.parent = parent;
@@ -163,12 +165,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             joinTransform.sizeDelta = new Vector2(288, 55);
             joinButton.GetComponentInChildren<Text>().text = "Join a server";
             joinButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action joinMenu = delegate {  };
+            Action joinMenu = delegate { EnableJoinWindow(false); };
             joinButton.OnClick.AddListener(joinMenu);
             joinObject.SetActive(true);
-            
+
             var networkObject = Object.Instantiate(templateButtonObject);
-            RectTransform networkTransform =  networkObject.GetComponent<RectTransform>();
+            RectTransform networkTransform = networkObject.GetComponent<RectTransform>();
             MainMenuButton networkButton = networkObject.GetComponent<MainMenuButton>();
 
             networkTransform.parent = parent;
@@ -183,12 +185,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             networkButton.OnClick = new MainMenuButton.ButtonEvent();
             networkButton.isDisabled = true;
             networkButton.DoStateTransition(SelectionState.Disabled, true);
-            Action networkChange = delegate {  };
+            Action networkChange = delegate { };
             networkButton.OnClick.AddListener(networkChange);
             networkObject.SetActive(true);
-            
+
             var settingObject = Object.Instantiate(templateButtonObject);
-            RectTransform settingTransform =  settingObject.GetComponent<RectTransform>();
+            RectTransform settingTransform = settingObject.GetComponent<RectTransform>();
             MainMenuButton settingButton = settingObject.GetComponent<MainMenuButton>();
 
             settingTransform.parent = parent;
@@ -203,12 +205,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             settingButton.OnClick = new MainMenuButton.ButtonEvent();
             settingButton.isDisabled = true;
             settingButton.DoStateTransition(SelectionState.Disabled, true);
-            Action settingChange = delegate {  };
+            Action settingChange = delegate { };
             settingButton.OnClick.AddListener(settingChange);
             settingObject.SetActive(true);
-            
+
             var backObject = Object.Instantiate(templateButtonObject);
-            RectTransform backTransform =  backObject.GetComponent<RectTransform>();
+            RectTransform backTransform = backObject.GetComponent<RectTransform>();
             MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
 
             backTransform.parent = parent;
@@ -224,8 +226,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             Action backtoMenu = delegate { EnableMainMenu(); };
             backButton.OnClick.AddListener(backtoMenu);
             backObject.SetActive(true);
-            
-            
+
+
             networkButton.DoStateTransition(SelectionState.Disabled, true);
             settingButton.DoStateTransition(SelectionState.Disabled, true);
 
@@ -238,15 +240,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 if (i > 6 && i < 12)
                 {
-                    if(section.buttons[i] != null)
+                    if (section.buttons[i] != null)
                         section.buttons[i].gameObject.SetActive(true);
                 }
                 else
                 {
-                    if(section.buttons[i] != null)
+                    if (section.buttons[i] != null)
                         section.buttons[i].gameObject.SetActive(false);
                 }
             }
+
             section.buttons[9].isDisabled = true;
             section.buttons[9].DoStateTransition(SelectionState.Disabled, true);
             section.buttons[10].isDisabled = true;
@@ -259,18 +262,187 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 if (i < 7)
                 {
-                    if(section.buttons[i] != null)
+                    if (section.buttons[i] != null)
                         section.buttons[i].gameObject.SetActive(true);
                 }
                 else
                 {
-                    if(section.buttons[i] != null)
+                    if (section.buttons[i] != null)
                         section.buttons[i].gameObject.SetActive(false);
                 }
             }
         }
-        
 
+        private static void EnableJoinWindow(bool phase, string ip = null)
+        {
+            if (CustomMainMenu.section != null)
+            {
+                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                {
+                    if (i > 22 && i <= 25)
+                    {
+                        if (CustomMainMenu.section.buttons[i] != null)
+                        {
+                            CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
+
+                        }
+                    }
+                }
+
+                var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+                var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
+                window.gameObject.SetActive(true);
+
+                if (!phase)
+                {
+                    var textObject = Object.Instantiate(CustomMainMenu.templateTextObject); 
+                    RectTransform textTransform = textObject.GetComponent<RectTransform>();
+                    Text textComponent = textObject.GetComponent<Text>();
+                    
+                    Transform textParent = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parent;
+                    textTransform.parent = textParent; 
+            
+                    textTransform.anchoredPosition = new Vector2(430, 150); 
+                    textTransform.sizeDelta = new Vector2(288, 55); 
+            
+                    textComponent.text = "Ip Adress :"; 
+                    textObject.SetActive(true);
+                    
+
+                    GameObject confirmButtonObject = Object.Instantiate(templateButtonObject); 
+                    RectTransform confirmButtonTransform = confirmButtonObject.GetComponent<RectTransform>();
+                    MainMenuButton confirmButtonComponent = confirmButtonObject.GetComponent<MainMenuButton>();
+                
+                    confirmButtonTransform.parent = textParent;
+                
+                    confirmButtonTransform.anchoredPosition = new Vector2(510, 400);
+                    confirmButtonTransform.sizeDelta = new Vector2(80, 30);
+                
+                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Confirm"; 
+                    confirmButtonObject.SetActive(true);
+
+                    confirmButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
+                    Action confirmAction;
+                    confirmAction = ConfirmJoinAction(false, saveWindow.inputField.text);
+                    confirmButtonComponent.OnClick.AddListener(confirmAction);
+                    
+                    GameObject cancelButtonObject = Object.Instantiate(templateButtonObject); 
+                    RectTransform cancelButtonTransform =cancelButtonObject.GetComponent<RectTransform>();
+                    MainMenuButton cancelButtonComponent = cancelButtonObject.GetComponent<MainMenuButton>();
+                
+                    cancelButtonTransform.parent = textParent;
+                
+                    cancelButtonTransform.anchoredPosition = new Vector2(410, 400);
+                    confirmButtonTransform.sizeDelta = new Vector2(80, 30);
+                
+                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Cancel"; 
+                    confirmButtonObject.SetActive(true);
+
+                    cancelButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
+                    Action cancelAction;
+                    cancelAction = delegate { DisableInputsWindow(); };
+                    cancelButtonComponent.OnClick.AddListener(cancelAction);
+                }
+                else
+                {
+                    var textObject = Object.Instantiate(CustomMainMenu.templateTextObject); 
+                    RectTransform textTransform = textObject.GetComponent<RectTransform>();
+                    Text textComponent = textObject.GetComponent<Text>();
+                    
+                    Transform textParent = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parent;
+                    textTransform.parent = textParent; 
+            
+                    textTransform.anchoredPosition = new Vector2(430, 150); 
+                    textTransform.sizeDelta = new Vector2(288, 55); 
+            
+                    textComponent.text = "Username :"; 
+                    textObject.SetActive(true);
+
+                    GameObject confirmButtonObject = Object.Instantiate(templateButtonObject); 
+                    RectTransform confirmButtonTransform = confirmButtonObject.GetComponent<RectTransform>();
+                    MainMenuButton confirmButtonComponent = confirmButtonObject.GetComponent<MainMenuButton>();
+                
+                    confirmButtonTransform.parent = textParent;
+                
+                    confirmButtonTransform.anchoredPosition = new Vector2(510, 400);
+                    confirmButtonTransform.sizeDelta = new Vector2(80, 30);
+                
+                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Confirm"; 
+                    confirmButtonObject.SetActive(true);
+
+                    confirmButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
+                    Action confirmAction;
+                    confirmAction = ConfirmJoinAction(true, ip, saveWindow.inputField.text);
+                    confirmButtonComponent.OnClick.AddListener(confirmAction);
+                    
+                    GameObject cancelButtonObject = Object.Instantiate(templateButtonObject); 
+                    RectTransform cancelButtonTransform =cancelButtonObject.GetComponent<RectTransform>();
+                    MainMenuButton cancelButtonComponent = cancelButtonObject.GetComponent<MainMenuButton>();
+                
+                    cancelButtonTransform.parent = textParent;
+                
+                    cancelButtonTransform.anchoredPosition = new Vector2(410, 400);
+                    confirmButtonTransform.sizeDelta = new Vector2(80, 30);
+                
+                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Cancel"; 
+                    confirmButtonObject.SetActive(true);
+
+                    cancelButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
+                    Action cancelAction;
+                    cancelAction = delegate { DisableInputsWindow(); };
+                    cancelButtonComponent.OnClick.AddListener(cancelAction);
+                }
+            }
+        }
+
+        private static void DisableInputsWindow()
+        {
+            if (CustomMainMenu.section != null)
+            {
+                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                {
+                    if (i > 22 && i <= 25)
+                    {
+                        if (CustomMainMenu.section.buttons[i] != null)
+                        {
+                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
+                        }
+                    }
+                }
+
+                var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+                window.gameObject.SetActive(false);
+            }
+        }
+
+        private static Action ConfirmJoinAction(bool phase, string ip = null, string pseudo = null)
+        {
+            return () =>
+            {
+                if (!phase)
+                {
+                    DisableInputsWindow();
+                    EnableJoinWindow(true, ip);
+                }
+                else
+                {
+                    DisableInputsWindow();
+                    Client.Instance.username = pseudo;
+                    Client.Instance.ip = ip;
+
+                    if (!string.IsNullOrEmpty(Client.Instance.username) && !string.IsNullOrEmpty(Client.Instance.ip))
+                    {
+                        Client.Instance.ConnectToServer(Client.Instance.ip);
+                        Application.runInBackground = true;
+                    }
+
+                    CustomLobbyMenu.OpenLobby();
+                }
+            };
+
+
+        }
+        
         [HarmonyPatch(typeof(MainSection), "OnMouseHover")]
         [HarmonyPrefix]
         private static bool MainSection_OnMouseHoverFix(int y, MainSection __instance)
@@ -283,6 +455,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     return false;
                 }
             }
+
             return true;
         }
     }

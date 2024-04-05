@@ -42,33 +42,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                             player.desiredPosition = _position; // Assign the target position directly
 
                             MelonLogger.Msg($"Player {id} desired position: {player.desiredPosition.toVector3()}");
-                           // Vector3 moveDirection = (_position.toVector3() - _gameObject.transform.position).normalized;
-
-                            // Apply the movement direction to the GameObject
-                          //  _gameObject.GetComponent<Rigidbody>().AddForce(moveDirection * 5f * Time.deltaTime, ForceMode.Force);
-                            
-                            
-                            /*player.desiredPosition = new Vector3Serializable((_position.toVector3() - _gameObject.transform.position).normalized);
-
-                            // Déplacer dans cette direction 
-                            _gameObject.GetComponent<Rigidbody>().AddForce(  player.desiredPosition.toVector3() * 5f * Time.deltaTime, ForceMode.Force);
-
-                            // Vérifier si on est arrivé à destination
-                           
-                           // MelonLogger.Msg("ReceivedValid pos!");
-                            /*Vector3Serializable dif = Vector3Serializable.Subtract(player.desiredPosition, _position);
-                            player.desiredPosition = Vector3Serializable.Add(player.desiredPosition, dif);
-                            MelonLogger.Msg($"desiredPos:{player.desiredPosition.toVector3()}");#1#*/
                         }
-                            
-                            
-                            /*Vector3 moveDirection = (_position.toVector3() - _gameObject.transform.position).normalized;
-
-                            // Application de la direction de déplacement au CharacterController
-                            _gameObject.GetComponent<CharacterController>().Move(moveDirection * Time.deltaTime);*/
-                            
-                           // _gameObject.transform.position = 
-                              //  Vector3.Lerp(_gameObject.transform.position,_position.toVector3(), 15f * Time.deltaTime);
+                        
                     }
                     else
                     {
