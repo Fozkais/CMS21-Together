@@ -58,7 +58,7 @@ namespace CMS21Together.ClientSide.Data
             {
                 if (player.Value != null && player.Key != Client.Instance.Id)
                 {
-                    player.Value.GetComponent<PlayerAnimController>().UpdatePlayer();
+                    player.Value.GetComponent<ModCharacterController>().UpdatePlayer();
                 }
             }
 
@@ -153,7 +153,7 @@ namespace CMS21Together.ClientSide.Data
                 GameObject player = playerBundle.LoadAsset<GameObject>("playerModel");
 
                 GameObject Nplayer = Object.Instantiate(player);
-                Nplayer.AddComponent<PlayerAnimController>();
+                Nplayer.AddComponent<ModCharacterController>();
                 
                 Material material;
                 

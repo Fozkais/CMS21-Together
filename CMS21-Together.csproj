@@ -53,9 +53,9 @@
     <Compile Include="ClientSide\Data\GarageInteraction\ModLifterLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModTireChangerLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\ModCharacterController.cs" />
     <Compile Include="ClientSide\Data\PlayerData\ModInventory.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
-    <Compile Include="ClientSide\Data\PlayerData\PlayerAnimController.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
     <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />

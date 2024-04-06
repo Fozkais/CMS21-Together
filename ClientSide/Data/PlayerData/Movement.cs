@@ -40,6 +40,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                         if (_gameObject != null)
                         {
                             player.desiredPosition = _position; // Assign the target position directly
+                            
+                            _gameObject.GetComponent<ModCharacterController>().MoveToPosition(_position.toVector3());
 
                             MelonLogger.Msg($"Player {id} desired position: {player.desiredPosition.toVector3()}");
                         }
