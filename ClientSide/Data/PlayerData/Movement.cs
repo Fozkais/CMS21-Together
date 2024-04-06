@@ -43,7 +43,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                             
                             _gameObject.GetComponent<ModCharacterController>().MoveToPosition(_position.toVector3());
 
-                            MelonLogger.Msg($"Player {id} desired position: {player.desiredPosition.toVector3()}");
+                            //MelonLogger.Msg($"Player {id} desired position: {player.desiredPosition.toVector3()}");
                         }
                         
                     }

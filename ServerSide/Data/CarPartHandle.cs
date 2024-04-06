@@ -34,6 +34,12 @@ namespace CMS21Together.ServerSide.Data
                         
                         partInfo.EngineParts[carPart.partID] = carPart;
                         break;
+                    case ModPartType.driveshaft:
+                        if (partInfo.DriveshaftParts == null)
+                            partInfo.DriveshaftParts = new Dictionary<int, ModPartScript>();
+                        
+                        partInfo.DriveshaftParts[carPart.partID] = carPart;
+                        break;
                     case ModPartType.suspension:
                         if (partInfo.SuspensionParts == null)
                             partInfo.SuspensionParts = new Dictionary<int, List<ModPartScript>>();

@@ -24,50 +24,12 @@ namespace CMS21Together.ServerSide
             udp = new ServerUDP(id);
         }
 
-        public IEnumerator isClientAlive()
-        {
-            if(!ServerData.isRunning)
-                yield break;
-            
-            if (Alive)
-            {
-                yield return new WaitForSeconds(2);
-                Alive = false;
-            }
-            else
-            {
-                yield return new WaitForSeconds(3);
-                if (!Alive)
-                {
-                    if(!ServerData.isRunning)
-                        yield break;
-
-                    if (ServerData.players.ContainsKey(id))
-                    {
-                        MelonLogger.Msg($"SV:  Client[{id}], username:{ServerData.players[id].username} asn't responded for to long!");
-                        ServerSend.DisconnectClient(id, $"{ServerData.players[id].username} as disconnected!");
-                    }
-                    if(Server.clients.ContainsKey(id))
-                        Server.clients[id].Disconnect(id);
-                    
-                    yield break;
-                }
-            }
-
-            if (ServerData.players.TryGetValue(id, out var player))
-            {
-                if (player != null)
-                    MelonCoroutines.Start(isClientAlive());
-            }
-        }
-
 
         public void SendToLobby(string _playerName)
         {
             ServerData.players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
             MelonLogger.Msg($"SV: New player ! {_playerName}, ID:{id}");
             
-            MelonCoroutines.Start(isClientAlive());
             ServerSend.SendPlayersInfo(ServerData.players);
         }
 

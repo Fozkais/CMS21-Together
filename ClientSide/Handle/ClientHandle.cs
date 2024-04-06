@@ -399,6 +399,13 @@ namespace CMS21Together.ClientSide.Handle
                 int carLoaderID = _packet.ReadInt();
                 
                 ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                
+                if (carParts == null || carParts.Count == 0)
+                {
+                    MelonLogger.Msg("Receives parts list is empty!!");
+                    _packet.Dispose();
+                    return;
+                }
 
                 foreach (ModPartScript part in carParts)
                 {

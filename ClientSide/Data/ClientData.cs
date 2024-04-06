@@ -65,14 +65,9 @@ namespace CMS21Together.ClientSide.Data
         }
         public static IEnumerator keepClientAlive()
         {
-            if (Client.Instance.isConnected)
-            {
-                isKeepingAlive = true;
-                ClientSend.KeepAlive();
-                // MelonLogger.Msg("KeepinClientAlive!");
-                yield return new WaitForSeconds(5);
-                isKeepingAlive = false;
-            }
+            isKeepingAlive = true;
+            ClientSend.KeepAlive();
+            yield return new WaitForSeconds(5);
             isKeepingAlive = false;
         }
 

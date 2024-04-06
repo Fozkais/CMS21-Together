@@ -18,7 +18,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static int  saveIndex;
         public static bool isSet;
-        public static Texture2D lobbyPBorder;
 
         public static List<GameObject> backgrounds = new List<GameObject>();
         public static List<GameObject> usernameText = new List<GameObject>();

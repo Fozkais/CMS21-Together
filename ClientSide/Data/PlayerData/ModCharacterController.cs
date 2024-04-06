@@ -7,7 +7,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
     [RegisterTypeInIl2Cpp]
     public class ModCharacterController : MonoBehaviour
     {
-        public float moveSpeed = 26f;
+        public float moveSpeed = 36f;
         public float acceleration = 50f;
         public float deceleration = 50f;
         public float arrivalThreshold = 0.1f; // Seuil de distance pour considérer que le personnage est arrivé
@@ -22,6 +22,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            GetComponent<CapsuleCollider>().enabled = false;
         }
 
         public void UpdatePlayer()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.Shared;
 using MelonLoader;
@@ -14,12 +15,15 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if(scene == "Menu")
             {
-                CustomLobbyMenu.lobbyPBorder = DataHelper.LoadCustomTexture("CMS21Together.Assets.lobbyBorder.png");
                 CustomHostMenu.isSet = false;
                 CustomHostMenu.isSavesSet = false;
                 CustomHostMenu.isnewSaveSet = false;
                 CustomLobbyMenu.isSet = false;
                 InLobbyWindow = false;
+                CustomLobbyMenu.backgrounds = new List<GameObject>();
+                CustomLobbyMenu.readyText = new List<GameObject>();
+                CustomLobbyMenu.usernameText = new List<GameObject>();
+                CustomLobbyMenu.kickButtons = new List<GameObject>();
                 MelonCoroutines.Start(CustomMainMenu.DefaultMenuPatch());
             }
         }

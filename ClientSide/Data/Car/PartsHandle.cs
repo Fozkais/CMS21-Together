@@ -106,7 +106,7 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
                     {
-                        //MelonLogger.Msg("Differences Found!");
+                        handle[i] = new ModPartScript(references[i], i, -1, ModPartType.driveshaft);
                         ClientSend.SendCarPart(car.carLoaderID, handle[i]);
                     }
                 }
@@ -144,7 +144,7 @@ namespace CMS21Together.ClientSide.Data.Car
                     {
                         if (CheckDifferences(handle[i][j], parts[j])) // TODO: Modify when paint check added
                         {
-                           // MelonLogger.Msg("Differences Found!");
+                            handle[i][j] =   new ModPartScript(parts[j], i, j, ModPartType.other);
                            ClientSend.SendCarPart(car.carLoaderID, handle[i][j]);
                         }
                     }
@@ -175,13 +175,12 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
                     {
-                        //MelonLogger.Msg("Differences Found!");
+                        handle[i] =  new ModPartScript(references[i], i, -1, ModPartType.engine);
                         ClientSend.SendCarPart(car.carLoaderID, handle[i]);
                     }
                 }
             }
         }
-
         private static IEnumerator HandleSuspensionpartsCoroutine(ModCar car, List<ModPartScript> buffer=null)
         {
             yield return new WaitForEndOfFrame();
@@ -214,6 +213,7 @@ namespace CMS21Together.ClientSide.Data.Car
                         if (CheckDifferences(handle[i][j], parts[j])) // TODO: Modify when paint check added
                         {
                             //MelonLogger.Msg("Differences Found!");
+                            handle[i][j] =  new ModPartScript(parts[j], i, j, ModPartType.suspension);
                             ClientSend.SendCarPart(car.carLoaderID, handle[i][j]);
                         }
                     }
@@ -245,6 +245,7 @@ namespace CMS21Together.ClientSide.Data.Car
                     if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
                     {
                         //MelonLogger.Msg("Differences Found!");
+                        handle[i] = new ModCarPart(references[i], i);
                         ClientSend.SendBodyPart(car.carLoaderID, handle[i]);
                     }
                 }
