@@ -6,6 +6,7 @@ namespace CMS21Together.Shared
             empty = 0,
             welcome = 1,
             keepAlive = 2,
+            keepAliveConfirmed = 3,
             disconnect,
             readyState,
             playersInfo,

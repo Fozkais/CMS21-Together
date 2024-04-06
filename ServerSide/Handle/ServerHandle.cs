@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -59,8 +60,11 @@ namespace CMS21Together.ServerSide.Handle
             public static void keepAlive(int _fromclient, Packet _packet)
             {
                 ServerSend.keepAlive(_fromclient);
-                
                 Server.clients[_fromclient].Alive = true;
+                ServerSend.SendKeepAliveConfirmation(_fromclient);
+
+                // Mettre à jour la dernière activité du client
+                Server.lastClientActivity[_fromclient] = DateTime.Now;
             }
             
             public static void Disconnect(int _fromClient, Packet _packet)

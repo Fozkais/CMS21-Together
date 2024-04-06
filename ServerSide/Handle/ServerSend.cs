@@ -380,6 +380,13 @@ namespace CMS21Together.ServerSide.Handle
             }
             
         #endregion
-        
+
+        public static void SendKeepAliveConfirmation(int fromclient)
+        {
+            using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
+            {
+                SendTCPData(fromclient, packet);
+            }
+        }
     }
 }

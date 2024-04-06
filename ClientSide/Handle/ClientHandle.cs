@@ -35,6 +35,12 @@ namespace CMS21Together.ClientSide.Handle
                 ClientData.needToKeepAlive = true;
             }
             
+            public static void KeepAliveConfirmation(Packet _packet)
+            {
+                // Le serveur a confirmé la réception du paquet "Keep Alive"
+                ClientData.isServerAlive = true;
+            }
+            
 
             public static void Disconnect(Packet _packet)
             {

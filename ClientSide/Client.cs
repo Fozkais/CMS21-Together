@@ -83,6 +83,7 @@ namespace CMS21Together.ClientSide
             {
                 { (int)PacketTypes.welcome, ClientHandle.Welcome },
                 { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
+                { (int)PacketTypes.keepAliveConfirmed, ClientHandle.KeepAliveConfirmation},
                 { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
                 { (int)PacketTypes.readyState, ClientHandle.ReadyState },
                 { (int)PacketTypes.playerInfo, ClientHandle.PlayerInfo },
