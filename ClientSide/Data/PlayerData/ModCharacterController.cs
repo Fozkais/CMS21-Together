@@ -22,7 +22,6 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         private void Awake()
         {
             _animator = GetComponent<Animator>();
-            GetComponent<CapsuleCollider>().enabled = false;
         }
 
         public void UpdatePlayer()
