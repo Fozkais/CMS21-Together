@@ -188,12 +188,15 @@ namespace CMS21Together.ClientSide.Handle
                 switch (type)
                 {
                     case ModStats.money:
+                        ClientData.playerMoney = value;
                         GlobalData.PlayerMoney = value;
                         break;
                     case ModStats.scrap:
+                        ClientData.playerScrap = value;
                         GlobalData.PlayerScraps = value;
                         break;
                     case ModStats.exp:
+                        ClientData.playerExp = value;
                         GlobalData.PlayerExp = value;
                         break;
                 }
