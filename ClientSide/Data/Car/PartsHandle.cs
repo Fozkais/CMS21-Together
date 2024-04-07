@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -255,33 +256,29 @@ namespace CMS21Together.ClientSide.Data.Car
         
         private static bool CheckDifferences(ModPartScript handled, PartScript toHandle) // TODO:Add Paint check
         {
-            bool hasDifferences = false;
             if (handled.unmounted != toHandle.IsUnmounted)
-            {
-                handled.unmounted = toHandle.IsUnmounted;
-                hasDifferences = true;
-            }
+                return true;
+            else if (Math.Abs(handled.dust - toHandle.Dust) > 0.1f)
+                return true;
 
-            return hasDifferences;
+            return false;
         }
         private static bool CheckDifferences(ModCarPart handled, CarPart toHandle) // TODO:Add Paint check
         {
             if (handled == null || toHandle == null) { return false;}
-            
-            bool hasDifferences = false;
+
             if (handled.unmounted != toHandle.Unmounted)
-            {
-                handled.unmounted = toHandle.Unmounted;
-                hasDifferences = true;
-            }
+                return true;
+            else if (handled.unmounted != toHandle.Unmounted)
+                return true;
+            else if (handled.switched != toHandle.Switched)
+                return true;
+            else if ((Math.Abs(handled.Dust - toHandle.Dust) > 0.1f))
+                return true;
+            else if ((Math.Abs(handled.dent - toHandle.Dent) > 0.1f))
+                return true;
 
-            if (handled.switched != toHandle.Switched)
-            {
-                handled.switched = toHandle.Switched;
-                hasDifferences = true;
-            }
-
-            return hasDifferences;
+            return false;
         }
     }
 }

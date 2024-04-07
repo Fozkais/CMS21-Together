@@ -348,20 +348,19 @@ namespace CMS21Together.ClientSide.Handle
 
             public static void CarInfo(Packet _packet)
             {
+                bool removed = _packet.ReadBool();
                 ModCar car = _packet.Read<ModCar>();
                 
                 MelonLogger.Msg($"CL: Received new car from server!");
 
                 CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
-                if (ClientData.LoadedCars.Any(s => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
+
+                bool checkCondition = ClientData.LoadedCars.Any(s =>
+                    s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID);
+                
+                if (!removed)
                 {
-                    ClientData.LoadedCars.Remove(ClientData.LoadedCars.First(s => s.Value.carLoaderID == car.carLoaderID 
-                        && s.Value.carID == car.carID).Key);
-                    carLoader.DeleteCar();
-                    MelonLogger.Msg("CL: Removing car...");
-                }
-                else
-                {
+                    if(!checkCondition)
                     ClientData.LoadedCars.Add(car.carLoaderID, car);
                     ModCar _car  = ClientData.LoadedCars.First(s 
                         => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value;
@@ -369,6 +368,17 @@ namespace CMS21Together.ClientSide.Handle
                     MelonCoroutines.Start(CarUpdate.CarSpawnFade(_car, carLoader));
                     MelonLogger.Msg("CL: Loading new car...");
                 }
+                else
+                {
+                    if (checkCondition)
+                    {
+                        ClientData.LoadedCars.Remove(ClientData.LoadedCars.First(s => 
+                                s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
+                        carLoader.DeleteCar();
+                        MelonLogger.Msg("CL: Removing car...");
+                    }
+                }
+
                 _packet.Dispose();
             }
             

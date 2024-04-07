@@ -131,12 +131,16 @@ namespace CMS21Together.ClientSide.Data.Car
                 reference.Quality = part.quality;
                 reference.SetCondition(part.condition);
                 reference.UpdateDust(part.dust, true);
+                reference.SetConditionNormal(part.condition);
                 if (reference.IsUnmounted)
                 {
                     MelonCoroutines.Start(CarHarmonyPatches.ResetCursorBlockCoroutine());
                     reference.ShowBySaveGame();
                     reference.ShowMountAnimation();
                     reference.FastMount();
+                    
+                    reference.SetCondition(part.condition);
+                    reference.SetConditionNormal(part.condition);
                 }
                     
                 //Wheel Handle
@@ -155,6 +159,7 @@ namespace CMS21Together.ClientSide.Data.Car
                 reference.Quality = part.quality;
                 reference.SetCondition(part.condition, true);
                 reference.UpdateDust(part.dust, true);
+                reference.SetConditionNormal(part.condition);
                 if (reference.IsUnmounted == false)
                 {
                     MelonCoroutines.Start(CarHarmonyPatches.ResetCursorBlockCoroutine());
@@ -232,12 +237,13 @@ namespace CMS21Together.ClientSide.Data.Car
 
             if (!reference.Unmounted && carPart.unmounted)
             {
-                GameData.Instance.carLoaders[car.carLoaderID].TakeOffCarPartFromSave(carPart.name);
+                GameData.Instance.carLoaders[car.carLoaderID].TakeOffCarPartFromSave(reference.name);
             }
             
             if (reference.Unmounted && !carPart.unmounted)
             {
-                GameData.Instance.carLoaders[car.carLoaderID].TakeOnCarPartFromSave(carPart.name);
+                GameData.Instance.carLoaders[car.carLoaderID].TakeOnCarPartFromSave(reference.name);
+                
             }
             
             if (reference.Switched != carPart.switched)
@@ -247,6 +253,7 @@ namespace CMS21Together.ClientSide.Data.Car
             if(carPart.isTinted && carPart.TintColor != null)
                 PaintHelper.SetWindowProperties(reference.handle, (int)(carPart.TintColor.a * 255), tintColor);
             
+            GameData.Instance.carLoaders[car.carLoaderID].SetCondition(reference, carPart.condition);
             GameData.Instance.carLoaders[car.carLoaderID].UpdateCarBodyPart(reference);
         }
     }

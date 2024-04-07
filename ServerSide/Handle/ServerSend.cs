@@ -316,10 +316,11 @@ namespace CMS21Together.ServerSide.Handle
 
         #region CarData
         
-            public static void CarInfo(int fromClient, ModCar car)
+            public static void CarInfo(int fromClient, ModCar car, bool removed)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carInfo))
                 {
+                    _packet.Write(removed);
                     _packet.Write(car);
                     
                     SendTCPDataToAll(fromClient, _packet);

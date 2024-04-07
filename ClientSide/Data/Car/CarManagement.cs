@@ -55,7 +55,7 @@ namespace CMS21Together.ClientSide.Data.Car
                 }
                 if (String.IsNullOrEmpty(GameData.Instance.carLoaders[car.carLoaderID].carToLoad) && GameData.Instance.carLoaders[car.carLoaderID].carParts == null)
                 {
-                    ClientSend.SendModCar(new ModCar(car));
+                    ClientSend.SendModCar(car, true);
                     ClientData.LoadedCars.Remove(car.carLoaderID);
                 }
             }

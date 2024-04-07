@@ -251,19 +251,24 @@ namespace CMS21Together.ServerSide.Handle
 
             public static void CarInfo(int _fromClient, Packet _packet)
             {
+                bool removed = _packet.ReadBool();
                 ModCar car = _packet.Read<ModCar>();
-
-                if (ServerData.LoadedCars.Any(s =>
-                        s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
-                {
-                    ServerData.LoadedCars.Remove(ServerData.LoadedCars.First(s => s.Value.carLoaderID == car.carLoaderID 
-                        && s.Value.carID == car.carID).Key);
-                }
-                else
+                
+                if (!removed)
                 {
                     ServerData.LoadedCars.Add(car.carLoaderID, car);
                 }
-                ServerSend.CarInfo(_fromClient, car);
+                else
+                {
+                    if (ServerData.LoadedCars.Any(s =>
+                            s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID))
+                    {
+                        ServerData.LoadedCars.Remove(ServerData.LoadedCars.First(s => s.Value.carLoaderID == car.carLoaderID 
+                            && s.Value.carID == car.carID).Key);
+                    }
+                }
+                
+                ServerSend.CarInfo(_fromClient, car, removed);
             }
             public static void CarPart(int _fromClient, Packet _packet)
             {

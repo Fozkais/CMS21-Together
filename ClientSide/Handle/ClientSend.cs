@@ -193,10 +193,11 @@ namespace CMS21Together.ClientSide.Handle
         #endregion
 
         #region CarData
-            public static void SendModCar(ModCar modCar)
+            public static void SendModCar(ModCar modCar, bool removed=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carInfo))
                 {
+                    _packet.Write(removed);
                     _packet.Write(modCar);
 
                     SendTCPData(_packet);
