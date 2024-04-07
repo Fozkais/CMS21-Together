@@ -20,8 +20,10 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                     {
                         if (_gameObject != null)
                         {
-                            _gameObject.transform.rotation = 
-                                Quaternion.Lerp(_gameObject.transform.rotation,_rotation.toQuaternion(), 10f * Time.deltaTime);
+                            
+                            _gameObject.GetComponent<ModCharacterController>().RotateToRotation(_rotation.toQuaternion());
+                            /*_gameObject.transform.rotation = 
+                                Quaternion.Lerp(_gameObject.transform.rotation,_rotation.toQuaternion(), 10f * Time.deltaTime);*/
                         }
                     }
                     else

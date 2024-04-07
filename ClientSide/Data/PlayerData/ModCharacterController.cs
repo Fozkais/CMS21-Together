@@ -17,6 +17,9 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         private Vector3 targetPosition;
         private bool isMovingToTarget;
         
+        private Quaternion targetRotation;
+        private bool isRotationLocked = false;
+        
         private Animator _animator;
 
         private void Awake()
@@ -50,14 +53,12 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             velocity = Vector3.Lerp(velocity, targetVelocity, (targetVelocity.magnitude > 0.1f) ? acceleration * Time.deltaTime : deceleration * Time.deltaTime);
 
             // Déplacer le personnage
-           // transform.position += velocity * Time.deltaTime;
             transform.position = Vector3.Lerp(transform.position, transform.position + velocity * Time.deltaTime, Time.deltaTime * 10f);
             
-            /*float verticalSpeed = Vector3.Dot(transform.forward, velocity);
-            float horizontalSpeed = Vector3.Dot(transform.right, velocity);
-            
-            _animator.SetFloat("Vertical", verticalSpeed);
-            _animator.SetFloat("Horizontal", horizontalSpeed);*/
+            if (isRotationLocked)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+            }
             
             float verticalSpeed = Vector3.Dot(transform.forward, velocity);
             float horizontalSpeed = Vector3.Dot(transform.right, velocity);
@@ -71,6 +72,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         {
             targetPosition = position;
             isMovingToTarget = true;
+        }
+        public void RotateToRotation( Quaternion rotation)
+        {
+            targetRotation = rotation;
+            isRotationLocked = true;
         }
     }
 }
