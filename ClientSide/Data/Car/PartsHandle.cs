@@ -271,6 +271,8 @@ namespace CMS21Together.ClientSide.Data.Car
                 return true;
             else if (handled.unmounted != toHandle.Unmounted)
                 return true;
+            else if (Math.Abs(handled.condition - toHandle.Condition) > 0.1f)
+                return true;
             else if (handled.switched != toHandle.Switched)
                 return true;
             else if ((Math.Abs(handled.Dust - toHandle.Dust) > 0.1f))
