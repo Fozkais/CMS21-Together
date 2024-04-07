@@ -13,6 +13,7 @@ namespace CMS21Together.ClientSide.Data.Car
     public static class CarHarmonyPatches
     {
         public static bool ListenToCursorBlock;
+        private static bool screenfadeFix;
         
         [HarmonyPatch(typeof(CarLoader), "LoadCar")]
         [HarmonyPrefix]
@@ -82,12 +83,42 @@ namespace CMS21Together.ClientSide.Data.Car
             }
             return true;
         }
+
+        [HarmonyPatch(typeof(ScreenFader), "NormalFadeIn")]
+        [HarmonyPrefix]
+        public static void FadeInFix(ScreenFader __instance)
+        {       
+            if (Client.Instance.isConnected)
+                if (ModSceneManager.currentScene() == GameScene.garage)
+                {
+                    screenfadeFix = true;
+                    MelonCoroutines.Start(FadeSoftLockCoroutine());
+                }
+        }
+        
+        [HarmonyPatch(typeof(ScreenFader), "NormalFadeOut")]
+        [HarmonyPrefix]
+        public static void FadeOutFix(ScreenFader __instance)
+        {
+            if (Client.Instance.isConnected)
+                if (ModSceneManager.currentScene() == GameScene.garage)
+                    screenfadeFix = false;
+        }
         
         public static IEnumerator ResetCursorBlockCoroutine()
         {
             ListenToCursorBlock = true;
             yield return new WaitForSeconds(0.1f);
             ListenToCursorBlock = false;
+        }
+        
+        public static IEnumerator FadeSoftLockCoroutine()
+        {
+            
+            yield return new WaitForSeconds(8f);
+            if(screenfadeFix)
+                GameData.Instance.screenFader.NormalFadeOut();
+                
         }
     }
 }

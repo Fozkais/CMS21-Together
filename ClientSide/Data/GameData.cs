@@ -21,6 +21,7 @@ namespace CMS21Together.ClientSide.Data
         public EngineStandLogic engineStand;
         public CarLoader[] carLoaders;
         public Inventory localInventory;
+        public ScreenFader screenFader;
         
         public IEnumerator Initialize()
         {
@@ -34,6 +35,7 @@ namespace CMS21Together.ClientSide.Data
                 wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
                 carWash = Object.FindObjectOfType<CarWashLogic>();
                 engineStand = Object.FindObjectOfType<EngineStandLogic>();
+                screenFader = Object.FindObjectOfType<ScreenFader>();
             
                 carLoaders = new[]
                 {
