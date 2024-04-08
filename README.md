@@ -46,7 +46,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync garage upgrade : ❌
 * Sync garage Customization : ❌
 * Add Mod Support : ❌
-* Add Animation to players : ❌
+* Add Animation to players : ✅
 
 **Here the description of every emote :**
 <br/>
@@ -71,11 +71,6 @@ Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to i
 <br/>
 with that you need 2 other file you can find on the mod Discord, those are the player Model and texture wich you'll need to put inside the folder Mods in the subfolder "togetherMod" (create it if he wont exist)
 <br/>
-Finally you need to download and put in UserLibs 2 files from Facepuch Steamwork: Facepunch.Steamworks.Win64 and steam_api64
-<br/>
-which you can find here: [Facepunch Steamwork](https://github.com/Facepunch/Facepunch.Steamworks) , 
-<br/>
-it will be used in the future to implement the steam API on the mod to replace actual networking system.
 
 From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, 
 <br/>
