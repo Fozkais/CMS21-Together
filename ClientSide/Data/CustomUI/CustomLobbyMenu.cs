@@ -7,6 +7,8 @@ using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using Il2Cpp;
 using Il2CppCMS.MainMenu.Controls;
+using Il2CppCMS.UI.Logic;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -23,8 +25,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static List<GameObject> usernameText = new List<GameObject>();
         public static List<GameObject> readyText = new List<GameObject>();
         public static List<GameObject> kickButtons = new List<GameObject>();
+        public static List<GameObject> lobbyHeader = new List<GameObject>();
         
-        public static void OpenLobby()
+        public static void OpenLobby(bool client=false)
         {
             if (isSet)
             {
@@ -34,6 +37,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     {
                         if(CustomMainMenu.section.buttons[i] != null)
                             CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
+                        if (i == 26)
+                        {
+                            CustomMainMenu.section.buttons[i].isDisabled = true;
+                            CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
+                            
+                        }
                     }
                     else
                     {
@@ -42,17 +51,19 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     }
                 }
 
+                CreateLobbyDisplay(client);
+                
                 CustomUIManager.InLobbyWindow = true;
             }
             else
             {
                 CustomHostMenu.DisableSavesMenu();
-                CreateLobbyMenu();
+                CreateLobbyMenu(client);
                 CustomUIManager.InLobbyWindow = true;
             }
         }
 
-        public static void CreateLobbyMenu()
+        public static void CreateLobbyMenu(bool client=false)
         {
             GameObject template = CustomMainMenu.templateButtonObject;
             isSet = true;
@@ -66,6 +77,127 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             }
             
             Transform parent = template.transform;
+            
+            CreateLobbyDisplay(client);
+            
+            var startObject = Object.Instantiate(template);
+            RectTransform  startTransform =  startObject.GetComponent<RectTransform>();
+            MainMenuButton  startButton = startObject.GetComponent<MainMenuButton>();
+
+            startTransform.parent = parent;
+            startTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            startButton.Y = 26;
+            startButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomMainMenu.section.buttons[26] = startButton;
+
+            startTransform.anchoredPosition = new Vector2(-5, 58);
+            startTransform.sizeDelta = new Vector2(288, 55);
+            startButton.GetComponentInChildren<Text>().text = "Start Game";
+            startButton.OnClick = new MainMenuButton.ButtonEvent();
+            Action  startAction = delegate 
+            {
+                foreach (var player in ServerData.players.Values)
+                {
+                    if (player != null && !player.isReady)
+                    {
+                        return;
+                    }
+                }
+
+                StartGame(saveIndex - 1);
+                SavesManager.ModSaves[saveIndex - 1].alreadyLoaded = true;
+                PreferencesManager.SaveModSave(saveIndex - 1);
+            };
+            startButton.OnClick.AddListener(startAction);
+            startObject.SetActive(true);
+
+            if (client)
+            {
+                startButton.isDisabled = true;
+                startButton.DoStateTransition(SelectionState.Disabled, true);
+            }
+            
+            
+            var readyObject = Object.Instantiate(template);
+            RectTransform  readyTransform =  readyObject.GetComponent<RectTransform>();
+            MainMenuButton  readyButton = readyObject.GetComponent<MainMenuButton>();
+
+            readyTransform.parent = parent;
+            readyTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            readyButton.Y = 27;
+            readyButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomMainMenu.section.buttons[27] = readyButton;
+
+            readyTransform.anchoredPosition = new Vector2(-5, 0);
+            readyTransform.sizeDelta = new Vector2(288, 55);
+            readyButton.GetComponentInChildren<Text>().text = "Toggle Ready";
+            readyButton.OnClick = new MainMenuButton.ButtonEvent();
+            Action  readyAction = delegate
+            {
+                foreach (int i in ClientData.players.Keys)
+                {
+                    Player player =  ClientData.players[i];
+                    if (player != null)
+                    {
+                        if (player.id == Client.Instance.Id)
+                        {
+                            player.isReady = !player.isReady;
+                            ClientSend.SendReadyState(player.isReady, i);
+                        }
+                    }
+                }
+            };
+            readyButton.OnClick.AddListener(readyAction);
+            readyObject.SetActive(true);
+            
+            
+            
+            var backObject = Object.Instantiate(template);
+            RectTransform backTransform =  backObject.GetComponent<RectTransform>();
+            MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
+
+            backTransform.parent = parent;
+            backTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            backButton.Y = 28;
+            backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomMainMenu.section.buttons[28] = backButton;
+
+            backTransform.anchoredPosition = new Vector2(-5, -200);
+            backTransform.sizeDelta = new Vector2(288, 55);
+            if (client)
+            {
+                backButton.GetComponentInChildren<Text>().text = "Disconnect";
+                backButton.OnClick = new MainMenuButton.ButtonEvent();
+                Action backtoMenu = delegate
+                {
+                    DisableLobby(); 
+                    CustomMainMenu.EnableMultiplayerMenu();
+                };
+                backButton.OnClick.AddListener(backtoMenu);
+            }
+            else
+            {
+                backButton.GetComponentInChildren<Text>().text = "Back to saves";
+                backButton.OnClick = new MainMenuButton.ButtonEvent();
+                Action backtoMenu = delegate
+                {
+                    DisableLobby(); 
+                    CustomHostMenu.CreateSavesMenu();
+                };
+                backButton.OnClick.AddListener(backtoMenu);
+            }
+            backObject.SetActive(true);
+        }
+
+        public static void CreateLobbyDisplay(bool client=false)
+        {
+            backgrounds = new List<GameObject>();
+            readyText = new List<GameObject>();
+            usernameText = new List<GameObject>();
+            lobbyHeader = new List<GameObject>();
+            kickButtons = new List<GameObject>();
+            
+            
             Transform textParent = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parent;
             
             
@@ -110,6 +242,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             text2Object.SetActive(true);
             
             
+            lobbyHeader.Add(textObject);
+            lobbyHeader.Add(text2Object);
+            lobbyHeader.Add(backgroundPanel2Object);
+            
+            
             for (int i = 0; i < 4; i++)
             {
                 GameObject backgroundPanelObject = new GameObject("BackgroundPanel");
@@ -123,6 +260,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 
                 backgroundPanelImage.color = backgroundColor;
                 
+                backgroundPanelObject.SetActive(false);
                 backgrounds.Add(backgroundPanelObject);
                 
                 
@@ -156,7 +294,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 readyText.Add(readyTextObject);
 
                 // Création du bouton pour "Kick"
-                GameObject kickButtonObject = Object.Instantiate(template); 
+                GameObject kickButtonObject = Object.Instantiate(CustomMainMenu.templateButtonObject); 
                 RectTransform kickButtonTransform = kickButtonObject.GetComponent<RectTransform>();
                 MainMenuButton kickButtonComponent = kickButtonObject.GetComponent<MainMenuButton>();
                 
@@ -169,104 +307,39 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 kickButtonObject.SetActive(true);
                 kickButtons.Add(kickButtonObject);
                 
+                if (client)
+                {
+                    kickButtonComponent.isDisabled = true;
+                    kickButtonComponent.DoStateTransition(SelectionState.Disabled, true);
+                }
             }
-
-            
-            
-            var startObject = Object.Instantiate(template);
-            RectTransform  startTransform =  startObject.GetComponent<RectTransform>();
-            MainMenuButton  startButton = startObject.GetComponent<MainMenuButton>();
-
-            startTransform.parent = parent;
-            startTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            startButton.Y = 26;
-            startButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[26] = startButton;
-
-            startTransform.anchoredPosition = new Vector2(-5, 58);
-            startTransform.sizeDelta = new Vector2(288, 55);
-            startButton.GetComponentInChildren<Text>().text = "Start Game";
-            startButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action  startAction = delegate 
-            {
-                foreach (var player in ServerData.players.Values)
-                {
-                    if (player != null && !player.isReady)
-                    {
-                        return;
-                    }
-                }
-
-                StartGame(saveIndex - 1);
-                SavesManager.ModSaves[saveIndex - 1].alreadyLoaded = true;
-                PreferencesManager.SaveModSave(saveIndex - 1);
-            };
-            startButton.OnClick.AddListener(startAction);
-            startObject.SetActive(true);
-            
-            
-            var readyObject = Object.Instantiate(template);
-            RectTransform  readyTransform =  readyObject.GetComponent<RectTransform>();
-            MainMenuButton  readyButton = readyObject.GetComponent<MainMenuButton>();
-
-            readyTransform.parent = parent;
-            readyTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            readyButton.Y = 27;
-            readyButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[27] = readyButton;
-
-            readyTransform.anchoredPosition = new Vector2(-5, 0);
-            readyTransform.sizeDelta = new Vector2(288, 55);
-            readyButton.GetComponentInChildren<Text>().text = "Toggle Ready";
-            readyButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action  readyAction = delegate
-            {
-                foreach (int i in ClientData.players.Keys)
-                {
-                    Player player =  ClientData.players[i];
-                    if (player != null)
-                    {
-                        if (player.id == Client.Instance.Id)
-                        {
-                            player.isReady = !player.isReady;
-                            ClientSend.SendReadyState(player.isReady, i);
-                        }
-                    }
-                }
-            };
-            readyButton.OnClick.AddListener(readyAction);
-            readyObject.SetActive(true);
-            
-            
-            var backObject = Object.Instantiate(template);
-            RectTransform backTransform =  backObject.GetComponent<RectTransform>();
-            MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
-
-            backTransform.parent = parent;
-            backTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            backButton.Y = 28;
-            backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[28] = backButton;
-
-            backTransform.anchoredPosition = new Vector2(-5, -200);
-            backTransform.sizeDelta = new Vector2(288, 55);
-            backButton.GetComponentInChildren<Text>().text = "Back to saves";
-            backButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action backtoMenu = delegate
-            {
-                DisableLobby(); 
-                CustomHostMenu.CreateSavesMenu();
-            };
-            backButton.OnClick.AddListener(backtoMenu);
-            backObject.SetActive(true);
         }
 
 
-        private static void DisableLobby()
+        public static void DisableLobby()
         {
             CustomMainMenu.section.buttons[26].gameObject.SetActive(false);
             CustomMainMenu.section.buttons[27].gameObject.SetActive(false);
             CustomMainMenu.section.buttons[28].gameObject.SetActive(false);
+            try
+            {
+                for (int i = 0; i < backgrounds.Count; i++)
+                {
+                    Object.Destroy(backgrounds[i].gameObject);
+                    Object.Destroy(usernameText[i].gameObject);
+                    Object.Destroy(readyText[i].gameObject);
+                    Object.Destroy(kickButtons[i].gameObject);
+                }
+                for (int i = 0; i < lobbyHeader.Count; i++)
+                {
+                    Object.Destroy(lobbyHeader[i]);
+                }
+            }
+            catch (Exception e)
+            {
+                MelonLogger.Msg("Error while clearing Lobby UI : " + e);
+            }
+
             
             Server.Stop();
             if (!ModSceneManager.isInMenu())

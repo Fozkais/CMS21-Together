@@ -83,6 +83,8 @@ namespace CMS21Together.ServerSide
 
         public static void Stop()
         {
+            if(!ServerData.isRunning) return;
+            
             Application.runInBackground = false;
             foreach (int id in Server.clients.Keys)
             {

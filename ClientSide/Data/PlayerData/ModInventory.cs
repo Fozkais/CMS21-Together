@@ -68,7 +68,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                 var item = localInventory._items[i];
                 if (handledGroupItem.Count == 0)
                 {
-                  //  MelonLogger.Msg("Adding GroupItem");
+                   // MelonLogger.Msg("Adding GroupItem");
                     var newItem = new ModGroupItem(item);
                     handledGroupItem.Add(newItem);
                     ClientSend.SendInventoryGroupItem(newItem, true);
@@ -127,7 +127,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                 if (localInventory.Count == 0)
                 {
                    // MelonLogger.Msg("Local Inventory is empty");
-                   // MelonLogger.Msg("Remove Item!");
+                    //MelonLogger.Msg("Remove GroupItem!");
                     ClientSend.SendInventoryGroupItem(item, false);
                     handledGroupItem.Remove(item);
                     return;

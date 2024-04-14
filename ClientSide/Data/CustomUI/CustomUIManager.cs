@@ -36,10 +36,13 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 if (ClientData.players.TryGetValue(i + 1, out var player))
                 {
+                    MelonLogger.Msg("found player info");
                     if (CustomLobbyMenu.usernameText.All(s => s.GetComponent<Text>().text != player.username))
                     {
+                        MelonLogger.Msg("found invalid ui info");
                         if (!CustomLobbyMenu.backgrounds[i].active)
                         {
+                            MelonLogger.Msg("updating UI");
                             CustomLobbyMenu.backgrounds[i].SetActive(true);
                             CustomLobbyMenu.usernameText[i].SetActive(true);
                             CustomLobbyMenu.usernameText[i].GetComponent<Text>().text = player.username;
@@ -50,6 +53,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     }
                     else
                     {
+                        MelonLogger.Msg("info are valid");
                         if (player.isReady)
                             CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Ready";
                         else

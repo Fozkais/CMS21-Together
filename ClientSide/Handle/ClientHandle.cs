@@ -184,7 +184,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 int value = _packet.ReadInt();
                 ModStats type = _packet.Read<ModStats>();
-
+                
                 switch (type)
                 {
                     case ModStats.money:
@@ -209,7 +209,6 @@ namespace CMS21Together.ClientSide.Handle
                 ModItem _item = _packet.Read<ModItem>();
                 Item _itemGame = _item.ToGame(_item);
                 bool status = _packet.ReadBool();
-
                 if (status)
                 {
                     if (!ModInventory.handledItem.Any(s => s.UID == _item.UID) )
@@ -390,7 +389,6 @@ namespace CMS21Together.ClientSide.Handle
                 ModPartScript carPart = _packet.Read<ModPartScript>();
                 int carLoaderID = _packet.ReadInt();
                 
-                
                 MelonCoroutines.Start(CarUpdate.HandleNewPart(carPart, carLoaderID));
                 
                 _packet.Dispose();
@@ -410,7 +408,6 @@ namespace CMS21Together.ClientSide.Handle
             {
                 List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
                 int carLoaderID = _packet.ReadInt();
-                
                 ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 
                 if (carParts == null || carParts.Count == 0)
@@ -448,7 +445,6 @@ namespace CMS21Together.ClientSide.Handle
                 ModCarPart carPart = _packet.Read<ModCarPart>();
                 int carLoaderID = _packet.ReadInt();
                 
-                
                 MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(carPart, carLoaderID));
                 
                 _packet.Dispose();
@@ -458,7 +454,6 @@ namespace CMS21Together.ClientSide.Handle
             {
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
-
                 
                 foreach (ModCarPart part in carParts)
                 {
