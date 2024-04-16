@@ -70,8 +70,9 @@ namespace CMS21Together
                     Server.Stop();
                     Application.runInBackground = false;
                 }
-                if(ModSceneManager.isInGarage()) 
+                if(ModSceneManager.isInGarage())
                 {
+                    GameData.DataInitialzed = false;
                     ClientData.Init();
 
                     foreach (KeyValuePair<int, Player> player in ClientData.players)

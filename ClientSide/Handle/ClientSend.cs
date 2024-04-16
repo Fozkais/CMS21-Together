@@ -126,7 +126,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(_Item);
                     _packet.Write(status);
                     _packet.Write(resync);
-
+                    
                     SendTCPData(_packet);
                 }
             }
@@ -254,6 +254,15 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(carLoaderID);
                     _packet.Write(placeNo);
 
+                    SendTCPData(_packet);
+                }
+            }
+            
+            public static void SendResyncCars(bool phase = true)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carResync))
+                {
+                    _packet.Write(phase);
                     SendTCPData(_packet);
                 }
             }

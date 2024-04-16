@@ -1,144 +1,79 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using HarmonyLib;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.PlayerData
 {
-    public static class ModInventory
+    [HarmonyPatch]
+    public class ModInventory 
     {
         public static List<ModItem> handledItem = new List<ModItem>();
         public static List<ModGroupItem> handledGroupItem = new List<ModGroupItem>();
-
-
-        private static bool isUpdating;
-        public static void UpdateInventory()
-        {
-            if (ModSceneManager.isInGarage())
-            {
-                if(!isUpdating)
-                    MelonCoroutines.Start(InventoryUpdating(0.25f));
-            }
-        }
-
-        private static IEnumerator InventoryUpdating(float updateRate)
-        {
-            isUpdating = true;
-            yield return new WaitForSeconds(updateRate);
-            AddItem();
-            AddItemGroupNew();
-            RemoveItem();
-            RemoveGroupItem();
-            isUpdating = false;
-        }
         
-         public static void AddItem()
+
+        [HarmonyPatch(typeof(Inventory), "Add", new Type[] { typeof(Item), typeof(bool) })]
+        [HarmonyPrefix]
+        public static void AddItemHook(Item item, bool showPopup = false)
         {
-            var localInventory = GameData.Instance.localInventory.items;
-            for (int i = 0; i < localInventory.Count; i++)
-            {
-                var item = localInventory._items[i];
-                if(handledItem.Count == 0)
-                {
-                    //MelonLogger.Msg("Adding Item");
-                    var newItem = new ModItem(item);
-                    handledItem.Add(newItem);
-                    ClientSend.SendInventoryItem(newItem, true);
-                }
-                else if(!handledItem.Any(s => s.UID == item.UID))
-                {
-                   // MelonLogger.Msg("Adding Item");
-                    var newItem = new ModItem(item);
-                    handledItem.Add(newItem);
-                    ClientSend.SendInventoryItem(newItem, true);
-                }
-            }
+            var newItem = new ModItem(item);
+            handledItem.Add(newItem);
+            ClientSend.SendInventoryItem(newItem, true);
+        }
+
+
+        [HarmonyPatch(typeof(Inventory), "AddGroup")]
+        [HarmonyPrefix]
+        public static void AddGroupItemHook(GroupItem group)
+        {
+            var newItem = new ModGroupItem(group);
+            handledGroupItem.Add(newItem);
+            ClientSend.SendInventoryGroupItem(newItem, true);
+        }
+
+
+        [HarmonyPatch(typeof(Inventory), "Delete")]
+        [HarmonyPrefix]
+        public static void RemoveItemHook(Item item, Inventory __instance)
+        {
+            var itemToRemove = handledItem.First(s => s.UID == item.UID);
+            ClientSend.SendInventoryItem(itemToRemove, false);
+            handledItem.Remove(itemToRemove);
             
         }
-        public static void AddItemGroupNew()
+
+        [HarmonyPatch(typeof(Inventory), "DeleteGroup")]
+        [HarmonyPrefix]
+        public static void RemoveGroupItemHook(long UId)
         {
-            var localInventory = GameData.Instance.localInventory.groups;
-            for (int i = 0; i < localInventory.Count; i++)
-            {
-                var item = localInventory._items[i];
-                if (handledGroupItem.Count == 0)
-                {
-                   // MelonLogger.Msg("Adding GroupItem");
-                    var newItem = new ModGroupItem(item);
-                    handledGroupItem.Add(newItem);
-                    ClientSend.SendInventoryGroupItem(newItem, true);
-                }
-                else if (!handledGroupItem.Any(s => s.UID == item.UID))
-                {
-                  //  MelonLogger.Msg("Adding GroupItem");
-                    var newItem = new ModGroupItem(item);
-                    handledGroupItem.Add(newItem);
-                    ClientSend.SendInventoryGroupItem(newItem, true);
-                }
-            }
+            var itemToRemove = handledGroupItem.First(s => s.UID == UId);
+            ClientSend.SendInventoryGroupItem(itemToRemove, false);
+            handledGroupItem.Remove(itemToRemove);
         }
         
-        public static void RemoveItem()
+        [HarmonyPatch(typeof(Inventory), "Load")]
+        [HarmonyPostfix]
+        public static void LoadHook(Inventory __instance)
         {
-            var localInventory = GameData.Instance.localInventory.items;
-            List<Item> items = new List<Item>();
-            foreach (var _item in localInventory)
+            foreach (GroupItem group in  __instance.GetGroups())
             {
-                items.Add(_item);
-            }
-            for (int i = 0; i < handledItem.Count; i++)
-            {
-                var item = handledItem[i];
-                
-                if (localInventory._items.Count == 0)
-                {
-                  //  MelonLogger.Msg("Local Inventory is empty");
-                  //  MelonLogger.Msg("Remove Item!");
-                    ClientSend.SendInventoryItem(item, false);
-                    handledItem.Remove(item);
-                }   
-                else  if(!items.Any(s =>  s.UID == item.UID))
-                {
-                   // MelonLogger.Msg("Remove Item");
-                    ClientSend.SendInventoryItem(item, false);
-                    handledItem.Remove(item);
-                }
-
-                }
-        }
-        public static void RemoveGroupItem()
-        {
-            var localInventory = GameData.Instance.localInventory.groups;
-            List<GroupItem> items = new List<GroupItem>();
-            foreach (var _item in localInventory)
-            {
-                items.Add(_item);
+                var newItem = new ModGroupItem(group);
+                handledGroupItem.Add(newItem);
+                ClientSend.SendInventoryGroupItem(newItem, true);
             }
             
-            for (int i = 0; i < handledGroupItem.Count; i++)
+            foreach (Item item in  __instance.GetItems())
             {
-                var item = handledGroupItem[i];
-
-                if (localInventory.Count == 0)
-                {
-                   // MelonLogger.Msg("Local Inventory is empty");
-                    //MelonLogger.Msg("Remove GroupItem!");
-                    ClientSend.SendInventoryGroupItem(item, false);
-                    handledGroupItem.Remove(item);
-                    return;
-                }
-                else if(!items.Any(s => s.UID == item.UID))
-                {
-                    //MelonLogger.Msg("Remove GroupItem");
-                    ClientSend.SendInventoryGroupItem(item, false);
-                    handledGroupItem.Remove(item);
-                }
-                    
+                var newItem = new ModItem(item);
+                handledItem.Add(newItem);
+                ClientSend.SendInventoryItem(newItem, true);
             }
         }
     }

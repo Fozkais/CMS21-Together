@@ -53,7 +53,6 @@ namespace CMS21Together.ClientSide.Data
             Stats.HandleMoney();
             Stats.HandleScrap();
             
-            ModInventory.UpdateInventory();
             foreach (var player in ClientData.PlayersGameObjects)
             {
                 if (player.Value != null && player.Key != Client.Instance.Id)

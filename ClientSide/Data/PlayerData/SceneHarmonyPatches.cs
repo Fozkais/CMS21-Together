@@ -1,5 +1,6 @@
 using System;
 using CMS21Together.ClientSide.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using HarmonyLib;
@@ -22,10 +23,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             {
                 if (newSceneName == "Menu")
                 {
+                    if(ServerData.isRunning)
+                        Server.Stop();
                     Client.Instance.Disconnect();
                     Application.runInBackground = false;
                 }
-                
                 
                 ModSceneManager.UpdatePlayerScene();
             }

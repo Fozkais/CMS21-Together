@@ -152,7 +152,8 @@ namespace CMS21Together.ServerSide.Handle
                     {
                         if (ServerData.itemInventory.Any(s => s.UID == item.UID))
                         {
-                            ServerData.itemInventory.Remove(item);
+                            int index = ServerData.itemInventory.FindIndex(s => s.UID == item.UID);
+                            ServerData.itemInventory.Remove(ServerData.itemInventory[index]);
                         }
                     }
                     ServerSend.SendInventoryItem(_fromClient, item, status);
@@ -249,6 +250,52 @@ namespace CMS21Together.ServerSide.Handle
 
         #region CarData
 
+            public static void CarResync(int _fromClient, Packet _packet)
+            {
+
+                bool phase = _packet.ReadBool();
+
+                if (!phase)
+                {
+                    List<(int,string)> carOnServer = new List<(int,string)>();
+                    foreach (ModCar car in ServerData.LoadedCars.Values)
+                    {
+                        carOnServer.Add((car.carLoaderID,car.carID));
+                    }
+
+                    ServerSend.CarResync(_fromClient, carOnServer);
+                    return;
+                }
+                
+                MelonLogger.Msg("SV : Resending Car to client!");
+                foreach (ModCar _car in ServerData.LoadedCars.Values)
+                {
+                    ServerSend.CarInfo(_fromClient, _car, false);
+                    
+                    List<ModPartScript> otherParts = new List<ModPartScript>();
+                    for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
+                    {
+                        for (int j = 0; j < _car.partInfo.OtherParts[i].Count; j++)
+                        {
+                            otherParts.Add(_car.partInfo.OtherParts[i][j]);
+                        }
+                    }
+                    List<ModPartScript> suspensionPart = new List<ModPartScript>();
+                    for (int i = 0; i < _car.partInfo.SuspensionParts.Count; i++)
+                    {
+                        for (int j = 0; j < _car.partInfo.SuspensionParts[i].Count; j++)
+                        {
+                            suspensionPart.Add(_car.partInfo.SuspensionParts[i][j]);
+                        }
+                    }
+                    
+                    ServerSend.PartScripts(_fromClient, otherParts, _car.carLoaderID);
+                    ServerSend.PartScripts(_fromClient,  _car.partInfo.EngineParts.Values.ToList(), _car.carLoaderID);
+                    ServerSend.PartScripts(_fromClient, suspensionPart, _car.carLoaderID);
+                    ServerSend.BodyParts(_fromClient,  _car.partInfo.BodyParts.Values.ToList(), _car.carLoaderID);
+                }
+            }
+
             public static void CarInfo(int _fromClient, Packet _packet)
             {
                 bool removed = _packet.ReadBool();
@@ -256,7 +303,8 @@ namespace CMS21Together.ServerSide.Handle
                 
                 if (!removed)
                 {
-                    ServerData.LoadedCars.Add(car.carLoaderID, car);
+                    if(!ServerData.LoadedCars.ContainsKey(car.carLoaderID))
+                        ServerData.LoadedCars.Add(car.carLoaderID, car);
                 }
                 else
                 {
