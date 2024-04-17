@@ -15,7 +15,7 @@ namespace CMS21Together.Shared
     public static class PreferencesManager // TODO:Clean This!
     {
         private const string ModFolderPath = @"Mods\togetherMod\";
-        private const string PreferencesFilePath = ModFolderPath + "preferences.cms21mp";
+        private const string PreferencesFilePath = ModFolderPath + "preferences.ini";
         private const string SaveFolderPath = ModFolderPath + "saves";
         private const string DefaultIPAdress = "127.0.0.1";
         private const string DefaultUsername = "player";
