@@ -37,10 +37,6 @@ namespace CMS21Together
             contentManager = new ContentManager();
             contentManager.Initialize();
             
-
-            SavesManager.GetVanillaSaves();
-            SavesManager.InitializeModdedSaves();
-            
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");

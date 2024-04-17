@@ -113,7 +113,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             loadButton.OnClick = new MainMenuButton.ButtonEvent();
             Action loadAction = delegate
             {
-                PreferencesManager.LoadAllModSaves();
                 if (!displaySaves)
                 {
                     if (!isSavesSet)
@@ -128,6 +127,31 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             };
             loadButton.OnClick.AddListener(loadAction);
             LoadObject.SetActive(true);
+            
+            var DeleteObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
+            RectTransform DeleteTransform = DeleteObject.GetComponent<RectTransform>();
+            MainMenuButton DeleteButton = DeleteObject.GetComponent<MainMenuButton>();
+
+            DeleteTransform.parent = parent;
+            DeleteTransform.parentInternal =
+                CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            DeleteButton.Y = 13;
+            CustomMainMenu.section.buttons[13] = DeleteButton;
+            DeleteButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+
+            DeleteTransform.anchoredPosition = new Vector2(-5, 5);
+            DeleteTransform.sizeDelta = new Vector2(288, 55);
+            DeleteButton.GetComponentInChildren<Text>().text = "Delete a game";
+            DeleteButton.OnClick = new MainMenuButton.ButtonEvent();
+            Action deleteAction = delegate
+            {
+                
+            };
+            DeleteButton.OnClick.AddListener(deleteAction);
+            DeleteObject.SetActive(true);
+            
+            DeleteButton.isDisabled = true;
+            DeleteButton.DoStateTransition(SelectionState.Disabled, true);
 
 
             var backObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
@@ -137,9 +161,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             backTransform.parent = parent;
             backTransform.parentInternal =
                 CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            backButton.Y = 13;
+            backButton.Y = 14;
             backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[13] = backButton;
+            CustomMainMenu.section.buttons[14] = backButton;
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
             backTransform.sizeDelta = new Vector2(288, 55);
@@ -159,6 +183,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             backButton.OnClick.AddListener(backtoMenu);
             backObject.SetActive(true);
 
+        }
+
+        public static void EnableDeleteAction()
+        {
+            
         }
 
         public static void CreateSavesMenu()
@@ -192,10 +221,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 saveTransform.parent = parent;
                 saveTransform.parentInternal =
                     CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-                saveButton.Y = 14 + i;
+                saveButton.Y = 15 + i;
                 saveButton.OnMouseHover =
                     CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-                CustomMainMenu.section.buttons[14 + i] = saveButton;
+                CustomMainMenu.section.buttons[15 + i] = saveButton;
 
                 saveTransform.anchoredPosition = new Vector2(buttonPos[i].Item1, buttonPos[i].Item2);
                 saveTransform.sizeDelta = new Vector2(288, 55);
@@ -204,20 +233,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 var index1 = index + 4; // Keep valid value for Action.
                 if (SavesManager.ModSaves[index1].Name != "EmptySave")
                 {
-                    MelonLogger.Msg($"Save: {SavesManager.ModSaves[index1].Name}");
                     saveButton.GetComponentInChildren<Text>().text = SavesManager.ModSaves[index1].Name;
-
                     Action selectSave = delegate
                     {
                         SelectSaves(index1);
-                        CustomLobbyMenu.saveIndex = index1;
-                        CustomLobbyMenu.OpenLobby();
                     };
                     saveButton.OnClick.AddListener(selectSave);
-
-                    saveButton.isDisabled = false;
-                    saveButton.DoStateTransition(SelectionState.Normal, true);
-
                 }
                 else
                 {
@@ -225,9 +246,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     int _i = i;
                     Action newSave = delegate
                     {
-                        ChoseSaveName(14 + _i, index1);
-                        CustomLobbyMenu.OpenLobby();
-
+                        ChoseSaveName(15 + _i, index1);
                     };
                     saveButton.OnClick.AddListener(newSave);
                 }
@@ -239,11 +258,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static void ChoseSaveName(int buttonIndex, int saveIndex)
         {
-            string saveName = "";
 
             if (isnewSaveSet)
             {
-                EnableNewSaveWindow(buttonIndex, saveName, saveIndex);
+                EnableNewSaveWindow(buttonIndex, saveIndex);
                 return;
             }
 
@@ -281,8 +299,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             confirmsTransform.parent = parent;
             confirmsTransform.parentInternal = parent;
             confirmButton.Y = 24;
-            confirmButton.OnMouseHover =
-                CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            confirmButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
             CustomMainMenu.section.buttons[24] = confirmButton;
 
             confirmsTransform.anchoredPosition = new Vector2(58, -120);
@@ -293,27 +310,26 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             confirmButton.OnClick = new MainMenuButton.ButtonEvent();
             Action confirmAction;
-            confirmAction = ConfirmAction(buttonIndex, saveName, saveIndex, saveWindow);
+            confirmAction = ConfirmAction(buttonIndex, saveIndex, saveWindow);
             confirmButton.OnClick.AddListener(confirmAction);
             confirmObject.SetActive(true);
         }
-
-        private static Action ConfirmAction(int buttonIndex, string saveName, int saveIndex, NewSaveWindow saveWindow)
+        private static Action ConfirmAction(int buttonIndex, int saveIndex, NewSaveWindow saveWindow)
         {
             return () =>
             {
-                saveName = saveWindow.inputField.m_Text;
-                saveWindow.gameObject.SetActive(false);
+                var saveName = saveWindow.inputField.text;
 
-                CustomMainMenu.section.buttons[buttonIndex].GetComponentInChildren<Text>().text = saveName;
-                CreateNewSave(saveIndex, saveName);
-
-                CustomMainMenu.section.buttons[buttonIndex].OnClick = new MainMenuButton.ButtonEvent();
-                Action selectSave = delegate { SelectSaves(saveIndex); };
-                CustomMainMenu.section.buttons[buttonIndex].OnClick.AddListener(selectSave);
+                if (CreateNewSave(saveIndex, saveName))
+                {
+                    saveWindow.gameObject.SetActive(false);
+                    CustomMainMenu.section.buttons[buttonIndex].GetComponentInChildren<Text>().text = saveName;
+                    CustomMainMenu.section.buttons[buttonIndex].OnClick = new MainMenuButton.ButtonEvent();
+                    Action selectSave = delegate { SelectSaves(saveIndex); };
+                    CustomMainMenu.section.buttons[buttonIndex].OnClick.AddListener(selectSave);
+                }
             };
         }
-
         private static void DisableInputsWindow()
         {
             if (CustomMainMenu.section != null)
@@ -333,8 +349,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 window.gameObject.SetActive(false);
             }
         }
-
-        private static void EnableNewSaveWindow(int buttonIndex, string saveName, int saveIndex)
+        private static void EnableNewSaveWindow(int buttonIndex, int saveIndex)
         {
             if (CustomMainMenu.section != null)
             {
@@ -345,7 +360,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                         if (CustomMainMenu.section.buttons[i] != null)
                         {
                             CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
-
                         }
                     }
                 }
@@ -353,20 +367,17 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
                 var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
                 window.gameObject.SetActive(true);
-                saveWindow.inputField.text = "SaveName";
+                saveWindow.inputField.m_Text = "SaveName";
 
                 var confirmButton = CustomMainMenu.section.buttons[25];
 
                 confirmButton.OnClick = new MainMenuButton.ButtonEvent();
                 Action confirmAction;
-                confirmAction = ConfirmAction(buttonIndex, saveName, saveIndex, saveWindow);
+                confirmAction = ConfirmAction(buttonIndex, saveIndex, saveWindow);
                 confirmButton.OnClick.AddListener(confirmAction);
             }
         }
-        
-        
-
-        private static void CreateNewSave(int index, string name)
+        private static bool CreateNewSave(int index, string name)
         {
             bool alreadyExist = SavesManager.ModSaves.Any(save => save.Value.Name == name);
             if (alreadyExist)
@@ -378,12 +389,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 var save = SavesManager.ModSaves[index];
                 if (save.Name == "EmptySave")
                 {
-                    MelonLogger.Msg("Found a valid save slot!: " + index);
-                    SavesManager.LoadSave(index, name);
+                    save.Name = name;
+                    SavesManager.LoadSave(save);
+                    return true;
                 }
             }
-        }
 
+            return false;
+        }
         private static void SelectSaves(int index)
         {
 
@@ -394,10 +407,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 Server.Stop();
                 Server.Start();
             }
-
-            SavesManager.LoadSave(SavesManager.ModSaves[index].saveIndex, SavesManager.ModSaves[index].Name);
+            CustomLobbyMenu.saveIndex = index;
+            SavesManager.LoadSave(SavesManager.ModSaves[index]);
+            CustomLobbyMenu.OpenLobby();
         }
-
         public static void DisableSavesMenu()
         {
             displaySaves = false;
@@ -418,7 +431,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             MainMenuManager manager = CustomMainMenu.section.menuManager;
             manager.ShowAds();
         }
-
         private static void EnableSavesMenu()
         {
             displaySaves = true;

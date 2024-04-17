@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.ServerSide;
@@ -39,8 +40,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                             CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
                         if (i == 26)
                         {
-                            CustomMainMenu.section.buttons[i].isDisabled = true;
-                            CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
+                            if (client)
+                            {
+                                CustomMainMenu.section.buttons[i].isDisabled = true;
+                                CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
+                            }
                             
                         }
                     }
@@ -104,9 +108,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     }
                 }
 
-                StartGame(saveIndex - 1);
-                SavesManager.ModSaves[saveIndex - 1].alreadyLoaded = true;
-                PreferencesManager.SaveModSave(saveIndex - 1);
+                MelonCoroutines.Start(StartGame());
             };
             startButton.OnClick.AddListener(startAction);
             startObject.SetActive(true);
@@ -187,6 +189,18 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 backButton.OnClick.AddListener(backtoMenu);
             }
             backObject.SetActive(true);
+        }
+
+        private static IEnumerator StartGame()
+        {
+             
+            ServerSend.SendCarLoadInfo(Client.Instance.Id);
+
+            yield return new WaitForEndOfFrame();
+            
+            StartGame(saveIndex);
+            SavesManager.ModSaves[saveIndex].alreadyLoaded = true;
+            SavesManager.SaveModSave(saveIndex);
         }
 
         public static void CreateLobbyDisplay(bool client=false)

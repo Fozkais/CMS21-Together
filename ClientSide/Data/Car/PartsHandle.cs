@@ -260,6 +260,8 @@ namespace CMS21Together.ClientSide.Data.Car
                 return true;
             else if (Math.Abs(handled.dust - toHandle.Dust) > 0.1f)
                 return true;
+            else if (Math.Abs(handled.condition - toHandle.Condition) > 0.1f)
+                return true;
 
             return false;
         }
@@ -268,8 +270,6 @@ namespace CMS21Together.ClientSide.Data.Car
             if (handled == null || toHandle == null) { return false;}
 
             if (handled.unmounted != toHandle.Unmounted)
-                return true;
-            else if (handled.unmounted != toHandle.Unmounted)
                 return true;
             else if (Math.Abs(handled.condition - toHandle.Condition) > 0.1f)
                 return true;

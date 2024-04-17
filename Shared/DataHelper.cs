@@ -101,7 +101,7 @@ namespace CMS21Together.Shared
             return copy;
         }
 
-        public static NewCarData Copy(NewCarData data) // TODO: check for otherDatatypes
+        public static NewCarData Copy(NewCarData data)
         {
             NewCarData copy = new NewCarData();
             copy.index = data.index;
@@ -109,7 +109,7 @@ namespace CMS21Together.Shared
             copy.color = data.color;
             copy.configVersion = data.configVersion;
             copy.customerCar = data.customerCar;
-            copy.ecuData = data.ecuData; //  TODO: check this
+            copy.ecuData = data.ecuData;
             copy.engineSwap = data.engineSwap;
             copy.factoryColor = data.factoryColor;
             copy.gearRatio = data.gearRatio;
@@ -130,9 +130,9 @@ namespace CMS21Together.Shared
             copy.UId = data.UId;
             copy.WheelsAlignment = data.WheelsAlignment;
             copy.AdditionalCarRot = data.AdditionalCarRot;
-            copy.BodyPartsData = data.BodyPartsData; // TODO: check this
-            copy.BonusPartsData = data.BonusPartsData; //  TODO: check this
-            copy.CarInfoData = data.CarInfoData; //  TODO: check this
+            copy.BodyPartsData = data.BodyPartsData;
+            copy.BonusPartsData = data.BonusPartsData;
+            copy.CarInfoData = data.CarInfoData;
             copy.LicensePlatesData = data.LicensePlatesData;
             copy.HasCustomPaintType = data.HasCustomPaintType;
             copy.HeadlampLeftAlignmentData = data.HeadlampLeftAlignmentData;
