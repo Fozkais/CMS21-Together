@@ -6,6 +6,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using Il2Cpp;
 using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.UI.Logic;
@@ -193,9 +194,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static IEnumerator StartGame()
         {
-             
-            ServerSend.SendCarLoadInfo(Client.Instance.Id);
-
+            //ServerSend.SendCarLoadInfo(Client.Instance.Id);
             yield return new WaitForEndOfFrame();
             
             StartGame(saveIndex);
@@ -367,7 +366,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         private static void StartGame(int _saveIndex)
         {
             SavesManager.StartGame(_saveIndex);
-            ServerSend.StartGame();
+            ServerSend.StartGame(null);
         }
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using CMS21Together.ClientSide.Handle;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
@@ -15,7 +17,7 @@ namespace CMS21Together.ClientSide.Data.Car
         public static bool ListenToCursorBlock;
         private static bool screenfadeFix;
         
-        [HarmonyPatch(typeof(CarLoader), "LoadCar")]
+        [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
         [HarmonyPrefix]
         public static void LoadCarPrePatch(string name, CarLoader __instance)
         {
@@ -25,14 +27,16 @@ namespace CMS21Together.ClientSide.Data.Car
                     MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, name));
             }
         }
-        [HarmonyPatch(typeof(CarLoader), "LoadCar")]
-        [HarmonyPostfix]
-        public static void LoadCarPostPatch(string name, CarLoader __instance)
+        
+        [HarmonyPatch(typeof(CarDebug), nameof(CarDebug.RunLoadCar),
+            new Type[]{ typeof(string), typeof(int)})]
+        [HarmonyPrefix]
+        public static void RunLoadCarPrePatch(string carToLoad, int configVersion, CarDebug __instance)
         {
             if (Client.Instance.isConnected)
             {
                 if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializePostPatch(__instance, name));
+                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance.GetComponent<CarLoader>(), carToLoad));
             }
         }
         
@@ -43,22 +47,15 @@ namespace CMS21Together.ClientSide.Data.Car
             if (Client.Instance.isConnected)
             {
                 if (ModSceneManager.currentScene() == GameScene.garage)
+                {
                     MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, carDataCheck.carToLoad));
+                    //MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, carDataCheck));
+                    
+                }
             }
         }
         
-        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
-        [HarmonyPostfix]
-        public static void LoadCarFromFilePostPatch(NewCarData carDataCheck, CarLoader __instance)
-        {
-            if (Client.Instance.isConnected)
-            {
-                if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializePostPatch(__instance, carDataCheck.carToLoad));
-            }
-        }
-        
-        [HarmonyPatch(typeof(CarLoader), "SetEngine")]
+        [HarmonyPatch(typeof(CarLoader), "SetUnmountWithCarParts")]
         [HarmonyPostfix]
         public static void SetEnginePatch(CarLoader __instance)
         {
@@ -119,6 +116,55 @@ namespace CMS21Together.ClientSide.Data.Car
             if(screenfadeFix)
                 GameData.Instance.screenFader.NormalFadeOut();
                 
+        }
+        
+        [HarmonyPatch(typeof(NotificationCenter), "SelectSceneToLoad", 
+            new Type[]{ typeof(string), typeof(SceneType), typeof(bool), typeof(bool)})]
+        [HarmonyPrefix]
+        public static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
+        {
+            if (Client.Instance.isConnected || ServerData.isRunning)
+            {
+                try
+                {
+                    if (newSceneName != "garage")
+                    {
+                        ClientData.LoadedCars.Clear();
+                        var profile = SavesManager.currentSave;
+
+                        ClientSend.SendResyncCars(false);
+
+                        for (var i = 0; i < profile.carsInGarage.Count; i++)
+                        {
+                            var SaveCar = profile.carsInGarage[i];
+                            bool exist = false;
+                            foreach ((int, string) car in ClientData.tempCarList)
+                            {
+                                if (car.Item1 == SaveCar.index)
+                                    if (car.Item2 == SaveCar.carToLoad)
+                                        exist = true;
+                            }
+
+                            if (exist)
+                            {
+                                MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "already exist!");
+                                profile.carsInGarage[i] = new NewCarData();
+                            }
+                            else
+                            {
+                                MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "is new !");
+                            }
+
+                            ClientData.refreshCars = true;
+                        }
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    MelonLogger.Msg("Error on sceneChange: " + e);
+                }
+            }
         }
     }
 }

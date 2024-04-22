@@ -41,6 +41,17 @@ namespace CMS21Together.Shared.Data
 
             this.isFromServer = false;
         }
+        
+        public ModCar(int _carLoaderID, string _carID, int _carVersion,int _carPosition=-1)
+        {
+            this.carLoaderID = _carLoaderID;
+            this.carID = _carID;
+            this.partInfo = new ModPartInfo();
+            this.carPosition = _carPosition;
+            this.carVersion = _carVersion;
+
+            this.isFromServer = false;
+        }
 
         public ModCar(ModCar _car)
         {

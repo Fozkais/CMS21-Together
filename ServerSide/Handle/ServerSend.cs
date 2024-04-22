@@ -125,10 +125,12 @@ namespace CMS21Together.ServerSide.Handle
                 }
             }
 
-            public static void StartGame()
+            public static void StartGame(ModProfileData saveData)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.startGame))
                 {
+                    if(saveData != null)
+                        _packet.Write(saveData);
                     SendTCPDataToAll(Client.Instance.Id, _packet);
                 }
                 MelonCoroutines.Start(DelaySpawnPlayer());
@@ -316,14 +318,17 @@ namespace CMS21Together.ServerSide.Handle
 
         #region CarData
         
-            public static void CarInfo(int fromClient, ModCar car, bool removed)
+            public static void CarInfo(int fromClient, ModCar car, bool removed, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carInfo))
                 {
                     _packet.Write(removed);
                     _packet.Write(car);
                     
-                    SendTCPDataToAll(fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(fromClient, _packet);
+                    else
+                        SendTCPData(fromClient, _packet);
                 }
             }
             public static void CarPart(int fromClient, int carLoaderID, ModPartScript carPart)
@@ -348,25 +353,31 @@ namespace CMS21Together.ServerSide.Handle
                     SendTCPDataToAll(fromClient, _packet);
                 }
             }
-            public static void PartScripts(int fromClient, List<ModPartScript> carParts, int carLoaderID)
+            public static void PartScripts(int fromClient, List<ModPartScript> carParts, int carLoaderID, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carParts))
                 {
                     _packet.Write(carParts);
                     _packet.Write(carLoaderID);
                     
-                    SendTCPDataToAll(fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(fromClient, _packet);
+                    else
+                        SendTCPData(fromClient, _packet);
                 }
             }
             
-            public static void BodyParts(int fromClient, List<ModCarPart> carParts, int carLoaderID)
+            public static void BodyParts(int fromClient, List<ModCarPart> carParts, int carLoaderID, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.bodyParts))
                 {
                     _packet.Write(carParts);
                     _packet.Write(carLoaderID);
                     
-                    SendTCPDataToAll(fromClient, _packet);
+                    if(!resync)
+                        SendTCPDataToAll(fromClient, _packet);
+                    else
+                        SendTCPData(fromClient, _packet);
                 }
             }
             public static void CarPosition(int fromClient, int carLoaderID, int carPosition)
@@ -380,6 +391,16 @@ namespace CMS21Together.ServerSide.Handle
                 }
             }
             
+            public static void CarResync(int fromClient, List<(int,string)> carOnServer)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carResync))
+                {
+                    _packet.Write(carOnServer);
+
+                    SendTCPData(fromClient, _packet);
+                }
+            }
+            
         #endregion
 
         public static void SendKeepAliveConfirmation(int fromclient)
@@ -389,5 +410,39 @@ namespace CMS21Together.ServerSide.Handle
                 SendTCPData(fromclient, packet);
             }
         }
+
+        /*public static void SendCarLoadInfo(int fromclient)
+        {
+            using (Packet packet = new Packet((int)PacketTypes.carLoadInfo))
+            {
+                var profiles = Singleton<GameManager>.Instance.ProfileManager.GetProfiles();
+                var profile = profiles.First(s => s.Name == SavesManager.currentSaveName);
+
+                List<ModNewCarData> carToLoad = new List<ModNewCarData>();
+                
+                for (var i = 0; i < profile.carsInGarage.Count; i++)
+                {
+                    if (!String.IsNullOrEmpty(profile.carsInGarage[i].carToLoad))
+                    {
+                        MelonLogger.Msg("SV: Sending CarLodInfo : " + profile.carsInGarage[i].carToLoad);
+                        carToLoad.Add( new ModNewCarData(profile.carsInGarage[i]));
+                    }
+                }
+                
+                packet.Write(carToLoad);
+                
+                SendTCPDataToAll(fromclient, packet);
+            }
+        }
+        public static void CarLoadInfo(int fromclient, int lenght,byte[] car)
+        {
+            using (Packet packet = new Packet((int)PacketTypes.carLoadInfo))
+            {
+                packet.Write(lenght);
+                packet.Write(car);
+                
+                SendTCPDataToAll(packet);
+            }
+        }*/
     }
 }

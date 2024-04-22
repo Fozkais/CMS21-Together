@@ -245,7 +245,7 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
                     {
-                        //MelonLogger.Msg("Differences Found!");
+                        MelonLogger.Msg("Differences Found!");
                         handle[i] = new ModCarPart(references[i], i);
                         ClientSend.SendBodyPart(car.carLoaderID, handle[i]);
                     }

@@ -147,7 +147,6 @@ namespace CMS21Together.Shared
             if (GUILayout.Button("Host Game", button_S, GUILayout.Width(190), GUILayout.Height(30)))
             {
                 window = guiWindow.host;
-                PreferencesManager.LoadAllModSaves();
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -196,7 +195,7 @@ namespace CMS21Together.Shared
                         if (save.Name == "EmptySave")
                         {
                             MelonLogger.Msg("Found a valid save slot!: " + index);
-                            SavesManager.LoadSave(index, saveName);
+                            SavesManager.LoadSave(save);
                             break;
                         }
                     }
@@ -257,7 +256,7 @@ namespace CMS21Together.Shared
                     if (GUILayout.Button("X", GUILayout.Width(25), GUILayout.Height(buttonHeight)))
                     {
                         // Actions à effectuer lors du clic sur le bouton de suppression
-                        SavesManager.RemoveSave(data.saveIndex);
+                        SavesManager.RemoveModSave(data.saveIndex);
                         break;
                     }
                     if (GUILayout.Button(data.Name, button_S, GUILayout.Width(160), GUILayout.Height(buttonHeight)))
@@ -271,8 +270,8 @@ namespace CMS21Together.Shared
                             Server.Start();
                         }
                         window = guiWindow.lobby;
-                            
-                        saveIndex = SavesManager.LoadSave(data.saveIndex, data.Name);
+                        SavesManager.LoadSave(data);
+                        saveIndex = data.saveIndex;
 
                     }
                     
@@ -377,7 +376,7 @@ namespace CMS21Together.Shared
 
                         StartGame(saveIndex - 1);
                         SavesManager.ModSaves[saveIndex - 1].alreadyLoaded = true;
-                        PreferencesManager.SaveModSave(saveIndex - 1);
+                        SavesManager.SaveModSave(saveIndex - 1);
                         showModUI = false;
                     }
                 }
@@ -411,7 +410,7 @@ namespace CMS21Together.Shared
         private void StartGame(int _saveIndex)
         {
             SavesManager.StartGame(_saveIndex);
-            ServerSend.StartGame();
+            ServerSend.StartGame(new ModProfileData(SavesManager.GetProfile(_saveIndex)));
         }
         private void JoinLobby()
         {

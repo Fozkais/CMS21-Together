@@ -1,5 +1,6 @@
 using System;
 using Il2Cpp;
+using MelonLoader;
 
 namespace CMS21Together.Shared.Data
 {
@@ -37,29 +38,36 @@ namespace CMS21Together.Shared.Data
 
         public ModItem(Item item)
         {
-            this.Color = new ModColor(item.Color.GetColor());
-            this.Condition = item.Condition;
-            this.Dent = item.Dent;
-            //this.GearboxData = item.GearboxData; TODO: Handle class
-            this.IsExamined = item.IsExamined;
-            this.IsPainted = item.IsPainted;
-            this.IsTinted = item.IsTinted;
-            this.Livery = item.Livery;
-            this.LiveryStrength = item.LiveryStrength;
-            //this.LPData = item.LPData; TODO: Handle class
-            //this.MountObjectData = item.MountObjectData; TODO: Handle class
-            this.NormalID = item.NormalID;
-            this.OutsideRustEnabled = item.OutsideRustEnabled;
-            this.PaintData = new ModPaintData(item.PaintData);
-            this.PaintType = item.PaintType;
-            this.Quality = item.Quality;
-            this.RepairAmount = item.RepairAmount;
-            this.TintColor = new ModColor(item.TintColor.GetColor());
-            //this.TuningData = item.TuningData; TODO: Handle class
-            this.WashFactor = item.WashFactor;
-            this.WheelData = new ModWheelData(item.WheelData);
-            this.ID = item.ID;
-            this.UID = item.UID;
+            if (item != null)
+            {
+                this.Color = item.Color != null ? new ModColor(item.Color.GetColor()) : null;
+                this.Condition = item.Condition;
+                this.Dent = item.Dent;
+                //this.GearboxData = item.GearboxData; // TODO: Handle class
+                this.IsExamined = item.IsExamined;
+                this.IsPainted = item.IsPainted;
+                this.IsTinted = item.IsTinted;
+                this.Livery = item.Livery;
+                this.LiveryStrength = item.LiveryStrength;
+                //this.LPData = item.LPData; // TODO: Handle class
+                //this.MountObjectData = item.MountObjectData; // TODO: Handle class
+                this.NormalID = item.NormalID;
+                this.OutsideRustEnabled = item.OutsideRustEnabled;
+                this.PaintData = item.PaintData != null ? new ModPaintData(item.PaintData) : null;
+                this.PaintType = item.PaintType;
+                this.Quality = item.Quality;
+                this.RepairAmount = item.RepairAmount;
+                this.TintColor = item.TintColor != null ? new ModColor(item.TintColor.GetColor()) : null;
+                //this.TuningData = item.TuningData; // TODO: Handle class
+                this.WashFactor = item.WashFactor;
+                this.WheelData = new ModWheelData(item.WheelData);
+                this.ID = item.ID;
+                this.UID = item.UID;
+            }
+            else
+            {
+                MelonLogger.Msg("Error: Item is null in ModItem constructor.");
+            }
         }
 
         public Item ToGame(ModItem item)
@@ -92,5 +100,51 @@ namespace CMS21Together.Shared.Data
 
             return original;
         }
+        public Item ToGame()
+        {
+            Item original = new Item();
+    
+            if (this.Color != null)
+            {
+                original.Color = new CustomColor(ModColor.ToColor(this.Color));
+            }
+    
+            original.Condition = this.Condition;
+            original.Dent = this.Dent;
+            original.IsExamined = this.IsExamined;
+            original.IsPainted = this.IsPainted;
+            original.IsTinted = this.IsTinted;
+            original.Livery = this.Livery;
+            original.LiveryStrength = this.LiveryStrength;
+            original.NormalID = this.NormalID;
+            original.OutsideRustEnabled = this.OutsideRustEnabled;
+
+            if (this.PaintData != null)
+            {
+                original.PaintData = new ModPaintData().ToGame(this.PaintData);
+            }
+    
+            original.PaintType = this.PaintType;
+            original.Quality = this.Quality;
+            original.RepairAmount = this.RepairAmount;
+    
+            if (this.Color != null)
+            {
+                original.TintColor = new CustomColor(ModColor.ToColor(this.Color));
+            }
+    
+            original.WashFactor = this.WashFactor;
+
+            if (this.WheelData != null)
+            {
+                original.WheelData = new ModWheelData().ToGame(this.WheelData);
+            }
+    
+            original.ID = this.ID;
+            original.UID = this.UID;
+
+            return original;
+        }
+
     }
 }

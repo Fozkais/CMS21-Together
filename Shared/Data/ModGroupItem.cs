@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Il2Cpp;
+using MelonLoader;
 
 namespace CMS21Together.Shared.Data
 {
@@ -21,15 +22,30 @@ namespace CMS21Together.Shared.Data
 
         public ModGroupItem(GroupItem item)
         {
-            this.IsNormalGroup = item.IsNormalGroup;
-            foreach (Item _item in item.ItemList)
+            if (item != null)
             {
-                this.ItemList.Add(new ModItem(_item));
-            }
+                this.IsNormalGroup = item.IsNormalGroup;
+                this.ItemList = new List<ModItem>();
 
-            this.Size = item.Size;
-            this.ID = item.ID;
-            this.UID = item.UID;
+                if (item.ItemList != null)
+                {
+                    foreach (Item _item in item.ItemList)
+                    {
+                        if (_item != null)
+                        {
+                            this.ItemList.Add(new ModItem(_item));
+                        }
+                    }
+                }
+
+                this.Size = item.Size;
+                this.ID = item.ID;
+                this.UID = item.UID;
+            }
+            else
+            {
+                MelonLogger.Msg("Error: GroupItem is null in ModGroupItem constructor.");
+            }
         }
 
         public GroupItem ToGame(ModGroupItem ModGroupItem)
@@ -41,6 +57,19 @@ namespace CMS21Together.Shared.Data
             original.Size = ModGroupItem.Size;
             original.ID = ModGroupItem.ID;
             original.UID = ModGroupItem.UID;
+
+            return original;
+        }
+        
+        public GroupItem ToGame()
+        {
+            GroupItem original = new GroupItem();
+            
+            original.IsNormalGroup = this.IsNormalGroup;
+            original.ItemList = Convert(this.ItemList);
+            original.Size = this.Size;
+            original.ID = this.ID;
+            original.UID = this.UID;
 
             return original;
         }

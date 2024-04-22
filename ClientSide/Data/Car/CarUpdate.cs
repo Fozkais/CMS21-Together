@@ -39,11 +39,13 @@ namespace CMS21Together.ClientSide.Data.Car
 
         public static IEnumerator HandleNewPart(ModPartScript part, int carLoaderID)
         {
+            while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                yield return new WaitForSeconds(1);
+            
             bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)
             {
                 var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                
                 
                 int count = 0;
                 while (!(car.isReferenced && car.isHandled) && count < 20)
@@ -62,6 +64,10 @@ namespace CMS21Together.ClientSide.Data.Car
                 yield return new WaitForEndOfFrame();
                 
                 PrepareUpdatePart(car, part);
+            }
+            else
+            {
+                MelonLogger.Msg("Part is not valid.");
             }
         }
 
@@ -170,6 +176,9 @@ namespace CMS21Together.ClientSide.Data.Car
 
         public static IEnumerator HandleNewBodyPart(ModCarPart carPart, int carLoaderID)
         {
+            while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                yield return new WaitForSeconds(1);
+            
             bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)
             {
@@ -181,7 +190,6 @@ namespace CMS21Together.ClientSide.Data.Car
                     count += 1;
                     yield return new WaitForSeconds(0.1f);
                 }
-                
                 int _count = 0;
                 while (!car.receivedBodyParts && _count < 20)
                 {
@@ -191,6 +199,10 @@ namespace CMS21Together.ClientSide.Data.Car
                 yield return new WaitForEndOfFrame();
                 
                 UpdateBodyPart(car, carPart);
+            }
+            else
+            {
+                MelonLogger.Msg("Bodypart is not valid.");
             }
         }
 
@@ -227,7 +239,8 @@ namespace CMS21Together.ClientSide.Data.Car
             if (!reference.Unmounted && !reference.name.StartsWith("license_plate"))
             {
                // GameData.carLoaders[carLoaderId].SetCustomCarPaintType(originalPart, updatedPart.paintData.ToGame(updatedPart.paintData));  
-               // GameData.carLoaders[carLoaderId].SetCarColorAndPaintType(originalPart, color, (PaintType)updatedPart.paintType);
+               if(carPart.colors != null)
+               // GameData.Instance.carLoaders[car.carLoaderID].SetCarColorAndPaintType(reference, ModColor.ToColor(carPart.colors), (PaintType)carPart.paintType);
                if(carPart.colors != null)
                     GameData.Instance.carLoaders[car.carLoaderID].SetCarColor(reference, color);
                if(carPart.TintColor != null)

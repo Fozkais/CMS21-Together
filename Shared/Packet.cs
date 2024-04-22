@@ -102,11 +102,7 @@ namespace CMS21Together.Shared
                 readPos -= 4; // "Unread" the last read int
             }
         }
-
-        public void ReadData()
-        {
-            MelonLogger.Msg("Data in packet : " + content);
-        }
+        
         
         #endregion
 
@@ -396,7 +392,7 @@ namespace CMS21Together.Shared
             return (T) ByteArrayToObject(array);
         }
 
-        private object ByteArrayToObject(byte[] arrBytes)
+        public object ByteArrayToObject(byte[] arrBytes)
         {
             try
             {

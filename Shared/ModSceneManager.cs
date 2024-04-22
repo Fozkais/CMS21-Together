@@ -29,9 +29,7 @@ namespace CMS21Together.Shared
             else if (isInDealer())
                 return GameScene.auto_salon;
             else
-                return GameScene.garage;
-            
-            
+                return GameScene.unknow;
         }
         public static bool isInGarage(Player player = null)
         {

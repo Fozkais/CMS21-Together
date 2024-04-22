@@ -213,6 +213,8 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
                 {(int)PacketTypes.engineStandAngle, ServerHandle.EngineStandAngle},
                 
+                {(int)PacketTypes.carResync, ServerHandle.CarResync},
+                //{(int)PacketTypes.carLoadInfo, ServerHandle.CarLoadInfo},
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},

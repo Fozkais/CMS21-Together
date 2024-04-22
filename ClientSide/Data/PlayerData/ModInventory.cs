@@ -24,8 +24,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public static void AddItemHook(Item item, bool showPopup = false)
         {
             var newItem = new ModItem(item);
-            handledItem.Add(newItem);
-            ClientSend.SendInventoryItem(newItem, true);
+            if (!handledItem.Contains(newItem))
+            {
+                handledItem.Add(newItem);
+                ClientSend.SendInventoryItem(newItem, true);
+            }
         }
 
 
@@ -34,8 +37,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public static void AddGroupItemHook(GroupItem group)
         {
             var newItem = new ModGroupItem(group);
-            handledGroupItem.Add(newItem);
-            ClientSend.SendInventoryGroupItem(newItem, true);
+            if (!handledGroupItem.Contains(newItem))
+            {
+                handledGroupItem.Add(newItem);
+                ClientSend.SendInventoryGroupItem(newItem, true);
+            }
         }
 
 

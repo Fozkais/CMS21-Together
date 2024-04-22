@@ -358,7 +358,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     confirmButtonTransform.anchoredPosition = new Vector2(145, -100);
                     confirmButtonTransform.sizeDelta = new Vector2(120, 50);
                 
-                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Confirm"; 
+                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Connect"; 
                     confirmButtonObject.SetActive(true);
 
                     confirmButtonComponent.OnClick = new MainMenuButton.ButtonEvent();

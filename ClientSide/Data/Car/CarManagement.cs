@@ -47,20 +47,25 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             foreach (ModCar car in ClientData.LoadedCars.Values)
             {
-                int count = 0;
-                while (!car.isHandled && count < 20)
+                if (!car.isFromServer)
                 {
-                    count += 1;
-                    yield return new WaitForSeconds(0.1f);
-                }
-                if (String.IsNullOrEmpty(GameData.Instance.carLoaders[car.carLoaderID].carToLoad) && GameData.Instance.carLoaders[car.carLoaderID].carParts == null)
-                {
-                    ClientSend.SendModCar(car, true);
-                    ClientData.LoadedCars.Remove(car.carLoaderID);
+                    int count = 0;
+                    while (!car.isHandled && count < 20)
+                    {
+                        count += 1;
+                        yield return new WaitForSeconds(0.1f);
+                    }
+
+                    if (String.IsNullOrEmpty(GameData.Instance.carLoaders[car.carLoaderID].carToLoad) &&
+                        GameData.Instance.carLoaders[car.carLoaderID].carParts == null)
+                    {
+                        ClientSend.SendModCar(new ModCar(car), true);
+                        ClientData.LoadedCars.Remove(car.carLoaderID);
+                    }
                 }
             }
         }
-        //
+        
         public static void DetectCarMoves()
         {
             foreach (var car in ClientData.LoadedCars)

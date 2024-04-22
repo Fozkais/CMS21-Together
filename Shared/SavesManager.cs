@@ -13,11 +13,12 @@ using UnityEngine;
 
 namespace CMS21Together.Shared
 {
+    [HarmonyPatch]
     public static class SavesManager
     {
         public static Dictionary<int, ModSaveData> ModSaves = new Dictionary<int, ModSaveData> ();
         public static Il2CppReferenceArray<ProfileData> profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
-        public static string currentSaveName;
+        public static ProfileData currentSave;
         
         private const string MOD_FOLDER_PATH = @"Mods\togetherMod\";
         private const string SAVE_FOLDER_PATH = MOD_FOLDER_PATH + "saves";
@@ -68,6 +69,11 @@ namespace CMS21Together.Shared
             }
             
         }
+
+        public static ProfileData GetProfile(int saveIndex)
+        {
+            return Singleton<GameManager>.Instance.GameDataManager.ProfileData[saveIndex];
+        }
         
         private static SaveData GetSave(SteamSave save, int saveIndex)
         {
@@ -88,7 +94,7 @@ namespace CMS21Together.Shared
             int index;
             string name;
             
-            if(clientSave) { index = MainMod.MAX_SAVE_COUNT + 1; name = "ClientSave"; }
+            if(clientSave) { index = MainMod.MAX_SAVE_COUNT; name = "ClientSave"; }
             else { index = saveData.saveIndex; name = saveData.Name; }
             
             gameManager.ProfileManager.selectedProfile = index;
@@ -97,39 +103,69 @@ namespace CMS21Together.Shared
             MelonLogger.Msg("-------------------Load Save---------------------");
             MelonLogger.Msg("Index : " + index);
             MelonLogger.Msg("Name : " + name);
-            if(!clientSave) { MelonLogger.Msg("Already Loaded : " + saveData.alreadyLoaded); }
-            if(!saveData.alreadyLoaded) { MelonLogger.Msg("-------------------------------------------------"); }
-            
-            if (saveData.alreadyLoaded)
+            if(clientSave) { MelonLogger.Msg("-------------------------------------------------"); }
+            if(!clientSave)
             {
+                MelonLogger.Msg("Already Loaded : " + saveData.alreadyLoaded);
+                if(!saveData.alreadyLoaded) { MelonLogger.Msg("-------------------------------------------------"); }
+                
+                if (saveData.alreadyLoaded)
+                {
+                    gameManager.ProfileManager.selectedProfile = index;
+                    gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
+                    gameManager.ProfileManager.Load();
+                    
+                    MelonLogger.Msg("-------------------Save Info---------------------");
+                    MelonLogger.Msg("Selected Profile Name : " +  gameManager.ProfileManager.GetSelectedProfileName()); 
+                    MelonLogger.Msg("Selected Profile Difficulty : " +  gameManager.ProfileManager.GetSelectedProfileDifficulty()); 
+                    MelonLogger.Msg("Selected Profile : " +  gameManager.ProfileManager.selectedProfile);
+                    MelonLogger.Msg("-------------------------------------------------");
+                    currentSave = gameManager.ProfileManager.GetSelectedProfileData();
+                    SaveModSave(index);
+                    return;
+                }
+                else
+                {
+                    BinaryWriter writer = new BinaryWriter();
+                    ProfileData save = new ProfileData();
+            
+                    save.Init();
+                    save.WriteSaveHeader(writer);
+                    save.WriteSaveVersion(writer);
+
+                    profileData[index] = save;
+                    Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
+                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
+                    Singleton<GameManager>.Instance.ProfileManager.Load();
+                
+                    ModSaves[index].Name =  name;
+                    ModSaves[index].saveIndex = index;
+                }
+            }
+            else
+            {
+                BinaryWriter writer = new BinaryWriter();
+                ProfileData save = new ProfileData();
+            
+                save.Init();
+                save.WriteSaveHeader(writer);
+                save.WriteSaveVersion(writer);
+
+                profileData[index] = save;
                 gameManager.ProfileManager.selectedProfile = index;
                 gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
+                Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
+                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
                 gameManager.ProfileManager.Load();
                 
-                MelonLogger.Msg("-------------------Save Info-------------------");
+                MelonLogger.Msg("-------------------Save Info---------------------");
                 MelonLogger.Msg("Selected Profile Name : " +  gameManager.ProfileManager.GetSelectedProfileName()); 
                 MelonLogger.Msg("Selected Profile Difficulty : " +  gameManager.ProfileManager.GetSelectedProfileDifficulty()); 
                 MelonLogger.Msg("Selected Profile : " +  gameManager.ProfileManager.selectedProfile);
                 MelonLogger.Msg("-------------------------------------------------");
-                currentSaveName = name;
-                return;
             }
             
-            BinaryWriter writer = new BinaryWriter();
-            ProfileData save = new ProfileData();
-            
-            save.Init();
-            save.WriteSaveHeader(writer);
-            save.WriteSaveVersion(writer);
-
-            profileData[index] = save;
-            Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-            Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
-            Singleton<GameManager>.Instance.ProfileManager.Load();
-                
-            ModSaves[index].Name =  name;
-            ModSaves[index].saveIndex = index;
-            currentSaveName = name;
+            currentSave = gameManager.ProfileManager.GetSelectedProfileData();
                 
             if (!clientSave){ SaveModSave(index); }
             if (clientSave) { StartGame(MainMod.MAX_SAVE_COUNT+1); }
@@ -182,8 +218,18 @@ namespace CMS21Together.Shared
         
         [HarmonyPatch(typeof(ProfileManager), "Save")]
         [HarmonyPostfix]
-        public static void Savepatch()
+        public static void SavePatch(ProfileManager __instance)
         {
+            MelonLogger.Msg("SavedGameProfile");
+            MelonLogger.Msg(" ProfileManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            SaveModSave( __instance.selectedProfile);
+        }
+        
+        [HarmonyPatch(typeof(GameDataManager), "Save")]
+        [HarmonyPostfix]
+        public static void SavePatch2(int profileID)
+        {
+            MelonLogger.Msg("SavedGameData");
             MelonLogger.Msg(" ProfileManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
         }

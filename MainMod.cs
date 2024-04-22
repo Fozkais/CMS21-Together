@@ -40,6 +40,7 @@ namespace CMS21Together
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
+            
         }
 
         public override void OnGUI()
@@ -56,6 +57,7 @@ namespace CMS21Together
             
             if (client.isConnected || ServerData.isRunning)
             {
+                ModSceneManager.UpdatePlayerScene();
                 if(ModSceneManager.isInMenu() && client.isConnected && !ServerData.isRunning)
                 {
                     Client.Instance.Disconnect();
@@ -68,7 +70,7 @@ namespace CMS21Together
                 }
                 if(ModSceneManager.isInGarage())
                 {
-                    GameData.DataInitialzed = false;
+                    GameData.DataInitialized = false;
                     ClientData.Init();
 
                     foreach (KeyValuePair<int, Player> player in ClientData.players)
@@ -89,7 +91,7 @@ namespace CMS21Together
         public override void OnUpdate()
         {
             if(!isModInitialized) {return;}
-            if (GameData.DataInitialzed)
+            if (GameData.DataInitialized)
             {
                 if (Client.Instance.isConnected)
                 {

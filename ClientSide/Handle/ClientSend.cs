@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using Il2Cpp;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Handle
@@ -266,6 +268,27 @@ namespace CMS21Together.ClientSide.Handle
                     SendTCPData(_packet);
                 }
             }
+            
+            /*public static void SendNewCarData(NewCarData NewCarData)
+            {
+                byte[] serializedBytes;
+                using (Packet _packet = new Packet((int)PacketTypes.carLoadInfo))
+                {
+                    Il2CppSystem.IO.MemoryStream memoryStream = new Il2CppSystem.IO.MemoryStream();
+                    Il2CppSystem.IO.BinaryWriter binaryWriter = new Il2CppSystem.IO.BinaryWriter(memoryStream);
+                    
+                    NewCarData.Serialize(binaryWriter, SavesManager.currentSave.saveVersion);
+                    serializedBytes = memoryStream.ToArray();
+                    _packet.Write(serializedBytes.Length);
+                    _packet.Write(serializedBytes);
+                    SendTCPData(_packet);
+                    
+                    binaryWriter.Dispose();
+                    memoryStream.Dispose();
+
+                }
+                MelonLogger.Msg("SerializedCar: " + serializedBytes.Length);
+            }*/
 
         #endregion
         

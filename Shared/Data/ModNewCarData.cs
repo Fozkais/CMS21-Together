@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Il2Cpp;
+using MelonLoader;
 using UnityEngine.Serialization;
 
 namespace CMS21Together.Shared.Data
@@ -11,7 +12,7 @@ namespace CMS21Together.Shared.Data
     {
         public float AdditionalCarRot;
         public List<ModBodyPartData> BodyPartsData;
-        //public List<ModBonusPartData> BonusPartData; TODO: Implement Bonus part
+        public ModBonusPartsData BonusPartsData;
         public ModCarInfoData CarInfoData;
         public string carToLoad;
         public ModColor color;
@@ -40,92 +41,170 @@ namespace CMS21Together.Shared.Data
         public List<int> tiresSize;
         //public ModToolsData ToolsData;  TODO: Implement ToolsData
         public string UId;
-        public ModWheelsAlignment wheelsesAlignment;
+        public ModWheelsAlignment wheelsAlignment;
         public List<int> wheelsWidth;
 
         public ModNewCarData(NewCarData newCarData)
+{
+    if (newCarData != null)
+    {
+        AdditionalCarRot = newCarData.AdditionalCarRot;
+
+        if (newCarData.BodyPartsData != null)
         {
-            AdditionalCarRot = newCarData.AdditionalCarRot;
             BodyPartsData = new List<ModBodyPartData>();
-            for (int i = 0; i < newCarData.BodyPartsData.Count; i++)
+            foreach (var bodyPartData in newCarData.BodyPartsData._items)
             {
-                BodyPartsData.Add(new ModBodyPartData(newCarData.BodyPartsData._items[i]));
+                if (bodyPartData != null)
+                {
+                    BodyPartsData.Add(new ModBodyPartData(bodyPartData));
+                }
             }
-            CarInfoData = new ModCarInfoData(newCarData.CarInfoData);
-            carToLoad = newCarData.carToLoad;
-            configVersion = newCarData.configVersion;
-            customerCar = newCarData.customerCar;
-            color = new ModColor(newCarData.color[0], newCarData.color[1], newCarData.color[2], newCarData.color[3]);
-            EngineData = new ModEngineData(newCarData.EngineData);
-            engineSwap = newCarData.engineSwap;
-            factoryColor = new ModColor(newCarData.factoryColor[0], newCarData.factoryColor[1], newCarData.factoryColor[2], newCarData.factoryColor[3]);
-            factoryPaintType = (ModPaintType)newCarData.factoryPaintType;
-            finalDriveRatio = newCarData.finalDriveRatio;
-            gearRatio = newCarData.gearRatio.ToList();
-            HasCustomPaintType = newCarData.HasCustomPaintType;
-            index = newCarData.index;
-            LightsOn = newCarData.LightsOn;
-            measuredDragIndex = newCarData.measuredDragIndex;
-            orderConnection = newCarData.orderConnection;
-            PaintData = new ModPaintData(newCarData.PaintData);
-            PartData = new List<ModPartData>();
-            for (int i = 0; i < newCarData.PartData.Count; i++)
-            {
-                PartData.Add(new ModPartData(newCarData.PartData._items[i]));
-            }
-            rimsSize = newCarData.rimsSize.ToList();
-            tiresET = newCarData.tiresET.ToList();
-            tiresSize = newCarData.tiresSize.ToList();
-            UId = newCarData.UId;
-            wheelsesAlignment = new ModWheelsAlignment(newCarData.WheelsAlignment);
-            wheelsWidth = newCarData.wheelsWidth.ToList();
         }
+        
+        if (newCarData.BonusPartsData != null)
+        {
+            BonusPartsData = new ModBonusPartsData(newCarData.BonusPartsData);
+        }
+
+
+        CarInfoData = new ModCarInfoData(newCarData.CarInfoData);
+        
+
+        carToLoad = newCarData.carToLoad;
+        configVersion = newCarData.configVersion;
+        customerCar = newCarData.customerCar;
+
+        if (newCarData.color != null && newCarData.color.Length >= 4)
+        {
+            color = new ModColor(newCarData.color[0], newCarData.color[1], newCarData.color[2], newCarData.color[3]);
+        }
+
+
+        EngineData = new ModEngineData(newCarData.EngineData);
+        
+
+        engineSwap = newCarData.engineSwap;
+
+        if (newCarData.factoryColor != null && newCarData.factoryColor.Length >= 4)
+        {
+            factoryColor = new ModColor(newCarData.factoryColor[0], newCarData.factoryColor[1], newCarData.factoryColor[2], newCarData.factoryColor[3]);
+        }
+
+        factoryPaintType = (ModPaintType)newCarData.factoryPaintType;
+        finalDriveRatio = newCarData.finalDriveRatio;
+        gearRatio = newCarData.gearRatio?.ToList();
+        HasCustomPaintType = newCarData.HasCustomPaintType;
+        index = newCarData.index;
+        LightsOn = newCarData.LightsOn;
+        measuredDragIndex = newCarData.measuredDragIndex;
+        orderConnection = newCarData.orderConnection;
+
+        if (newCarData.PaintData != null)
+        {
+            PaintData = new ModPaintData(newCarData.PaintData);
+        }
+
+        if (newCarData.PartData != null)
+        {
+            PartData = new List<ModPartData>();
+            foreach (var partData in newCarData.PartData._items)
+            {
+                if (partData != null)
+                {
+                    PartData.Add(new ModPartData(partData));
+                }
+            }
+        }
+
+        rimsSize = newCarData.rimsSize?.ToList();
+        tiresET = newCarData.tiresET?.ToList();
+        tiresSize = newCarData.tiresSize?.ToList();
+        UId = newCarData.UId;
+
+
+        wheelsAlignment = new ModWheelsAlignment(newCarData.WheelsAlignment);
+
+        wheelsWidth = newCarData.wheelsWidth?.ToList();
+    }
+    else
+    {
+        MelonLogger.Msg("Error: NewCarData is null in ModNewCarData constructor.");
+    }
+}
+
 
         public NewCarData ToGame()
         {
             NewCarData newData = new NewCarData();
 
             newData.AdditionalCarRot = AdditionalCarRot;
-    
-            newData.BodyPartsData = new Il2CppSystem.Collections.Generic.List<BodyPartData>();
-            foreach (var bodyPartData in BodyPartsData)
+
+            if (BodyPartsData != null)
             {
-                newData.BodyPartsData.Add(bodyPartData.ToGame());
+                newData.BodyPartsData = new Il2CppSystem.Collections.Generic.List<BodyPartData>();
+                foreach (var bodyPartData in BodyPartsData)
+                {
+                    if (bodyPartData != null)
+                    {
+                        newData.BodyPartsData.Add(bodyPartData.ToGame());
+                    }
+                }
             }
-    
+
+
             newData.CarInfoData = CarInfoData.ToGame(CarInfoData);
+            
             newData.carToLoad = carToLoad;
             newData.configVersion = configVersion;
             newData.customerCar = customerCar;
-    
-            newData.color = new float[] { color.r, color.g, color.b, color.a };
+
+            newData.color = color != null ? new float[] { color.r, color.g, color.b, color.a } : null;
+
+
             newData.EngineData = EngineData.ToGame();
+            
             newData.engineSwap = engineSwap;
-            newData.factoryColor = new float[] { factoryColor.r, factoryColor.g, factoryColor.b, factoryColor.a };
+
+            newData.factoryColor = factoryColor != null ? new float[] { factoryColor.r, factoryColor.g, factoryColor.b, factoryColor.a } : null;
             newData.factoryPaintType = (PaintType)factoryPaintType;
             newData.finalDriveRatio = finalDriveRatio;
-            newData.gearRatio = gearRatio.ToArray();
+            newData.gearRatio = gearRatio != null ? gearRatio.ToArray() : null;
             newData.HasCustomPaintType = HasCustomPaintType;
             newData.index = index;
             newData.LightsOn = LightsOn;
             newData.measuredDragIndex = measuredDragIndex;
             newData.orderConnection = orderConnection;
-            newData.PaintData = PaintData.ToGame(PaintData);
-    
-            newData.PartData = new Il2CppSystem.Collections.Generic.List<PartData>();
-            foreach (var modPartData in PartData)
+
+            if (PaintData != null)
             {
-                newData.PartData.Add(modPartData.ToGame());
+                newData.PaintData = PaintData.ToGame(PaintData);
             }
-    
-            newData.rimsSize = rimsSize.ToArray();
-            newData.tiresET = tiresET.ToArray();
-            newData.tiresSize = tiresSize.ToArray();
+            
+            if (PartData != null)
+            {
+                newData.PartData = new Il2CppSystem.Collections.Generic.List<PartData>();
+                foreach (var modPartData in PartData)
+                {
+                    if (modPartData != null)
+                    {
+                        newData.PartData.Add(modPartData.ToGame());
+                    }
+                }
+            }
+
+            newData.rimsSize = rimsSize != null ? rimsSize.ToArray() : null;
+            newData.tiresET = tiresET != null ? tiresET.ToArray() : null;
+            newData.tiresSize = tiresSize != null ? tiresSize.ToArray() : null;
             newData.UId = UId;
-            newData.WheelsAlignment = wheelsesAlignment.ToGame(wheelsesAlignment);
-            newData.wheelsWidth = wheelsWidth.ToArray();
+
+
+            newData.WheelsAlignment = wheelsAlignment.ToGame(wheelsAlignment);
+
+            newData.wheelsWidth = wheelsWidth != null ? wheelsWidth.ToArray() : null;
 
             return newData;
         }
+
     }
 }

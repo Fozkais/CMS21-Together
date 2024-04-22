@@ -46,28 +46,29 @@ namespace CMS21Together.ClientSide.Data.Car
             if(String.IsNullOrEmpty(name))
                 yield break;
 
-            while(GameData.DataInitialzed == false) // DO NOT REMOVE!
+            while(GameData.DataInitialized == false) // DO NOT REMOVE!
                 yield return new WaitForSeconds(1);
             
             yield return new WaitForSeconds(1);
             yield return new WaitForEndOfFrame();
 
             string carLoaderID = carLoader.gameObject.name[10].ToString();
-            MelonLogger.Msg($"A car is being loaded! : {name}, ID:{carLoaderID}");
+            MelonLogger.Msg($"A car is being loaded! (LoadCar): {name}, ID:{carLoaderID}");
             
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
             
             if (!ClientData.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
             {
                 ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
+                ClientData.LoadedCars.Add(convertedLoaderID, newCar);
                 ClientSend.SendModCar(new ModCar(newCar));
             }
           
         }
         
-        public static IEnumerator InitializePostPatch(CarLoader carLoader, string name)
+        /*public static IEnumerator InitializePrePatch(CarLoader carLoader, NewCarData carData)
         {
-            if(String.IsNullOrEmpty(name))
+            if(String.IsNullOrEmpty(carData.carToLoad))
                 yield break;
 
             while(GameData.DataInitialzed == false) // DO NOT REMOVE!
@@ -77,28 +78,32 @@ namespace CMS21Together.ClientSide.Data.Car
             yield return new WaitForEndOfFrame();
 
             string carLoaderID = carLoader.gameObject.name[10].ToString();
-            MelonLogger.Msg($"A car is being loaded! : {name}, ID:{carLoaderID}");
+            MelonLogger.Msg($"A car is being loaded! (LoadCarFromFile): {carData.carToLoad}, ID:{carLoaderID}");
             
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
             
             if (!ClientData.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
             {
-                ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
-                ClientData.LoadedCars.Add(convertedLoaderID, newCar);
+                ClientSend.SendNewCarData(carData);
             }
           
-        }
+        }*/
 
         public static IEnumerator LoadCar(CarLoader loader)
         {
-            while(GameData.DataInitialzed == false) // DO NOT REMOVE!
-                yield return new WaitForSeconds(1);
+            
+            int count0 = 0;
+            while (GameData.DataInitialized == false && count0 < 20)
+            {
+                count0 += 1;
+                yield return new WaitForSeconds(0.3f);
+            }
             
             string carLoaderID = loader.gameObject.name[10].ToString();
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! aborting car Load..");
             
             int count = 0;
-            while (!ClientData.LoadedCars.ContainsKey(convertedLoaderID) && count < 12)
+            while (!ClientData.LoadedCars.ContainsKey(convertedLoaderID) && count < 15)
             {
                 count += 1;
                 yield return new WaitForSeconds(0.1f);

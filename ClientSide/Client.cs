@@ -105,6 +105,8 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
                 
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
+                { (int)PacketTypes.carResync, ClientHandle.CarResync},
+                //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
                 { (int)PacketTypes.carPart, ClientHandle.CarPart},
                 { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
@@ -130,7 +132,7 @@ namespace CMS21Together.ClientSide
                 
                 if(Client.PacketHandlers != null) 
                     Client.PacketHandlers.Clear();
-                GameData.DataInitialzed = false;
+                GameData.DataInitialized = false;
                 
                 GameData.Instance.carLoaders = null;
             
@@ -146,6 +148,10 @@ namespace CMS21Together.ClientSide
                     ClientData.playerGroupInventory.Clear();
                 if( ClientData.playerInventory != null)
                     ClientData.playerInventory.Clear();
+
+                ClientData.playerExp = 0;
+                ClientData.playerMoney = 0;
+                ClientData.playerScrap = 0;
 
                 ClientData.asGameStarted = false;
                 GameData.Instance = null;

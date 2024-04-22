@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
@@ -7,6 +8,10 @@ using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
+using Il2CppCMS.Helpers;
+using Il2CppCMS.Save;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using Il2CppSystem.IO;
 using MelonLoader;
 using UnityEngine;
 
@@ -100,7 +105,12 @@ namespace CMS21Together.ClientSide.Handle
             
             public static void StartGame(Packet _packet)
             {
-                SavesManager.LoadSave(0, null, true);
+               // ModProfileData saveData = _packet.Read<ModProfileData>();
+
+              //  SavesManager.profileData[22] = saveData.ToGame();
+               // Singleton<GameManager>.Instance.GameDataManager.ProfileData = SavesManager.profileData;
+                
+                SavesManager.LoadSave(null, true);
                 ModUI.Instance.showModUI = false;
                 
                 _packet.Dispose();
@@ -111,18 +121,30 @@ namespace CMS21Together.ClientSide.Handle
                 Player _player = _packet.Read<Player>();
                 int _id = _packet.ReadInt();
                 ClientData.players[_id] = _player;
+
+                MelonCoroutines.Start(DelaySpawnPlayer(_id, _player));
+                
+                _packet.Dispose();
+            }
+
+            private static IEnumerator DelaySpawnPlayer(int _id, Player _player)
+            {
+                while (ModSceneManager.currentScene() != GameScene.garage)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                
                 if (ClientData.players.TryGetValue(_id, out var player))
                 {
                     if(!ClientData.PlayersGameObjects.ContainsKey(player.id))
                         ClientData.SpawnPlayer(_player);
                 }
                 
-                ClientSend.SendInitialPosition(new Vector3Serializable(GameData.localPlayer.transform.position));
-                
-                _packet.Dispose();
+                if(GameData.DataInitialized)
+                    ClientSend.SendInitialPosition(new Vector3Serializable(GameData.localPlayer.transform.position));
             }
-            
-        #endregion
+
+            #endregion
 
         #region PlayerData
         
@@ -158,12 +180,17 @@ namespace CMS21Together.ClientSide.Handle
                 MelonLogger.Msg("Received Scene Update :" + scene);
                 if (ClientData.players.TryGetValue(id, out var player))
                 {
-                    MelonLogger.Msg("pass1");
                     player.scene = scene;
                     if (player.scene != ModSceneManager.currentScene())
                     {
                        // MelonLogger.Msg($"Destroying {player.username} gameObject.");
-                        Destroy(ClientData.PlayersGameObjects[id]);
+                       if (ClientData.PlayersGameObjects.TryGetValue(id, out var instance))
+                       {
+                           if (instance != null)
+                           {
+                               Destroy(instance);
+                           }
+                       }
                     }
                     else
                     {
@@ -347,6 +374,37 @@ namespace CMS21Together.ClientSide.Handle
         #endregion
 
         #region CarData
+        
+            /*public static void CarLoadInfo(Packet _packet)
+            {
+                int lenght = _packet.ReadInt();
+                MelonLogger.Msg("Lenght : " + lenght);
+                byte[] car = _packet.ReadBytes(lenght);
+                MelonLogger.Msg("Lenght Post : " + car.Length);
+
+                BinaryReader reader = new BinaryReader(new MemoryStream(car));
+                NewCarData carData = new NewCarData();
+                carData.Deserialize(reader, SavesManager.currentSave.saveVersion);
+                
+                MelonLogger.Msg("Received CarLoadInfo!");
+                
+                bool checkCondition = ClientData.LoadedCars.Any(s =>
+                    s.Value.carLoaderID == carData.index && s.Value.carID == carData.carToLoad);
+
+                if (!checkCondition)
+                {
+                    ClientData.LoadedCars.Add(carData.index, new ModCar(carData.index, carData.carToLoad, carData.configVersion));
+                    GameData.Instance.carLoaders[carData.index].StartCoroutine(
+                        GameData.Instance.carLoaders[carData.index].LoadCarFromFile(carData));
+                }
+
+            }*/
+
+            public static void CarResync(Packet _packet)
+            {
+                List<(int, string)> carOnServer = _packet.Read<List<(int, string)>>();
+                ClientData.tempCarList = carOnServer;
+            }
 
             public static void CarInfo(Packet _packet)
             {
@@ -355,6 +413,16 @@ namespace CMS21Together.ClientSide.Handle
                 
                 MelonLogger.Msg($"CL: Received new car from server!");
 
+                MelonCoroutines.Start(CarInfo(removed, car));
+                _packet.Dispose();
+            }
+
+            private static IEnumerator CarInfo(bool removed, ModCar car)
+            {
+                
+                while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                    yield return new WaitForSeconds(1);
+                
                 CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
 
                 bool checkCondition = ClientData.LoadedCars.Any(s =>
@@ -363,7 +431,7 @@ namespace CMS21Together.ClientSide.Handle
                 if (!removed)
                 {
                     if(!checkCondition)
-                    ClientData.LoadedCars.Add(car.carLoaderID, car);
+                        ClientData.LoadedCars.Add(car.carLoaderID, car);
                     ModCar _car  = ClientData.LoadedCars.First(s 
                         => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value;
                     
@@ -375,15 +443,13 @@ namespace CMS21Together.ClientSide.Handle
                     if (checkCondition)
                     {
                         ClientData.LoadedCars.Remove(ClientData.LoadedCars.First(s => 
-                                s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
+                            s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
                         carLoader.DeleteCar();
                         MelonLogger.Msg("CL: Removing car...");
                     }
                 }
-
-                _packet.Dispose();
             }
-            
+
             public static void CarPart(Packet _packet)
             {
                 ModPartScript carPart = _packet.Read<ModPartScript>();
@@ -408,7 +474,9 @@ namespace CMS21Together.ClientSide.Handle
             {
                 List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
                 int carLoaderID = _packet.ReadInt();
-                ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                
+                
+               // MelonLogger.Msg("Received parts list !!");
                 
                 if (carParts == null || carParts.Count == 0)
                 {
@@ -421,8 +489,19 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     MelonCoroutines.Start(CarUpdate.HandleNewPart(part, carLoaderID));
                 }
+
+                MelonCoroutines.Start(CarPartsC(carParts[0], carLoaderID));
+
+                _packet.Dispose();
+            }
+
+            private static IEnumerator CarPartsC(ModPartScript carPart, int carLoaderID)
+            {
+                while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                    yield return new WaitForSeconds(1);
                 
-                switch (carParts[0].type)
+                ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                switch (carPart.type)
                 {
                     case ModPartType.other:
                         car.receivedOtherParts = true;
@@ -437,13 +516,14 @@ namespace CMS21Together.ClientSide.Handle
                         car.receivedDriveshaftParts = true;
                         break;
                 }
-
-                _packet.Dispose();
             }
+
             public static void BodyPart(Packet _packet)
             {
                 ModCarPart carPart = _packet.Read<ModCarPart>();
                 int carLoaderID = _packet.ReadInt();
+                
+                MelonLogger.Msg("Received BodyPart");
                 
                 MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(carPart, carLoaderID));
                 
@@ -455,15 +535,25 @@ namespace CMS21Together.ClientSide.Handle
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
                 
+                //MelonLogger.Msg("Received BodyParts list !!");
+                
                 foreach (ModCarPart part in carParts)
                 {
                     MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(part, carLoaderID));
                 }
+
+                MelonCoroutines.Start(BodyPartsC(carLoaderID));
+                
+                _packet.Dispose();
+            }
+            
+            private static IEnumerator BodyPartsC(int carLoaderID)
+            {
+                while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                    yield return new WaitForSeconds(1);
                 
                 var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 car.receivedBodyParts = true;
-                
-                _packet.Dispose();
             }
 
         #endregion

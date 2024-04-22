@@ -18,18 +18,16 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         [HarmonyPrefix]
         public static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
         {
-            MelonLogger.Msg("SceneChange trigered! : " + newSceneName );
             if (Client.Instance.isConnected || ServerData.isRunning)
             {
+                MelonLogger.Msg("Going to : " + newSceneName);
                 if (newSceneName == "Menu")
                 {
+                    Client.Instance.Disconnect();
                     if(ServerData.isRunning)
                         Server.Stop();
-                    Client.Instance.Disconnect();
                     Application.runInBackground = false;
                 }
-                
-                ModSceneManager.UpdatePlayerScene();
             }
         }
     }

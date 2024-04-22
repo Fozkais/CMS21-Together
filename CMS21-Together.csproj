@@ -76,6 +76,7 @@
     <Compile Include="Shared\DataHelper.cs" />
     <Compile Include="Shared\Data\GameScene.cs" />
     <Compile Include="Shared\Data\ModBodyPartData.cs" />
+    <Compile Include="Shared\Data\ModBonusPartData.cs" />
     <Compile Include="Shared\Data\ModCar.cs" />
     <Compile Include="Shared\Data\ModCarInfoData.cs" />
     <Compile Include="Shared\Data\ModCarPart.cs" />
@@ -89,7 +90,17 @@
     <Compile Include="Shared\Data\ModLPData.cs" />
     <Compile Include="Shared\Data\ModMountObject.cs" />
     <Compile Include="Shared\Data\ModNewCarData.cs" />
+    <Compile Include="Shared\Data\ModNewCarLifterData.cs" />
+    <Compile Include="Shared\Data\ModNewCarLoaderData.cs" />
+    <Compile Include="Shared\Data\ModNewGlobalDataWrapper.cs" />
     <Compile Include="Shared\Data\ModNewInventoryData.cs" />
+    <Compile Include="Shared\Data\ModNewJobPart.cs" />
+    <Compile Include="Shared\Data\ModNewJobsData.cs" />
+    <Compile Include="Shared\Data\ModNewJobTaskWrapper.cs" />
+    <Compile Include="Shared\Data\ModNewJobWrapper.cs" />
+    <Compile Include="Shared\Data\ModNewMachines.cs" />
+    <Compile Include="Shared\Data\ModNewUnlockedPosition.cs" />
+    <Compile Include="Shared\Data\ModNewUpgradeSystemData.cs" />
     <Compile Include="Shared\Data\ModPaintData.cs" />
     <Compile Include="Shared\Data\ModPaintType.cs" />
     <Compile Include="Shared\Data\ModPartData.cs" />
