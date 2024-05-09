@@ -40,7 +40,7 @@ namespace CMS21Together.ClientSide.Data
         public static void Init()
         {
             GameData data = new GameData();
-            MelonCoroutines.Start(data.Initialize());
+            data.Initialize();
         }
         public static void UpdateClient() // Run Only if player is connected and in scene:"garage" 
         {
@@ -49,6 +49,7 @@ namespace CMS21Together.ClientSide.Data
             Movement.SendPosition();
             Rotation.SendRotation();
             
+            ModInventory.UpdateInventory();
             Stats.HandleExp();
             Stats.HandleMoney();
             Stats.HandleScrap();
@@ -85,7 +86,6 @@ namespace CMS21Together.ClientSide.Data
                 yield return new WaitForSeconds(35);
                 if (!isServerAlive)
                 {
-            
                     if (!Client.Instance.isConnected)
                     {
                         if (!ModSceneManager.isInMenu())
