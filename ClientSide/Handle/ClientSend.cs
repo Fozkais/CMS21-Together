@@ -260,11 +260,10 @@ namespace CMS21Together.ClientSide.Handle
                 }
             }
             
-            public static void SendResyncCars(bool phase = true)
+            public static void SendResyncCars()
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carResync))
                 {
-                    _packet.Write(phase);
                     SendTCPData(_packet);
                 }
             }

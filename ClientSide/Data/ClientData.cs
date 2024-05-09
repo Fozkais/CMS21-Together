@@ -35,12 +35,13 @@ namespace CMS21Together.ClientSide.Data
         public static int playerExp;
 
         public static bool asGameStarted;
-        public static bool refreshCars;
         
         public static void Init()
         {
-            GameData data = new GameData();
-            data.Initialize();
+            if (GameData.Instance != null)
+                GameData.Instance.Initialize();
+            else { GameData data = new GameData(); data.Initialize(); }
+            
         }
         public static void UpdateClient() // Run Only if player is connected and in scene:"garage" 
         {

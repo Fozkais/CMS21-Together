@@ -103,7 +103,6 @@ namespace CMS21Together.Shared
             MelonLogger.Msg("-------------------Load Save---------------------");
             MelonLogger.Msg("Index : " + index);
             MelonLogger.Msg("Name : " + name);
-            if(clientSave) { MelonLogger.Msg("-------------------------------------------------"); }
             if(!clientSave)
             {
                 MelonLogger.Msg("Already Loaded : " + saveData.alreadyLoaded);

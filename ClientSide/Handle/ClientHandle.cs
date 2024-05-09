@@ -260,6 +260,8 @@ namespace CMS21Together.ClientSide.Handle
                 ModGroupItem _item = _packet.Read<ModGroupItem>();
                 bool status = _packet.ReadBool();
                 
+                MelonLogger.Msg("Received GroupItem: " + status);
+                
                 if (status)
                 {
                     if (!ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
@@ -399,12 +401,7 @@ namespace CMS21Together.ClientSide.Handle
                 }
 
             }*/
-
-            public static void CarResync(Packet _packet)
-            {
-                List<(int, string)> carOnServer = _packet.Read<List<(int, string)>>();
-                ClientData.tempCarList = carOnServer;
-            }
+        
 
             public static void CarInfo(Packet _packet)
             {
@@ -500,6 +497,9 @@ namespace CMS21Together.ClientSide.Handle
                 while(GameData.DataInitialized == false) // DO NOT REMOVE!
                     yield return new WaitForSeconds(1);
                 
+                yield return new WaitForSeconds(1);
+                yield return new WaitForEndOfFrame();
+                
                 ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 switch (carPart.type)
                 {
@@ -551,6 +551,9 @@ namespace CMS21Together.ClientSide.Handle
             {
                 while(GameData.DataInitialized == false) // DO NOT REMOVE!
                     yield return new WaitForSeconds(1);
+                
+                yield return new WaitForSeconds(1);
+                yield return new WaitForEndOfFrame();
                 
                 var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 car.receivedBodyParts = true;

@@ -14,6 +14,7 @@ namespace CMS21Together.ClientSide.Data
         public static bool DataInitialized;
         
         public static GameObject localPlayer;
+        public GarageLoader garageLoader;
         public static FPSInputController playerController;
         public TireChangerLogic tireChanger;
         public WheelBalancerLogic wheelBalancer;
@@ -23,18 +24,19 @@ namespace CMS21Together.ClientSide.Data
         public Inventory localInventory;
         public ScreenFader screenFader;
         
-        public IEnumerator Initialize()
+        public void Initialize()
         {
             Instance = this;
 
             playerController = Object.FindObjectOfType<FPSInputController>();
             localPlayer = playerController.gameObject;
+            garageLoader = GarageLoader.instance;
             tireChanger = Object.FindObjectOfType<TireChangerLogic>();
             wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
             carWash = Object.FindObjectOfType<CarWashLogic>();
             engineStand = Object.FindObjectOfType<EngineStandLogic>();
             screenFader = Object.FindObjectOfType<ScreenFader>();
-        
+           
             carLoaders = new[]
             {
                 GameScript.Get().carOnScene[0],
@@ -45,15 +47,8 @@ namespace CMS21Together.ClientSide.Data
             };
 
             localInventory = GameScript.Get().GetComponent<Inventory>();
-            if (ClientData.refreshCars)
-            {
-                ClientSend.SendResyncCars();
-                ClientData.refreshCars = false;
-            }
-            
 
             ClientData.asGameStarted = true;
-            yield return new WaitForSeconds(1);
             MelonLogger.Msg("Initialized Game Data Successfully!");
             DataInitialized = true;
         }

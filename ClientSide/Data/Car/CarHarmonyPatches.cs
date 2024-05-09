@@ -129,34 +129,60 @@ namespace CMS21Together.ClientSide.Data.Car
                 {
                     if (newSceneName != "garage")
                     {
-                        ClientData.LoadedCars.Clear();
+                        ClientData.tempCarList.Clear();
                         var profile = SavesManager.currentSave;
-
-                        ClientSend.SendResyncCars(false);
-
                         for (var i = 0; i < profile.carsInGarage.Count; i++)
                         {
                             var SaveCar = profile.carsInGarage[i];
-                            bool exist = false;
+                            ClientData.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
+                        }
+                    }
+
+                    if (newSceneName == "garage")
+                    {
+                        ClientData.LoadedCars.Clear();
+                        var profile = SavesManager.currentSave;
+                        ClientSend.SendResyncCars();
+
+                        foreach ((int, string) previousCar in ClientData.tempCarList)
+                        {
+                            profile.carsInGarage[previousCar.Item1] = new NewCarData();
+                        }
+                        Singleton<GameManager>.Instance.ProfileManager.Save();
+                       /* for (var i = 0; i < profile.carsInGarage.Count; i++)
+                        {
+                            var SaveCar = profile.carsInGarage[i];
+                            
+                            
+                            bool exist = true;
                             foreach ((int, string) car in ClientData.tempCarList)
                             {
-                                if (car.Item1 == SaveCar.index)
-                                    if (car.Item2 == SaveCar.carToLoad)
-                                        exist = true;
+                                if (car.Item1 != SaveCar.index)
+                                    if (car.Item2 != SaveCar.carToLoad)
+                                        exist = false;
                             }
 
                             if (exist)
                             {
+                                foreach ((int, string) car in ClientData.serverCarList)
+                                {
+                                    if (car.Item1 != SaveCar.index)
+                                        if (car.Item2 != SaveCar.carToLoad)
+                                            exist = false;
+                                }
+                                
+                                
                                 MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "already exist!");
                                 profile.carsInGarage[i] = new NewCarData();
+                                MelonLogger.Msg($"CarID post reset: {profile.carsInGarage[i].carToLoad}");
                             }
                             else
                             {
                                 MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "is new !");
                             }
-
-                            ClientData.refreshCars = true;
-                        }
+                            
+                       }
+                       */ 
                     }
 
                 }

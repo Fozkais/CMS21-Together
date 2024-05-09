@@ -57,6 +57,7 @@ namespace CMS21Together
             
             if (client.isConnected || ServerData.isRunning)
             {
+                GameData.DataInitialized = false;
                 ModSceneManager.UpdatePlayerScene();
                 if(ModSceneManager.isInMenu() && client.isConnected && !ServerData.isRunning)
                 {
@@ -70,7 +71,6 @@ namespace CMS21Together
                 }
                 if(ModSceneManager.isInGarage())
                 {
-                    GameData.DataInitialized = false;
                     ClientData.Init();
 
                     foreach (KeyValuePair<int, Player> player in ClientData.players)

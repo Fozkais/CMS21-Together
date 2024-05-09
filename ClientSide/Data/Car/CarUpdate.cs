@@ -42,6 +42,9 @@ namespace CMS21Together.ClientSide.Data.Car
             while(GameData.DataInitialized == false) // DO NOT REMOVE!
                 yield return new WaitForSeconds(1);
             
+            yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
+            
             bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)
             {
@@ -178,6 +181,9 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             while(GameData.DataInitialized == false) // DO NOT REMOVE!
                 yield return new WaitForSeconds(1);
+            
+            yield return new WaitForSeconds(1);
+            yield return new WaitForEndOfFrame();
             
             bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)

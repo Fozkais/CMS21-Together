@@ -105,7 +105,6 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
                 
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
-                { (int)PacketTypes.carResync, ClientHandle.CarResync},
                 //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
                 { (int)PacketTypes.carPart, ClientHandle.CarPart},

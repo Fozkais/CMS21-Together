@@ -1,12 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ServerSide.Handle
 {
@@ -252,24 +253,16 @@ namespace CMS21Together.ServerSide.Handle
 
             public static void CarResync(int _fromClient, Packet _packet)
             {
-                bool phase = _packet.ReadBool();
+                MelonCoroutines.Start(ResendAllCar(_fromClient));
+            }
 
-                if (!phase)
-                {
-                    List<(int,string)> carOnServer = new List<(int,string)>();
-                    foreach (ModCar car in ServerData.LoadedCars.Values)
-                    {
-                        carOnServer.Add((car.carLoaderID,car.carID));
-                    }
-
-                    ServerSend.CarResync(_fromClient, carOnServer);
-                    return;
-                }
-                
+            private static IEnumerator ResendAllCar(int clientID)
+            {
+                yield return new WaitForSeconds(1.5f);
                 MelonLogger.Msg("SV : Resending Car to client!");
                 foreach (ModCar _car in ServerData.LoadedCars.Values)
                 {
-                    ServerSend.CarInfo(_fromClient, _car, false, true);
+                    ServerSend.CarInfo(clientID, new ModCar(_car), false, true);
                     
                     List<ModPartScript> otherParts = new List<ModPartScript>();
                     for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
@@ -288,21 +281,12 @@ namespace CMS21Together.ServerSide.Handle
                         }
                     }
                     
-                    ServerSend.PartScripts(_fromClient, otherParts, _car.carLoaderID, true);
-                    ServerSend.PartScripts(_fromClient,  _car.partInfo.EngineParts.Values.ToList(), _car.carLoaderID, true);
-                    ServerSend.PartScripts(_fromClient, suspensionPart, _car.carLoaderID, true);
-                    ServerSend.BodyParts(_fromClient,  _car.partInfo.BodyParts.Values.ToList(), _car.carLoaderID, true);
+                    ServerSend.PartScripts(clientID, otherParts, _car.carLoaderID, true);
+                    ServerSend.PartScripts(clientID,  _car.partInfo.EngineParts.Values.ToList(), _car.carLoaderID, true);
+                    ServerSend.PartScripts(clientID, suspensionPart, _car.carLoaderID, true);
+                    ServerSend.BodyParts(clientID,  _car.partInfo.BodyParts.Values.ToList(), _car.carLoaderID, true);
                 }
             }
-            
-            /*public static void CarLoadInfo(int _fromClient, Packet _packet)
-            {
-                int lenght = _packet.ReadInt();
-                byte[] car = _packet.ReadBytes(lenght);
-                
-                
-                ServerSend.CarLoadInfo(_fromClient, lenght, car);
-            }*/
 
             public static void CarInfo(int _fromClient, Packet _packet)
             {
