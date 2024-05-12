@@ -17,7 +17,7 @@ namespace CMS21Together
         public const int MAX_SAVE_COUNT = 22; // need to add 6 to match correct save number: 16 = 22 (+1 for clientSlot)
         public const int MAX_PLAYER = 4;
         public const int PORT = 7777;
-        public const string ASSEMBLY_MOD_VERSION = "0.3.0";
+        public const string ASSEMBLY_MOD_VERSION = "0.3.1";
         public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
         
@@ -36,7 +36,6 @@ namespace CMS21Together
             modUI.Awake();
             
             contentManager = new ContentManager();
-            contentManager.Initialize();
             
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
@@ -51,9 +50,9 @@ namespace CMS21Together
         }
         public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
         {
+            if(sceneName == "Menu") contentManager.Initialize();
             if(!isModInitialized) {return;}
-            
-            ContentManager.Instance.LoadCustomlogo();
+            contentManager.LoadCustomlogo();
             CustomUIManager.OnSceneChange(sceneName);
             
             if (client.isConnected || ServerData.isRunning)

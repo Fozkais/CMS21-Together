@@ -18,6 +18,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         [HarmonyPostfix]
         public static void TireChangerFix(GroupItem groupItem, bool instant, bool connect, TireChangerLogic __instance)
         {
+            if(!Client.Instance.isConnected) return;
+            
             if (groupItem.ItemList.Count == 0) return;
 
             if (listenToTC)

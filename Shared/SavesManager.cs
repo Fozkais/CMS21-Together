@@ -48,6 +48,12 @@ namespace CMS21Together.Shared
                 DirectoryInfo saveFolder = new DirectoryInfo(SAVE_FOLDER_PATH);
                 FileInfo[] saveFiles = saveFolder.GetFiles("save_*.cms21mp");// get all saves files.
 
+                Il2CppReferenceArray<SaveData> vanillaSaveArray = new Il2CppReferenceArray<SaveData>(4);
+                for (int i = 0; i < 4; i++)
+                {
+                    vanillaSaveArray[i] =  GetSave(new SteamSave(), i);
+                }
+                
                 for (int i = 0; i < saveFiles.Length; i++)
                 {
                     var saveFile = saveFiles[i];
@@ -66,6 +72,7 @@ namespace CMS21Together.Shared
                          profileData[modSave.saveIndex] = copiedData;
                     }
                 }
+                Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(vanillaSaveArray);
             }
             
         }
