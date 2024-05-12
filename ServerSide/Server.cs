@@ -56,7 +56,6 @@ namespace CMS21Together.ServerSide
         {
             // Délai maximum d'inactivité (en secondes)
             int maxInactivityDelay = 60;
-            
             foreach (KeyValuePair<int, DateTime> entry in lastClientActivity)
             {
                 int clientId = entry.Key;
@@ -71,10 +70,11 @@ namespace CMS21Together.ServerSide
                 }
             }
         }
+        
 
         public static IEnumerator CheckForInactiveClientsRoutine()
         {
-            while (ServerData.isRunning)
+            while (true)
             {
                 yield return new WaitForSeconds(10); // Vérifier toutes les 10 secondes
                 CheckForInactiveClients();

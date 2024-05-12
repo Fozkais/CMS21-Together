@@ -31,23 +31,22 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 
 *Here's every planned feature state :*
 
-* Implement Networking System (TCP/UDP) : ✅ -> Fixed on 0.1.4
-* Implement Steam API Networking : ⏸️
+* Implement Networking System (TCP/UDP) : ✅
+* Implement Steam API Networking : ❌
 * Create a Lobby system : ✅
-* Add a Custom Save System : ✅ -> Fixed on 0.1.1
-* Sync players Position and Rotation : ✅ -> Fixed on 0.1.4
-* Sync Inventory : ✅ -> Fixed on 0.1.3
+* Add a Custom Save System : ✅
+* Sync players Position and Rotation : ✅
+* Sync Inventory : ✅ 
 * Sync Cars Spawning and position : ✅
-* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer) -> Implemented on 0.2.0
-* Sync OutDoor Interaction : ❌ (Car Painting, Power bench and wheel alignment)
-* Sync Cars "mechanic" : ✅ -> Fixed on 0.1.2 (almost fully working?)
+* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer)
+* Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash,Power bench and wheel alignment)
+* Sync Cars "mechanic" : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ❌
 * Sync garage upgrade : ❌
 * Sync garage Customization : ❌
-* Sync other Map : ❌
 * Add Mod Support : ❌
-* Add Animation to players : ❌
+* Add Animation to players : ✅
 
 **Here the description of every emote :**
 <br/>
@@ -59,9 +58,6 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 <br/>
 ⏸️: "Paused" / Some new can appear but it's not the main focus.
 <br/>
--> : Mean there's some issue with it
-<br/>
-🔴 : As been implemented and worked at a time but now as some unexplained Issues
 
 You can join the project Discord if you want to talk or ask for help : 
 https://discord.gg/rMz4tGbrc6
@@ -75,11 +71,6 @@ Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to i
 <br/>
 with that you need 2 other file you can find on the mod Discord, those are the player Model and texture wich you'll need to put inside the folder Mods in the subfolder "togetherMod" (create it if he wont exist)
 <br/>
-Finally you need to download and put in UserLibs 2 files from Facepuch Steamwork: Facepunch.Steamworks.Win64 and steam_api64
-<br/>
-which you can find here: [Facepunch Steamwork](https://github.com/Facepunch/Facepunch.Steamworks) , 
-<br/>
-it will be used in the future to implement the steam API on the mod to replace actual networking system.
 
 From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, 
 <br/>
