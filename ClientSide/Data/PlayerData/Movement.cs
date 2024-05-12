@@ -58,9 +58,9 @@ namespace CMS21Together.ClientSide.Data.PlayerData
 
         public static void SendPosition()
         {
-            if (GameData.localPlayer != null)
+            if (GameData.Instance.localPlayer != null)
             {
-                Vector3 _position = GameData.localPlayer.transform.position;
+                Vector3 _position = GameData.Instance.localPlayer.transform.position;
                 _position.y -= 0.72f;
                 if (Vector3.Distance(_position, lastPosition) > updateRate)
                 {
@@ -70,7 +70,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             }
             else
             {
-                GameData.localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
+                GameData.Instance.localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
             }
         }
     }

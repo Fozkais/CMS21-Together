@@ -13,9 +13,9 @@ namespace CMS21Together.ClientSide.Data
         public static GameData Instance;
         public static bool DataInitialized;
         
-        public static GameObject localPlayer;
+        public GameObject localPlayer;
         public GarageLoader garageLoader;
-        public static FPSInputController playerController;
+        public FPSInputController playerController;
         public TireChangerLogic tireChanger;
         public WheelBalancerLogic wheelBalancer;
         public CarWashLogic carWash;

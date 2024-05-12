@@ -18,14 +18,17 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             [HarmonyPrefix]
             public static void WheelBalancerFix(GroupItem groupItem, bool instant, WheelBalancerLogic __instance)
             {
-                if (groupItem.ItemList.Count == 0) return;
-
-                if (listentoWB)
+                if (groupItem != null)
                 {
-                   // MelonLogger.Msg($"Wheel Balance Triggered!");
-                    instant = true;
-                    ClientSend.WheelBalancer(ModWheelBalancerActionType.setGroup,new ModGroupItem(groupItem));
+                    if (groupItem.ItemList.Count == 0) return;
 
+                    if (listentoWB)
+                    {
+                       // MelonLogger.Msg($"Wheel Balance Triggered!");
+                        instant = true;
+                        ClientSend.WheelBalancer(ModWheelBalancerActionType.setGroup,new ModGroupItem(groupItem));
+
+                    }
                 }
             }
             

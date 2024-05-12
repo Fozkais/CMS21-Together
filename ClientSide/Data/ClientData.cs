@@ -103,7 +103,7 @@ namespace CMS21Together.ClientSide.Data
                 GameObject playerObject;
                 if (player.id == Client.Instance.Id)
                 {
-                    playerObject = GameData.localPlayer;
+                    playerObject = GameData.Instance.localPlayer;
                 }
                 else
                 {

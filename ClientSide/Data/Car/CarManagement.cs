@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.Shared.Data;
 using MelonLoader;
@@ -82,6 +81,18 @@ namespace CMS21Together.ClientSide.Data.Car
                     
                         
             }
+        }
+        
+        public static IEnumerator UpdateCarOnSceneChange()
+        {
+            if (!ClientData.asGameStarted) yield break;
+            
+            foreach ((int, string) previousCar in ClientData.tempCarList)
+            {
+                GameData.Instance.carLoaders[previousCar.Item1].DeleteCar();
+            }
+            ClientSend.SendResyncCars();
+            
         }
     }
 }

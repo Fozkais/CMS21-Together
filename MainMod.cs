@@ -2,6 +2,7 @@
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Car;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared;
@@ -72,6 +73,7 @@ namespace CMS21Together
                 if(ModSceneManager.isInGarage())
                 {
                     ClientData.Init();
+                    MelonCoroutines.Start( CarManagement.UpdateCarOnSceneChange());
 
                     foreach (KeyValuePair<int, Player> player in ClientData.players)
                     {

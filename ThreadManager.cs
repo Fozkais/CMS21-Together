@@ -36,7 +36,7 @@ namespace CMS21Together
                     }
                     catch (Exception e)
                     {
-                        MelonLogger.Msg("EncouteredExceptionInMainThread: " + e);
+                        MelonLogger.Msg("Encoutered exception on MainThread: " + e);
                     }
                 });
                 actionToExecuteOnMainThread = true;

@@ -40,6 +40,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         
          public static void AddItem()
         {
+            if(GameData.Instance.localInventory == null) return;
+            
             var localInventory = GameData.Instance.localInventory.items;
             for (int i = 0; i < localInventory.Count; i++)
             {
@@ -63,6 +65,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         }
         public static void AddItemGroupNew()
         {
+            if(GameData.Instance.localInventory == null) return;
+            
             var localInventory = GameData.Instance.localInventory.groups;
             for (int i = 0; i < localInventory.Count; i++)
             {
@@ -86,6 +90,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         
         public static void RemoveItem()
         {
+            if(GameData.Instance.localInventory == null) return;
+            
             var localInventory = GameData.Instance.localInventory.items;
             List<Item> items = new List<Item>();
             foreach (var _item in localInventory)
@@ -114,6 +120,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         }
         public static void RemoveGroupItem()
         {
+            if(GameData.Instance.localInventory == null) return;
+            
             var localInventory = GameData.Instance.localInventory.groups;
             List<GroupItem> items = new List<GroupItem>();
             foreach (var _item in localInventory)

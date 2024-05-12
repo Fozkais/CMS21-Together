@@ -121,74 +121,29 @@ namespace CMS21Together.ClientSide.Data.Car
         [HarmonyPatch(typeof(NotificationCenter), "SelectSceneToLoad", 
             new Type[]{ typeof(string), typeof(SceneType), typeof(bool), typeof(bool)})]
         [HarmonyPrefix]
-        public static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
+        public  static void SceneChangePatch( string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
         {
             if (Client.Instance.isConnected || ServerData.isRunning)
             {
-                try
+                if (ClientData.asGameStarted)
                 {
-                    if (newSceneName != "garage")
+                    try
                     {
-                        ClientData.tempCarList.Clear();
-                        var profile = SavesManager.currentSave;
-                        for (var i = 0; i < profile.carsInGarage.Count; i++)
+                        if (newSceneName != "garage")
                         {
-                            var SaveCar = profile.carsInGarage[i];
-                            ClientData.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
+                            ClientData.tempCarList.Clear();
+                            var profile = SavesManager.currentSave;
+                            for (var i = 0; i < profile.carsInGarage.Count; i++)
+                            {
+                                var SaveCar = profile.carsInGarage[i];
+                                ClientData.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
+                            }
                         }
                     }
-
-                    if (newSceneName == "garage")
+                    catch (Exception e)
                     {
-                        ClientData.LoadedCars.Clear();
-                        var profile = SavesManager.currentSave;
-                        ClientSend.SendResyncCars();
-
-                        foreach ((int, string) previousCar in ClientData.tempCarList)
-                        {
-                            profile.carsInGarage[previousCar.Item1] = new NewCarData();
-                        }
-                        Singleton<GameManager>.Instance.ProfileManager.Save();
-                       /* for (var i = 0; i < profile.carsInGarage.Count; i++)
-                        {
-                            var SaveCar = profile.carsInGarage[i];
-                            
-                            
-                            bool exist = true;
-                            foreach ((int, string) car in ClientData.tempCarList)
-                            {
-                                if (car.Item1 != SaveCar.index)
-                                    if (car.Item2 != SaveCar.carToLoad)
-                                        exist = false;
-                            }
-
-                            if (exist)
-                            {
-                                foreach ((int, string) car in ClientData.serverCarList)
-                                {
-                                    if (car.Item1 != SaveCar.index)
-                                        if (car.Item2 != SaveCar.carToLoad)
-                                            exist = false;
-                                }
-                                
-                                
-                                MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "already exist!");
-                                profile.carsInGarage[i] = new NewCarData();
-                                MelonLogger.Msg($"CarID post reset: {profile.carsInGarage[i].carToLoad}");
-                            }
-                            else
-                            {
-                                MelonLogger.Msg(profile.carsInGarage[i].carToLoad + "is new !");
-                            }
-                            
-                       }
-                       */ 
+                        MelonLogger.Msg("Error on sceneChange: " + e);
                     }
-
-                }
-                catch (Exception e)
-                {
-                    MelonLogger.Msg("Error on sceneChange: " + e);
                 }
             }
         }

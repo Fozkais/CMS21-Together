@@ -36,9 +36,9 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         }
         public static void SendRotation()
         {
-            if (GameData.localPlayer != null)
+            if (GameData.Instance.localPlayer != null)
             {
-                Quaternion _rotation = GameData.localPlayer.transform.rotation;
+                Quaternion _rotation = GameData.Instance.localPlayer.transform.rotation;
                 if (Quaternion.Angle(_rotation, lastRotation) > updateRate)
                 {
                     lastRotation = _rotation;
@@ -47,7 +47,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             }
             else
             {
-                GameData.localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
+                GameData.Instance.localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
             }
         }
     }

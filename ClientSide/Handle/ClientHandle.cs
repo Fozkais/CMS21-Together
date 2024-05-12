@@ -141,7 +141,7 @@ namespace CMS21Together.ClientSide.Handle
                 }
                 
                 if(GameData.DataInitialized)
-                    ClientSend.SendInitialPosition(new Vector3Serializable(GameData.localPlayer.transform.position));
+                    ClientSend.SendInitialPosition(new Vector3Serializable(GameData.Instance.localPlayer.transform.position));
             }
 
             #endregion
