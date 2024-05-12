@@ -7,9 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed">
-      <change beforePath="$PROJECT_DIR$/ClientSide/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ClientSide/Client.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9db1be67-e434-48cf-859c-e2199219bb53" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,9 +38,20 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/cc/d3525dfa/PartScript.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/04c5f89fe7b9439ea7297618eaa3aab590bc00/da/ed175c5a/TireChangerLogic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/105da1159ec9496ab9310694c7b11dd2532bb0/ee/80a51397/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ca993cfeeb3e44b3ad00fd67fda704de2a1400/35/5f4abf2f/KeyCode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/Client.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/brand/Desktop/CMS21-Together-MainMod/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Car.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Movement.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/Data/Movement.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientHandle.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ClientSide/DataHandle/ClientHandle.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ClientSide/DataHandle/ClientSend.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/CustomData/HarmonyPatches.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerHandle.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Brandon/RiderProjects/CMS21MP/ServerSide/DataHandle/ServerSend.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ServerSide/DataHandle/ServerSend.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/obj/Debug/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" root0="SKIP_HIGHLIGHTING" />
@@ -65,31 +74,31 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;MainMod&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;discord-application&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Dev",
+    "ignore.virus.scanning.warn.message": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "vcs.Git",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Brandon\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
+      "C:\\Users\\Brandon\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="CMS21MP" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -246,8 +255,12 @@
       <workItem from="1700080171171" duration="3768000" />
       <workItem from="1700330821694" duration="18428000" />
       <workItem from="1700427166400" duration="17417000" />
-      <workItem from="1700592912308" duration="9127000" />
-      <workItem from="1706904018791" duration="385000" />
+      <workItem from="1700592912308" duration="24566000" />
+      <workItem from="1701366256917" duration="6725000" />
+      <workItem from="1701419741827" duration="7969000" />
+      <workItem from="1701539050159" duration="1772000" />
+      <workItem from="1706463286235" duration="9000" />
+      <workItem from="1709974013303" duration="138000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version for CMS21 Multiplayer mod &#10;- Allow player to Init the connection with the Server (See serverConsole)">
       <created>1670969342318</created>
@@ -424,78 +437,6 @@
       <option name="project" value="LOCAL" />
       <updated>1688750447222</updated>
     </task>
-    <task id="LOCAL-00033" summary="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync">
-      <option name="closed" value="true" />
-      <created>1698149031335</created>
-      <option name="number" value="00033" />
-      <option name="presentableId" value="LOCAL-00033" />
-      <option name="project" value="LOCAL" />
-      <updated>1698149031335</updated>
-    </task>
-    <task id="LOCAL-00034" summary="B-2_0-CarSync-0">
-      <option name="closed" value="true" />
-      <created>1698161244945</created>
-      <option name="number" value="00034" />
-      <option name="presentableId" value="LOCAL-00034" />
-      <option name="project" value="LOCAL" />
-      <updated>1698161244945</updated>
-    </task>
-    <task id="LOCAL-00035" summary="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?">
-      <option name="closed" value="true" />
-      <created>1698236277048</created>
-      <option name="number" value="00035" />
-      <option name="presentableId" value="LOCAL-00035" />
-      <option name="project" value="LOCAL" />
-      <updated>1698236277048</updated>
-    </task>
-    <task id="LOCAL-00036" summary="B-2_0-CarSync_1">
-      <option name="closed" value="true" />
-      <created>1698271059126</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1698271059126</updated>
-    </task>
-    <task id="LOCAL-00037" summary="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn">
-      <option name="closed" value="true" />
-      <created>1698271277915</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1698271277915</updated>
-    </task>
-    <task id="LOCAL-00038" summary="B-2_0-Movement_1&#10;- Few Improvement on MovementSync">
-      <option name="closed" value="true" />
-      <created>1698271384115</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1698271384115</updated>
-    </task>
-    <task id="LOCAL-00039" summary="B-2_0-CarSpawnOnLoad_0&#10;- Try to fix implementation of car sync to allow to load a save with car already loaded in garage">
-      <option name="closed" value="true" />
-      <created>1698357235042</created>
-      <option name="number" value="00039" />
-      <option name="presentableId" value="LOCAL-00039" />
-      <option name="project" value="LOCAL" />
-      <updated>1698357235042</updated>
-    </task>
-    <task id="LOCAL-00040" summary="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?">
-      <option name="closed" value="true" />
-      <created>1698367711129</created>
-      <option name="number" value="00040" />
-      <option name="presentableId" value="LOCAL-00040" />
-      <option name="project" value="LOCAL" />
-      <updated>1698367711129</updated>
-    </task>
-    <task id="LOCAL-00041" summary="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData">
-      <option name="closed" value="true" />
-      <created>1698412102645</created>
-      <option name="number" value="00041" />
-      <option name="presentableId" value="LOCAL-00041" />
-      <option name="project" value="LOCAL" />
-      <updated>1698412102645</updated>
-    </task>
     <task id="LOCAL-00042" summary="B-2_0-TireChanger_1&#10;- Fix TireChanger Sync">
       <option name="closed" value="true" />
       <created>1698436094941</created>
@@ -608,15 +549,87 @@
       <option name="project" value="LOCAL" />
       <updated>1700682679799</updated>
     </task>
-    <task id="LOCAL-00056" summary="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed">
+    <task id="LOCAL-00056" summary="Fix disconnect causing car desync&#10;Improve SceneChange Detection">
       <option name="closed" value="true" />
-      <created>1712255743042</created>
+      <created>1700762843398</created>
       <option name="number" value="00056" />
       <option name="presentableId" value="LOCAL-00056" />
       <option name="project" value="LOCAL" />
-      <updated>1712255743043</updated>
+      <updated>1700762843398</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="-0.3.0- PlayerData - ServerSide">
+      <option name="closed" value="true" />
+      <created>1700850634623</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1700850634623</updated>
+    </task>
+    <task id="LOCAL-00058" summary="-0.3.0- WIP Inventory ServerSide">
+      <option name="closed" value="true" />
+      <created>1700852727348</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1700852727348</updated>
+    </task>
+    <task id="LOCAL-00059" summary="-0.3.0- Inventory ServerSide + ClientResyncDebug">
+      <option name="closed" value="true" />
+      <created>1700869173397</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1700869173397</updated>
+    </task>
+    <task id="LOCAL-00060" summary="-0.3.0- WIP ServerSide Car + ResyncDebug">
+      <option name="closed" value="true" />
+      <created>1700913204316</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1700913204316</updated>
+    </task>
+    <task id="LOCAL-00061" summary="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync">
+      <option name="closed" value="true" />
+      <created>1701367160326</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1701367160326</updated>
+    </task>
+    <task id="LOCAL-00062" summary="-0.3.0- HandleSceneChange + Auto Car-Resync">
+      <option name="closed" value="true" />
+      <created>1701380222876</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1701380222876</updated>
+    </task>
+    <task id="LOCAL-00063" summary="-0.3.0- Bug fixes&#10;- Mod Car load being called outside of garage&#10;- Movement/Rotation being done with a null player instance">
+      <option name="closed" value="true" />
+      <created>1701421105168</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1701421105168</updated>
+    </task>
+    <task id="LOCAL-00064" summary="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server">
+      <option name="closed" value="true" />
+      <created>1701421378222</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1701421378222</updated>
+    </task>
+    <task id="LOCAL-00065" summary="-0.3.0- Fix Player Unsync&#10;- Fix case where player object isn't created and so , is invisible">
+      <option name="closed" value="true" />
+      <created>1701421769462</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1701421769462</updated>
+    </task>
+    <option name="localTasksCounter" value="66" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -660,15 +673,6 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="B-2_0-SceneChange_1&#10;- Fix Player changing scene breaking sync&#10; -&gt; allow player to change scene without breaking mod and requiring a restart" />
-    <MESSAGE value="B-2_0-Lifter_1&#10;- Implement Car Lifter Sync" />
-    <MESSAGE value="B-2_0-CarSync-0" />
-    <MESSAGE value="B-2_0-CarSync_0_1&#10;- Move Car Uptade to Buffer to wait car to be ready&#10;- Change FadeIn/Out to wait car to be ready before FadeOut&#10;-&gt; HandleNewPart dont seem to be called ?" />
-    <MESSAGE value="B-2_0-CarSync_1" />
-    <MESSAGE value="B-2_0-Lifer_1-Fix&#10;- Fix Lifter Logic&#10;-- B-2_0-CarSync_1 --&#10;- Rework CarSyncinc!&#10; -&gt; Change on CarSpawn/Ready detection&#10; -&gt; Implemented a new &quot;Buffer&quot; queue for car part upadte&#10; -&gt; Implemented a new Packet wich contain all part in One to update&#10;   -&gt; It also reduce TCP charge with 2 packet instead of ~400 in a few sec when new car spawn" />
-    <MESSAGE value="B-2_0-Movement_1&#10;- Few Improvement on MovementSync" />
-    <MESSAGE value="B-2_0-CarSpawnOnLoad_0&#10;- Try to fix implementation of car sync to allow to load a save with car already loaded in garage" />
-    <MESSAGE value="B-2_0-CarSpawnOnLoad_1&#10;- Fix CarSpawnOnLoad&#10; -&gt; switch carOnScene to dict to fit index with loaderId&#10; - Fix Relaunch server broking sync ?" />
     <MESSAGE value="B-2_0-TireChanger_0&#10;- Implement TireChanger Sync&#10; -&gt; Bugged , SetGroupOnTireChanger is called every frame?&#10; - Refacto on ClientData to move all vanilla game info to GameData" />
     <MESSAGE value="B-2_0-TireChanger_1&#10;- Fix TireChanger Sync" />
     <MESSAGE value="B-2_0-WheelBalancer_1" />
@@ -684,8 +688,17 @@
     <MESSAGE value="-0.2.7-ThreadManager-&#10;&#10;- Change ExecuteOnMainThread Method to catch and handle potential Exception &#10; -&gt; Should fix total desync causing disconnection because of PacketHandler not working" />
     <MESSAGE value="UpdatePart/UpdateBodyPart Rewrite" />
     <MESSAGE value="Fix ghost part" />
-    <MESSAGE value="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed" />
-    <option name="LAST_COMMIT_MESSAGE" value="--- 0.2.9 ---&#10;- Stability&#10; -&gt; reworked &quot;keep Alive&quot; function, should avoid people from being randomly disconnected from server&#10; - Car Sync&#10;  -&gt; possible fix for car part rust not being updated when piece is changed" />
+    <MESSAGE value="Fix disconnect causing car desync&#10;Improve SceneChange Detection" />
+    <MESSAGE value="-0.3.0- PlayerData - ServerSide" />
+    <MESSAGE value="-0.3.0- WIP Inventory ServerSide" />
+    <MESSAGE value="-0.3.0- Inventory ServerSide + ClientResyncDebug" />
+    <MESSAGE value="-0.3.0- WIP ServerSide Car + ResyncDebug" />
+    <MESSAGE value="-0.3.0- Fix CarResyncDebug&#10;- Fix resync being called multiple time (broking everything)&#10;- Should fix updated part dust not being updated after resync" />
+    <MESSAGE value="-0.3.0- HandleSceneChange + Auto Car-Resync" />
+    <MESSAGE value="-0.3.0- Bug fixes&#10;- Mod Car load being called outside of garage&#10;- Movement/Rotation being done with a null player instance" />
+    <MESSAGE value="-0.3.0- Fix Car Loss on reload&#10;- Auto-Save when a car finished loading from server" />
+    <MESSAGE value="-0.3.0- Fix Player Unsync&#10;- Fix case where player object isn't created and so , is invisible" />
+    <option name="LAST_COMMIT_MESSAGE" value="-0.3.0- Fix Player Unsync&#10;- Fix case where player object isn't created and so , is invisible" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

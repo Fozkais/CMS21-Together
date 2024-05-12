@@ -1,21 +1,28 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ServerSide;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data.Car;
+using CMS21Together.ClientSide.Data.PlayerData;
+using CMS21Together.ClientSide.Handle;
+using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace CMS21MP.ClientSide.Data
+namespace CMS21Together.ClientSide.Data
 {
-    public static class ClientData 
+    public static class ClientData
     {
+        public static AssetBundle playerBundle;
         public static GameObject playerPrefab;
-        public static Dictionary<int, Player> serverPlayers = new Dictionary<int, Player>();
-        public static Dictionary<int, GameObject> serverPlayerInstances = new Dictionary<int, GameObject>();
+        public static Dictionary<int, Player> players = new Dictionary<int, Player>();
+        public static Dictionary<int, GameObject> PlayersGameObjects = new Dictionary<int, GameObject>();
         
-        public static Dictionary<int, ModCar> carOnScene = new Dictionary<int, ModCar>();
+        public static Dictionary<int, ModCar> LoadedCars = new Dictionary<int, ModCar>();
+        public static List<(int, string)> tempCarList = new List<(int, string)>();
+        
         public static bool isServerAlive = true;
         public static bool needToKeepAlive = false;
         public static bool isKeepingAlive;
@@ -28,33 +35,40 @@ namespace CMS21MP.ClientSide.Data
         public static int playerExp;
 
         public static bool asGameStarted;
-
+        
         public static void Init()
         {
-            MelonCoroutines.Start(GameData.InitializeGameData());
-        }
-        
-        public static void UpdateClientInfo()
-        {
-            Movement.SendMovement();
-            Movement.SendRotation();
+            if (GameData.Instance != null)
+                GameData.Instance.Initialize();
+            else { GameData data = new GameData(); data.Initialize(); }
             
-            Car.UpdateCars();
+        }
+        public static void UpdateClient() // Run Only if player is connected and in scene:"garage" 
+        {
+            CarManagement.UpdateCars();
+            
+            Movement.SendPosition();
+            Rotation.SendRotation();
+            
             ModInventory.UpdateInventory();
-            Stats.HandleStats();
+            Stats.HandleExp();
+            Stats.HandleMoney();
+            Stats.HandleScrap();
+            
+            foreach (var player in ClientData.PlayersGameObjects)
+            {
+                if (player.Value != null && player.Key != Client.Instance.Id)
+                {
+                    player.Value.GetComponent<ModCharacterController>().UpdatePlayer();
+                }
+            }
 
         }
-
         public static IEnumerator keepClientAlive()
         {
-            if (Client.Instance.isConnected)
-            {
-                isKeepingAlive = true;
-                ClientSend.KeepAlive();
-               // MelonLogger.Msg("KeepinClientAlive!");
-                yield return new WaitForSeconds(5);
-                isKeepingAlive = false;
-            }
+            isKeepingAlive = true;
+            ClientSend.KeepAlive();
+            yield return new WaitForSeconds(5);
             isKeepingAlive = false;
         }
 
@@ -73,83 +87,82 @@ namespace CMS21MP.ClientSide.Data
                 yield return new WaitForSeconds(35);
                 if (!isServerAlive)
                 {
-            
                     if (!Client.Instance.isConnected)
                     {
-                        if (SceneChecker.isNotInMenu())
+                        if (!ModSceneManager.isInMenu())
                             NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                         Client.Instance.Disconnect();
                     }
                 }
             }
         }
-
-
-
-        public static void SpawnPlayer(Player player, int id)
+        public static void SpawnPlayer(Player player)
         {
             if (playerPrefab != null)
             {
                 GameObject playerObject;
-                if (id == Client.Instance.Id)
+                if (player.id == Client.Instance.Id)
                 {
-                    playerObject = GameData.localPlayer;
+                    playerObject = GameData.Instance.localPlayer;
                 }
                 else
                 {
-                    playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
-                    playerObject.transform.name = player.username;
-                    
+                    if (!ClientData.PlayersGameObjects.ContainsKey(player.id))
+                    {
+                        playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
+                        playerObject.transform.name = player.username;
+                        PlayersGameObjects[player.id] = playerObject;
+                    }
+                    return;
                 }
                 MelonLogger.Msg($"{player.username} is In-game");
-                serverPlayerInstances[id] = playerObject;
+                PlayersGameObjects[player.id] = playerObject;
             }
             else
             {
                 MelonLogger.Msg("playerPrefab is not set! aborting...");
-                playerInit();
-                SpawnPlayer(player, id);
+                playerPrefabSetup();
+                SpawnPlayer(player);
             }
         }
 
-        public static void playerInit()
+
+        public static void playerPrefabSetup()
         {
-            AssetBundle playerModel = AssetBundle.LoadFromFile(@"Mods\togetherMod\playermodel");
-            AssetBundle playerTexture = AssetBundle.LoadFromFile(@"Mods\togetherMod\playertexture");
+            playerBundle = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.player.assets")));
 
-            if (playerModel)
+            if (playerBundle)
             {
-                Mesh mesh = playerModel.LoadAsset<GameObject>("playermodel").GetComponentInChildren<SkinnedMeshRenderer>().sharedMesh;
-                Material material;
 
-                if (playerTexture)
-                {
-                    Texture modelTexture = playerTexture.LoadAsset<Texture>("rp_nathan_animated_003_dif");
-                    modelTexture.filterMode = FilterMode.Point;
-                    Material mat = new Material(Shader.Find("HDRP/Unlit"));
-                    mat.mainTexture = modelTexture;
-                    material = mat;
+                GameObject player = playerBundle.LoadAsset<GameObject>("playerModel");
+
+                GameObject Nplayer = Object.Instantiate(player);
+                Nplayer.AddComponent<ModCharacterController>();
+                
+                Material material;
+                
+                Texture baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
+                baseTexture.filterMode = FilterMode.Point;
+                Texture normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
+                baseTexture.filterMode = FilterMode.Point;
+                
+                
+                material = new Material(Shader.Find("HDRP/Unlit"));
+                material.mainTexture = baseTexture;
+                material.SetTexture("_BumpMap", normalTexture);
+
+                Nplayer.GetComponentInChildren<SkinnedMeshRenderer>().material = material;
+                
+                Nplayer.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
+                Nplayer.transform.position = new Vector3(0, -10, 0);
+                Nplayer.transform.rotation = new Quaternion(0, 180, 0, 0);
                     
+                playerPrefab = Nplayer; 
                     
-                    GameObject model = new GameObject();
-                    model.AddComponent<MeshFilter>();
-                    model.AddComponent<MeshRenderer>();
-                    model.GetComponent<MeshFilter>().mesh = mesh;
-                    model.GetComponent<MeshRenderer>().material = material;
+                Object.DontDestroyOnLoad(playerPrefab);
                     
-                    model.name = "playerModel";
-                    model.transform.localScale = new Vector3(0.90f, 0.90f, 0.90f);
-                    model.transform.position = new Vector3(0, -10, 0);
-                    model.transform.rotation = new Quaternion(0, 180, 0, 0);
-                    
-                    playerPrefab = model;
-                    
-                    Object.DontDestroyOnLoad(playerPrefab);
-                    
-                    playerModel.Unload(false);
-                    playerTexture.Unload(false);
-                    MelonLogger.Msg("Loaded player model Succesfully!");
-                }
+                playerBundle.Unload(false);
+                MelonLogger.Msg("Loaded player model Succesfully!");
                 
             }
             

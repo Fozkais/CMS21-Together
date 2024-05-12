@@ -1,19 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net.Sockets;
-using MelonLoader;
 using System.Net;
-using CMS21MP.ClientSide;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.ServerSide.DataHandle;
-using CMS21MP.SharedData;
+using System.Net.Sockets;
+using CMS21Together.ServerSide.Data;
+using CMS21Together.ClientSide;
+using CMS21Together.ServerSide.Handle;
+using CMS21Together.Shared;
+using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP.ServerSide
+namespace CMS21Together.ServerSide
 {
-    public class Server
+     public class Server
     {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
@@ -43,19 +42,20 @@ namespace CMS21MP.ServerSide
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
             MelonLogger.Msg($"Server started successfully !");
-            MainMod.isServer = true;
+            ServerData.isRunning = true;
             isStopping = false;
             
             Application.runInBackground = true;
             
             Client.Instance.ConnectToServer("127.0.0.1");
+
+            MelonCoroutines.Start(CheckForInactiveClientsRoutine());
         }
 
         public static void CheckForInactiveClients()
         {
             // Délai maximum d'inactivité (en secondes)
             int maxInactivityDelay = 60;
-
             foreach (KeyValuePair<int, DateTime> entry in lastClientActivity)
             {
                 int clientId = entry.Key;
@@ -71,6 +71,7 @@ namespace CMS21MP.ServerSide
             }
         }
         
+
         public static IEnumerator CheckForInactiveClientsRoutine()
         {
             while (true)
@@ -82,14 +83,16 @@ namespace CMS21MP.ServerSide
 
         public static void Stop()
         {
+            if(!ServerData.isRunning) return;
+            
             Application.runInBackground = false;
             foreach (int id in Server.clients.Keys)
             {
                 ServerSend.DisconnectClient(id, "Server is shutting down.");
             }
             
-            
-            MainMod.isServer = false;
+            ServerData.isRunning = false;
+            ServerData.ResetData();
             isStopping = true;
 
             if(udpListener != null)
@@ -101,29 +104,8 @@ namespace CMS21MP.ServerSide
                 clients.Clear();
             if(packetHandlers != null)
                 packetHandlers.Clear();
-            
-            if(Client.PacketHandlers != null)
-                Client.PacketHandlers.Clear();
-            GameData.DataInitialzed = false;
 
-            GameData.carLoaders = null;
-            
-            if(ClientData.carOnScene != null)
-                ClientData.carOnScene.Clear();
-            if(ClientData.serverPlayers != null)
-                ClientData.serverPlayers.Clear();
-            if(ClientData.serverPlayerInstances != null)
-                ClientData.serverPlayerInstances.Clear();
-            if(GameData.localInventory != null)
-                GameData.localInventory.DeleteAll();
-            if(ClientData.playerGroupInventory != null)
-                ClientData.playerGroupInventory.Clear();
-            if( ClientData.playerInventory != null)
-                ClientData.playerInventory.Clear();
-
-            ClientData.asGameStarted = false;
-            
-            
+            ModUI.Instance.window = guiWindow.main;
             MelonLogger.Msg("Server Closed.");
 
         }
@@ -216,23 +198,29 @@ namespace CMS21MP.ServerSide
                 {(int)PacketTypes.welcome, ServerHandle.WelcomeReceived},
                 {(int)PacketTypes.readyState, ServerHandle.ReadyState},
                 {(int)PacketTypes.keepAlive, ServerHandle.keepAlive},
+                {(int)PacketTypes.disconnect, ServerHandle.Disconnect},
+                
                 {(int)PacketTypes.playerPosition, ServerHandle.playerPosition},
+                {(int)PacketTypes.playerInitialPos, ServerHandle.playerInitialPosition},
                 {(int)PacketTypes.playerRotation, ServerHandle.playerRotation},
                 {(int)PacketTypes.playerSceneChange, ServerHandle.playerSceneChange},
+                {(int)PacketTypes.stats, ServerHandle.playerStats},
+                {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
+                {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
+                
+                {(int)PacketTypes.lifter, ServerHandle.Lifter},
+                {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
+                {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
+                {(int)PacketTypes.engineStandAngle, ServerHandle.EngineStandAngle},
+                
+                {(int)PacketTypes.carResync, ServerHandle.CarResync},
+                //{(int)PacketTypes.carLoadInfo, ServerHandle.CarLoadInfo},
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},
+                {(int)PacketTypes.carParts, ServerHandle.CarParts},
                 {(int)PacketTypes.bodyPart, ServerHandle.BodyPart},
-                {(int)PacketTypes.carParts, ServerHandle.PartScripts},
                 {(int)PacketTypes.bodyParts, ServerHandle.BodyParts},
-                {(int)PacketTypes.inventoryItem, ServerHandle.InventoryItem},
-                {(int)PacketTypes.inventoryGroupItem, ServerHandle.InventoryGroupItem},
-                {(int)PacketTypes.lifterPos, ServerHandle.LifterPos},
-                {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
-                {(int)PacketTypes.tireChanger_ResetAction, ServerHandle.TireChanger_ResetAction},
-                {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
-                {(int)PacketTypes.wheelBalancer_UpdateWheel, ServerHandle.WheelBalancer_UpdateWheel},
-                {(int)PacketTypes.wheelBalancer_ResetAction, ServerHandle.WheelBalancer_ResetAction}
             };
             MelonLogger.Msg("Initialized Packets!");
         }

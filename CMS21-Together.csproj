@@ -1,0 +1,232 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7EFF228F-6F77-4526-ACBC-D0832CA33C77}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CMS21Together</RootNamespace>
+    <AssemblyName>CMS21-Together</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <LangVersion>7.3</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ClientSide\Client.cs" />
+    <Compile Include="ClientSide\Data\Car\CarHarmonyPatches.cs" />
+    <Compile Include="ClientSide\Data\Car\CarInitialization.cs" />
+    <Compile Include="ClientSide\Data\Car\CarManagement.cs" />
+    <Compile Include="ClientSide\Data\Car\CarUpdate.cs" />
+    <Compile Include="ClientSide\Data\Car\PartsHandle.cs" />
+    <Compile Include="ClientSide\Data\Car\PartsReferences.cs" />
+    <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Data\ContentManager.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomLobbyMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomMainMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
+    <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModCarWashLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModEngineStandLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModLifterLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModTireChangerLogic.cs" />
+    <Compile Include="ClientSide\Data\GarageInteraction\ModWheelBalancerLogic.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\ModCharacterController.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\ModInventory.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Movement.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
+    <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
+    <Compile Include="ClientSide\Handle\ClientHandle.cs" />
+    <Compile Include="ClientSide\Handle\ClientSend.cs" />
+    <Compile Include="ClientSide\Transport\ClientTCP.cs" />
+    <Compile Include="ClientSide\Transport\ClientUDP.cs" />
+    <Compile Include="MainMod.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSide\Data\CarPartHandle.cs" />
+    <Compile Include="ServerSide\Data\ServerData.cs" />
+    <Compile Include="ServerSide\Handle\ServerHandle.cs" />
+    <Compile Include="ServerSide\Handle\ServerSend.cs" />
+    <Compile Include="ServerSide\ServerClient.cs" />
+    <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\Transport\ServerTCP.cs" />
+    <Compile Include="ServerSide\Transport\ServerUDP.cs" />
+    <Compile Include="Shared\DataHelper.cs" />
+    <Compile Include="Shared\Data\GameScene.cs" />
+    <Compile Include="Shared\Data\ModBodyPartData.cs" />
+    <Compile Include="Shared\Data\ModBonusPartData.cs" />
+    <Compile Include="Shared\Data\ModCar.cs" />
+    <Compile Include="Shared\Data\ModCarInfoData.cs" />
+    <Compile Include="Shared\Data\ModCarPart.cs" />
+    <Compile Include="Shared\Data\ModColor.cs" />
+    <Compile Include="Shared\Data\ModDifficultyLevel.cs" />
+    <Compile Include="Shared\Data\ModEngineData.cs" />
+    <Compile Include="Shared\Data\ModGearboxData.cs" />
+    <Compile Include="Shared\Data\ModGroupItem.cs" />
+    <Compile Include="Shared\Data\ModItem.cs" />
+    <Compile Include="Shared\Data\ModLifterState.cs" />
+    <Compile Include="Shared\Data\ModLPData.cs" />
+    <Compile Include="Shared\Data\ModMountObject.cs" />
+    <Compile Include="Shared\Data\ModNewCarData.cs" />
+    <Compile Include="Shared\Data\ModNewCarLifterData.cs" />
+    <Compile Include="Shared\Data\ModNewCarLoaderData.cs" />
+    <Compile Include="Shared\Data\ModNewGlobalDataWrapper.cs" />
+    <Compile Include="Shared\Data\ModNewInventoryData.cs" />
+    <Compile Include="Shared\Data\ModNewJobPart.cs" />
+    <Compile Include="Shared\Data\ModNewJobsData.cs" />
+    <Compile Include="Shared\Data\ModNewJobTaskWrapper.cs" />
+    <Compile Include="Shared\Data\ModNewJobWrapper.cs" />
+    <Compile Include="Shared\Data\ModNewMachines.cs" />
+    <Compile Include="Shared\Data\ModNewUnlockedPosition.cs" />
+    <Compile Include="Shared\Data\ModNewUpgradeSystemData.cs" />
+    <Compile Include="Shared\Data\ModPaintData.cs" />
+    <Compile Include="Shared\Data\ModPaintType.cs" />
+    <Compile Include="Shared\Data\ModPartData.cs" />
+    <Compile Include="Shared\Data\ModPartScript.cs" />
+    <Compile Include="Shared\Data\ModPartType.cs" />
+    <Compile Include="Shared\Data\ModProfileData.cs" />
+    <Compile Include="Shared\Data\ModSaveData.cs" />
+    <Compile Include="Shared\Data\ModStats.cs" />
+    <Compile Include="Shared\Data\ModTuningData.cs" />
+    <Compile Include="Shared\Data\ModWheelsAlignment.cs" />
+    <Compile Include="Shared\Data\ModWheelBalancerActionType.cs" />
+    <Compile Include="Shared\Data\ModWheelData.cs" />
+    <Compile Include="Shared\ModSceneManager.cs" />
+    <Compile Include="Shared\ModUI.cs" />
+    <Compile Include="Shared\Packet.cs" />
+    <Compile Include="Shared\PacketTypes.cs" />
+    <Compile Include="Shared\Player.cs" />
+    <Compile Include="Shared\PreferencesManager.cs" />
+    <Compile Include="Shared\SavesManager.cs" />
+    <Compile Include="ThreadManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>Libs\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Runtime">
+      <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppmscorlib">
+      <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>Libs\MelonLoader.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="UnityEditor">
+      <HintPath>Libs\UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.CoreModule">
+      <HintPath>Libs\UnityEditor.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreModule">
+      <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Libs\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
+    <EmbeddedResource Include="Assets\peoples.png" />
+    <EmbeddedResource Include="Assets\lobbyBorder.png" />
+    <EmbeddedResource Include="Assets\player.assets" />
+    <Content Include="Libs\0Harmony.dll" />
+    <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <Content Include="Libs\Il2CppInterop.Runtime.dll" />
+    <Content Include="Libs\Il2Cppmscorlib.dll" />
+    <Content Include="Libs\MelonLoader.dll" />
+    <Content Include="Libs\Newtonsoft.Json.dll" />
+    <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
+    <Content Include="Libs\UnityEngine.CoreModule.dll" />
+    <Content Include="Libs\UnityEngine.dll" />
+    <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
+    <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
+    <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
+    <Content Include="Libs\UnityEngine.InputModule.dll" />
+    <Content Include="Libs\UnityEngine.PhysicsModule.dll" />
+    <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
+    <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
+    <Content Include="Libs\UnityEngine.UI.dll" />
+    <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.StringTools" Version="17.6.3" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

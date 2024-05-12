@@ -1,17 +1,17 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using CMS21MP;
+using CMS21Together;
 using MelonLoader;
 
 // Les informations générales relatives à un assembly dépendent de
 // l'ensemble d'attributs suivant. Changez les valeurs de ces attributs pour modifier les informations
 // associées à un assembly.
-[assembly: MelonInfo(typeof(MainMod), "TogetherMod", MainMod.ASSEMBLY_MOD_VERSION, "Fozkais")]
-[assembly: AssemblyTitle("TogetherMod")]
+[assembly: MelonInfo(typeof(MainMod), "CMS21-Together", MainMod.ASSEMBLY_MOD_VERSION, "Fozkais")]
+[assembly: AssemblyTitle("CMS21-Together")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TogetherMod")]
+[assembly: AssemblyProduct("CMS21-Together")]
 [assembly: AssemblyCopyright("Copyright © 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

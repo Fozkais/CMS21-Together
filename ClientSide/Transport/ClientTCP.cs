@@ -1,15 +1,14 @@
 using System;
 using System.Net.Sockets;
-using CMS21MP.ClientSide.Data;
-using CMS21MP.ClientSide.DataHandle;
-using CMS21MP.SharedData;
+using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.Shared;
 using MelonLoader;
 
-namespace CMS21MP.ClientSide.Transport
+namespace CMS21Together.ClientSide.Transport
 {
     public class ClientTCP
     {
-         public TcpClient socket = new TcpClient();
+        public TcpClient socket = new TcpClient();
 
         private NetworkStream stream;
         private Packet receivedData;
@@ -48,7 +47,7 @@ namespace CMS21MP.ClientSide.Transport
                     return;
                 }
                 
-                ModUI.Instance.ShowLobbyInterface();
+               // ModUI.Instance.ShowLobbyInterface();  TODO: Fix
                 stream = socket.GetStream();
                 receivedData = new Packet();
 
@@ -56,7 +55,8 @@ namespace CMS21MP.ClientSide.Transport
             }
             catch // Capturer toutes les exceptions possibles
             {
-                MelonLogger.Msg($"An error occurred while connecting to the server, check your internet or the ip of the server.");
+                CustomLobbyMenu.DisableLobby(); 
+                CustomMainMenu.EnableMultiplayerMenu();
             }
         }
 

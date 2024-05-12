@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21MP
+namespace CMS21Together
 {
-    public class ThreadManager : MonoBehaviour
+    public class ThreadManager
     {
         private static readonly List<Action> executeOnMainThread = new List<Action>();
         private static readonly List<Action> executeCopiedOnMainThread = new List<Action>();
         private static bool actionToExecuteOnMainThread = false;
 
-        public void UpdateThread()
+        public static void UpdateThread()
         {
             UpdateMain();
         }
@@ -36,7 +36,7 @@ namespace CMS21MP
                     }
                     catch (Exception e)
                     {
-                        MelonLogger.Msg("EncouteredExceptionInMainThread: " + e);
+                        MelonLogger.Msg("Encoutered exception on MainThread: " + e);
                     }
                 });
                 actionToExecuteOnMainThread = true;
