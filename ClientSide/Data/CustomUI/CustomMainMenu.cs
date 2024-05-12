@@ -55,6 +55,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 defaultButton.Add(section.buttons[i]);
             }
 
+            
             section.buttons = new Il2CppReferenceArray<MainMenuButton>(31);
             for (int i = 0; i < defaultButton.Count; i++)
             {
@@ -109,6 +110,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             section.buttons[0].OnClick.AddListener(openSinglePlayer);
             section.buttons[0].AssignAction(openSinglePlayer);
+            
+            // Fix Dlc button
+
+            section.buttons[2].OnClick = new MainMenuButton.ButtonEvent();
+            Action openDlc = delegate { OpenDlcs(); };
+
+            section.buttons[2].OnClick.AddListener(openDlc);
+            section.buttons[2].AssignAction(openDlc);
 
 
 
@@ -118,6 +127,18 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             section.gameObject.SetActive(false);
             section.transform.parent.Find("PlayButtons").gameObject.SetActive(true);
+        }
+        private static void OpenDlcs()
+        {
+            var parent = section.transform.parent.parent;
+            var dlc = parent.Find("DLCs").gameObject;
+            dlc.SetActive(true);
+            dlc.GetComponent<DLCWindow>().PrepareFirstPage();
+            dlc.GetComponent<DLCWindow>().PrepareDescriptions();
+            dlc.GetComponent<DLCWindow>().PrepareArrows();
+            dlc.GetComponent<DLCWindow>().EnableUI();
+            dlc.GetComponent<DLCWindow>().EnableGrid();
+            dlc.GetComponent<DLCWindow>().RedrawPage();
         }
 
         public static void MultiplayerMenu()
