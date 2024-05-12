@@ -25,10 +25,17 @@ namespace CMS21Together.ServerSide.Handle
                 string _username = _packet.ReadString();
                 Dictionary<string, bool> content = _packet.Read<Dictionary<string, bool>>();
                 string modVersion = _packet.ReadString();
+                string gameVersion = _packet.ReadString();
+
+                if (gameVersion != ContentManager.Instance.gameVersion)
+                {
+                    ServerSend.DisconnectClient(_fromClient, $"Game is not on same version as Server ! ({ContentManager.Instance.gameVersion})");
+                    return;
+                }
 
                 if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
                 {
-                    ServerSend.DisconnectClient(_fromClient, $"Please match Server Version to connect ({MainMod.ASSEMBLY_MOD_VERSION})");
+                    ServerSend.DisconnectClient(_fromClient, $"Mod is not on same version as Server ! ({MainMod.ASSEMBLY_MOD_VERSION}))");
                     return;
                 }
 

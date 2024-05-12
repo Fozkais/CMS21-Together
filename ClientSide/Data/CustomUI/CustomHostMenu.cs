@@ -418,7 +418,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
                 {
-                    if (i >= 14 && i <= 25)
+                    if (i >= 15 && i <= 25)
                     {
                         if (CustomMainMenu.section.buttons[i] != null)
                         {

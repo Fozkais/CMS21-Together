@@ -40,7 +40,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         
          public static void AddItem()
         {
-            if(GameData.Instance.localInventory == null) return;
+            if(GameData.Instance == null) return;
             
             var localInventory = GameData.Instance.localInventory.items;
             for (int i = 0; i < localInventory.Count; i++)

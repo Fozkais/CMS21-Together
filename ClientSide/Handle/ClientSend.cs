@@ -33,6 +33,7 @@ namespace CMS21Together.ClientSide.Handle
                 _packet.Write(Client.Instance.username);
                 _packet.Write(ContentManager.Instance.Contents);
                 _packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
+                _packet.Write(ContentManager.Instance.gameVersion);
                     
                 SendTCPData(_packet);
             }

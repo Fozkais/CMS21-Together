@@ -18,6 +18,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             [HarmonyPrefix]
             public static void WheelBalancerFix(GroupItem groupItem, bool instant, WheelBalancerLogic __instance)
             {
+                if(!Client.Instance.isConnected) return;
+                
                 if (groupItem != null)
                 {
                     if (groupItem.ItemList.Count == 0) return;

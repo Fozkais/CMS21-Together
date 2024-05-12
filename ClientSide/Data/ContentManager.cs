@@ -9,21 +9,26 @@ using Il2Cpp;
 using Il2CppInterop.Runtime;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.UI;
 using Color = UnityEngine.Color;
 using Object = Il2CppSystem.Object;
 
 namespace CMS21Together.ClientSide.Data
 {
-    [Obfuscation][RegisterTypeInIl2Cpp]
+    [RegisterTypeInIl2Cpp]
     public class ContentManager : MonoBehaviour
     {
+        public string gameVersion;
         public Dictionary<string, bool> Contents = new Dictionary<string, bool>();
         protected bool ContentSet;
         
         public static ContentManager Instance;
         
+        
         public void Initialize()
         {
+            if(ContentSet) return;
+            
             if (Instance == null)
             {
                 Instance = this;
@@ -35,9 +40,14 @@ namespace CMS21Together.ClientSide.Data
             }
 
             CheckContent();
+            GetGameVersion();
         }
 
-        [Obfuscation]
+        protected void GetGameVersion()
+        {
+            gameVersion = GameObject.Find("GameVersion").GetComponent<Text>().text;
+        }
+        
         protected async void CheckContent()
         {
             if(ContentSet) return;
