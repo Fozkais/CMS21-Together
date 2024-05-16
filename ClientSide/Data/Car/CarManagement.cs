@@ -33,7 +33,7 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             partHandleRunning = true;
 
-            foreach (ModCar car in ClientData.LoadedCars.Values)
+            foreach (ModCar car in ClientData.Instance.LoadedCars.Values)
             {
                 MelonCoroutines.Start(PartsHandle.HandleParts(car));
             }
@@ -44,7 +44,7 @@ namespace CMS21Together.ClientSide.Data.Car
         
         public static IEnumerator DetectUnloadedCar()
         {
-            foreach (ModCar car in ClientData.LoadedCars.Values)
+            foreach (ModCar car in ClientData.Instance.LoadedCars.Values)
             {
                 if (!car.isFromServer)
                 {
@@ -59,7 +59,7 @@ namespace CMS21Together.ClientSide.Data.Car
                         GameData.Instance.carLoaders[car.carLoaderID].carParts == null)
                     {
                         ClientSend.SendModCar(new ModCar(car), true);
-                        ClientData.LoadedCars.Remove(car.carLoaderID);
+                        ClientData.Instance.LoadedCars.Remove(car.carLoaderID);
                     }
                 }
             }
@@ -67,7 +67,7 @@ namespace CMS21Together.ClientSide.Data.Car
         
         public static void DetectCarMoves()
         {
-            foreach (var car in ClientData.LoadedCars)
+            foreach (var car in ClientData.Instance.LoadedCars)
             { 
                 if (!car.Value.isFromServer)
                 {
@@ -85,9 +85,9 @@ namespace CMS21Together.ClientSide.Data.Car
         
         public static IEnumerator UpdateCarOnSceneChange()
         {
-            if (!ClientData.asGameStarted) yield break;
+            if (!ClientData.Instance.asGameStarted) yield break;
             
-            foreach ((int, string) previousCar in ClientData.tempCarList)
+            foreach ((int, string) previousCar in ClientData.Instance.tempCarList)
             {
                 GameData.Instance.carLoaders[previousCar.Item1].DeleteCar();
             }

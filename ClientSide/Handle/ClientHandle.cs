@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Car;
@@ -32,18 +33,24 @@ namespace CMS21Together.ClientSide.Handle
                 ClientSend.WelcomeReceived();
                 _packet.Dispose();
             }
+            
+            public static void ContentsInfo(Packet _packet)
+            {
+                ReadOnlyDictionary<string, bool> infos = _packet.Read<ReadOnlyDictionary<string, bool>>();
+                ApiCalls.CallAPIMethod2(infos);
+            }
         
             public static void KeepAlive(Packet _packet)
             {
                // MelonLogger.Msg("Start Keeping Alive!");
-                ClientData.isServerAlive = true;
-                ClientData.needToKeepAlive = true;
+                ClientData.Instance.isServerAlive = true;
+                ClientData.Instance.needToKeepAlive = true;
             }
             
             public static void KeepAliveConfirmation(Packet _packet)
             {
                 // Le serveur a confirmé la réception du paquet "Keep Alive"
-                ClientData.isServerAlive = true;
+                ClientData.Instance.isServerAlive = true;
             }
             
 
@@ -52,6 +59,7 @@ namespace CMS21Together.ClientSide.Handle
                 string _msg = _packet.ReadString();
                 int id = _packet.ReadInt();
                 
+                if(!Client.Instance.isConnected) return;
                 
                 if(id == Client.Instance.Id)
                     MelonLogger.Msg($"You were disconnected from the server :{_msg}");
@@ -60,8 +68,8 @@ namespace CMS21Together.ClientSide.Handle
                 
                 if (id != Client.Instance.Id && id != 1)
                 {
-                    if(ClientData.players.ContainsKey(id))
-                        ClientData.players[id].Disconnect();
+                    if(ClientData.Instance.players.ContainsKey(id))
+                        ClientData.Instance.players[id].Disconnect();
                 }
                 else
                 {
@@ -81,14 +89,14 @@ namespace CMS21Together.ClientSide.Handle
                 bool _ready = _packet.ReadBool();
                 int _id = _packet.ReadInt();
 
-                ClientData.players[_id].isReady = _ready;
+                ClientData.Instance.players[_id].isReady = _ready;
                 _packet.Dispose();
             }
             
             public static void PlayerInfo(Packet _packet)
             {
                 Player info = _packet.Read<Player>();
-                ClientData.players[info.id] = info;
+                ClientData.Instance.players[info.id] = info;
                 
                 MelonLogger.Msg($"Received {info.username}, {info.id} info from server.");
                 _packet.Dispose();
@@ -97,7 +105,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 Dictionary<int, Player> info = _packet.Read<Dictionary<int, Player>>();
                 if(info != null)
-                    ClientData.players = info;
+                    ClientData.Instance.players = info;
                 else
                     MelonLogger.Msg("Received player info is null!");
                 _packet.Dispose();
@@ -120,7 +128,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 Player _player = _packet.Read<Player>();
                 int _id = _packet.ReadInt();
-                ClientData.players[_id] = _player;
+                ClientData.Instance.players[_id] = _player;
 
                 MelonCoroutines.Start(DelaySpawnPlayer(_id, _player));
                 
@@ -134,10 +142,10 @@ namespace CMS21Together.ClientSide.Handle
                     yield return new WaitForEndOfFrame();
                 }
                 
-                if (ClientData.players.TryGetValue(_id, out var player))
+                if (ClientData.Instance.players.TryGetValue(_id, out var player))
                 {
-                    if(!ClientData.PlayersGameObjects.ContainsKey(player.id))
-                        ClientData.SpawnPlayer(_player);
+                    if(!ClientData.Instance.PlayersGameObjects.ContainsKey(player.id))
+                        ClientData.Instance.SpawnPlayer(_player);
                 }
                 
                 if(GameData.DataInitialized)
@@ -178,13 +186,13 @@ namespace CMS21Together.ClientSide.Handle
                 GameScene scene = _packet.Read<GameScene>();
                     
                 MelonLogger.Msg("Received Scene Update :" + scene);
-                if (ClientData.players.TryGetValue(id, out var player))
+                if (ClientData.Instance.players.TryGetValue(id, out var player))
                 {
                     player.scene = scene;
                     if (player.scene != ModSceneManager.currentScene())
                     {
                        // MelonLogger.Msg($"Destroying {player.username} gameObject.");
-                       if (ClientData.PlayersGameObjects.TryGetValue(id, out var instance))
+                       if (ClientData.Instance.PlayersGameObjects.TryGetValue(id, out var instance))
                        {
                            if (instance != null)
                            {
@@ -194,12 +202,12 @@ namespace CMS21Together.ClientSide.Handle
                     }
                     else
                     {
-                        if (ClientData.PlayersGameObjects.TryGetValue(id, out var instance))
+                        if (ClientData.Instance.PlayersGameObjects.TryGetValue(id, out var instance))
                         {
                             if (instance == null)
                             {
                                // MelonLogger.Msg($"Instance Null for {player.username} with id : {player.id} or {id} , spawning...");
-                                ClientData.SpawnPlayer(player);
+                                ClientData.Instance.SpawnPlayer(player);
                             }
                         }
                     }
@@ -215,15 +223,15 @@ namespace CMS21Together.ClientSide.Handle
                 switch (type)
                 {
                     case ModStats.money:
-                        ClientData.playerMoney = value;
+                        ClientData.Instance.playerMoney = value;
                         GlobalData.PlayerMoney = value;
                         break;
                     case ModStats.scrap:
-                        ClientData.playerScrap = value;
+                        ClientData.Instance.playerScrap = value;
                         GlobalData.PlayerScraps = value;
                         break;
                     case ModStats.exp:
-                        ClientData.playerExp = value;
+                        ClientData.Instance.playerExp = value;
                         GlobalData.PlayerExp = value;
                         break;
                 }
@@ -294,7 +302,7 @@ namespace CMS21Together.ClientSide.Handle
                 MelonLogger.Msg("Received lifter info!");
                 MelonLogger.Msg("State :" + state + "ID: " + carLoaderID);
                 
-                if (ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID - 1))
+                if (ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID - 1))
                 {
                     var lifter = GameData.Instance.carLoaders[carLoaderID-1].lifter;
                     MelonLogger.Msg("Passed Lifter.");
@@ -305,7 +313,7 @@ namespace CMS21Together.ClientSide.Handle
                     {
                         lifter.Action((1));
                     }
-                    ClientData.LoadedCars[carLoaderID-1].CarLifterState = (int)state;
+                    ClientData.Instance.LoadedCars[carLoaderID-1].CarLifterState = (int)state;
                     ModLifterLogic.listenToLifter = true;
                 }
 
@@ -422,14 +430,14 @@ namespace CMS21Together.ClientSide.Handle
                 
                 CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
 
-                bool checkCondition = ClientData.LoadedCars.Any(s =>
+                bool checkCondition = ClientData.Instance.LoadedCars.Any(s =>
                     s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID);
                 
                 if (!removed)
                 {
                     if(!checkCondition)
-                        ClientData.LoadedCars.Add(car.carLoaderID, car);
-                    ModCar _car  = ClientData.LoadedCars.First(s 
+                        ClientData.Instance.LoadedCars.Add(car.carLoaderID, car);
+                    ModCar _car  = ClientData.Instance.LoadedCars.First(s 
                         => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value;
                     
                     MelonCoroutines.Start(CarUpdate.CarSpawnFade(_car, carLoader));
@@ -439,7 +447,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     if (checkCondition)
                     {
-                        ClientData.LoadedCars.Remove(ClientData.LoadedCars.First(s => 
+                        ClientData.Instance.LoadedCars.Remove(ClientData.Instance.LoadedCars.First(s => 
                             s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
                         carLoader.DeleteCar();
                         MelonLogger.Msg("CL: Removing car...");
@@ -462,7 +470,7 @@ namespace CMS21Together.ClientSide.Handle
                 int carLoaderID = _packet.ReadInt();
                 int carPosition = _packet.ReadInt();
             
-                ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
+                ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
                 GameData.Instance.carLoaders[carLoaderID].ChangePosition(carPosition);
                 _packet.Dispose();
             }
@@ -500,7 +508,7 @@ namespace CMS21Together.ClientSide.Handle
                 yield return new WaitForSeconds(1);
                 yield return new WaitForEndOfFrame();
                 
-                ModCar car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                ModCar car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 switch (carPart.type)
                 {
                     case ModPartType.other:
@@ -555,7 +563,7 @@ namespace CMS21Together.ClientSide.Handle
                 yield return new WaitForSeconds(1);
                 yield return new WaitForEndOfFrame();
                 
-                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 car.receivedBodyParts = true;
             }
 

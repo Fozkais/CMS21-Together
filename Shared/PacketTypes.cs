@@ -8,6 +8,7 @@ namespace CMS21Together.Shared
             keepAlive = 2,
             keepAliveConfirmed = 3,
             carLoadInfo = 4,
+            contentInfo = 5,
             disconnect,
             readyState,
             playersInfo,

@@ -12,11 +12,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
 
         public static void UpdatePlayerRotation(int id, QuaternionSerializable _rotation)
         {
-            if (ClientData.players.TryGetValue(id, out Player player))
+            if (ClientData.Instance.players.TryGetValue(id, out Player player))
             {
                 if (player.scene == ModSceneManager.currentScene())
                 {
-                    if (ClientData.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
+                    if (ClientData.Instance.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
                     {
                         if (_gameObject != null)
                         {
@@ -28,7 +28,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                     }
                     else
                     {
-                        ClientData.SpawnPlayer(player);
+                        ClientData.Instance.SpawnPlayer(player);
                     }
                     
                 }

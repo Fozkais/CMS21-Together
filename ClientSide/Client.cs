@@ -9,6 +9,7 @@ using UnityEngine;
 
 namespace CMS21Together.ClientSide
 {
+    [RegisterTypeInIl2Cpp]
     public class Client: MonoBehaviour
     {
         public static Client Instance;
@@ -57,6 +58,8 @@ namespace CMS21Together.ClientSide
             Instance.ip = _ipAdress;
             Instance.port = MainMod.PORT;
 
+            ClientData data = new ClientData();
+            ClientData.Instance = data;
 
             try
             {
@@ -82,6 +85,7 @@ namespace CMS21Together.ClientSide
             PacketHandlers = new Dictionary<int, PacketHandler>()
             {
                 { (int)PacketTypes.welcome, ClientHandle.Welcome },
+                { (int)PacketTypes.contentInfo, ClientHandle.ContentsInfo },
                 { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
                 { (int)PacketTypes.keepAliveConfirmed, ClientHandle.KeepAliveConfirmation},
                 { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
@@ -123,42 +127,20 @@ namespace CMS21Together.ClientSide
                 isConnected = false;
                 tcp.Disconnect();
                 udp.Disconnect();
-                ClientData.needToKeepAlive = false;
                 if(tcp.socket != null)
                     tcp.socket.Close();
                 if (udp.socket != null)
                     udp.socket.Close();
-                
-                if(Client.PacketHandlers != null) 
-                    Client.PacketHandlers.Clear();
-                GameData.DataInitialized = false;
-                
-                GameData.Instance.carLoaders = null;
-            
-                if(ClientData.LoadedCars != null)
-                    ClientData.LoadedCars.Clear();
-                if(ClientData.players != null)
-                    ClientData.players.Clear();
-                if(ClientData.PlayersGameObjects != null)
-                    ClientData.PlayersGameObjects.Clear();
-                if(GameData.Instance.localInventory != null)
-                    GameData.Instance.localInventory.DeleteAll();
-                if(ClientData.playerGroupInventory != null)
-                    ClientData.playerGroupInventory.Clear();
-                if( ClientData.playerInventory != null)
-                    ClientData.playerInventory.Clear();
 
-                ClientData.playerExp = 0;
-                ClientData.playerMoney = 0;
-                ClientData.playerScrap = 0;
 
-                ClientData.asGameStarted = false;
+                ClientData.Instance = null;
                 GameData.Instance = null;
 
                 ModUI.Instance.window = guiWindow.main;
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
+            ApiCalls.CallAPIMethod2(ContentManager.Instance.OwnedContents);
         }
     }
 }

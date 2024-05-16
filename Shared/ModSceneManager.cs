@@ -81,7 +81,7 @@ namespace CMS21Together.Shared
 
         public static void UpdatePlayerScene()
         {
-            ClientData.players[Client.Instance.Id].scene = currentScene();
+            ClientData.Instance.players[Client.Instance.Id].scene = currentScene();
             ClientSend.SendSceneChange(currentScene());
         }
     }

@@ -10,10 +10,10 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public static void HandleMoney()
         {
             int playerMoney = GlobalData.PlayerMoney;
-            if (playerMoney > ClientData.playerMoney || playerMoney < ClientData.playerMoney)
+            if (playerMoney > ClientData.Instance.playerMoney || playerMoney < ClientData.Instance.playerMoney)
             {
-                int diff = playerMoney - ClientData.playerMoney;
-                ClientData.playerMoney += diff;
+                int diff = playerMoney - ClientData.Instance.playerMoney;
+                ClientData.Instance.playerMoney += diff;
                 ClientSend.Stats(diff, ModStats.money);
             }
         }
@@ -21,10 +21,10 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public static void HandleScrap()
         {
             int playerScraps = GlobalData.PlayerScraps;
-            if (playerScraps > ClientData.playerScrap || playerScraps < ClientData.playerScrap)
+            if (playerScraps > ClientData.Instance.playerScrap || playerScraps < ClientData.Instance.playerScrap)
             {
-                int diff = playerScraps - ClientData.playerScrap;
-                ClientData.playerScrap += diff;
+                int diff = playerScraps - ClientData.Instance.playerScrap;
+                ClientData.Instance.playerScrap += diff;
                 ClientSend.Stats(diff, ModStats.scrap);
                 //MelonLogger.Msg($"Sending scraps!! +{diff}");
             }
@@ -33,10 +33,10 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public static void HandleExp()
         {
             int playerExp = GlobalData.PlayerExp;
-            if (playerExp > ClientData.playerExp || playerExp <  ClientData.playerExp)
+            if (playerExp > ClientData.Instance.playerExp || playerExp <  ClientData.Instance.playerExp)
             {
-                int diff = playerExp -  ClientData.playerExp;
-                ClientData.playerExp += diff;
+                int diff = playerExp -  ClientData.Instance.playerExp;
+                ClientData.Instance.playerExp += diff;
                 ClientSend.Stats(diff, ModStats.exp);
             }
         }

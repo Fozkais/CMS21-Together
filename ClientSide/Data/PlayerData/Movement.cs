@@ -13,11 +13,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
 
         public static void SetInitialPosition(int id, Vector3Serializable _position)
         {
-            if (ClientData.players.TryGetValue(id, out Player player))
+            if (ClientData.Instance.players.TryGetValue(id, out Player player))
             {
                 if (player.scene == ModSceneManager.currentScene())
                 {
-                    if (ClientData.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
+                    if (ClientData.Instance.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
                     {
                         if (_gameObject != null)
                         {
@@ -31,11 +31,11 @@ namespace CMS21Together.ClientSide.Data.PlayerData
 
         public static void UpdatePlayerPosition(int id, Vector3Serializable _position)
         {
-            if (ClientData.players.TryGetValue(id, out Player player))
+            if (ClientData.Instance.players.TryGetValue(id, out Player player))
             {
                 if (player.scene == ModSceneManager.currentScene())
                 {
-                    if (ClientData.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
+                    if (ClientData.Instance.PlayersGameObjects.TryGetValue(id, out GameObject _gameObject))
                     {
                         if (_gameObject != null)
                         {
@@ -49,7 +49,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                     }
                     else
                     {
-                        ClientData.SpawnPlayer(player);
+                        ClientData.Instance.SpawnPlayer(player);
                     }
                     
                 }

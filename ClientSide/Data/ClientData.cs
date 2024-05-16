@@ -13,37 +13,43 @@ using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data
 {
-    public static class ClientData
+    public class ClientData
     {
+        public static ClientData Instance;
+        
         public static AssetBundle playerBundle;
         public static GameObject playerPrefab;
-        public static Dictionary<int, Player> players = new Dictionary<int, Player>();
-        public static Dictionary<int, GameObject> PlayersGameObjects = new Dictionary<int, GameObject>();
+        public Dictionary<int, Player> players = new Dictionary<int, Player>();
+        public Dictionary<int, GameObject> PlayersGameObjects = new Dictionary<int, GameObject>();
         
-        public static Dictionary<int, ModCar> LoadedCars = new Dictionary<int, ModCar>();
-        public static List<(int, string)> tempCarList = new List<(int, string)>();
+        public Dictionary<int, ModCar> LoadedCars = new Dictionary<int, ModCar>();
+        public List<(int, string)> tempCarList = new List<(int, string)>();
         
-        public static bool isServerAlive = true;
-        public static bool needToKeepAlive = false;
-        public static bool isKeepingAlive;
+        public bool isServerAlive = true;
+        public bool needToKeepAlive = false;
+        public bool isKeepingAlive;
 
-        public static List<Item> playerInventory = new List<Item>();
-        public static List<GroupItem> playerGroupInventory = new List<GroupItem>();
+        public List<Item> playerInventory = new List<Item>();
+        public List<GroupItem> playerGroupInventory = new List<GroupItem>();
 
-        public static int playerMoney;
-        public static int playerScrap;
-        public static int playerExp;
+        public int playerMoney;
+        public int playerScrap;
+        public int playerExp;
 
-        public static bool asGameStarted;
+        public bool asGameStarted;
         
-        public static void Init()
+        
+        
+        public void Init()
         {
+            Instance = this;
+            
             if (GameData.Instance != null)
                 GameData.Instance.Initialize();
             else { GameData data = new GameData(); data.Initialize(); }
             
         }
-        public static void UpdateClient() // Run Only if player is connected and in scene:"garage" 
+        public void UpdateClient() // Run Only if player is connected and in scene:"garage" 
         {
             CarManagement.UpdateCars();
             
@@ -55,7 +61,7 @@ namespace CMS21Together.ClientSide.Data
             Stats.HandleMoney();
             Stats.HandleScrap();
             
-            foreach (var player in ClientData.PlayersGameObjects)
+            foreach (var player in PlayersGameObjects)
             {
                 if (player.Value != null && player.Key != Client.Instance.Id)
                 {
@@ -64,7 +70,7 @@ namespace CMS21Together.ClientSide.Data
             }
 
         }
-        public static IEnumerator keepClientAlive()
+        public IEnumerator keepClientAlive()
         {
             isKeepingAlive = true;
             ClientSend.KeepAlive();
@@ -72,7 +78,7 @@ namespace CMS21Together.ClientSide.Data
             isKeepingAlive = false;
         }
 
-        public static IEnumerator isServer_alive()
+        public IEnumerator isServer_alive()
         {
             if (!Client.Instance.isConnected)
                 yield break;
@@ -96,7 +102,7 @@ namespace CMS21Together.ClientSide.Data
                 }
             }
         }
-        public static void SpawnPlayer(Player player)
+        public void SpawnPlayer(Player player)
         {
             if (playerPrefab != null)
             {
@@ -107,7 +113,7 @@ namespace CMS21Together.ClientSide.Data
                 }
                 else
                 {
-                    if (!ClientData.PlayersGameObjects.ContainsKey(player.id))
+                    if (!PlayersGameObjects.ContainsKey(player.id))
                     {
                         playerObject = Object.Instantiate(playerPrefab, player.position.toVector3(),player.rotation.toQuaternion());
                         playerObject.transform.name = player.username;
@@ -127,7 +133,7 @@ namespace CMS21Together.ClientSide.Data
         }
 
 
-        public static void playerPrefabSetup()
+        public void playerPrefabSetup()
         {
             playerBundle = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.player.assets")));
 

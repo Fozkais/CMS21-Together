@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using CMS21Together.Shared;
@@ -10,7 +11,6 @@ using Il2CppInterop.Runtime;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
-using Color = UnityEngine.Color;
 using Object = Il2CppSystem.Object;
 
 namespace CMS21Together.ClientSide.Data
@@ -18,16 +18,14 @@ namespace CMS21Together.ClientSide.Data
     [RegisterTypeInIl2Cpp]
     public class ContentManager : MonoBehaviour
     {
-        public string gameVersion;
-        public Dictionary<string, bool> Contents = new Dictionary<string, bool>();
-        protected bool ContentSet;
+        public string gameVersion { get; private set; }
+        public IReadOnlyDictionary<string, bool> OwnedContents { get; private set; }
         
         public static ContentManager Instance;
         
-        
         public void Initialize()
         {
-            if(ContentSet) return;
+            if(OwnedContents != null) return;
             
             if (Instance == null)
             {
@@ -38,29 +36,23 @@ namespace CMS21Together.ClientSide.Data
                 MelonLogger.Msg("Instance already exists, destroying object!");
                 Destroy(this);
             }
-
-            CheckContent();
+            
             GetGameVersion();
+            CheckContent();
         }
 
         protected void GetGameVersion()
         {
+            if(OwnedContents != null) return;
+            
             gameVersion = GameObject.Find("GameVersion").GetComponent<Text>().text;
         }
         
-        protected async void CheckContent()
+        protected void CheckContent()
         {
-            if(ContentSet) return;
+            if(OwnedContents != null) return;
             
-            Contents.Clear();
-            await Task.Delay(2000);
-            foreach (DLC content in Singleton<GameManager>.Instance.PlatformManager.GetDLCSystem().DLCs)
-            {
-                if(!Contents.ContainsKey(content.Name))
-                    Contents.Add(content.Name, content.Owned);
-            }
-
-            ContentSet = true;
+            OwnedContents = new ReadOnlyDictionary<string, bool>(ApiCalls.CallAPIMethod3());
         }
 
         public void LoadCustomlogo()
@@ -86,7 +78,6 @@ namespace CMS21Together.ClientSide.Data
                 }
             }
         }
-
         
     }
 }

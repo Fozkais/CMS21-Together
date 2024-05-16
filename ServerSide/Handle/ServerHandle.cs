@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide.Data;
@@ -23,7 +24,7 @@ namespace CMS21Together.ServerSide.Handle
             {
                 int _clientIdCheck = _packet.ReadInt();
                 string _username = _packet.ReadString();
-                Dictionary<string, bool> content = _packet.Read<Dictionary<string, bool>>();
+                ReadOnlyDictionary<string, bool> content = _packet.Read<ReadOnlyDictionary<string, bool>>();
                 string modVersion = _packet.ReadString();
                 string gameVersion = _packet.ReadString();
 
@@ -39,16 +40,10 @@ namespace CMS21Together.ServerSide.Handle
                     return;
                 }
 
-                foreach (var hostContent in ContentManager.Instance.Contents)
-                {
-                    if (hostContent.Value != content[hostContent.Key])
-                    {
-                        ServerSend.DisconnectClient(_fromClient, "DLC content mismatch!");
-                        return;
-                    }
-                }
+                var a = ApiCalls.CallAPIMethod1(content, ContentManager.Instance.OwnedContents);
+                ServerSend.ContentInfo(a);
                 
-                if (!ClientData.asGameStarted)
+                if (!ClientData.Instance.asGameStarted)
                 {
                     MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
 

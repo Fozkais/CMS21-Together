@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
@@ -8,6 +10,8 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
+using Object = UnityEngine.Object;
+
 // ReSharper disable All
 
 namespace CMS21Together
@@ -17,7 +21,7 @@ namespace CMS21Together
         public const int MAX_SAVE_COUNT = 22; // need to add 6 to match correct save number: 16 = 22 (+1 for clientSlot)
         public const int MAX_PLAYER = 4;
         public const int PORT = 7777;
-        public const string ASSEMBLY_MOD_VERSION = "0.3.1";
+        public const string ASSEMBLY_MOD_VERSION = "0.3.2";
         public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
         
@@ -27,21 +31,29 @@ namespace CMS21Together
 
         public bool isModInitialized;
 
+        public override void OnEarlyInitializeMelon()
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ApiCalls.CurrentDomain_AssemblyResolve);
+        }
+
         public override void OnLateInitializeMelon()
         {
-            client = new Client();
+            GameObject modObject = new GameObject("TogetherMod");
+            Object.DontDestroyOnLoad(modObject);
+            client = modObject.AddComponent<Client>();
             client.Awake();
             
-            modUI = new ModUI();
+            modUI = modObject.AddComponent<ModUI>();
             modUI.Awake();
             
-            contentManager = new ContentManager();
+            contentManager = modObject.AddComponent<ContentManager>();
             
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
             
         }
+        
 
         public override void OnGUI()
         {
@@ -71,17 +83,17 @@ namespace CMS21Together
                 }
                 if(ModSceneManager.isInGarage())
                 {
-                    ClientData.Init();
+                    ClientData.Instance.Init();
                     MelonCoroutines.Start( CarManagement.UpdateCarOnSceneChange());
 
-                    foreach (KeyValuePair<int, Player> player in ClientData.players)
+                    foreach (KeyValuePair<int, Player> player in ClientData.Instance.players)
                     {
                         if (ModSceneManager.isInGarage(player.Value))
                         {
                             MelonLogger.Msg($"Player: {player.Value.username} in garage, Spawning...");
-                            if (!ClientData.PlayersGameObjects.ContainsKey(player.Value.id))
+                            if (!ClientData.Instance.PlayersGameObjects.ContainsKey(player.Value.id))
                             {
-                                ClientData.SpawnPlayer(player.Value);
+                                ClientData.Instance.SpawnPlayer(player.Value);
                             }
                         }
                     }
@@ -97,17 +109,17 @@ namespace CMS21Together
                 if (Client.Instance.isConnected)
                 {
                     if(ModSceneManager.isInGarage())
-                        ClientData.UpdateClient();
+                        ClientData.Instance.UpdateClient();
                 }
             }
             if (Client.Instance.isConnected)
             {
-                if (ClientData.needToKeepAlive)
+                if (ClientData.Instance.needToKeepAlive)
                 {
-                    if (!ClientData.isKeepingAlive)
+                    if (!ClientData.Instance.isKeepingAlive)
                     {
-                        MelonCoroutines.Start(ClientData.keepClientAlive());
-                        MelonCoroutines.Start(ClientData.isServer_alive());
+                        MelonCoroutines.Start(ClientData.Instance.keepClientAlive());
+                        MelonCoroutines.Start(ClientData.Instance.isServer_alive());
                     }
                 }
 

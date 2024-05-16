@@ -51,7 +51,7 @@ namespace CMS21Together.Shared
                 Il2CppReferenceArray<SaveData> vanillaSaveArray = new Il2CppReferenceArray<SaveData>(4);
                 for (int i = 0; i < 4; i++)
                 {
-                    vanillaSaveArray[i] =  GetSave(new SteamSave(), i);
+                    vanillaSaveArray[i] =  GetSave(i);
                 }
                 
                 for (int i = 0; i < saveFiles.Length; i++)
@@ -64,7 +64,7 @@ namespace CMS21Together.Shared
                     if (modSave.alreadyLoaded)
                     {
                         Il2CppReferenceArray<SaveData> tempSaveArray = new Il2CppReferenceArray<SaveData>(4);
-                        tempSaveArray[3] = GetSave(new SteamSave(), modSave.saveIndex);
+                        tempSaveArray[3] = GetSave(modSave.saveIndex);
                         
                          Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(tempSaveArray);
                          ProfileData copiedData = DataHelper.Copy(Singleton<GameManager>.Instance.GameDataManager.ProfileData[3]);
@@ -82,9 +82,9 @@ namespace CMS21Together.Shared
             return Singleton<GameManager>.Instance.GameDataManager.ProfileData[saveIndex];
         }
         
-        private static SaveData GetSave(SteamSave save, int saveIndex)
+        private static SaveData GetSave(int saveIndex)
         {
-            Il2CppStructArray<byte> bytes = save.LoadProfileSave(saveIndex, out var format, out var parameter);
+            Il2CppStructArray<byte> bytes = LoadProfileSave(saveIndex, out var format, out var parameter);
                         
             SaveData saveData = new SaveData();
             saveData.Data = bytes;
@@ -92,6 +92,27 @@ namespace CMS21Together.Shared
             saveData.HasData = parameter;
 
             return saveData;
+        }
+        
+        private static byte[] LoadProfileSave(int profileIndex, out byte format, out bool hasData)
+        {
+            string path = string.Format("{0}/profile{1}{2}b", GlobalStrings.SaveDirectory, profileIndex, ".cms21");
+            if (File.Exists(path))
+            {
+                format = 1;
+                hasData = true;
+                return File.ReadAllBytes(path);
+            }
+            path = string.Format("{0}/profile{1}{2}", GlobalStrings.SaveDirectory, profileIndex, ".cms21");
+            if (File.Exists(path))
+            {
+                format = 0;
+                hasData = true;
+                return File.ReadAllBytes(path);
+            }
+            format = 0;
+            hasData = false;
+            return Array.Empty<byte>();
         }
 
 

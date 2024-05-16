@@ -125,18 +125,18 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             if (Client.Instance.isConnected || ServerData.isRunning)
             {
-                if (ClientData.asGameStarted)
+                if (ClientData.Instance.asGameStarted)
                 {
                     try
                     {
                         if (newSceneName != "garage")
                         {
-                            ClientData.tempCarList.Clear();
+                            ClientData.Instance.tempCarList.Clear();
                             var profile = SavesManager.currentSave;
                             for (var i = 0; i < profile.carsInGarage.Count; i++)
                             {
                                 var SaveCar = profile.carsInGarage[i];
-                                ClientData.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
+                                ClientData.Instance.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
                             }
                         }
                     }

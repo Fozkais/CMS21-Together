@@ -57,10 +57,10 @@ namespace CMS21Together.ClientSide.Data.Car
             
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
             
-            if (!ClientData.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
+            if (!ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
             {
                 ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
-                ClientData.LoadedCars.Add(convertedLoaderID, newCar);
+                ClientData.Instance.LoadedCars.Add(convertedLoaderID, newCar);
                 ClientSend.SendModCar(new ModCar(newCar));
             }
           
@@ -103,7 +103,7 @@ namespace CMS21Together.ClientSide.Data.Car
             int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! aborting car Load..");
             
             int count = 0;
-            while (!ClientData.LoadedCars.ContainsKey(convertedLoaderID) && count < 15)
+            while (!ClientData.Instance.LoadedCars.ContainsKey(convertedLoaderID) && count < 15)
             {
                 count += 1;
                 yield return new WaitForSeconds(0.1f);
@@ -111,7 +111,7 @@ namespace CMS21Together.ClientSide.Data.Car
             
             yield return new WaitForEndOfFrame();
             
-            ClientData.LoadedCars[convertedLoaderID].isCarLoaded = true;
+            ClientData.Instance.LoadedCars[convertedLoaderID].isCarLoaded = true;
             MelonCoroutines.Start(PartsReferences.GetPartsReferences(convertedLoaderID));
         }
     }

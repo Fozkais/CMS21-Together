@@ -5,10 +5,12 @@ using System.IO;
 using System.Net;
 using CMS21Together.Shared;
 using HarmonyLib;
+using Il2Cpp;
 using Il2CppCMS.MainMenu;
 using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.MainMenu.Sections;
 using Il2CppCMS.MainMenu.Windows;
+using Il2CppCMS.UI.Description;
 using Il2CppCMS.UI.Logic;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
@@ -49,18 +51,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             RectTransform playTransform = templateButtonObject.GetComponent<RectTransform>();
 
             section = GameObject.Find("MainButtons").GetComponent<MainSection>();
-            List<MainMenuButton> defaultButton = new List<MainMenuButton>();
-            for (int i = 0; i < section.buttons.Length; i++)
-            {
-                defaultButton.Add(section.buttons[i]);
-            }
-
-            
-            section.buttons = new Il2CppReferenceArray<MainMenuButton>(31);
-            for (int i = 0; i < defaultButton.Count; i++)
-            {
-                section.buttons[i] = defaultButton[i];
-            }
 
             playTransform.anchoredPosition = new Vector2(-26, 58);
             playTransform.sizeDelta = new Vector2(180, 44);
@@ -79,8 +69,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpTransform.parent = playTransform.parent;
             mpTransform.parentInternal = playTransform.parentInternal;
             mpButton.Y = 6;
-            mpButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[6] = mpButton;
+            CustomUIManager.multiplayerButton = mpButton;
             mpTransform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
 
             mpTransform.anchoredPosition = new Vector2(95, 58);
@@ -102,44 +91,32 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             mpButton.OnClick.AddListener(openMenu);
             mpButton.AssignAction(openMenu);
-
-            // Fix Singleplayer button
-
-            section.buttons[0].OnClick = new MainMenuButton.ButtonEvent();
-            Action openSinglePlayer = delegate { OpenSingleplayer(); };
-
-            section.buttons[0].OnClick.AddListener(openSinglePlayer);
-            section.buttons[0].AssignAction(openSinglePlayer);
-            
-            // Fix Dlc button
-
-            section.buttons[2].OnClick = new MainMenuButton.ButtonEvent();
-            Action openDlc = delegate { OpenDlcs(); };
-
-            section.buttons[2].OnClick.AddListener(openDlc);
-            section.buttons[2].AssignAction(openDlc);
-
-
-
         }
-
-        private static void OpenSingleplayer()
-        {
-            section.gameObject.SetActive(false);
-            section.transform.parent.Find("PlayButtons").gameObject.SetActive(true);
-        }
-        private static void OpenDlcs()
+        
+        /*private static void OpenDlcs()
         {
             var parent = section.transform.parent.parent;
             var dlc = parent.Find("DLCs").gameObject;
             dlc.SetActive(true);
-            dlc.GetComponent<DLCWindow>().PrepareFirstPage();
-            dlc.GetComponent<DLCWindow>().PrepareDescriptions();
-            dlc.GetComponent<DLCWindow>().PrepareArrows();
+
+            if (dlc.GetComponent<DLCWindow>().menuManager == null)
+                dlc.GetComponent<DLCWindow>().menuManager = Object.FindObjectOfType<MainMenuManager>();
+            
             dlc.GetComponent<DLCWindow>().EnableUI();
+            dlc.GetComponent<DLCWindow>().SetAsActive();
+            dlc.GetComponent<DLCWindow>().PrepareArrows();
+            CustomUIManager.DisableInputFix(true, true, section);
+            dlc.GetComponent<DLCWindow>().menuManager.DisableParallax();
+            dlc.GetComponent<DLCWindow>().menuManager.ChangeParallaxGrayscale(1f);
+            dlc.GetComponent<DLCWindow>().menuManager.ChangeLogoGrayscale(1f);
+            CustomUIManager.SetButtonsAlphaFix(0.2f, section);
+            dlc.GetComponent<DLCWindow>().PrepareFirstPage();
+            dlc.GetComponent<DLCWindow>().DrawPage();
+            dlc.GetComponent<DLCWindow>().PrepareDescriptions();
             dlc.GetComponent<DLCWindow>().EnableGrid();
-            dlc.GetComponent<DLCWindow>().RedrawPage();
-        }
+            dlc.GetComponent<DLCWindow>().RegisterGridEvents();
+            dlc.GetComponent<DLCWindow>().RegisterButtonsEvents();
+        }*/
 
         public static void MultiplayerMenu()
         {
@@ -149,11 +126,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 return;
             }
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 6; i++)
             {
                 if (section.buttons[i] != null)
                     section.buttons[i].gameObject.SetActive(false);
             }
+            CustomUIManager.multiplayerButton.gameObject.SetActive(false);   
 
             var hostObject = Object.Instantiate(templateButtonObject);
             RectTransform hostTransform = hostObject.GetComponent<RectTransform>();
@@ -164,8 +142,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             hostTransform.parent = parent;
             hostTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             hostButton.Y = 7;
-            hostButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[7] = hostButton;
+           // hostButton.OnMouseHover = /*section.OnMouseHover(7);*/ templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.multiplayerMenuButtons.Add(hostButton);
 
             hostTransform.anchoredPosition = new Vector2(-5, 58);
             hostTransform.sizeDelta = new Vector2(288, 55);
@@ -182,8 +160,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             joinTransform.parent = parent;
             joinTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             joinButton.Y = 8;
-            joinButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[8] = joinButton;
+           // joinButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.multiplayerMenuButtons.Add(joinButton);
 
             joinTransform.anchoredPosition = new Vector2(-5, 10);
             joinTransform.sizeDelta = new Vector2(288, 55);
@@ -200,8 +178,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             networkTransform.parent = parent;
             networkTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             networkButton.Y = 9;
-            networkButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[9] = networkButton;
+            //networkButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.multiplayerMenuButtons.Add(networkButton);
 
             networkTransform.anchoredPosition = new Vector2(-5, -38);
             networkTransform.sizeDelta = new Vector2(288, 55);
@@ -220,8 +198,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             settingTransform.parent = parent;
             settingTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             settingButton.Y = 10;
-            settingButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[10] = settingButton;
+           // settingButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.multiplayerMenuButtons.Add(settingButton);
 
             settingTransform.anchoredPosition = new Vector2(-5, -152);
             settingTransform.sizeDelta = new Vector2(288, 55);
@@ -240,8 +218,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             backTransform.parent = parent;
             backTransform.parentInternal = templateButtonObject.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 11;
-            backButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            section.buttons[11] = backButton;
+           // backButton.OnMouseHover = templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.multiplayerMenuButtons.Add(backButton);
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
             backTransform.sizeDelta = new Vector2(288, 55);
@@ -260,43 +238,41 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void EnableMultiplayerMenu()
         {
-            for (int i = 0; i < section.buttons.Length; i++)
+            for (int i = 0; i < section.buttons.Count; i++)
             {
-                if (i > 6 && i < 12)
-                {
-                    if (section.buttons[i] != null)
-                        section.buttons[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    if (section.buttons[i] != null)
-                        section.buttons[i].gameObject.SetActive(false);
-                }
+                if (section.buttons[i] != null)
+                    section.buttons[i].gameObject.SetActive(false);
+            }
+            
+            CustomUIManager.multiplayerButton.gameObject.SetActive(false);   
+            
+            for (int i = 0; i <  CustomUIManager.multiplayerMenuButtons.Count; i++)
+            {
+                if (CustomUIManager.multiplayerMenuButtons[i] != null)
+                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(true);
             }
 
-            section.buttons[9].isDisabled = true;
-            section.buttons[9].DoStateTransition(SelectionState.Disabled, true);
-            section.buttons[10].isDisabled = true;
-            section.buttons[10].DoStateTransition(SelectionState.Disabled, true);
+            CustomUIManager.multiplayerMenuButtons[2].isDisabled = true;
+            CustomUIManager.multiplayerMenuButtons[2].DoStateTransition(SelectionState.Disabled, true);
+            CustomUIManager.multiplayerMenuButtons[3].isDisabled = true;
+            CustomUIManager.multiplayerMenuButtons[3].DoStateTransition(SelectionState.Disabled, true);
         }
-
         public static void EnableMainMenu()
         {
+            for (int i = 0; i <  CustomUIManager.multiplayerMenuButtons.Count; i++)
+            {
+                if (CustomUIManager.multiplayerMenuButtons[i] != null)
+                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
+            }
+            
             for (int i = 0; i < section.buttons.Length; i++)
             {
-                if (i < 7)
-                {
-                    if (section.buttons[i] != null)
-                        section.buttons[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    if (section.buttons[i] != null)
-                        section.buttons[i].gameObject.SetActive(false);
-                }
+                if (section.buttons[i] != null)
+                    section.buttons[i].gameObject.SetActive(true);
             }
+            CustomUIManager.multiplayerButton.gameObject.SetActive(true);
+            
         }
-
         private static void EnableJoinWindow(bool phase, string ip = null)
         {
             if (CustomMainMenu.section != null)
@@ -410,8 +386,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 }
             }
         }
-
-
         private static void DisableInputsWindow(GameObject[] buttons)
         {
             if (CustomMainMenu.section != null)
