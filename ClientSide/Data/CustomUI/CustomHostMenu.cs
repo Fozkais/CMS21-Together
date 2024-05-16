@@ -40,38 +40,28 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void DisableHostMenu()
         {
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
             {
-                for (int i = 12; i < 15; i++)
-                {
-                    if (CustomMainMenu.section.buttons[i] != null)
-                    {
-                        CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                    }
-                }
-
-                CustomMainMenu.EnableMultiplayerMenu();
+                if (CustomUIManager.hostMenuButtons[i] != null)
+                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(false);
             }
+
+            CustomMainMenu.EnableMultiplayerMenu();
         }
 
         public static void EnableHostMenu()
         {
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.multiplayerMenuButtons.Count; i++)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
-                {
-                    if (i > 11 && i < 26)
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
-                    }
-                    else
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                    }
-                }
+                if (CustomUIManager.multiplayerMenuButtons[i] != null)
+                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
             }
+            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+            {
+                if (CustomUIManager.hostMenuButtons[i] != null)
+                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(true);
+            }
+            
         }
 
         public static void CreateHostMenu()
@@ -83,13 +73,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 return;
             }
 
-            for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+            for (int i = 0; i < CustomUIManager.multiplayerMenuButtons.Count; i++)
             {
-                if (i < 11)
-                {
-                    if (CustomMainMenu.section.buttons[i] != null)
-                        CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                }
+                if (CustomUIManager.multiplayerMenuButtons[i] != null)
+                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
             }
 
             isSet = true;
@@ -104,12 +91,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             loadTransform.parentInternal =
                 CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             loadButton.Y = 12;
-            loadButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[12] = loadButton;
+            /*loadButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.hostMenuButtons.Add(loadButton);
 
             loadTransform.anchoredPosition = new Vector2(-5, 58);
             loadTransform.sizeDelta = new Vector2(288, 55);
-            loadButton.GetComponentInChildren<Text>().text = "Load a game";
+            loadButton.GetComponentInChildren<Text>().text = "Load/Create a game";
             loadButton.OnClick = new MainMenuButton.ButtonEvent();
             Action loadAction = delegate
             {
@@ -136,8 +123,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             DeleteTransform.parentInternal =
                 CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             DeleteButton.Y = 13;
-            CustomMainMenu.section.buttons[13] = DeleteButton;
-            DeleteButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
+            CustomUIManager.hostMenuButtons.Add(DeleteButton);
+            /*DeleteButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
 
             DeleteTransform.anchoredPosition = new Vector2(-5, 5);
             DeleteTransform.sizeDelta = new Vector2(288, 55);
@@ -162,8 +149,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             backTransform.parentInternal =
                 CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 14;
-            backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[14] = backButton;
+            /*backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.hostMenuButtons.Add(backButton);
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
             backTransform.sizeDelta = new Vector2(288, 55);
@@ -222,9 +209,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 saveTransform.parentInternal =
                     CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
                 saveButton.Y = 15 + i;
-                saveButton.OnMouseHover =
-                    CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-                CustomMainMenu.section.buttons[15 + i] = saveButton;
+                /*saveButton.OnMouseHover =
+                    CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+                CustomUIManager.saveButtons.Add(saveButton);
 
                 saveTransform.anchoredPosition = new Vector2(buttonPos[i].Item1, buttonPos[i].Item2);
                 saveTransform.sizeDelta = new Vector2(288, 55);
@@ -246,7 +233,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     int _i = i;
                     Action newSave = delegate
                     {
-                        ChoseSaveName(15 + _i, index1);
+                        ChoseSaveName(_i, index1);
                     };
                     saveButton.OnClick.AddListener(newSave);
                 }
@@ -280,12 +267,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             cancelTransform.parent = parent;
             cancelTransform.parentInternal = parent;
             cancelButton.Y = 23;
-            cancelButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[23] = cancelButton;
+            /*cancelButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.inputFieldButtons.Add(cancelButton);
 
             cancelTransform.anchoredPosition = new Vector2(-68, -120);
             cancelTransform.sizeDelta = new Vector2(144, 55);
-            cancelButton.OnClick = new MainMenuButton.ButtonEvent();
             cancelButton.GetComponentInChildren<Text>().text = "Cancel";
             cancelButton.OnClick = new MainMenuButton.ButtonEvent();
             Action backtoMenu = delegate { DisableInputsWindow(); };
@@ -299,8 +285,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             confirmsTransform.parent = parent;
             confirmsTransform.parentInternal = parent;
             confirmButton.Y = 24;
-            confirmButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[24] = confirmButton;
+            /*confirmButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.inputFieldButtons.Add(confirmButton);
 
             confirmsTransform.anchoredPosition = new Vector2(58, -120);
             confirmsTransform.sizeDelta = new Vector2(144, 55);
@@ -323,48 +309,37 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 if (CreateNewSave(saveIndex, saveName))
                 {
                     saveWindow.gameObject.SetActive(false);
-                    CustomMainMenu.section.buttons[buttonIndex].GetComponentInChildren<Text>().text = saveName;
-                    CustomMainMenu.section.buttons[buttonIndex].OnClick = new MainMenuButton.ButtonEvent();
+                    CustomUIManager.saveButtons[buttonIndex].GetComponentInChildren<Text>().text = saveName;
+                    CustomUIManager.saveButtons[buttonIndex].OnClick = new MainMenuButton.ButtonEvent();
                     Action selectSave = delegate { SelectSaves(saveIndex); };
-                    CustomMainMenu.section.buttons[buttonIndex].OnClick.AddListener(selectSave);
+                    CustomUIManager.saveButtons[buttonIndex].OnClick.AddListener(selectSave);
                 }
             };
         }
         private static void DisableInputsWindow()
         {
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.inputFieldButtons.Count; i++)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                if (CustomUIManager.inputFieldButtons[i] != null)
                 {
-                    if (i > 22 && i <= 25)
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                        {
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                        }
-                    }
+                    CustomUIManager.inputFieldButtons[i].gameObject.SetActive(false);
                 }
-
-                var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
-                window.gameObject.SetActive(false);
             }
+
+            var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+            window.gameObject.SetActive(false);
         }
         private static void EnableNewSaveWindow(int buttonIndex, int saveIndex)
         {
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                if (CustomUIManager.saveButtons[i] != null)
                 {
-                    if (i > 22 && i <= 25)
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                        {
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
-                        }
-                    }
+                    CustomUIManager.saveButtons[i].gameObject.SetActive(true);
                 }
+            }
 
-                var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+            var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
                 var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
                 window.gameObject.SetActive(true);
                 saveWindow.inputField.m_Text = "SaveName";
@@ -375,7 +350,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 Action confirmAction;
                 confirmAction = ConfirmAction(buttonIndex, saveIndex, saveWindow);
                 confirmButton.OnClick.AddListener(confirmAction);
-            }
         }
         private static bool CreateNewSave(int index, string name)
         {
@@ -414,50 +388,27 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static void DisableSavesMenu()
         {
             displaySaves = false;
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                if(CustomUIManager.saveButtons[i] != null)
                 {
-                    if (i >= 15 && i <= 25)
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                        {
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                        }
-                    }
+                    CustomUIManager.saveButtons[i].gameObject.SetActive(false);
                 }
             }
-
+            
             MainMenuManager manager = CustomMainMenu.section.menuManager;
             manager.ShowAds();
         }
         private static void EnableSavesMenu()
         {
             displaySaves = true;
-            if (CustomMainMenu.section != null)
+            for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                if(CustomUIManager.saveButtons[i] != null)
                 {
-                    if (i > 11 && i < 26)
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                        {
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
-
-                        }
-                    }
-                    else
-                    {
-                        if (CustomMainMenu.section.buttons[i] != null)
-                        {
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                        }
-                    }
+                    CustomUIManager.saveButtons[i].gameObject.SetActive(true);
                 }
             }
-
-            MainMenuManager manager = CustomMainMenu.section.menuManager;
-            manager.HideAds();
         }
         
     }

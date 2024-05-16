@@ -45,10 +45,10 @@ namespace CMS21Together.ClientSide.Data.Car
             yield return new WaitForSeconds(1);
             yield return new WaitForEndOfFrame();
             
-            bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
+            bool partIsValid = ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)
             {
-                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 
                 int count = 0;
                 while (!(car.isReferenced && car.isHandled) && count < 20)
@@ -185,10 +185,10 @@ namespace CMS21Together.ClientSide.Data.Car
             yield return new WaitForSeconds(1);
             yield return new WaitForEndOfFrame();
             
-            bool partIsValid = ClientData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
+            bool partIsValid = ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
             if (partIsValid)
             {
-                var car = ClientData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 
                 int count = 0;
                 while (!(car.isReferenced && car.isHandled) && count < 20)

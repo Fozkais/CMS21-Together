@@ -48,7 +48,7 @@ namespace CMS21Together.ClientSide.Data
 
             localInventory = GameScript.Get().GetComponent<Inventory>();
 
-            ClientData.asGameStarted = true;
+            ClientData.Instance.asGameStarted = true;
             MelonLogger.Msg("Initialized Game Data Successfully!");
             DataInitialized = true;
         }

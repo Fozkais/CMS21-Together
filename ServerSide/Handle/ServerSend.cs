@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
@@ -87,6 +88,16 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(_msg);
                     _packet.Write(id);
+
+                    SendTCPDataToAll(_packet);
+                }
+            }
+            
+            public static void ContentInfo(Dictionary<string, bool> infos)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.contentInfo))
+                {
+                    _packet.Write(new ReadOnlyDictionary<string,bool>(infos));
 
                     SendTCPDataToAll(_packet);
                 }

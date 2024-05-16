@@ -13,6 +13,7 @@ using UnityEngine;
 
 namespace CMS21Together.Shared
 {
+    [RegisterTypeInIl2Cpp]
     public class ModUI : MonoBehaviour
     {
         public static ModUI Instance;
@@ -293,9 +294,9 @@ namespace CMS21Together.Shared
             GUILayout.BeginHorizontal();
             // Colonne 1 - Noms
             GUILayout.BeginVertical(GUILayout.Width(70));
-            foreach (int i in ClientData.players.Keys)
+            foreach (int i in ClientData.Instance.players.Keys)
             {
-                Player player =  ClientData.players[i];
+                Player player =  ClientData.Instance.players[i];
                 if (player != null)
                 {
                     GUILayout.Label("   " + player.username, text_S);
@@ -308,9 +309,9 @@ namespace CMS21Together.Shared
 
             // Colonne 2 - États  
             GUILayout.BeginVertical(GUILayout.Width(90));
-            foreach (int i in ClientData.players.Keys)
+            foreach (int i in ClientData.Instance.players.Keys)
             {
-                Player player =  ClientData.players[i];
+                Player player =  ClientData.Instance.players[i];
 
                 if (player != null)
                 {
@@ -331,10 +332,10 @@ namespace CMS21Together.Shared
 
             // Colonne 3 - Interactions
             GUILayout.BeginVertical(GUILayout.Width(100));
-            foreach (int i in ClientData.players.Keys)
+            foreach (int i in ClientData.Instance.players.Keys)
             {
                 //GUILayout.Space(5);
-                Player player =  ClientData.players[i];
+                Player player =  ClientData.Instance.players[i];
                 if (player != null)
                 {
                     if (player.id == Client.Instance.Id)

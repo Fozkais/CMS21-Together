@@ -31,12 +31,12 @@ namespace CMS21Together.Shared
 
         public void Disconnect()
         {
-            if(ClientData.PlayersGameObjects != null)
-                if(ClientData.PlayersGameObjects.TryGetValue(id, out var o))
+            if(ClientData.Instance.PlayersGameObjects != null)
+                if(ClientData.Instance.PlayersGameObjects.TryGetValue(id, out var o))
                     Object.Destroy(o);
-            if(ClientData.players != null)
-                if(ClientData.players.ContainsKey(id))
-                    ClientData.players.Remove(id);
+            if(ClientData.Instance.players != null)
+                if(ClientData.Instance.players.ContainsKey(id))
+                    ClientData.Instance.players.Remove(id);
         }
     }
 

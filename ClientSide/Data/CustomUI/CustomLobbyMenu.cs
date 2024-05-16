@@ -33,38 +33,38 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if (isSet)
             {
-                for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+                for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
                 {
-                    if (i > 25)
+                    if(CustomUIManager.saveButtons[i] != null)
+                        CustomUIManager.saveButtons[i].gameObject.SetActive(false);
+                }
+                for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+                {
+                    if(CustomUIManager.hostMenuButtons[i] != null)
+                        CustomUIManager.hostMenuButtons[i].gameObject.SetActive(false);
+                }
+                for (int i = 0; i < CustomUIManager.lobbyMenuButtons.Count; i++)
+                {
+                    if (CustomUIManager.lobbyMenuButtons[i] != null)
                     {
-                        if(CustomMainMenu.section.buttons[i] != null)
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(true);
-                        if (i == 26)
+                        CustomUIManager.lobbyMenuButtons[i].gameObject.SetActive(true);
+                        if (i == 0 && client)
                         {
-                            if (client)
-                            {
-                                CustomMainMenu.section.buttons[i].isDisabled = true;
-                                CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
-                            }
-                            
+                            CustomMainMenu.section.buttons[i].isDisabled = true;
+                            CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
                         }
-                    }
-                    else
-                    {
-                        if(CustomMainMenu.section.buttons[i] != null)
-                            CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
                     }
                 }
 
                 CreateLobbyDisplay(client);
                 
-                CustomUIManager.InLobbyWindow = true;
+                CustomUIManager.inLobbyWindow = true;
             }
             else
             {
                 CustomHostMenu.DisableSavesMenu();
                 CreateLobbyMenu(client);
-                CustomUIManager.InLobbyWindow = true;
+                CustomUIManager.inLobbyWindow = true;
             }
         }
 
@@ -72,13 +72,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             GameObject template = CustomMainMenu.templateButtonObject;
             isSet = true;
-            for (int i = 0; i < CustomMainMenu.section.buttons.Length; i++)
+            
+            for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
             {
-                if (i < 26)
-                {
-                    if(CustomMainMenu.section.buttons[i] != null)
-                        CustomMainMenu.section.buttons[i].gameObject.SetActive(false);
-                }
+                if(CustomUIManager.saveButtons[i] != null)
+                    CustomUIManager.saveButtons[i].gameObject.SetActive(false);
+            }
+            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+            {
+                if(CustomUIManager.hostMenuButtons[i] != null)
+                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(false);
             }
             
             Transform parent = template.transform;
@@ -92,8 +95,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             startTransform.parent = parent;
             startTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             startButton.Y = 26;
-            startButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[26] = startButton;
+            /*startButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.lobbyMenuButtons.Add(startButton);
 
             startTransform.anchoredPosition = new Vector2(-5, 58);
             startTransform.sizeDelta = new Vector2(288, 55);
@@ -128,8 +131,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             readyTransform.parent = parent;
             readyTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             readyButton.Y = 27;
-            readyButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[27] = readyButton;
+            /*readyButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.lobbyMenuButtons.Add(readyButton);
 
             readyTransform.anchoredPosition = new Vector2(-5, 0);
             readyTransform.sizeDelta = new Vector2(288, 55);
@@ -137,9 +140,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             readyButton.OnClick = new MainMenuButton.ButtonEvent();
             Action  readyAction = delegate
             {
-                foreach (int i in ClientData.players.Keys)
+                foreach (int i in ClientData.Instance.players.Keys)
                 {
-                    Player player =  ClientData.players[i];
+                    Player player =  ClientData.Instance.players[i];
                     if (player != null)
                     {
                         if (player.id == Client.Instance.Id)
@@ -162,8 +165,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             backTransform.parent = parent;
             backTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 28;
-            backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;
-            CustomMainMenu.section.buttons[28] = backButton;
+            /*backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
+            CustomUIManager.lobbyMenuButtons.Add(backButton);
 
             backTransform.anchoredPosition = new Vector2(-5, -200);
             backTransform.sizeDelta = new Vector2(288, 55);
@@ -331,9 +334,15 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void DisableLobby()
         {
-            CustomMainMenu.section.buttons[26].gameObject.SetActive(false);
-            CustomMainMenu.section.buttons[27].gameObject.SetActive(false);
-            CustomMainMenu.section.buttons[28].gameObject.SetActive(false);
+            for (int i = 0; i < CustomUIManager.lobbyMenuButtons.Count; i++)
+            {
+                CustomUIManager.lobbyMenuButtons[i].gameObject.SetActive(false);
+            }
+            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+            {
+                CustomUIManager.hostMenuButtons[i].gameObject.SetActive(true);
+            }
+
             try
             {
                 for (int i = 0; i < backgrounds.Count; i++)
@@ -360,7 +369,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
             }
             
-            CustomUIManager.InLobbyWindow = false;
+            CustomUIManager.inLobbyWindow = false;
         }
         
         private static void StartGame(int _saveIndex)

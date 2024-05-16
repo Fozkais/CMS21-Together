@@ -12,7 +12,7 @@ namespace CMS21Together.ClientSide.Data.Car
     {
         public static IEnumerator GetPartsReferences(int carLoaderID)
         {
-            ModCar car = ClientData.LoadedCars[carLoaderID];
+            ModCar car = ClientData.Instance.LoadedCars[carLoaderID];
             car.partInfo = new ModPartInfo();
 
             yield return new WaitForEndOfFrame();

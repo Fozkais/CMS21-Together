@@ -73,6 +73,7 @@
     <Compile Include="ServerSide\Server.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
+    <Compile Include="Shared\ApiCalls.cs" />
     <Compile Include="Shared\DataHelper.cs" />
     <Compile Include="Shared\Data\GameScene.cs" />
     <Compile Include="Shared\Data\ModBodyPartData.cs" />
@@ -131,6 +132,9 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
+      <HintPath>Libs\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
@@ -196,8 +200,10 @@
     <EmbeddedResource Include="Assets\peoples.png" />
     <EmbeddedResource Include="Assets\lobbyBorder.png" />
     <EmbeddedResource Include="Assets\player.assets" />
+    <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <Content Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
     <Content Include="Libs\Il2Cppmscorlib.dll" />
     <Content Include="Libs\MelonLoader.dll" />
