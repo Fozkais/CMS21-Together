@@ -35,7 +35,7 @@ namespace CMS21Together.Shared.Data
         
         public ModCarPart(CarPart _part, int _carPartID)
         {
-            if (_part == null) { MelonLogger.Msg("Invalid bodyPart!"); return; }
+            if (_part == null) { return; }
 
             this.carPartID = _carPartID;
             this.name = _part.name;
@@ -66,5 +66,6 @@ namespace CMS21Together.Shared.Data
 
             this.quality = _part.Quality;
         }
+
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
 using Il2Cpp;
+using UnityEngine.Serialization;
 
 namespace CMS21Together.Shared.Data
 {
@@ -17,17 +18,23 @@ namespace CMS21Together.Shared.Data
         
         public int CarLifterState;
 
-        public bool isCarLoaded;
+        public bool isCarReady;
         public bool isReferenced;
         public bool isHandled;
         
-        public bool isFromServer;
+        public bool isFromServer = false;
         public bool receivedOtherParts = true;
         public bool receivedEngineParts = true;
         public bool receivedDriveshaftParts = true;
         public bool receivedSuspensionParts = true;
         public bool receivedBodyParts = true;
+        public bool CarFullyReceived 
+        { 
+            get => receivedDriveshaftParts && receivedOtherParts && 
+                   receivedSuspensionParts && receivedEngineParts && receivedBodyParts;
+        }
         
+
 
         public ModCar() {}
 
@@ -62,7 +69,7 @@ namespace CMS21Together.Shared.Data
             this.carVersion = _car.carVersion;
 
             this.isFromServer = true;
-            this.isCarLoaded = false;
+            this.isCarReady = false;
             this.isHandled = false;
             this.isReferenced = false;
             this.receivedOtherParts = false;

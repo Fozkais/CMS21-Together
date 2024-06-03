@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
+using CMS21Together.ClientSide;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppCMS.ContainersSave;
-using Il2CppCMS.Platforms.Steam;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using Il2CppSystem.IO;
 using MelonLoader;
 using Newtonsoft.Json;
 using UnityEngine;
-
 namespace CMS21Together.Shared
 {
     [HarmonyPatch]
@@ -244,20 +243,24 @@ namespace CMS21Together.Shared
 
         
         [HarmonyPatch(typeof(ProfileManager), "Save")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void SavePatch(ProfileManager __instance)
         {
-            MelonLogger.Msg("SavedGameProfile");
-            MelonLogger.Msg(" ProfileManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            if(!Client.Instance.isConnected) return;
+            
+            MelonLogger.Msg("Save GameProfile");
+            MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             SaveModSave( __instance.selectedProfile);
         }
         
         [HarmonyPatch(typeof(GameDataManager), "Save")]
-        [HarmonyPostfix]
+        [HarmonyPrefix]
         public static void SavePatch2(int profileID)
         {
-            MelonLogger.Msg("SavedGameData");
-            MelonLogger.Msg(" ProfileManager Save Index:" + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            if(!Client.Instance.isConnected) return;
+            
+            MelonLogger.Msg("Save GameData");
+            MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
             SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
         }
         

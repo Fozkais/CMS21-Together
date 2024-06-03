@@ -12,38 +12,38 @@ namespace CMS21Together.ClientSide.Data.Car
     {
         public static IEnumerator GetPartsReferences(int carLoaderID)
         {
+            while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                yield return new WaitForSeconds(1);
+            
             ModCar car = ClientData.Instance.LoadedCars[carLoaderID];
             car.partInfo = new ModPartInfo();
 
             yield return new WaitForEndOfFrame();
 
-            if (car.isCarLoaded)
-            {
-                IEnumerator getOtherPartsCoroutine = GetOtherPartsReferences(car);
-                IEnumerator getEnginePartsCoroutine = GetEnginePartsReferences(car);
-                IEnumerator getDriveshaftPartsCoroutine = GetDriveshaftPartsReferences(car);
-                IEnumerator getSuspensionPartsCoroutine = GetSuspensionPartsReferences(car);
-                IEnumerator getBodyPartsCoroutine = GetBodyPartsReferences(car);
 
-                yield return getOtherPartsCoroutine;
-                yield return getEnginePartsCoroutine;
-                yield return getDriveshaftPartsCoroutine;
-                yield return getSuspensionPartsCoroutine;
-                yield return getBodyPartsCoroutine;
+            IEnumerator getOtherPartsCoroutine = GetOtherPartsReferences(car);
+            IEnumerator getEnginePartsCoroutine = GetEnginePartsReferences(car);
+            IEnumerator getDriveshaftPartsCoroutine = GetDriveshaftPartsReferences(car);
+            IEnumerator getSuspensionPartsCoroutine = GetSuspensionPartsReferences(car);
+            IEnumerator getBodyPartsCoroutine = GetBodyPartsReferences(car);
 
-                yield return new WaitForEndOfFrame();
-                
-                car.isReferenced = true;
-                MelonLogger.Msg($"{car.carID} is referenced!");
-                yield break;
-            }
-            MelonLogger.Msg($"{car.carID} asn't loaded properly!");
+            yield return getOtherPartsCoroutine;
+            yield return getEnginePartsCoroutine;
+            yield return getDriveshaftPartsCoroutine;
+            yield return getSuspensionPartsCoroutine;
+            yield return getBodyPartsCoroutine;
+
+            yield return new WaitForEndOfFrame();
+            
+            car.isReferenced = true;
+            MelonLogger.Msg($"{car.carID} is referenced!");
         }
 
 
 
         private static IEnumerator GetOtherPartsReferences(ModCar car)
         {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
             var otherParts = GameData.Instance.carLoaders[car.carLoaderID].Parts;
@@ -84,15 +84,18 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             yield return new WaitForEndOfFrame();
             
-            var driveshaft =GameData.Instance.carLoaders[car.carLoaderID].ds_h;
-            var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
-
-            var reference = car.partInfo.EnginePartsReferences;
-
-            for (int i = 0; i < driveshaftParts.Count; i++) 
+            var driveshaft = GameData.Instance.carLoaders[car.carLoaderID].ds_h;
+            if (driveshaft != null)
             {
-                if(!reference.ContainsKey(i))
-                    reference.Add(i, driveshaftParts[i]);
+                var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
+
+                var reference = car.partInfo.DriveshaftPartsReferences;
+
+                for (int i = 0; i < driveshaftParts.Count; i++) 
+                {
+                    if(!reference.ContainsKey(i))
+                        reference.Add(i, driveshaftParts[i]);
+                }
             }
         }
         private static IEnumerator GetSuspensionPartsReferences(ModCar car)
@@ -126,6 +129,7 @@ namespace CMS21Together.ClientSide.Data.Car
         
         private static IEnumerator GetBodyPartsReferences(ModCar car)
         {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             
             var reference = car.partInfo.BodyPartsReferences;

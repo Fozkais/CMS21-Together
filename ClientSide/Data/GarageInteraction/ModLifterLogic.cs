@@ -17,6 +17,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         [HarmonyPostfix]
         public static void LifterFix(int actionType, CarLifter __instance)
         {
+            if(!Client.Instance.isConnected) return;
             if(!listenToLifter) return;
 
             int validAction = 0;

@@ -75,6 +75,7 @@ namespace CMS21Together.ServerSide.Transport
                     Array.Copy(receiveBuffer, _data, _byteLength);
 
                     receivedData.Reset(HandleData(_data));
+                    Array.Clear(receiveBuffer, 0, receiveBuffer.Length);
                     stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 }
                 catch (Exception _ex)

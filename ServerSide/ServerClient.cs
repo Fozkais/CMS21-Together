@@ -36,14 +36,15 @@ namespace CMS21Together.ServerSide
         public void Disconnect(int _id)
         {
             MelonLogger.Msg($"{tcp.socket.Client.RemoteEndPoint} has disconnected.");
-            ServerSend.DisconnectClient(_id, $"{ ServerData.players[_id].username} as disconnected!");
+            if (ServerData.players.TryGetValue(_id, out var player))
+                ServerSend.DisconnectClient(_id, $"{ player.username} as disconnected!");
             if (Server.clients.ContainsKey(_id))
                 Server.clients.Remove(_id);
             
             if(ServerData.players.ContainsKey(_id))
                 ServerData.players.Remove(_id);
-            tcp.Disconnect();
             
+            tcp.Disconnect();
             udp.Disconnect();
         }
     }

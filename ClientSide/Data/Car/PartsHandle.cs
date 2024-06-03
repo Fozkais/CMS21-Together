@@ -67,20 +67,28 @@ namespace CMS21Together.ClientSide.Data.Car
                     car.isHandled = true;
                     if (!car.isFromServer)
                     {
-                        ClientSend.SendPartsScript(otherPartsBuffer, car.carLoaderID);
-                        ClientSend.SendPartsScript(enginePartsBuffer, car.carLoaderID);
-                        ClientSend.SendPartsScript(driveshaftPartsBuffer, car.carLoaderID);
-                        ClientSend.SendPartsScript(suspensionPartsBuffer, car.carLoaderID);
+                        ClientSend.SendPartsScript(otherPartsBuffer, car.carLoaderID, ModPartType.other);
+                        ClientSend.SendPartsScript(enginePartsBuffer, car.carLoaderID, ModPartType.engine);
+                        ClientSend.SendPartsScript(driveshaftPartsBuffer, car.carLoaderID, ModPartType.driveshaft);
+                        ClientSend.SendPartsScript(suspensionPartsBuffer, car.carLoaderID, ModPartType.suspension);
                         ClientSend.SendBodyParts(bodyPartsBuffer, car.carLoaderID);
-                    }
-                    else
-                    {
-                        yield return new WaitForEndOfFrame();
-                        yield return new WaitForSeconds(0.5f);
-                        yield return new WaitForEndOfFrame();
-                        car.isFromServer = false;
+                        MelonLogger.Msg("Sent parts !!");
                     }
                     MelonLogger.Msg($"{car.carID} is handled !");
+
+                    if (car.isFromServer)
+                    {
+                        int count = 0;
+                        while (!car.CarFullyReceived || count < 40)
+                        {
+                            yield return new WaitForSeconds(0.25f);
+                            count += 1;
+                        }
+
+                        yield return new WaitForEndOfFrame();
+                        MelonLogger.Msg("Car is no Longer from server.");
+                        car.isFromServer = false;
+                    }
                 }
             }
         }
@@ -145,7 +153,7 @@ namespace CMS21Together.ClientSide.Data.Car
                     {
                         if (CheckDifferences(handle[i][j], parts[j])) // TODO: Modify when paint check added
                         {
-                            handle[i][j] =   new ModPartScript(parts[j], i, j, ModPartType.other);
+                            handle[i][j] = new ModPartScript(parts[j], i, j, ModPartType.other);
                            ClientSend.SendCarPart(car.carLoaderID, handle[i][j]);
                         }
                     }
@@ -243,9 +251,9 @@ namespace CMS21Together.ClientSide.Data.Car
                 }
                 else
                 {
-                    if (CheckDifferences(handle[i], references[i])) // TODO: Modify when paint check added
+                    if (CheckDifferences(handle[i], references[i]))
                     {
-                        MelonLogger.Msg("Differences Found!");
+                       // MelonLogger.Msg("Differences Found!");
                         handle[i] = new ModCarPart(references[i], i);
                         ClientSend.SendBodyPart(car.carLoaderID, handle[i]);
                     }
@@ -265,19 +273,41 @@ namespace CMS21Together.ClientSide.Data.Car
 
             return false;
         }
-        private static bool CheckDifferences(ModCarPart handled, CarPart toHandle) // TODO:Add Paint check
+        private static bool CheckDifferences(ModCarPart handled, CarPart toHandle)
         {
             if (handled == null || toHandle == null) { return false;}
 
             if (handled.unmounted != toHandle.Unmounted)
                 return true;
-            else if (Math.Abs(handled.condition - toHandle.Condition) > 0.1f)
+            if (handled.tunedID != toHandle.TunedID)
+                return true;
+            else if (Math.Abs(handled.condition - toHandle.Condition) > 0.01f)
                 return true;
             else if (handled.switched != toHandle.Switched)
                 return true;
-            else if ((Math.Abs(handled.Dust - toHandle.Dust) > 0.1f))
+            else if ((Math.Abs(handled.Dust - toHandle.Dust) > 0.01f))
                 return true;
-            else if ((Math.Abs(handled.dent - toHandle.Dent) > 0.1f))
+            else if ((Math.Abs(handled.dent - toHandle.Dent) > 0.01f))
+                return true;
+            else if (handled.paintType != (int)toHandle.PaintType)
+                return true;
+            else if (handled.paintData.ToGame() != toHandle.PaintData)
+                return true;
+            else if ((Math.Abs(handled.conditionPaint - toHandle.ConditionPaint) > 0.01f))
+                return true;
+            else if (handled.colors.isDifferent(toHandle.Color))
+                return true;
+            else if (handled.TintColor.isDifferent(toHandle.TintColor))
+                return true;
+            else if (handled.isTinted != toHandle.IsTinted)
+                return true;
+            else if (handled.livery != toHandle.Livery)
+                return true;
+            else if (Math.Abs(handled.liveryStrength - toHandle.LiveryStrength) > 0.01f)
+                return true;
+            else if (Math.Abs(handled.conditionStructure - toHandle.StructureCondition) > 0.01f)
+                return true;
+            else if (Math.Abs(handled.washFactor - toHandle.WashFactor) > 0.01f)
                 return true;
 
             return false;

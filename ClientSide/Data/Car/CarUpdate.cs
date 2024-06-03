@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Linq;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
+using Il2CppCMS;
 using MelonLoader;
 using UnityEngine;
 
@@ -10,68 +12,27 @@ namespace CMS21Together.ClientSide.Data.Car
 {
     public static class CarUpdate
     {
-        public static IEnumerator CarSpawnFade(ModCar car, CarLoader carLoader)
+
+        public static IEnumerator HandleNewPart(ModPartScript part, int carLoaderID)
         {
-            ScreenFader.Get().NormalFadeIn();
-
-            carLoader.gameObject.GetComponentInChildren<CarDebug>().LoadCar(car.carID, car.carVersion);
-            carLoader.ChangePosition(car.carPosition);
-
-            int count = 0;
-            while (!(car.isReferenced && car.isHandled) && count < 20)
-            {
-                count += 1;
-                yield return new WaitForSeconds(0.1f);
-            }
+            if(ModSceneManager.currentScene() != GameScene.garage) yield break;
+            
+            var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
+            yield return waitforCar;
+            
+            var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+            
             int _count = 0;
-            while (!(car.receivedOtherParts && car.receivedEngineParts 
-                                           && car.receivedSuspensionParts && car.receivedBodyParts) && _count < 25)
+            while (!(car.receivedOtherParts && car.receivedEngineParts && car.receivedSuspensionParts) && _count < 20)
             {
                 _count += 1;
                 yield return new WaitForSeconds(0.1f);
             }
-
+            
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             
-            ScreenFader.Get().NormalFadeOut();
-        }
-
-
-        public static IEnumerator HandleNewPart(ModPartScript part, int carLoaderID)
-        {
-            while(GameData.DataInitialized == false) // DO NOT REMOVE!
-                yield return new WaitForSeconds(1);
-            
-            yield return new WaitForSeconds(1);
-            yield return new WaitForEndOfFrame();
-            
-            bool partIsValid = ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
-            if (partIsValid)
-            {
-                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                
-                int count = 0;
-                while (!(car.isReferenced && car.isHandled) && count < 20)
-                {
-                    count += 1;
-                    yield return new WaitForSeconds(0.1f);
-                }
-                
-                int _count = 0;
-                while (!(car.receivedOtherParts && car.receivedEngineParts && car.receivedSuspensionParts) && _count < 20)
-                {
-                    _count += 1;
-                    yield return new WaitForSeconds(0.1f);
-                }
-                
-                yield return new WaitForEndOfFrame();
-                
-                PrepareUpdatePart(car, part);
-            }
-            else
-            {
-                MelonLogger.Msg("Part is not valid.");
-            }
+            PrepareUpdatePart(car, part);
         }
 
         public static void PrepareUpdatePart(ModCar car, ModPartScript part)
@@ -104,19 +65,19 @@ namespace CMS21Together.ClientSide.Data.Car
             
         }
 
-        private static void UpdatePart(int carLoaderID, ModPartScript part, PartScript reference)
+        public static void UpdatePart(int carLoaderID, ModPartScript part, PartScript reference)
         {
             if( part == null || reference == null) { MelonLogger.Msg("Invalid part!"); return;}
             
-            MelonLogger.Msg("Updating Part.");
+           // MelonLogger.Msg("Updating Part.");
             
-            if (!String.IsNullOrEmpty(part.tunedID))
+            /*if (!String.IsNullOrEmpty(part.tunedID))
             {
                 if (reference.tunedID != part.tunedID)
                 {
                     GameData.Instance.carLoaders[carLoaderID].TunePart(reference.tunedID, part.tunedID);
                 }
-            }
+            }*/
 
             reference.IsExamined = part.isExamined;
 
@@ -143,24 +104,28 @@ namespace CMS21Together.ClientSide.Data.Car
                 reference.SetConditionNormal(part.condition);
                 if (reference.IsUnmounted)
                 {
-                    MelonCoroutines.Start(CarHarmonyPatches.ResetCursorBlockCoroutine());
                     reference.ShowBySaveGame();
-                    reference.ShowMountAnimation();
                     reference.FastMount();
+                    reference.ShowMountAnimation();
+                    
                     
                     reference.SetCondition(part.condition);
                     reference.SetConditionNormal(part.condition);
+                    
                 }
                     
                 //Wheel Handle
-                var wheelData =  GameData.Instance.carLoaders[carLoaderID].WheelsData;
-                for (int i = 0; i <  GameData.Instance.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
+                if (carLoaderID != -1)
                 {
-                    GameData.Instance.carLoaders[carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, 
-                        (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
-                    GameData.Instance.carLoaders[carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                    var wheelData =  GameData.Instance.carLoaders[carLoaderID].WheelsData;
+                    for (int i = 0; i <  GameData.Instance.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
+                    {
+                        GameData.Instance.carLoaders[carLoaderID].SetWheelSize((int)wheelData.Wheels[i].Width, 
+                            (int)wheelData.Wheels[i].Size, (int)wheelData.Wheels[i].Profile, (WheelType)i);
+                        GameData.Instance.carLoaders[carLoaderID].SetET((WheelType)i, wheelData.Wheels[i].ET);
+                    }
+                    GameData.Instance.carLoaders[carLoaderID].SetWheelSizes();
                 }
-                GameData.Instance.carLoaders[carLoaderID].SetWheelSizes();
             }
             else
             {
@@ -171,45 +136,42 @@ namespace CMS21Together.ClientSide.Data.Car
                 reference.SetConditionNormal(part.condition);
                 if (reference.IsUnmounted == false)
                 {
-                    MelonCoroutines.Start(CarHarmonyPatches.ResetCursorBlockCoroutine());
-                    reference.HideBySavegame(false, GameData.Instance.carLoaders[carLoaderID]);
+                    if(carLoaderID != -1)
+                        reference.HideBySavegame(false, GameData.Instance.carLoaders[carLoaderID]);
+                    else
+                        reference.HideBySavegame(false);
+                    
                 }
             }
         }
 
         public static IEnumerator HandleNewBodyPart(ModCarPart carPart, int carLoaderID)
         {
-            while(GameData.DataInitialized == false) // DO NOT REMOVE!
-                yield return new WaitForSeconds(1);
+
+            if(ModSceneManager.currentScene() != GameScene.garage) yield break;
             
-            yield return new WaitForSeconds(1);
+            var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
+            yield return waitforCar;
+            
+            var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
+            
+            int count = 0;
+            while (!(car.isReferenced && car.isHandled) && count < 20)
+            {
+                count += 1;
+                yield return new WaitForSeconds(0.1f);
+            }
+            int _count = 0;
+            while (!car.receivedBodyParts && _count < 20)
+            {
+                _count += 1;
+                yield return new WaitForSeconds(0.1f);
+            }
+            
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             
-            bool partIsValid = ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID);
-            if (partIsValid)
-            {
-                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                
-                int count = 0;
-                while (!(car.isReferenced && car.isHandled) && count < 20)
-                {
-                    count += 1;
-                    yield return new WaitForSeconds(0.1f);
-                }
-                int _count = 0;
-                while (!car.receivedBodyParts && _count < 20)
-                {
-                    _count += 1;
-                    yield return new WaitForSeconds(0.1f);
-                }
-                yield return new WaitForEndOfFrame();
-                
-                UpdateBodyPart(car, carPart);
-            }
-            else
-            {
-                MelonLogger.Msg("Bodypart is not valid.");
-            }
+            UpdateBodyPart(car, carPart);
         }
 
         private static void UpdateBodyPart(ModCar car, ModCarPart carPart)
@@ -232,15 +194,16 @@ namespace CMS21Together.ClientSide.Data.Car
             GameData.Instance.carLoaders[car.carLoaderID].SetDent(reference, carPart.dent);
             GameData.Instance.carLoaders[car.carLoaderID].EnableDust(reference, carPart.Dust);
             GameData.Instance.carLoaders[car.carLoaderID].SetCondition(reference, carPart.condition);
+            GameData.Instance.carLoaders[car.carLoaderID].SetCarLivery(reference, carPart.livery, carPart.liveryStrength);
             
             reference.IsTinted = carPart.isTinted;
-            //reference.TintColor = tintColor;
-            //reference.Color = color;
             reference.PaintType = (PaintType)carPart.paintType;
             reference.OutsideRustEnabled = carPart.outsaidRustEnabled;
             reference.AdditionalString = carPart.additionalString;
             reference.Quality = carPart.quality;
             reference.WashFactor = carPart.washFactor;
+            reference.StructureCondition = carPart.conditionStructure;
+            reference.ConditionPaint = carPart.conditionPaint;
             
             if (!reference.Unmounted && !reference.name.StartsWith("license_plate"))
             {

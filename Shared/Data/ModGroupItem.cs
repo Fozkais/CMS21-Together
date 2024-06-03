@@ -26,7 +26,6 @@ namespace CMS21Together.Shared.Data
             {
                 this.IsNormalGroup = item.IsNormalGroup;
                 this.ItemList = new List<ModItem>();
-
                 if (item.ItemList != null)
                 {
                     foreach (Item _item in item.ItemList)

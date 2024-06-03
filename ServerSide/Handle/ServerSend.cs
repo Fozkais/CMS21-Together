@@ -325,6 +325,103 @@ namespace CMS21Together.ServerSide.Handle
                 }
             }
             
+            public static void SendEngineGroup(int fromClient, ModGroupItem engineItem, Vector3Serializable pos, QuaternionSerializable rot, bool resync=false)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.setGroupEngineOnStand))
+                {
+                    _packet.Write(engineItem);
+                    _packet.Write(pos);
+                    _packet.Write(rot);
+                        
+                    if(!resync)
+                        SendTCPDataToAll(fromClient, _packet);
+                    else
+                        SendTCPData(fromClient, _packet);
+                }
+                MelonLogger.Msg("Send EngineGroup");
+            }
+            
+            public static void SendEngineOnStand(int fromClient, ModItem engineItem)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.setEngineOnStand))
+                {
+                    _packet.Write(engineItem);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
+            public static void TakeOffEngineFromStand(int _fromClient)
+            {
+                using (Packet packet = new Packet((int)PacketTypes.takeOffEngineFromStand))
+                {
+                    SendTCPDataToAll(_fromClient, packet);
+                }
+            }
+            
+            
+            public static void EngineCrane(int _fromClient, int carLoaderID=-1,ModGroupItem item=null)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.engineCrane))
+                {
+                    if (carLoaderID == -1)
+                    {
+                        _packet.Write(false);
+                        _packet.Write(item);
+                    }
+                    else
+                    {
+                        _packet.Write(true);
+                        _packet.Write(carLoaderID);
+                    }
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            
+            public static void SendSpringClampGroup(int _fromClient, ModGroupItem item, bool instant, bool mount)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.springClampGroup))
+                {
+                    _packet.Write(item);
+                    _packet.Write(instant);
+                    _packet.Write(mount);
+
+                    SendTCPDataToAll(_fromClient, _packet);
+                }
+            }
+            
+            public static void SendOilBin(int fromClient, int loaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.oilBin))
+                {
+                    _packet.Write(loaderID);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
+            
+            public static void SendSpringClampClear(int _fromClient)
+            {
+                using (Packet packet = new Packet((int)PacketTypes.springClampClear))
+                {
+                    SendTCPDataToAll(_fromClient, packet);
+                }
+            }
+            
+            public static void SendToolsMove(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+                {
+                    _packet.Write(tool);
+                    _packet.Write(place);
+                    _packet.Write(playSound);
+                        
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
         #endregion
 
         #region CarData
@@ -335,22 +432,30 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(removed);
                     _packet.Write(car);
-                    
-                    if(!resync)
+
+                    if (!resync)
+                    {
+                        MelonLogger.Msg($"Send new car info: {car.carID}");
                         SendTCPDataToAll(fromClient, _packet);
+                    }
                     else
+                    {
+                        MelonLogger.Msg($"Send resync car info: {car.carID}");
                         SendTCPData(fromClient, _packet);
+                    }
                 }
             }
-            public static void CarPart(int fromClient, int carLoaderID, ModPartScript carPart)
+            public static void PartScript(int fromClient, int carLoaderID, ModPartScript carPart, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carPart))
                 {
                     _packet.Write(carPart);
                     _packet.Write(carLoaderID);
-                    
-                    
-                    SendTCPDataToAll(fromClient, _packet);
+
+                    if (!resync)
+                        SendTCPDataToAll(fromClient, _packet);
+                    else
+                        SendTCPData(fromClient, _packet);
                 }
             }
             public static void BodyPart(int fromClient, int carLoaderID, ModCarPart carPart)
@@ -364,12 +469,13 @@ namespace CMS21Together.ServerSide.Handle
                     SendTCPDataToAll(fromClient, _packet);
                 }
             }
-            public static void PartScripts(int fromClient, List<ModPartScript> carParts, int carLoaderID, bool resync=false)
+            public static void PartScripts(int fromClient, List<ModPartScript> carParts, int carLoaderID, ModPartType modPartType, bool resync = false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carParts))
                 {
                     _packet.Write(carParts);
                     _packet.Write(carLoaderID);
+                    _packet.Write(modPartType);
                     
                     if(!resync)
                         SendTCPDataToAll(fromClient, _packet);
@@ -390,6 +496,7 @@ namespace CMS21Together.ServerSide.Handle
                     else
                         SendTCPData(fromClient, _packet);
                 }
+                MelonLogger.Msg($"SV: Sent bodyParts : {carParts.Count} ");
             }
             public static void CarPosition(int fromClient, int carLoaderID, int carPosition)
             {
@@ -422,38 +529,7 @@ namespace CMS21Together.ServerSide.Handle
             }
         }
 
-        /*public static void SendCarLoadInfo(int fromclient)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.carLoadInfo))
-            {
-                var profiles = Singleton<GameManager>.Instance.ProfileManager.GetProfiles();
-                var profile = profiles.First(s => s.Name == SavesManager.currentSaveName);
 
-                List<ModNewCarData> carToLoad = new List<ModNewCarData>();
-                
-                for (var i = 0; i < profile.carsInGarage.Count; i++)
-                {
-                    if (!String.IsNullOrEmpty(profile.carsInGarage[i].carToLoad))
-                    {
-                        MelonLogger.Msg("SV: Sending CarLodInfo : " + profile.carsInGarage[i].carToLoad);
-                        carToLoad.Add( new ModNewCarData(profile.carsInGarage[i]));
-                    }
-                }
-                
-                packet.Write(carToLoad);
-                
-                SendTCPDataToAll(fromclient, packet);
-            }
-        }
-        public static void CarLoadInfo(int fromclient, int lenght,byte[] car)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.carLoadInfo))
-            {
-                packet.Write(lenght);
-                packet.Write(car);
-                
-                SendTCPDataToAll(packet);
-            }
-        }*/
+
     }
 }

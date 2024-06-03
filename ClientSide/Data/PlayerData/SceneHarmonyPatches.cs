@@ -28,6 +28,24 @@ namespace CMS21Together.ClientSide.Data.PlayerData
                         Server.Stop();
                     Application.runInBackground = false;
                 }
+
+                if (newSceneName != "garage")
+                {
+                    if (ClientData.Instance != null)
+                    {
+                        ClientData.Instance.engineStand.needToResync = true;
+                        ClientData.Instance.engineStand.engine = null;
+                        ClientData.Instance.engineStand.Groupengine = null;
+                        ClientData.Instance.engineStand.isReferenced = false;
+                        ClientData.Instance.engineStand.isHandled = false;
+                        ClientData.Instance.engineStand.engineStandParts.Clear();
+                        ClientData.Instance.engineStand.engineStandPartsReferences.Clear();
+                    }
+                    
+                    
+                    ModInventory.handledGroupItem.Clear();
+                    ModInventory.handledItem.Clear();
+                }
             }
         }
     }

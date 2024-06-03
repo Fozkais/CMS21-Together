@@ -40,7 +40,7 @@ namespace CMS21Together.Shared.Data
         {
             if (item != null)
             {
-                this.Color = item.Color != null ? new ModColor(item.Color.GetColor()) : null;
+                this.Color = new ModColor(item.Color.GetColor());
                 this.Condition = item.Condition;
                 this.Dent = item.Dent;
                 //this.GearboxData = item.GearboxData; // TODO: Handle class
@@ -53,11 +53,11 @@ namespace CMS21Together.Shared.Data
                 //this.MountObjectData = item.MountObjectData; // TODO: Handle class
                 this.NormalID = item.NormalID;
                 this.OutsideRustEnabled = item.OutsideRustEnabled;
-                this.PaintData = item.PaintData != null ? new ModPaintData(item.PaintData) : null;
+                this.PaintData = new ModPaintData(item.PaintData);
                 this.PaintType = item.PaintType;
                 this.Quality = item.Quality;
                 this.RepairAmount = item.RepairAmount;
-                this.TintColor = item.TintColor != null ? new ModColor(item.TintColor.GetColor()) : null;
+                this.TintColor = new ModColor(item.TintColor.GetColor());
                 //this.TuningData = item.TuningData; // TODO: Handle class
                 this.WashFactor = item.WashFactor;
                 this.WheelData = new ModWheelData(item.WheelData);

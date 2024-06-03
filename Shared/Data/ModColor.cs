@@ -31,5 +31,23 @@ namespace CMS21Together.Shared.Data
         {
             return new Color(color.r, color.g, color.b, color.a);
         }
+        
+        public bool isDifferent(Color color)
+        {
+            if (Mathf.Abs(this.r - color.r) > 0.01f)
+            {
+                if (Mathf.Abs(this.g - color.g) > 0.01f)
+                {
+                    if (Mathf.Abs(this.b - color.b) > 0.01f)
+                    {
+                        if (Mathf.Abs(this.a - color.a) > 0.01f)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
     }
 }

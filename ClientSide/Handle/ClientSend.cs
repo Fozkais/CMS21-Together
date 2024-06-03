@@ -126,9 +126,12 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.inventoryItem))
                 {
-                    _packet.Write(_Item);
-                    _packet.Write(status);
                     _packet.Write(resync);
+                    if (!resync)
+                    {
+                        _packet.Write(_Item);
+                        _packet.Write(status);
+                    }
                     
                     SendTCPData(_packet);
                 }
@@ -137,9 +140,12 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.inventoryGroupItem))
                 {
-                    _packet.Write(_Item);
-                    _packet.Write(status);
                     _packet.Write(resync);
+                    if (!resync)
+                    {
+                        _packet.Write(_Item);
+                        _packet.Write(status);
+                    }
 
                     SendTCPData(_packet);
                 }
@@ -171,14 +177,14 @@ namespace CMS21Together.ClientSide.Handle
                     SendTCPData(_packet);
                 }
             }
-            public static void WheelBalancer(ModWheelBalancerActionType aType, ModGroupItem modGroupItem)
+            public static void WheelBalancer(int type, GroupItem groupItem)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.wheelBalancer))
                 {
+                    var aType = (ModWheelBalancerActionType)type;
                     _packet.Write(aType);
                     if(aType == ModWheelBalancerActionType.setGroup || aType == ModWheelBalancerActionType.start)
-                        _packet.Write(modGroupItem);
-
+                        _packet.Write(new ModGroupItem(groupItem));
                     SendTCPData(_packet);
                 }
             }
@@ -188,6 +194,114 @@ namespace CMS21Together.ClientSide.Handle
                 using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
                 {
                     _packet.Write(newAngle);
+                        
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Sent EngineAngle");
+            }
+            
+            public static void SendSetEngineOnStand(ModItem modItem)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.setEngineOnStand))
+                {
+                    _packet.Write(modItem);
+                        
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Sent Engine");
+            }
+            
+            public static void SendSetGroupEngineOnStand(ModGroupItem modItem, Vector3Serializable position, QuaternionSerializable rotation)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.setGroupEngineOnStand))
+                {
+                    _packet.Write(modItem);
+                    _packet.Write(position);
+                    _packet.Write(rotation);
+                        
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Sent EngineGroup");
+            }
+            
+            public static void SendEngineStandResync()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.EngineStandResync))
+                {
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Sent Engine Resync");
+            }
+            
+            public static void SendEngineTakeOffFromStand()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.takeOffEngineFromStand))
+                {
+                    SendTCPData(_packet);
+                }
+                MelonLogger.Msg("Sent Engine take off");
+            }
+            
+            public static void EngineCraneHandle(int carLoaderId,ModGroupItem modGroupItem=null)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.engineCrane))
+                {
+                    if (carLoaderId == -1)
+                    {
+                        _packet.Write(false);
+                        _packet.Write(modGroupItem);
+                    }
+                    else
+                    {
+                        _packet.Write(true);
+                        _packet.Write(carLoaderId);
+                    }
+                        
+                    SendTCPData(_packet);
+                    MelonLogger.Msg("Sent EngineCrane");
+                }
+            }
+            
+            public static void SendGroupOnSpringClamp(ModGroupItem item, bool instant, bool mount)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.springClampGroup))
+                {
+                    _packet.Write(item);
+                    _packet.Write(instant);
+                    _packet.Write(mount);
+                        
+                    SendTCPData(_packet);
+                    MelonLogger.Msg("Sent SpringClamp");
+                }
+            }
+            
+            public static void SendClearSpring()
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.springClampClear))
+                {
+                    SendTCPData(_packet);
+                    MelonLogger.Msg("Sent ClearSpringClamp");
+                }
+            }
+            
+            public static void SendOilBin(int carLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.oilBin))
+                {
+                    _packet.Write(carLoaderID);
+                    
+                    SendTCPData(_packet);
+                    MelonLogger.Msg("Sent OilBin");
+                }
+            }
+            
+            public static void SendToolPosition(IOSpecialType tool, ModCarPlace place, bool playSound=false)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+                {
+                    _packet.Write((ModIOSpecialType)tool);
+                    _packet.Write(place);
+                    _packet.Write(playSound);
                         
                     SendTCPData(_packet);
                 }
@@ -229,15 +343,17 @@ namespace CMS21Together.ClientSide.Handle
                     SendTCPData(_packet);
                 }
             }
-            public static void SendPartsScript(List<ModPartScript> otherPartsBuffer, int carCarLoaderID)
+            public static void SendPartsScript(List<ModPartScript> otherPartsBuffer, int carCarLoaderID, ModPartType modPartType)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carParts))
                 {
                     _packet.Write(otherPartsBuffer);
                     _packet.Write(carCarLoaderID);
+                    _packet.Write(modPartType);
 
                     SendTCPData(_packet);
                 }
+                MelonLogger.Msg($"Sent part : {modPartType} , {otherPartsBuffer.Count}");
             }
 
             public static void SendBodyParts(List<ModCarPart> bodyPartsBuffer, int carCarLoaderID)
@@ -249,6 +365,7 @@ namespace CMS21Together.ClientSide.Handle
 
                     SendTCPData(_packet);
                 }
+                MelonLogger.Msg($"Sent bodyParts : {bodyPartsBuffer.Count}");
             }
             public static void SendCarPosition(int carLoaderID, int placeNo)
             {
@@ -261,36 +378,26 @@ namespace CMS21Together.ClientSide.Handle
                 }
             }
             
-            public static void SendResyncCars()
+            public static void SendResyncCars(List<(int,string)> carToResync = null)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carResync))
                 {
+                    if(carToResync == null)
+                        _packet.Write(true);
+                    else
+                    {
+                        _packet.Write(false);
+                        _packet.Write(carToResync);
+                    }
+                    
                     SendTCPData(_packet);
                 }
             }
-            
-            /*public static void SendNewCarData(NewCarData NewCarData)
-            {
-                byte[] serializedBytes;
-                using (Packet _packet = new Packet((int)PacketTypes.carLoadInfo))
-                {
-                    Il2CppSystem.IO.MemoryStream memoryStream = new Il2CppSystem.IO.MemoryStream();
-                    Il2CppSystem.IO.BinaryWriter binaryWriter = new Il2CppSystem.IO.BinaryWriter(memoryStream);
-                    
-                    NewCarData.Serialize(binaryWriter, SavesManager.currentSave.saveVersion);
-                    serializedBytes = memoryStream.ToArray();
-                    _packet.Write(serializedBytes.Length);
-                    _packet.Write(serializedBytes);
-                    SendTCPData(_packet);
-                    
-                    binaryWriter.Dispose();
-                    memoryStream.Dispose();
-
-                }
-                MelonLogger.Msg("SerializedCar: " + serializedBytes.Length);
-            }*/
+        
 
         #endregion
-        
+
+
+
     }
 }

@@ -9,7 +9,7 @@ namespace CMS21Together.Shared
 {
     public static class ApiCalls
     {
-        public static Dictionary<string, bool> CallAPIMethod3()
+        public static Dictionary<string, bool> API_M3()
         {
             Assembly loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
                 .FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
@@ -22,24 +22,14 @@ namespace CMS21Together.Shared
                 MethodInfo apiMethod1 = myClassType.GetMethod("StaticMethod3", BindingFlags.Static | BindingFlags.Public);
                 if (apiMethod1 != null)
                 {
-                    
-                    MelonLogger.Msg("StaticMethod3 method called successfully.");
                     return (Dictionary<string, bool>)apiMethod1.Invoke(null, null);
                 }
-                else
-                {
-                    MelonLogger.Msg("Failed to find method StaticMethod3.");
-                }
-            }
-            else
-            {
-                MelonLogger.Msg($"Failed to load type {className} from the assembly.");
             }
 
             return null;
         }
         
-        public static void CallAPIMethod2(object c)
+        public static void API_M2(object c)
         {
             Assembly loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
                 .FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
@@ -59,7 +49,7 @@ namespace CMS21Together.Shared
             }
         }
         
-        public static Dictionary<string, bool> CallAPIMethod1(object c, object h)
+        public static Dictionary<string, bool> API_M1(object c, object h)
         {
             Assembly loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
                 .FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");

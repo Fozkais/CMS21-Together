@@ -22,14 +22,13 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
                 
                 if (groupItem != null)
                 {
-                    if (groupItem.ItemList.Count == 0) return;
-
-                    if (listentoWB)
+                    if (groupItem.ItemList.Count != 0) 
                     {
-                       // MelonLogger.Msg($"Wheel Balance Triggered!");
-                        instant = true;
-                        ClientSend.WheelBalancer(ModWheelBalancerActionType.setGroup,new ModGroupItem(groupItem));
-
+                        if (listentoWB)
+                        {
+                           // MelonLogger.Msg($"Wheel Balance Triggered!");
+                            ClientSend.WheelBalancer(0, groupItem);
+                        }
                     }
                 }
             }
@@ -38,7 +37,9 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             [HarmonyPrefix]
             public static void WheelBalancer2Fix(WheelBalanceWindow __instance)
             {
-                    MelonCoroutines.Start(BalanceWheel(__instance));
+                if(!Client.Instance.isConnected) return;
+                
+                MelonCoroutines.Start(BalanceWheel(__instance));
             }
             public static IEnumerator BalanceWheel(WheelBalanceWindow __instance)
             {
@@ -62,8 +63,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
                     yield return new WaitForSeconds(0.1f);
                     GameData.Instance.wheelBalancer.balanceCanceled = false;
                 }
-
-                ClientSend.WheelBalancer(ModWheelBalancerActionType.start, new ModGroupItem(GameData.Instance.wheelBalancer.groupOnWheelBalancer));
+                ClientSend.WheelBalancer(1, GameData.Instance.wheelBalancer.groupOnWheelBalancer);
             }
             public static IEnumerator ResetWBListen()
             {
@@ -76,8 +76,10 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             [HarmonyPostfix]
             public static void WB_TireRemoveActionFix(TireChangerLogic __instance)
             {
+                if(!Client.Instance.isConnected) return;
+                
                 //MelonLogger.Msg($"Tire On Wheel Balancer removed!");
-                ClientSend.WheelBalancer(ModWheelBalancerActionType.remove, null);
+                ClientSend.WheelBalancer(2, null);
             }
     }
 }

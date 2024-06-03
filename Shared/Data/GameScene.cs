@@ -9,6 +9,7 @@ namespace CMS21Together.Shared.Data
         garage,
         junkyard,
         auto_salon,
-        barn
+        barn,
+        menu
     }
 }

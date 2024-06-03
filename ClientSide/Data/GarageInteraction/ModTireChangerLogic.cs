@@ -20,6 +20,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         {
             if(!Client.Instance.isConnected) return;
             
+            if (groupItem == null) return;
             if (groupItem.ItemList.Count == 0) return;
 
             if (listenToTC)
@@ -34,6 +35,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         [HarmonyPostfix]
         public static void TireRemoveActionFix(TireChangerLogic __instance)
         {
+            if(!Client.Instance.isConnected) return;
+            
             MelonLogger.Msg($"Tire On Changer removed!");
             ClientSend.TireChanger(new ModGroupItem(), false, false, true);
         }
