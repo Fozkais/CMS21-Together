@@ -72,6 +72,15 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             GameObject template = CustomMainMenu.templateButtonObject;
             isSet = true;
+
+            if (client)
+            {
+                for (int i = 0; i < CustomUIManager.multiplayerMenuButtons.Count; i++)
+                {
+                    if(CustomUIManager.multiplayerMenuButtons[i] != null)
+                        CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
+                }
+            }
             
             for (int i = 0; i < CustomUIManager.saveButtons.Count; i++)
             {
@@ -187,7 +196,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 backButton.OnClick = new MainMenuButton.ButtonEvent();
                 Action backtoMenu = delegate
                 {
-                    DisableLobby(); 
+                    DisableLobby(true); 
                     CustomHostMenu.CreateSavesMenu();
                 };
                 backButton.OnClick.AddListener(backtoMenu);
@@ -331,16 +340,20 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             }
         }
 
+        
 
-        public static void DisableLobby()
+        public static void DisableLobby(bool host=false)
         {
             for (int i = 0; i < CustomUIManager.lobbyMenuButtons.Count; i++)
             {
                 CustomUIManager.lobbyMenuButtons[i].gameObject.SetActive(false);
             }
-            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+            if (!host)
             {
-                CustomUIManager.hostMenuButtons[i].gameObject.SetActive(true);
+                for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
+                {
+                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(true);
+                }
             }
 
             try

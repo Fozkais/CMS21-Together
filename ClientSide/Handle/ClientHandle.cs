@@ -4,15 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Car;
+using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.GarageInteraction;
 using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
-using Il2CppCMS.Helpers;
-using Il2CppCMS.Save;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppSystem.IO;
 using MelonLoader;
 using UnityEngine;
 
@@ -37,7 +34,7 @@ namespace CMS21Together.ClientSide.Handle
             public static void ContentsInfo(Packet _packet)
             {
                 ReadOnlyDictionary<string, bool> infos = _packet.Read<ReadOnlyDictionary<string, bool>>();
-                ApiCalls.CallAPIMethod2(infos);
+                ApiCalls.API_M2(infos);
             }
         
             public static void KeepAlive(Packet _packet)
@@ -76,7 +73,11 @@ namespace CMS21Together.ClientSide.Handle
                     if (!ModSceneManager.isInMenu())
                         GameManager.Instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                     else
+                    {
                         Client.Instance.Disconnect();
+                        CustomLobbyMenu.DisableLobby(true); 
+                        CustomMainMenu.EnableMultiplayerMenu();
+                    }
                     
                     Application.runInBackground = false;
                 }
@@ -197,6 +198,7 @@ namespace CMS21Together.ClientSide.Handle
                            if (instance != null)
                            {
                                Destroy(instance);
+                               ClientData.Instance.PlayersGameObjects.Remove(id);
                            }
                        }
                     }
@@ -209,6 +211,10 @@ namespace CMS21Together.ClientSide.Handle
                                // MelonLogger.Msg($"Instance Null for {player.username} with id : {player.id} or {id} , spawning...");
                                 ClientData.Instance.SpawnPlayer(player);
                             }
+                        }
+                        else
+                        {
+                            ClientData.Instance.SpawnPlayer(player);
                         }
                     }
                 }
@@ -242,24 +248,9 @@ namespace CMS21Together.ClientSide.Handle
             public static void InventoryItem(Packet _packet)
             {
                 ModItem _item = _packet.Read<ModItem>();
-                Item _itemGame = _item.ToGame(_item);
                 bool status = _packet.ReadBool();
-                if (status)
-                {
-                    if (!ModInventory.handledItem.Any(s => s.UID == _item.UID) )
-                    {
-                        ModInventory.handledItem.Add(_item);
-                        GameData.Instance.localInventory.Add(_itemGame);
-                    }
-                }
-                else
-                {
-                    if (ModInventory.handledItem.Any(s => s.UID == _item.UID))
-                    {
-                        ModInventory.handledItem.Remove(_item);
-                        GameData.Instance.localInventory.Delete(_itemGame);
-                    }
-                }
+
+                MelonCoroutines.Start(ModInventory.HandleItem(_item, status));
                 _packet.Dispose();
             }
             
@@ -269,24 +260,8 @@ namespace CMS21Together.ClientSide.Handle
                 bool status = _packet.ReadBool();
                 
                 MelonLogger.Msg("Received GroupItem: " + status);
+                MelonCoroutines.Start(ModInventory.HandleGroupItem(_item, status));
                 
-                if (status)
-                {
-                    if (!ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
-                    {
-                        ModInventory.handledGroupItem.Add(_item);
-                        GameData.Instance.localInventory.AddGroup(_item.ToGame(_item));
-                    }
-                }
-                else
-                {
-                    if (ModInventory.handledGroupItem.Any(s => s.UID == _item.UID))
-                    {
-                        int index = ModInventory.handledGroupItem.FindIndex(s => s.UID == _item.UID);
-                        ModInventory.handledGroupItem.Remove(ModInventory.handledGroupItem[index]);
-                        GameData.Instance.localInventory.DeleteGroup(_item.UID);
-                    }
-                }
                 _packet.Dispose();
             }
 
@@ -296,6 +271,8 @@ namespace CMS21Together.ClientSide.Handle
 
             public static void Lifter(Packet _packet)
             {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
                 ModLifterState state = _packet.Read<ModLifterState>();
                 int carLoaderID = _packet.ReadInt();
 
@@ -323,6 +300,8 @@ namespace CMS21Together.ClientSide.Handle
             
             public static void TireChange(Packet _packet)
             {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
                 ModGroupItem _item = _packet.Read<ModGroupItem>();
                 bool instant = _packet.ReadBool();
                 bool connect = _packet.ReadBool();
@@ -348,6 +327,9 @@ namespace CMS21Together.ClientSide.Handle
             
             public static void WheelBalancer(Packet _packet)
             {
+                
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
                 ModWheelBalancerActionType aType = _packet.Read<ModWheelBalancerActionType>();
                 ModGroupItem _item = null;
                 if(aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
@@ -356,6 +338,7 @@ namespace CMS21Together.ClientSide.Handle
                 if (aType == ModWheelBalancerActionType.remove)
                 {
                     GameData.Instance.wheelBalancer.ResetActions();
+                    GameData.Instance.wheelBalancer.Clear();
                 }
                 else
                 {
@@ -372,44 +355,189 @@ namespace CMS21Together.ClientSide.Handle
             
             public static void EngineStandAngle(Packet _packet)
             {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
                 int angle = _packet.ReadInt();
                 
                 ModEngineStandLogic.listenToEngineStandLogic = false;
-                GameData.Instance.engineStand.SetEngineStandAngle(angle);
+                GameData.Instance.engineStand.IncreaseEngineStandAngle(angle);
                 ModEngineStandLogic.listenToEngineStandLogic = true;
                 
                 _packet.Dispose();
             }   
+            
+            public static void setEngineOnStand(Packet _packet)
+            {
+                
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
+                ModItem item = _packet.Read<ModItem>();
+                
+                ModEngineStandLogic.listenToEngineStandLogic = false;
+                GameData.Instance.engineStand.SetEngineOnEngineStand(item.ToGame());
+                ModEngineStandLogic.listenToEngineStandLogic = true;
+
+                ModEngineStandLogic.stopCoroutine = true;
+                ClientData.Instance.engineStand.isReferenced = false;
+                ClientData.Instance.engineStand.isHandled = false;
+                ClientData.Instance.engineStand.engineStandParts.Clear();
+                ClientData.Instance.engineStand.engineStandPartsReferences.Clear();
+                ClientData.Instance.engineStand.engine = item;
+                ModEngineStandLogic.stopCoroutine = false;
+                ModEngineStandLogic.engineUpdating = false;
+                
+                _packet.Dispose();
+            }   
+            
+            public static void setGroupEngineOnStand(Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+                Vector3Serializable pos = _packet.Read<Vector3Serializable>();
+                QuaternionSerializable rot = _packet.Read<QuaternionSerializable>();
+                
+                MelonLogger.Msg("Received new EngineStand");
+
+                MelonCoroutines.Start(SetGroupengineOnStandCoroutine(item, pos, rot));
+                
+                _packet.Dispose();
+            }
+
+            private static IEnumerator SetGroupengineOnStandCoroutine(ModGroupItem item,  Vector3Serializable pos,  QuaternionSerializable rot)
+            {
+                if(ModSceneManager.currentScene() != GameScene.garage) yield break;
+                
+                while (!GameData.DataInitialized)
+                    yield return new WaitForSeconds(0.2f);
+
+                yield return new WaitForEndOfFrame();
+                
+                ModEngineStandLogic.listenToEngineStandLogic = false;
+                GameData.Instance.engineStand.StartCoroutine(GameData.Instance.engineStand.SetGroupOnEngineStand(item.ToGame(), false));
+
+                
+                ModEngineStandLogic.stopCoroutine = true;
+                ClientData.Instance.engineStand.isReferenced = false;
+                ClientData.Instance.engineStand.fromServer = true;
+                ClientData.Instance.engineStand.isHandled = false;
+                ClientData.Instance.engineStand.engineStandParts.Clear();
+                ClientData.Instance.engineStand.engineStandPartsReferences.Clear();
+                ClientData.Instance.engineStand.Groupengine = item;
+                ModEngineStandLogic.stopCoroutine = false;
+                ModEngineStandLogic.engineUpdating = false;
+                
+                yield return new WaitForSeconds(1f);
+                yield return new WaitForEndOfFrame();
+                MelonLogger.Msg($"ReceivedPos: {pos.toVector3()}");
+                MelonLogger.Msg($"ReceivedRot: {rot.toQuaternion()}");
+                MelonLogger.Msg($"CurrentPos: {GameData.Instance.engineStand.engineGameObject.transform.position}");
+                MelonLogger.Msg($"CurrentRot: {GameData.Instance.engineStand.engineGameObject.transform.rotation}");
+                
+                GameData.Instance.engineStand.engineGameObject.transform.position = pos.toVector3();
+                GameData.Instance.engineStand.engineGameObject.transform.rotation = rot.toQuaternion();
+            }
+
+            public static void TakeOffEngineFromStand(Packet _packet)
+            {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
+                ModEngineStandLogic.listenToEngineStandLogic = false;
+                GameData.Instance.localInventory.AddGroup(GameData.Instance.engineStand.GetGroupOnEngineStand());
+                GameData.Instance.engineStand.ClearEngineStand();
+                ModEngineStandLogic.listenToEngineStandLogic = true;
+                
+                _packet.Dispose();
+            }  
+            
+            public static void EngineCrane(Packet _packet)
+            {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
+                bool action = _packet.ReadBool();
+                if (!action)
+                {
+                    ModGroupItem item = _packet.Read<ModGroupItem>();
+                    ModEngineCrane.listentoCraneAction = false;
+                    NotificationCenter.Get().InsertEngineToCar(item.ToGame());
+                    ModEngineCrane.listentoCraneAction = true;
+                }
+                else
+                {
+                    int carLoaderID = _packet.ReadInt();
+                    ModEngineCrane.listentoCraneAction = false;
+                    GameData.Instance.carLoaders[carLoaderID].UseEngineCrane();
+                    ModEngineCrane.listentoCraneAction = true;
+                }
+
+                
+                _packet.Dispose();
+            }  
+            
+            public static void SpringClampGroup(Packet _packet)
+            {
+                ModGroupItem item = _packet.Read<ModGroupItem>();
+                bool instant = _packet.ReadBool();
+                bool mount = _packet.ReadBool();
+
+                MelonCoroutines.Start(SpringClamp1(item, instant, mount));
+            }
+
+            private static IEnumerator SpringClamp1(ModGroupItem item, bool instant, bool mount)
+            {
+                if(ModSceneManager.currentScene() != GameScene.garage) yield break;
+                
+                while (!GameData.DataInitialized)
+                    yield return new WaitForSeconds(0.2f);
+                
+                ModSpringClampLogic.listenToSpringClampLogic = false;
+                
+                GameData.Instance.springClampLogic.SetGroupOnSpringClamp(item.ToGame(), instant, mount);
+                ModSpringClampLogic.listenToSpringClampLogic = true;
+                MelonLogger.Msg("Received SpringClampGroup");
+            }
+            
+            public static void SpringClampClear(Packet _packet)
+            {
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
+                ModSpringClampLogic.listenToSpringClampLogic = false;
+                if(GameData.Instance.springClampLogic.GroupOnSpringClamp != null)
+                    if(GameData.Instance.springClampLogic.GroupOnSpringClamp.ItemList != null)
+                        GameData.Instance.springClampLogic.GroupOnSpringClamp.ItemList.Clear();
+                GameData.Instance.springClampLogic.ClearSpringClamp();
+                ModSpringClampLogic.listenToSpringClampLogic = true;
+                
+                MelonLogger.Msg(" Received Clear SpringClamp");
+            }
+            
+            public static void OilBin(Packet _packet)
+            {
+                int loaderID = _packet.ReadInt();
+
+                if(ModSceneManager.currentScene() != GameScene.garage) return;
+                
+                ModOilBin.listenToOilBinAction = false;
+                GameData.Instance.carLoaders[loaderID].UseOilbin();
+                ModOilBin.listenToOilBinAction = true;
+            }
+            
+            
+            public static void ToolsMove(Packet _packet)
+            {
+                ModIOSpecialType tool = _packet.Read<ModIOSpecialType>();
+                ModCarPlace place = _packet.Read<ModCarPlace>();
+                bool playSound = _packet.ReadBool();
+
+                ModToolMoveManager.listenToMove = false;
+                if(place == ModCarPlace.none)
+                    ToolsMoveManager.m_instance.SetOnDefaultPosition((IOSpecialType)tool);
+                else
+                    ToolsMoveManager.m_instance.MoveTo((IOSpecialType)tool,(CarPlace)place, playSound);
+                ModToolMoveManager.listenToMove = true;
+            }
 
         #endregion
 
         #region CarData
-        
-            /*public static void CarLoadInfo(Packet _packet)
-            {
-                int lenght = _packet.ReadInt();
-                MelonLogger.Msg("Lenght : " + lenght);
-                byte[] car = _packet.ReadBytes(lenght);
-                MelonLogger.Msg("Lenght Post : " + car.Length);
-
-                BinaryReader reader = new BinaryReader(new MemoryStream(car));
-                NewCarData carData = new NewCarData();
-                carData.Deserialize(reader, SavesManager.currentSave.saveVersion);
-                
-                MelonLogger.Msg("Received CarLoadInfo!");
-                
-                bool checkCondition = ClientData.LoadedCars.Any(s =>
-                    s.Value.carLoaderID == carData.index && s.Value.carID == carData.carToLoad);
-
-                if (!checkCondition)
-                {
-                    ClientData.LoadedCars.Add(carData.index, new ModCar(carData.index, carData.carToLoad, carData.configVersion));
-                    GameData.Instance.carLoaders[carData.index].StartCoroutine(
-                        GameData.Instance.carLoaders[carData.index].LoadCarFromFile(carData));
-                }
-
-            }*/
-        
 
             public static void CarInfo(Packet _packet)
             {
@@ -424,9 +552,10 @@ namespace CMS21Together.ClientSide.Handle
 
             private static IEnumerator CarInfo(bool removed, ModCar car)
             {
-                
-                while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                while(ClientData.Instance.GameReady == false) // DO NOT REMOVE!
                     yield return new WaitForSeconds(1);
+                
+                MelonLogger.Msg($"GameReady processing car : {car.carID}");
                 
                 CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
 
@@ -435,13 +564,15 @@ namespace CMS21Together.ClientSide.Handle
                 
                 if (!removed)
                 {
-                    if(!checkCondition)
+                    if (!checkCondition)
+                    {
                         ClientData.Instance.LoadedCars.Add(car.carLoaderID, car);
+                    }
                     ModCar _car  = ClientData.Instance.LoadedCars.First(s 
                         => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value;
                     
-                    MelonCoroutines.Start(CarUpdate.CarSpawnFade(_car, carLoader));
-                    MelonLogger.Msg("CL: Loading new car...");
+                    MelonCoroutines.Start(CarManagement.CarSpawnFade(_car));
+                    MelonLogger.Msg($"CL: Loading:{_car.carID} , {car.carLoaderID}");
                 }
                 else
                 {
@@ -449,7 +580,9 @@ namespace CMS21Together.ClientSide.Handle
                     {
                         ClientData.Instance.LoadedCars.Remove(ClientData.Instance.LoadedCars.First(s => 
                             s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
+                        CarHarmonyPatches.ListenToDeleteCar = false;
                         carLoader.DeleteCar();
+                        CarHarmonyPatches.ListenToDeleteCar = true;
                         MelonLogger.Msg("CL: Removing car...");
                     }
                 }
@@ -460,6 +593,14 @@ namespace CMS21Together.ClientSide.Handle
                 ModPartScript carPart = _packet.Read<ModPartScript>();
                 int carLoaderID = _packet.ReadInt();
                 
+
+                if (carLoaderID == -1)
+                {
+                    MelonCoroutines.Start( ModEngineStandLogic.HandleNewPart(carPart));
+                    _packet.Dispose();
+                    return;
+                }
+                
                 MelonCoroutines.Start(CarUpdate.HandleNewPart(carPart, carLoaderID));
                 
                 _packet.Dispose();
@@ -469,47 +610,45 @@ namespace CMS21Together.ClientSide.Handle
             {
                 int carLoaderID = _packet.ReadInt();
                 int carPosition = _packet.ReadInt();
-            
-                ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
-                GameData.Instance.carLoaders[carLoaderID].ChangePosition(carPosition);
+
+                MelonCoroutines.Start(CarPositionCoroutine(carLoaderID, carPosition));
                 _packet.Dispose();
+            }
+
+            private static IEnumerator CarPositionCoroutine(int carLoaderID, int carPosition)
+            {
+                while(ClientData.Instance.GameReady == false) // DO NOT REMOVE!
+                    yield return new WaitForSeconds(1);
+
+                if (ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
+                {
+                    ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value.carPosition = carPosition;
+                    GameData.Instance.carLoaders[carLoaderID].ChangePosition(carPosition);
+                }
             }
             
             public static void CarParts(Packet _packet)
             {
                 List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
                 int carLoaderID = _packet.ReadInt();
-                
-                
-               // MelonLogger.Msg("Received parts list !!");
-                
-                if (carParts == null || carParts.Count == 0)
-                {
-                    MelonLogger.Msg("Receives parts list is empty!!");
-                    _packet.Dispose();
-                    return;
-                }
+                ModPartType partType = _packet.Read<ModPartType>();
 
-                foreach (ModPartScript part in carParts)
-                {
-                    MelonCoroutines.Start(CarUpdate.HandleNewPart(part, carLoaderID));
-                }
+                MelonLogger.Msg($"Received parts list for : {partType}!!");
+                if(carParts.Count > 0)
+                    MelonCoroutines.Start(CarManagement.LoadCarParts(carParts, carLoaderID));
 
-                MelonCoroutines.Start(CarPartsC(carParts[0], carLoaderID));
+                MelonCoroutines.Start(CarReceivedUpdate(partType, carLoaderID));
 
                 _packet.Dispose();
             }
 
-            private static IEnumerator CarPartsC(ModPartScript carPart, int carLoaderID)
+            private static IEnumerator CarReceivedUpdate(ModPartType carPart, int carLoaderID)
             {
-                while(GameData.DataInitialized == false) // DO NOT REMOVE!
-                    yield return new WaitForSeconds(1);
-                
-                yield return new WaitForSeconds(1);
-                yield return new WaitForEndOfFrame();
+                var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
+                yield return waitforCar;
                 
                 ModCar car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                switch (carPart.type)
+                switch (carPart)
                 {
                     case ModPartType.other:
                         car.receivedOtherParts = true;
@@ -543,30 +682,26 @@ namespace CMS21Together.ClientSide.Handle
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
                 
-                //MelonLogger.Msg("Received BodyParts list !!");
-                
-                foreach (ModCarPart part in carParts)
-                {
-                    MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(part, carLoaderID));
-                }
+                MelonLogger.Msg("Received BodyParts list !!");
 
-                MelonCoroutines.Start(BodyPartsC(carLoaderID));
+                MelonCoroutines.Start(CarManagement.LoadBodyParts(carParts, carLoaderID));
+
+                MelonCoroutines.Start(CarReceivedUpdate(carLoaderID));
                 
                 _packet.Dispose();
             }
             
-            private static IEnumerator BodyPartsC(int carLoaderID)
+            private static IEnumerator CarReceivedUpdate(int carLoaderID)
             {
-                while(GameData.DataInitialized == false) // DO NOT REMOVE!
-                    yield return new WaitForSeconds(1);
-                
-                yield return new WaitForSeconds(1);
-                yield return new WaitForEndOfFrame();
+                var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
+                yield return waitforCar;
                 
                 var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                 car.receivedBodyParts = true;
             }
 
         #endregion
+
+
     }
 }

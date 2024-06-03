@@ -1,13 +1,18 @@
 using System;
 using System.Collections;
+using System.IO;
+using System.Linq;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using Il2Cpp;
+using Il2CppCMS.Helpers;
 using MelonLoader;
 using UnityEngine;
+using BinaryWriter = Il2CppSystem.IO.BinaryWriter;
+using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.Car
 {
@@ -15,107 +20,112 @@ namespace CMS21Together.ClientSide.Data.Car
     public static class CarHarmonyPatches
     {
         public static bool ListenToCursorBlock;
+        public static bool ListenToDeleteCar = true;
         private static bool screenfadeFix;
         
+
         [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
         [HarmonyPrefix]
         public static void LoadCarPrePatch(string name, CarLoader __instance)
         {
             if (Client.Instance.isConnected)
             {
+                // MelonLogger.Msg($"(CarLoader.LoadCar) {name} is being Loaded. ");
                 if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, name));
+                {
+                    string carLoaderID = __instance.gameObject.name[10].ToString();
+                    MelonLogger.Msg($"A car is being loaded! : {name}, ID:{carLoaderID}");
+            
+                    int convertedLoaderID = CarInitialization.ConvertCarLoaderID(carLoaderID);
+                    if (ClientData.Instance.tempCarList.Contains((convertedLoaderID, name)))
+                    {
+                        MelonLogger.Msg($"Skip {__instance.carToLoad} sync.");
+                        return;
+                    }
+                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, name, convertedLoaderID));
+                    
+                }
             }
+            
         }
         
-        [HarmonyPatch(typeof(CarDebug), nameof(CarDebug.RunLoadCar),
-            new Type[]{ typeof(string), typeof(int)})]
+        [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
         [HarmonyPrefix]
-        public static void RunLoadCarPrePatch(string carToLoad, int configVersion, CarDebug __instance)
+        public static void DeleteCarPatch(CarLoader __instance)
         {
             if (Client.Instance.isConnected)
             {
+                // MelonLogger.Msg($"(CarLoader.LoadCar) {name} is being Loaded. ");
                 if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance.GetComponent<CarLoader>(), carToLoad));
+                {
+                    string carLoaderID = __instance.gameObject.name[10].ToString();
+                    int convertedLoaderID = CarInitialization.ConvertCarLoaderID(carLoaderID);
+
+                    if (ListenToDeleteCar)
+                    {
+                        if (ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
+                        {
+                            var car = ClientData.Instance.LoadedCars
+                                .First(s => s.Value.carLoaderID == convertedLoaderID).Value;
+                            ClientSend.SendModCar(new ModCar(car), true);
+                            ClientData.Instance.LoadedCars.Remove(car.carLoaderID);
+                        }
+                    }
+                    
+                }
             }
+            
         }
+
         
-        [HarmonyPatch(typeof(CarLoader), "LoadCarFromFile", new Type[]{ typeof(NewCarData)})]
-        [HarmonyPrefix]
-        public static void LoadCarFromFilePrePatch(NewCarData carDataCheck, CarLoader __instance)
+        
+        [HarmonyPatch(typeof(CarLoader), "PreparePartScriptCuller")]
+        [HarmonyPostfix]
+        public static void PreparePartScriptCullerPatch(CarLoader __instance)
         {
             if (Client.Instance.isConnected)
             {
                 if (ModSceneManager.currentScene() == GameScene.garage)
                 {
-                    MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, carDataCheck.carToLoad));
-                    //MelonCoroutines.Start(CarInitialization.InitializePrePatch(__instance, carDataCheck));
+                    string carLoaderID = __instance.gameObject.name[10].ToString();
+                    int convertedLoaderID = CarInitialization.ConvertCarLoaderID(carLoaderID);
                     
+                    if (ClientData.Instance.tempCarList.Contains((convertedLoaderID, __instance.carToLoad)))
+                    {
+                        ListenToDeleteCar = false;
+                        MelonLogger.Msg($"Deleting {__instance.carToLoad}...");
+                        ClientData.Instance.tempCarList.Remove((convertedLoaderID,  __instance.carToLoad));
+                        __instance.DeleteCar();
+                        ListenToDeleteCar = true;
+                        return;
+                    }
+                    MelonCoroutines.Start(CarInitialization.CarIsLoaded(__instance));
                 }
-            }
-        }
-        
-        [HarmonyPatch(typeof(CarLoader), "SetUnmountWithCarParts")]
-        [HarmonyPostfix]
-        public static void SetEnginePatch(CarLoader __instance)
-        {
-            if (Client.Instance.isConnected)
-            {
-                if (ModSceneManager.currentScene() == GameScene.garage)
-                    MelonCoroutines.Start(CarInitialization.LoadCar(__instance));
+                //MelonLogger.Msg($"(CarLoader.PreparePartScriptCuller) {__instance.carToLoad} should be loaded. ");
             }
         }
         
         [HarmonyPatch(typeof(Cursor3D), "BlockCursor")]
         [HarmonyPrefix]
-        public static bool EnableGamepadMountObjectPatch(bool block, Cursor3D __instance)
+        public static void BlockCursorPatch(bool block, Cursor3D __instance)
         {
             if (Client.Instance.isConnected)
             {
-                if (ListenToCursorBlock)
-                {
-                    MelonLogger.Msg("BlockCursor Bypass!");
-                    return false;
-                }
+                if(block)
+                    if(ListenToCursorBlock)
+                        MelonCoroutines.Start(FixCursorLock());
             }
-            return true;
         }
 
-        [HarmonyPatch(typeof(ScreenFader), "NormalFadeIn")]
-        [HarmonyPrefix]
-        public static void FadeInFix(ScreenFader __instance)
-        {       
-            if (Client.Instance.isConnected)
-                if (ModSceneManager.currentScene() == GameScene.garage)
-                {
-                    screenfadeFix = true;
-                    MelonCoroutines.Start(FadeSoftLockCoroutine());
-                }
-        }
-        
-        [HarmonyPatch(typeof(ScreenFader), "NormalFadeOut")]
-        [HarmonyPrefix]
-        public static void FadeOutFix(ScreenFader __instance)
+        private static IEnumerator FixCursorLock()
         {
-            if (Client.Instance.isConnected)
-                if (ModSceneManager.currentScene() == GameScene.garage)
-                    screenfadeFix = false;
-        }
-        
-        public static IEnumerator ResetCursorBlockCoroutine()
-        {
-            ListenToCursorBlock = true;
-            yield return new WaitForSeconds(0.1f);
-            ListenToCursorBlock = false;
-        }
-        
-        public static IEnumerator FadeSoftLockCoroutine()
-        {
-            
-            yield return new WaitForSeconds(8f);
-            if(screenfadeFix)
-                GameData.Instance.screenFader.NormalFadeOut();
-                
+            yield return new WaitForSeconds(2.5f);
+            if (Cursor3D.Get().isCursorBlocked)
+            {
+                ListenToCursorBlock = false;
+                Cursor3D.Get().BlockCursor(false);
+                ListenToCursorBlock = true;
+            }
         }
         
         [HarmonyPatch(typeof(NotificationCenter), "SelectSceneToLoad", 
@@ -125,8 +135,9 @@ namespace CMS21Together.ClientSide.Data.Car
         {
             if (Client.Instance.isConnected || ServerData.isRunning)
             {
-                if (ClientData.Instance.asGameStarted)
+                if (ClientData.Instance.GameReady)
                 {
+                    CarHarmonyPatches.ListenToDeleteCar = false;
                     try
                     {
                         if (newSceneName != "garage")
@@ -136,8 +147,12 @@ namespace CMS21Together.ClientSide.Data.Car
                             for (var i = 0; i < profile.carsInGarage.Count; i++)
                             {
                                 var SaveCar = profile.carsInGarage[i];
-                                ClientData.Instance.tempCarList.Add((SaveCar.index, SaveCar.carToLoad));
+                                if (!String.IsNullOrEmpty(SaveCar.carToLoad))
+                                {
+                                    ClientData.Instance.tempCarList.Add((i, SaveCar.carToLoad));
+                                }
                             }
+                            ClientSend.SendResyncCars(ClientData.Instance.tempCarList);
                         }
                     }
                     catch (Exception e)
@@ -147,5 +162,52 @@ namespace CMS21Together.ClientSide.Data.Car
                 }
             }
         }
+        
+        /*[HarmonyPatch(typeof(BodyPartData), "Serialize")]
+        [HarmonyPrefix]
+        public static bool PatchBodyPartDataSerialize(BinaryWriter binaryWriter, BodyPartData __instance)
+        {
+            var tintcolor = __instance.TintColor;
+            var color = __instance.Color;
+            var paintdata = __instance.PaintData;
+            var empty = new FloatArrayWrapper();
+            
+            binaryWriter.Write(__instance.Id ?? string.Empty);
+            binaryWriter.Write(__instance.Switched);
+            binaryWriter.WriteAsUint(__instance.Condition);
+            binaryWriter.Write(__instance.Unmounted);
+            binaryWriter.Write(__instance.TunedID ?? string.Empty);
+            binaryWriter.Write(__instance.IsTinted);
+            if (__instance.IsTinted)
+            {
+                if(tintcolor != null)
+                    SerializationHelper.WriteFloatArrayWrapper(binaryWriter, ref tintcolor);
+                else
+                    SerializationHelper.WriteFloatArrayWrapper(binaryWriter, ref empty);
+            }
+            if(color != null)
+                SerializationHelper.WriteFloatArrayWrapper(binaryWriter, ref color);
+            else
+                SerializationHelper.WriteFloatArrayWrapper(binaryWriter, ref empty);
+            
+            binaryWriter.Write((byte)__instance.PaintType);
+            if ((byte)__instance.PaintType == 6)
+            {
+                SerializationHelper.WritePaintData(binaryWriter, ref paintdata);
+            }
+            if(__instance.Livery != null)
+                binaryWriter.Write(__instance.Livery);
+            else
+                binaryWriter.Write(string.Empty);
+            
+            binaryWriter.WriteAsUint(__instance.LiveryStrength);
+            binaryWriter.Write(__instance.OutsaidRustEnabled);
+            binaryWriter.WriteAsUint(__instance.Dent);
+            binaryWriter.Write((byte)__instance.Quality);
+            binaryWriter.WriteAsUint(__instance.Dust);
+            binaryWriter.WriteAsUint(__instance.WashFactor);
+
+            return false;
+        }*/
     }
 }

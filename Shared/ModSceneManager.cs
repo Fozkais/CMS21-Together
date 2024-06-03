@@ -28,6 +28,8 @@ namespace CMS21Together.Shared
                 return GameScene.junkyard;
             else if (isInDealer())
                 return GameScene.auto_salon;
+            else if (isInMenu())
+                return GameScene.menu;
             else
                 return GameScene.unknow;
         }

@@ -10,7 +10,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         public float moveSpeed = 36f;
         public float acceleration = 50f;
         public float deceleration = 50f;
-        public float arrivalThreshold = 0.1f; // Seuil de distance pour considérer que le personnage est arrivé
+        public float arrivalThreshold = 0.1f; // Threshold after what player is arrived to desired pos
 
         private Vector3 velocity = Vector3.zero;
         private Vector3 targetVelocity = Vector3.zero;

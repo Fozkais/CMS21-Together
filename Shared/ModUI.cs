@@ -426,7 +426,12 @@ namespace CMS21Together.Shared
         public void showUI()
         {
             if (Input.GetKeyDown(MainMod.MOD_GUI_KEY))
+            {
+                if(ModSceneManager.currentScene() == GameScene.unknow)
+                    return;
+                
                 showModUI = !showModUI;
+            }
 
         }
     }

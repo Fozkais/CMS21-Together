@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Car;
+using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.ClientSide.Transport;
 using CMS21Together.Shared;
@@ -107,6 +109,14 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.tireChanger, ClientHandle.TireChange},
                 { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer},
                 { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
+                { (int)PacketTypes.takeOffEngineFromStand, ClientHandle.TakeOffEngineFromStand},
+                { (int)PacketTypes.engineCrane, ClientHandle.EngineCrane},
+                { (int)PacketTypes.setEngineOnStand, ClientHandle.setEngineOnStand},
+                { (int)PacketTypes.setGroupEngineOnStand, ClientHandle.setGroupEngineOnStand},
+                { (int)PacketTypes.oilBin, ClientHandle.OilBin},
+                { (int)PacketTypes.springClampGroup, ClientHandle.SpringClampGroup},
+                { (int)PacketTypes.springClampClear, ClientHandle.SpringClampClear},
+                { (int)PacketTypes.toolMove, ClientHandle.ToolsMove},
                 
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
                 //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
@@ -123,6 +133,8 @@ namespace CMS21Together.ClientSide
         {
             if (isConnected)
             {
+                CarHarmonyPatches.ListenToDeleteCar = false;
+                
                 Application.runInBackground = false;
                 isConnected = false;
                 tcp.Disconnect();
@@ -132,15 +144,19 @@ namespace CMS21Together.ClientSide
                 if (udp.socket != null)
                     udp.socket.Close();
 
-
+                ClientData.Instance.GameReady = false;
                 ClientData.Instance = null;
                 GameData.Instance = null;
+                
+                ModInventory.handledGroupItem.Clear();
+                ModInventory.handledItem.Clear();
 
                 ModUI.Instance.window = guiWindow.main;
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
-            ApiCalls.CallAPIMethod2(ContentManager.Instance.OwnedContents);
+            CarHarmonyPatches.ListenToDeleteCar = true;
+            ApiCalls.API_M2(ContentManager.Instance.OwnedContents);
         }
     }
 }

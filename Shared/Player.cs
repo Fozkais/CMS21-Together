@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
@@ -19,6 +20,7 @@ namespace CMS21Together.Shared
         public QuaternionSerializable rotation;
 
         public GameScene scene;
+        public List<(int, string)> carToResync = new List<(int, string)>();
 
         public Player(int _id, string _username, Vector3 _spawnPosition)
         {

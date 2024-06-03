@@ -33,10 +33,14 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 CustomHostMenu.isSet = false;
                 CustomHostMenu.isSavesSet = false;
                 CustomHostMenu.isnewSaveSet = false;
+                CustomHostMenu.displaySaves = false;
                 CustomLobbyMenu.isSet = false;
                 inLobbyWindow = false;
+                multiplayerButton = null;
                 multiplayerMenuButtons = new List<MainMenuButton>();
                 hostMenuButtons = new List<MainMenuButton>();
+                saveButtons = new List<MainMenuButton>();
+                inputFieldButtons = new List<MainMenuButton>();
                 lobbyMenuButtons = new List<MainMenuButton>();
                 CustomLobbyMenu.backgrounds = new List<GameObject>();
                 CustomLobbyMenu.readyText = new List<GameObject>();

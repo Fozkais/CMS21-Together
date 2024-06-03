@@ -50,5 +50,22 @@ namespace CMS21Together.Shared.Data
             paintData.Fresnel = data.p_fresnel;
             return paintData;
         }
+        
+        public PaintData ToGame()
+        {
+            PaintData paintData = new PaintData();
+            paintData.metal = this.metal;
+            paintData.roughness = this.roughness;
+            paintData.clearCoat = this.clearCoat;
+            paintData.normalStrength = this.normalStrenght;
+            paintData.fresnel = this.fresnel;
+
+            paintData.Metal = this.p_metal;
+            paintData.Roughness = this.p_roughness;
+            paintData.ClearCoat = this.p_clearCoat;
+            paintData.NormalStrength = this.p_normalStrenght;
+            paintData.Fresnel = this.p_fresnel;
+            return paintData;
+        }
     }
 }

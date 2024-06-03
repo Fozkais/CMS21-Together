@@ -37,10 +37,19 @@ namespace CMS21Together.Shared
             inventoryItem,
             inventoryGroupItem,
             
+            toolMove,
             lifter,
             tireChanger,
             wheelBalancer,
-            engineStandAngle
+            engineStandAngle,
+            setEngineOnStand,
+            EngineStandResync,
+            setGroupEngineOnStand,
+            takeOffEngineFromStand,
+            engineCrane,
+            oilBin,
+            springClampGroup,
+            springClampClear
             
         #endregion
 

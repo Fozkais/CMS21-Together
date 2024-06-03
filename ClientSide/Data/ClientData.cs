@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Car;
+using CMS21Together.ClientSide.Data.GarageInteraction;
 using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.ClientSide.Handle;
+using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
@@ -32,31 +34,46 @@ namespace CMS21Together.ClientSide.Data
         public List<Item> playerInventory = new List<Item>();
         public List<GroupItem> playerGroupInventory = new List<GroupItem>();
 
+        public ModEngineStand engineStand = new ModEngineStand();
+
         public int playerMoney;
         public int playerScrap;
         public int playerExp;
 
-        public bool asGameStarted;
-        
-        
-        
-        public void Init()
+        public bool GameReady;
+
+
+        public void SpawnCar(string carName, int carLoaderID)
+        {
+            ServerSend.CarInfo(2, new ModCar(carLoaderID, carName, 0, 1), false, false);
+        }
+
+        public IEnumerator Initialize()
         {
             Instance = this;
             
-            if (GameData.Instance != null)
-                GameData.Instance.Initialize();
-            else { GameData data = new GameData(); data.Initialize(); }
+            LoadedCars.Clear();
+            PlayersGameObjects.Clear();
             
+            if (GameData.Instance != null) GameData.Instance.Initialize();
+            else { GameData data = new GameData(); data.Initialize(); }
+
+            yield return new WaitForSeconds(2);
+            yield return new WaitForEndOfFrame();
+
+            GameReady = true;
+            
+            MelonLogger.Msg("------ Game is Ready! ------");
         }
+        
         public void UpdateClient() // Run Only if player is connected and in scene:"garage" 
         {
             CarManagement.UpdateCars();
+            MelonCoroutines.Start(ModEngineStandLogic.HandleEngineStand());
             
             Movement.SendPosition();
             Rotation.SendRotation();
             
-            ModInventory.UpdateInventory();
             Stats.HandleExp();
             Stats.HandleMoney();
             Stats.HandleScrap();

@@ -7,6 +7,7 @@ using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
@@ -40,10 +41,10 @@ namespace CMS21Together.ServerSide.Handle
                     return;
                 }
 
-                var a = ApiCalls.CallAPIMethod1(content, ContentManager.Instance.OwnedContents);
+                var a = ApiCalls.API_M1(content, ContentManager.Instance.OwnedContents);
                 ServerSend.ContentInfo(a);
                 
-                if (!ClientData.Instance.asGameStarted)
+                if (!ClientData.Instance.GameReady)
                 {
                     MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
 
@@ -137,13 +138,14 @@ namespace CMS21Together.ServerSide.Handle
         
             public static void InventoryItem(int _fromClient, Packet _packet)
             {
-                ModItem item = _packet.Read<ModItem>();
-                bool status = _packet.ReadBool();
                 bool resync = _packet.ReadBool();
                 
 
                 if (!resync)
                 {
+                    ModItem item = _packet.Read<ModItem>();
+                    bool status = _packet.ReadBool();
+                    
                     if (status)
                     {
                         if (!ServerData.itemInventory.Any(s => s.UID == item.UID))
@@ -171,12 +173,12 @@ namespace CMS21Together.ServerSide.Handle
             
             public static void InventoryGroupItem(int _fromClient, Packet _packet)
             {
-                ModGroupItem _item = _packet.Read<ModGroupItem>();
-                bool status = _packet.ReadBool();
                 bool resync = _packet.ReadBool();
 
                 if (!resync)
                 {
+                    ModGroupItem _item = _packet.Read<ModGroupItem>();
+                    bool status = _packet.ReadBool();
                     if (status)
                     {
                         if (!ServerData.groupItemInventory.Any(s => s.UID == _item.UID))
@@ -198,9 +200,10 @@ namespace CMS21Together.ServerSide.Handle
                     return;
                 }
                 
+                MelonLogger.Msg("SV: SendingResync!");
+                
                 foreach (ModGroupItem _modGroupItem in ServerData.groupItemInventory)
                 {
-                    MelonLogger.Msg("SV: SendingResync!");
                     ServerSend.SendInventoryGroupItem(_fromClient, _modGroupItem, true, true);
                 }
             }
@@ -245,7 +248,103 @@ namespace CMS21Together.ServerSide.Handle
             {
                 int newAngle = _packet.ReadInt();
 
+                ServerData.engineStand.angle = newAngle;
                 ServerSend.SendEngineAngle(_fromClient, newAngle);
+            }
+            
+            public static void SetEngineOnStand(int _fromClient, Packet _packet)
+            {
+                ModItem engineItem = _packet.Read<ModItem>();
+
+                MelonLogger.Msg("Received engine");
+                
+                ServerData.engineStand.engine = engineItem;
+                ServerSend.SendEngineOnStand(_fromClient, engineItem);
+            }
+            
+            public static void SetGroupEngineOnStand(int _fromClient, Packet _packet)
+            {
+                ModGroupItem engineItem = _packet.Read<ModGroupItem>();
+                Vector3Serializable pos = _packet.Read<Vector3Serializable>();
+                QuaternionSerializable rot = _packet.Read<QuaternionSerializable>();
+
+                MelonLogger.Msg($"Received engineGroup: {pos.toVector3()} , {rot.toQuaternion()}");
+                
+                ServerData.engineStand.Groupengine = engineItem;
+                ServerData.engineStand.position = pos;
+                ServerData.engineStand.rotation = rot;
+                ServerSend.SendEngineGroup(_fromClient, engineItem, pos, rot);
+            }
+            
+            public static void ResyncEngineStand(int _fromClient, Packet _packet)
+            {
+                MelonLogger.Msg("Received EngineStandResync");
+
+                if (ServerData.engineStand.Groupengine != null)
+                {
+                    ServerSend.SendEngineGroup(_fromClient, ServerData.engineStand.Groupengine, ServerData.engineStand.position,ServerData.engineStand.rotation,true);
+                    foreach (ModPartScript part in ServerData.engineStand.engineStandParts.Values)
+                    {
+                        ServerSend.PartScript(_fromClient, -1, part, true);
+                    }
+                }
+            }
+            
+            
+            
+            public static void TakeOffEngineFromStand(int _fromClient, Packet _packet)
+            {
+                ServerData.engineStand.engine = null;
+                ServerData.engineStand.engineStandParts.Clear();
+                
+                ServerSend.TakeOffEngineFromStand(_fromClient);
+            }
+            
+            public static void EngineCrane(int _fromClient, Packet _packet)
+            {
+                var action = _packet.ReadBool();
+                if (action == false)
+                {
+                    ModGroupItem items = _packet.Read<ModGroupItem>();
+                    ServerSend.EngineCrane(_fromClient, -1,items);
+                }
+                else
+                {
+                    int carLoaderID = _packet.ReadInt();
+                    ServerSend.EngineCrane(_fromClient, carLoaderID);
+                }
+                
+            }
+            
+            public static void SpringClampGroup(int _fromClient, Packet _packet)
+            {
+                ModGroupItem item  = _packet.Read<ModGroupItem>();
+                bool instant = _packet.ReadBool();
+                bool mount = _packet.ReadBool();
+
+                ServerSend.SendSpringClampGroup(_fromClient, item, instant, mount);
+            }
+            
+            public static void SpringClampClear(int _fromClient, Packet _packet)
+            {
+                ServerSend.SendSpringClampClear(_fromClient);
+            }
+            
+            public static void OilBin(int _fromclient, Packet _packet)
+            {
+                int loaderID = _packet.ReadInt();
+
+                ServerSend.SendOilBin(_fromclient, loaderID);
+            }
+            
+            public static void ToolsMove(int _fromClient, Packet _packet)
+            {
+                ModIOSpecialType tool = _packet.Read<ModIOSpecialType>();
+                ModCarPlace place = _packet.Read<ModCarPlace>();
+                bool playSound = _packet.ReadBool();
+
+                ServerData.toolsPosition[tool] = place;
+                ServerSend.SendToolsMove(_fromClient, tool, place, playSound);
             }
             
 
@@ -255,38 +354,55 @@ namespace CMS21Together.ServerSide.Handle
 
             public static void CarResync(int _fromClient, Packet _packet)
             {
-                MelonCoroutines.Start(ResendAllCar(_fromClient));
+                var phase = _packet.ReadBool();
+                if (phase)
+                {
+                    MelonCoroutines.Start(ResendAllCar(_fromClient));
+                }
+                else
+                {
+                    var carToResync  = _packet.Read<List<(int, string)>>();
+                    ServerData.players[_fromClient].carToResync = carToResync;
+                }
             }
 
             private static IEnumerator ResendAllCar(int clientID)
             {
                 yield return new WaitForSeconds(1.5f);
                 MelonLogger.Msg("SV : Resending Car to client!");
+                var player = ServerData.players[clientID];
+                yield return new WaitForSeconds(1.5f);
+                
                 foreach (ModCar _car in ServerData.LoadedCars.Values)
                 {
-                    ServerSend.CarInfo(clientID, new ModCar(_car), false, true);
-                    
-                    List<ModPartScript> otherParts = new List<ModPartScript>();
-                    for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
+                    if (player.carToResync.Contains((_car.carLoaderID, _car.carID)))
                     {
-                        for (int j = 0; j < _car.partInfo.OtherParts[i].Count; j++)
+                        ServerSend.CarInfo(clientID, new ModCar(_car), false, true);
+                        
+                        List<ModPartScript> otherParts = new List<ModPartScript>();
+                        for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
                         {
-                            otherParts.Add(_car.partInfo.OtherParts[i][j]);
+                            for (int j = 0; j < _car.partInfo.OtherParts[i].Count; j++)
+                            {
+                                otherParts.Add(_car.partInfo.OtherParts[i][j]);
+                            }
                         }
-                    }
-                    List<ModPartScript> suspensionPart = new List<ModPartScript>();
-                    for (int i = 0; i < _car.partInfo.SuspensionParts.Count; i++)
-                    {
-                        for (int j = 0; j < _car.partInfo.SuspensionParts[i].Count; j++)
+                        List<ModPartScript> suspensionPart = new List<ModPartScript>();
+                        for (int i = 0; i < _car.partInfo.SuspensionParts.Count; i++)
                         {
-                            suspensionPart.Add(_car.partInfo.SuspensionParts[i][j]);
+                            for (int j = 0; j < _car.partInfo.SuspensionParts[i].Count; j++)
+                            {
+                                suspensionPart.Add(_car.partInfo.SuspensionParts[i][j]);
+                            }
                         }
+                        
+                        ServerSend.PartScripts(clientID, otherParts, _car.carLoaderID, ModPartType.other,true);
+                        ServerSend.PartScripts(clientID,  _car.partInfo.EngineParts.Values.ToList(), _car.carLoaderID, ModPartType.engine,true);
+                        ServerSend.PartScripts(clientID,  _car.partInfo.DriveshaftParts.Values.ToList(), _car.carLoaderID, ModPartType.driveshaft,true);
+                        ServerSend.PartScripts(clientID, suspensionPart, _car.carLoaderID, ModPartType.suspension,true);
+                        ServerSend.BodyParts(clientID,  _car.partInfo.BodyParts.Values.ToList(), _car.carLoaderID, true);
                     }
-                    
-                    ServerSend.PartScripts(clientID, otherParts, _car.carLoaderID, true);
-                    ServerSend.PartScripts(clientID,  _car.partInfo.EngineParts.Values.ToList(), _car.carLoaderID, true);
-                    ServerSend.PartScripts(clientID, suspensionPart, _car.carLoaderID, true);
-                    ServerSend.BodyParts(clientID,  _car.partInfo.BodyParts.Values.ToList(), _car.carLoaderID, true);
+                    player.carToResync.Remove((_car.carLoaderID, _car.carID));
                 }
             }
 
@@ -294,6 +410,8 @@ namespace CMS21Together.ServerSide.Handle
             {
                 bool removed = _packet.ReadBool();
                 ModCar car = _packet.Read<ModCar>();
+                
+                MelonLogger.Msg($"Received new car info: {car.carID}");
                 
                 if (!removed)
                 {
@@ -317,7 +435,12 @@ namespace CMS21Together.ServerSide.Handle
                 ModPartScript carPart = _packet.Read<ModPartScript>();
                 int carLoaderID = _packet.ReadInt();
                 
-            //    MelonLogger.Msg("SV:ReceivedPart!");
+                if (carLoaderID == -1)
+                {
+                    ServerData.engineStand.engineStandParts[carPart.partID] = carPart;
+                    ServerSend.PartScript(_fromClient, -1, carPart); 
+                    return;
+                }
             
                 if (ServerData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
                 {
@@ -326,13 +449,16 @@ namespace CMS21Together.ServerSide.Handle
                 
                 }
             
-                ServerSend.CarPart(_fromClient, carLoaderID, carPart);
+                ServerSend.PartScript(_fromClient, carLoaderID, carPart);
             }
 
             public static void CarParts(int _fromClient, Packet _packet)
             {
-                List<ModPartScript> carParts = _packet.Read< List<ModPartScript>>();
+                List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
                 int carLoaderID = _packet.ReadInt();
+                ModPartType modPartType = _packet.Read<ModPartType>();
+
+                MelonLogger.Msg($"SV: Received Parts : {modPartType} , {carParts.Count} ");
             
                 if (ServerData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
                 {
@@ -342,30 +468,25 @@ namespace CMS21Together.ServerSide.Handle
                         CarPartHandle.HandlePart(part, car);
                     }
                 }
-                ServerSend.PartScripts(_fromClient, carParts, carLoaderID);
+                ServerSend.PartScripts(_fromClient, carParts, carLoaderID, modPartType);
             }
 
             public static void BodyPart(int _fromClient, Packet _packet)
             {
                 ModCarPart carPart = _packet.Read<ModCarPart>();
                 int carLoaderID = _packet.ReadInt();
-            
-              //  MelonLogger.Msg("SV:ReceivedBodyPart!");
                 
                 if (ServerData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
                 {
                     var car = ServerData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-
                     if (car.partInfo != null)
                     {
-                        var partInfo = car.partInfo.BodyParts;
-                        if (partInfo == null)
-                            partInfo = new Dictionary<int, ModCarPart>();
+                        if (car.partInfo.BodyParts == null)
+                            car.partInfo.BodyParts = new Dictionary<int, ModCarPart>();
                     
-                        partInfo[carPart.carPartID] = carPart;
+                        car.partInfo.BodyParts[carPart.carPartID] = carPart;
                     }
                 }
-            
                 ServerSend.BodyPart(_fromClient, carLoaderID, carPart);
             }
 
@@ -373,21 +494,21 @@ namespace CMS21Together.ServerSide.Handle
             {
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
+                
+                MelonLogger.Msg($"SV: Received BodyParts :  {carParts.Count} ");
             
                 if (ServerData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
                 {
                     ModCar car = ServerData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
                     if (car.partInfo != null)
                     {
-                        var partInfo = car.partInfo.BodyParts;
-                        if (partInfo == null)
-                            partInfo = new Dictionary<int, ModCarPart>();
-                    }
-
-                    foreach (ModCarPart carPart in carParts)
-                    {
-                        if (car.partInfo != null)
+                        if ( car.partInfo.BodyParts == null)
+                            car.partInfo.BodyParts = new Dictionary<int, ModCarPart>();
+                        
+                        foreach (ModCarPart carPart in carParts)
+                        {
                             car.partInfo.BodyParts[carPart.carPartID] =  carPart;
+                        }
                     }
                 }
             
@@ -405,6 +526,7 @@ namespace CMS21Together.ServerSide.Handle
             }
 
         #endregion
+
 
     }
 }

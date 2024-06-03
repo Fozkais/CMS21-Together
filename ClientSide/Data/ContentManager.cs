@@ -52,7 +52,7 @@ namespace CMS21Together.ClientSide.Data
         {
             if(OwnedContents != null) return;
             
-            OwnedContents = new ReadOnlyDictionary<string, bool>(ApiCalls.CallAPIMethod3());
+            OwnedContents = new ReadOnlyDictionary<string, bool>(ApiCalls.API_M3());
         }
 
         public void LoadCustomlogo()

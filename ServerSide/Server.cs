@@ -91,7 +91,6 @@ namespace CMS21Together.ServerSide
                 ServerSend.DisconnectClient(id, "Server is shutting down.");
             }
             
-            ServerData.isRunning = false;
             ServerData.ResetData();
             isStopping = true;
 
@@ -212,9 +211,17 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.tireChanger, ServerHandle.TireChanger},
                 {(int)PacketTypes.wheelBalancer, ServerHandle.WheelBalancer},
                 {(int)PacketTypes.engineStandAngle, ServerHandle.EngineStandAngle},
+                {(int)PacketTypes.setEngineOnStand, ServerHandle.SetEngineOnStand},
+                {(int)PacketTypes.setGroupEngineOnStand, ServerHandle.SetGroupEngineOnStand},
+                {(int)PacketTypes.EngineStandResync, ServerHandle.ResyncEngineStand},
+                {(int)PacketTypes.takeOffEngineFromStand, ServerHandle.TakeOffEngineFromStand},
+                {(int)PacketTypes.engineCrane, ServerHandle.EngineCrane},
+                {(int)PacketTypes.oilBin, ServerHandle.OilBin},
+                {(int)PacketTypes.springClampGroup, ServerHandle.SpringClampGroup},
+                {(int)PacketTypes.springClampClear, ServerHandle.SpringClampClear},
+                {(int)PacketTypes.toolMove, ServerHandle.ToolsMove},
                 
                 {(int)PacketTypes.carResync, ServerHandle.CarResync},
-                //{(int)PacketTypes.carLoadInfo, ServerHandle.CarLoadInfo},
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},

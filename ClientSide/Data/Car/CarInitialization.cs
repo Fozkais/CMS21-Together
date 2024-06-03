@@ -13,7 +13,7 @@ namespace CMS21Together.ClientSide.Data.Car
     public class CarInitialization
     {
 
-        public  static int ConvertCarLoaderID(string carLoaderID, string errorMsg)
+        public  static int ConvertCarLoaderID(string carLoaderID) 
         {
             int convertedLoaderID;
             switch (carLoaderID)
@@ -34,33 +34,23 @@ namespace CMS21Together.ClientSide.Data.Car
                     convertedLoaderID = 4;
                     break;
                 default:
-                    MelonLogger.Msg(errorMsg);
+                    MelonLogger.Msg($"Error on finding carLoaderID : {carLoaderID}");
                     return -1;
             }
 
             return convertedLoaderID;
         }
         
-        public static IEnumerator InitializePrePatch(CarLoader carLoader, string name)
+        public static IEnumerator InitializePrePatch(CarLoader carLoader, string name, int carLoaderID)
         {
             if(String.IsNullOrEmpty(name))
                 yield break;
 
-            while(GameData.DataInitialized == false) // DO NOT REMOVE!
-                yield return new WaitForSeconds(1);
             
-            yield return new WaitForSeconds(1);
-            yield return new WaitForEndOfFrame();
-
-            string carLoaderID = carLoader.gameObject.name[10].ToString();
-            MelonLogger.Msg($"A car is being loaded! (LoadCar): {name}, ID:{carLoaderID}");
-            
-            int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! initializing car Load..");
-            
-            if (!ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == convertedLoaderID))
+            if (!ClientData.Instance.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
             {
-                ModCar newCar = new ModCar(convertedLoaderID, carLoader.ConfigVersion, carLoader.placeNo);
-                ClientData.Instance.LoadedCars.Add(convertedLoaderID, newCar);
+                ModCar newCar = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo);
+                ClientData.Instance.LoadedCars.Add(carLoaderID, newCar);
                 ClientSend.SendModCar(new ModCar(newCar));
             }
           
@@ -89,30 +79,23 @@ namespace CMS21Together.ClientSide.Data.Car
           
         }*/
 
-        public static IEnumerator LoadCar(CarLoader loader)
+        public static IEnumerator CarIsLoaded(CarLoader loader)
         {
-            
-            int count0 = 0;
-            while (GameData.DataInitialized == false && count0 < 20)
-            {
-                count0 += 1;
-                yield return new WaitForSeconds(0.3f);
-            }
-            
             string carLoaderID = loader.gameObject.name[10].ToString();
-            int convertedLoaderID = ConvertCarLoaderID(carLoaderID, "Invalid carLoaderID! aborting car Load..");
-            
-            int count = 0;
-            while (!ClientData.Instance.LoadedCars.ContainsKey(convertedLoaderID) && count < 15)
-            {
-                count += 1;
-                yield return new WaitForSeconds(0.1f);
-            }
-            
+            int convertedLoaderID = ConvertCarLoaderID(carLoaderID);
+
+            yield return new WaitForSeconds(1f);
             yield return new WaitForEndOfFrame();
             
-            ClientData.Instance.LoadedCars[convertedLoaderID].isCarLoaded = true;
             MelonCoroutines.Start(PartsReferences.GetPartsReferences(convertedLoaderID));
+
+            var waitCar = MelonCoroutines.Start(CarManagement.WaitForCarHandle(convertedLoaderID));
+            yield return waitCar;
+            
+            ClientData.Instance.LoadedCars[convertedLoaderID].isCarReady = true;
+
+            yield return new WaitForSeconds(2);
+            loader.SaveCarToFile(convertedLoaderID, false);
         }
     }
 }

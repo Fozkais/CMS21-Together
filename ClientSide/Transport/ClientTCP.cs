@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.Shared;
 using MelonLoader;
@@ -50,6 +51,9 @@ namespace CMS21Together.ClientSide.Transport
                // ModUI.Instance.ShowLobbyInterface();  TODO: Fix
                 stream = socket.GetStream();
                 receivedData = new Packet();
+                
+                stream = socket.GetStream();
+                receivedData = new Packet();
 
                 stream.BeginRead(receiveBuffer, 0, Client.dataBufferSize, ReceiveCallback, null);
             }
@@ -62,6 +66,7 @@ namespace CMS21Together.ClientSide.Transport
 
         private void ReceiveCallback(IAsyncResult _result)
         {
+            if(stream == null) return;
             try
             {
                 int _byteLength = stream.EndRead(_result);
@@ -73,19 +78,21 @@ namespace CMS21Together.ClientSide.Transport
 
                 byte[] _data = new byte[_byteLength];
                 Array.Copy(receiveBuffer, _data, _byteLength);
-
+                
                 receivedData.Reset(HandleData(_data));
+                Array.Clear(receiveBuffer, 0, receiveBuffer.Length);
                 stream.BeginRead(receiveBuffer, 0, Client.dataBufferSize, ReceiveCallback, null);
             }
             catch
             {
-                //MelonLogger.Msg($"Error caused Disconnection! : {e}");
+               // MelonLogger.Msg($"Error caused Disconnection! : {e}");
                 Disconnect();
             }
         }
 
         private bool HandleData(byte[] _data)
         {
+            
             int _packetLenght = 0;
 
             receivedData.SetBytes(_data);
@@ -97,6 +104,7 @@ namespace CMS21Together.ClientSide.Transport
                     return true;
                 }
             }
+            
             
            // MelonLogger.Msg("Received a valid packet !");
 
