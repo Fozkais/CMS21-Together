@@ -63,20 +63,40 @@ You can join the project Discord if you want to talk or ask for help :
 https://discord.gg/rMz4tGbrc6
 ## How it work
 
-I'll try to be brief,
+Here's the procedure to compile it youself :<br/>
 <br/>
-First of all i dont know if it work on Linux or MacOs i'm on windows and do not plan to port it to other so maybe it work , dont know. 
+1- Go to the github page on the branch "MainMod"<br/>
+2- Download the source code as ZIP and extract it<br/>
+3- Download a code editor : VS Community or Jetbrain Rider<br/>
+4- Once installed open the project with one of these editor <br/>
 <br/>
-Once you've compiled the mod and obtained its DLL (CMS21MP.dll) you'll need to install MelonLoader version 6.1 on your CMS then add it in the mod folder which should be present in the game directory, 
+From there it change depending the version of the mod you've downloaded.<br/>
+CASE 1 - 0.2.8 and Later<br/>
+5- Download and Install MelonLoader on version 0.6.1<br/>
+6- Open the game 1 time until main Menu and close it<br/>
+7- Go back to code editor, press Ctrl + B to compile (maybe not working on VS Community)<br/>
+8- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
+9- Paste the mod dll into mod folder in game directory<br/>
 <br/>
-with that you need 2 other file you can find on the mod Discord, those are the player Model and texture wich you'll need to put inside the folder Mods in the subfolder "togetherMod" (create it if he wont exist)
+CASE 2 - Older than 0.2.8<br/>
+5- You need to download and Install MelonLoader on version 0.6.1<br/>
+6- Open the game 1 time until main Menu and close it<br/>
+7- Once you done that , go back to you code editor , it'll have a lot of error because of the dependencies missing<br/>
+8- Delete All existing dependencies except System and System.xxxxx<br/>
+9- Add all required dependencies listed below: (you can find them either in net6 or IL2CppAssemblies folders)<br/>
+10- Once done , there should no longer have any error , press Ctrl + B to compile<br/>
+11- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
+12- You'll also need to past 2 additional dll on userLibs, you can find them on github page<br/>
+13- Paste the mod dll into mod folder in game directory<br/>
 <br/>
+Then your all set :) just launch the game and everything should work .<br/>
+NOTE: for those using mod before 0.3.0 to open the mod menu it's "Right Shift"<br/>
 
-From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, 
+From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, <br/>
 <br/>
-from there you'll be able to launch a game and join one (you have to launch/join from the main menu, not in-game). 
-if there's no issue with the save system it should create a new save and create a lobby that 4 player max can join,
-if they are all ready you can start the game and start playing (in the case where everything work)
+from there you'll be able to launch a game and join one (you have to launch/join from the main menu, not in-game). <br/>
+if there's no issue with the save system it should create a new save and create a lobby that 4 player max can join,<br/>
+if they are all ready you can start the game and start playing (in the case where everything work)<br/>
 
 ## Authors
 

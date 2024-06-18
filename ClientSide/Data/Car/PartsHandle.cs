@@ -295,10 +295,10 @@ namespace CMS21Together.ClientSide.Data.Car
                 return true;
             else if ((Math.Abs(handled.conditionPaint - toHandle.ConditionPaint) > 0.01f))
                 return true;
-            else if (handled.colors.isDifferent(toHandle.Color))
+            /*else if (handled.colors.isDifferent(toHandle.Color))
                 return true;
             else if (handled.TintColor.isDifferent(toHandle.TintColor))
-                return true;
+                return true;*/
             else if (handled.isTinted != toHandle.IsTinted)
                 return true;
             else if (handled.livery != toHandle.Livery)
