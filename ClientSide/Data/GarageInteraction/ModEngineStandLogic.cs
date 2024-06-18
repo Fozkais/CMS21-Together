@@ -24,8 +24,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
         private static bool skippedInitial = false;
         private static bool skipGroupset = false;
         
-        [HarmonyPatch(typeof(EngineStandLogic), "IncreaseEngineStandAngle")]
-        [HarmonyPrefix]
+      //  [HarmonyPatch(typeof(EngineStandLogic), "IncreaseEngineStandAngle")]
+     //   [HarmonyPrefix]
         public static void SetEngineAnglePatch(float val)
         {
             if(!Client.Instance.isConnected) return;
@@ -37,8 +37,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             }
         }
 
-        [HarmonyPatch(typeof(EngineStandLogic), "SetEngineOnEngineStand")]
-        [HarmonyPrefix]
+       // [HarmonyPatch(typeof(EngineStandLogic), "SetEngineOnEngineStand")]
+      //  [HarmonyPrefix]
         public static void SetEngineGroupPatch(Item engine, EngineStandLogic __instance)
         {
             if(!Client.Instance.isConnected) return;
@@ -81,8 +81,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             }
         }
 
-        [HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.SetGroupOnEngineStand))]
-        [HarmonyPrefix]
+       // [HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.SetGroupOnEngineStand))]
+       // [HarmonyPrefix]
         public static void SetGroupOnEngineStand(GroupItem groupItem, bool withFade = true, EngineStandLogic __instance=null)
         {
             if(!Client.Instance.isConnected) return;
@@ -156,8 +156,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
             }
         }
         
-        [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
-        [HarmonyPrefix]
+       // [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
+       // [HarmonyPrefix]
         public static void TakeOffEngineFromStandPatch()
         {
             if(!Client.Instance.isConnected) return;
@@ -300,8 +300,8 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
                 return true;
             else if (handled.paintData.ToGame() != toHandle.CurrentPaintData)
                 return true;
-            else if (handled.color.isDifferent(toHandle.currentColor))
-                return true;
+            /*else if (handled.color.isDifferent(toHandle.currentColor))
+                return true;*/
 
             return false;
         }
