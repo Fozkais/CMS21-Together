@@ -140,6 +140,12 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="Facepunch.Steamworks.Posix">
+      <HintPath>Libs\Facepunch.Steamworks.Posix.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.Steamworks.Win64">
+      <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+    </Reference>
     <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
       <HintPath>Libs\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
     </Reference>
@@ -155,13 +161,10 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>Libs\Steamworks.NET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="UnityEditor">
-      <HintPath>Libs\UnityEditor.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.CoreModule">
-      <HintPath>Libs\UnityEditor.CoreModule.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>Libs\UnityEngine.dll</HintPath>
     </Reference>
@@ -210,6 +213,8 @@
     <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <Content Include="Libs\Facepunch.Steamworks.Posix.dll" />
+    <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
     <Content Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
     <Content Include="Libs\Il2Cppmscorlib.dll" />

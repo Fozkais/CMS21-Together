@@ -10,7 +10,9 @@ using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using Il2Cpp;
+using Il2CppSteamworks;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -23,7 +25,7 @@ namespace CMS21Together
         public const int MAX_SAVE_COUNT = 22; // need to add 6 to match correct save number: 16 = 22 (+1 for clientSlot)
         public const int MAX_PLAYER = 4;
         public const int PORT = 7777;
-        public const string ASSEMBLY_MOD_VERSION = "0.3.4";
+        public const string ASSEMBLY_MOD_VERSION = "0.3.5";
         public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
         
