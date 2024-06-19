@@ -65,6 +65,7 @@
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
     <Compile Include="ClientSide\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Handle\ClientSend.cs" />
+    <Compile Include="ClientSide\SteamClient.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="MainMod.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="ServerSide\Handle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\SteamServer.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
     <Compile Include="Shared\ApiCalls.cs" />
@@ -123,11 +125,13 @@
     <Compile Include="Shared\Data\ModWheelData.cs" />
     <Compile Include="Shared\ModSceneManager.cs" />
     <Compile Include="Shared\ModUI.cs" />
+    <Compile Include="Shared\NetworkType.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />
     <Compile Include="Shared\Player.cs" />
     <Compile Include="Shared\PreferencesManager.cs" />
     <Compile Include="Shared\SavesManager.cs" />
+    <Compile Include="Shared\SteamManager.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -140,14 +144,8 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.Steamworks.Posix">
-      <HintPath>Libs\Facepunch.Steamworks.Posix.dll</HintPath>
-    </Reference>
     <Reference Include="Facepunch.Steamworks.Win64">
-      <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
-    </Reference>
-    <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
-      <HintPath>Libs\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
+      <HintPath>Assets\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
       <HintPath>Libs\Il2CppInterop.Runtime.dll</HintPath>
@@ -210,13 +208,14 @@
     <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
-    <Content Include="Libs\Facepunch.Steamworks.Posix.dll" />
-    <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
     <Content Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
     <Content Include="Libs\Il2Cppmscorlib.dll" />
     <Content Include="Libs\MelonLoader.dll" />
     <Content Include="Libs\Newtonsoft.Json.dll" />
+    <Content Include="Libs\steam_api64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
     <Content Include="Libs\UnityEngine.CoreModule.dll" />
     <Content Include="Libs\UnityEngine.dll" />
@@ -229,6 +228,9 @@
     <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
     <Content Include="Libs\UnityEngine.UI.dll" />
     <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
+    <Content Include="Libs\Facepunch.Steamworks.Win64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />

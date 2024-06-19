@@ -63,16 +63,22 @@ namespace CMS21Together.ClientSide
             ClientData data = new ClientData();
             ClientData.Instance = data;
 
-            try
+            if (MainMod.NetworkType == NetworkType.TcpUdp)
             {
-                isConnected = true;
-                tcp.Connect();
-                //udp.Connect(((IPEndPoint)tcp.socket.Client.LocalEndPoint).Port);
+                try
+                {
+                    isConnected = true;
+                    tcp.Connect();
+                }
+                catch (Exception ex) // Capturer toutes les exceptions possibles
+                {
+                    MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
+                    Client.Instance.Disconnect();
+                }
             }
-            catch (Exception ex) // Capturer toutes les exceptions possibles
+            else
             {
-                MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
-                Client.Instance.Disconnect();
+                SteamClient.JoinLobbyWithID();
             }
 
             if (!isConnected)

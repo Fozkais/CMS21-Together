@@ -72,7 +72,7 @@ namespace CMS21Together.Shared
             return null;
         }
         
-        public static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        public static Assembly AddTogetherModAPIAssembly(object sender, ResolveEventArgs args)
         {
             Stream stream = DataHelper.LoadContent("CMS21Together.Assets.TogetherModAPI.dll");
 
@@ -82,5 +82,6 @@ namespace CMS21Together.Shared
             return Assembly.Load(assemblyData);
             
         }
+        
     }
 }

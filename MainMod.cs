@@ -10,11 +10,12 @@ using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using Il2Cpp;
-using Il2CppSteamworks;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using SteamClient = Steamworks.SteamClient;
+using SteamManager = CMS21Together.Shared.SteamManager;
 
 // ReSharper disable All
 
@@ -28,6 +29,8 @@ namespace CMS21Together
         public const string ASSEMBLY_MOD_VERSION = "0.3.5";
         public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
+
+        public static NetworkType NetworkType = NetworkType.TcpUdp;
         
         public Client client;
         public ModUI modUI;
@@ -37,7 +40,7 @@ namespace CMS21Together
 
         public override void OnEarlyInitializeMelon()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ApiCalls.CurrentDomain_AssemblyResolve);
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ApiCalls.AddTogetherModAPIAssembly);
         }
 
         public override void OnLateInitializeMelon()
@@ -52,6 +55,8 @@ namespace CMS21Together
             
             contentManager = modObject.AddComponent<ContentManager>();
             
+            
+            SteamManager.Initialize();
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
@@ -108,6 +113,9 @@ namespace CMS21Together
         public override void OnUpdate()
         {
             if(!isModInitialized) {return;}
+            
+            SteamClient.RunCallbacks();
+            
             if (GameData.DataInitialized)
             {
                 if (Client.Instance.isConnected)
@@ -170,6 +178,8 @@ namespace CMS21Together
                     ServerSend.DisconnectClient(id, "Server is shutting down.");
                 }
             }
+            
+            SteamManager.Close();
         }
     }
 }

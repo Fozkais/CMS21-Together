@@ -8,12 +8,14 @@ using CMS21Together.ClientSide;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using MelonLoader;
+using Steamworks;
+using Steamworks.Data;
 using UnityEngine;
 
 namespace CMS21Together.ServerSide
 {
      public class Server
-    {
+     {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
         public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
@@ -26,6 +28,8 @@ namespace CMS21Together.ServerSide
         private static UdpClient udpListener;
         private static bool isStopping;
 
+        public static SteamServer steamServer;
+
         public static void Start()
         {
             MaxPlayers = MainMod.MAX_PLAYER;
@@ -34,12 +38,21 @@ namespace CMS21Together.ServerSide
             MelonLogger.Msg("Starting server...");
             InitializeServerData();
 
-            tcpListener = new TcpListener(IPAddress.Any, Port);
-            tcpListener.Start();
-            tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
+            if (MainMod.NetworkType == NetworkType.TcpUdp)
+            {
+                tcpListener = new TcpListener(IPAddress.Any, Port);
+                tcpListener.Start();
+                tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
 
-            udpListener = new UdpClient(Port);
-            udpListener.BeginReceive(UDPReceiveCallback, null);
+                udpListener = new UdpClient(Port);
+                udpListener.BeginReceive(UDPReceiveCallback, null);
+            }
+            else
+            {
+                steamServer = new SteamServer();
+                steamServer.HostLobby();
+            }
+            
 
             MelonLogger.Msg($"Server started successfully !");
             ServerData.isRunning = true;

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using HarmonyLib;
 using Il2Cpp;
@@ -185,9 +186,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             networkTransform.sizeDelta = new Vector2(288, 55);
             networkButton.GetComponentInChildren<Text>().text = "Network type";
             networkButton.OnClick = new MainMenuButton.ButtonEvent();
-            networkButton.isDisabled = true;
-            networkButton.DoStateTransition(SelectionState.Disabled, true);
-            Action networkChange = delegate { };
+          //  networkButton.isDisabled = true;
+          //  networkButton.DoStateTransition(SelectionState.Disabled, true);
+            Action networkChange = delegate { ChangeNetworkType(); };
             networkButton.OnClick.AddListener(networkChange);
             networkObject.SetActive(true);
 
@@ -234,6 +235,22 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             settingButton.DoStateTransition(SelectionState.Disabled, true);
 
             isSet = true;
+        }
+
+        public static void ChangeNetworkType()
+        {
+            switch (MainMod.NetworkType)
+            {
+                case NetworkType.TcpUdp:
+                    MainMod.NetworkType = NetworkType.steamNetworking;
+                    
+                    break;
+                case NetworkType.steamNetworking:
+                    MainMod.NetworkType = NetworkType.TcpUdp;
+                    break;
+            }
+            MelonLogger.Msg("Networking Type as been set to : " + MainMod.NetworkType.ToString());
+            // TODO: Show a info box to tell on wich networking type is being used 
         }
 
         public static void EnableMultiplayerMenu()
