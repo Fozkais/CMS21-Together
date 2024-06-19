@@ -35,6 +35,8 @@ namespace CMS21Together.ClientSide.Data
         public List<GroupItem> playerGroupInventory = new List<GroupItem>();
 
         public ModEngineStand engineStand = new ModEngineStand();
+        
+        public Dictionary<(bool, string), bool> garageUpgrades = new Dictionary<(bool, string), bool>();
 
         public int playerMoney;
         public int playerScrap;

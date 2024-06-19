@@ -3,6 +3,7 @@ using CMS21Together.ClientSide.Handle;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared;
 using Il2Cpp;
+using Il2CppCMS.UI.Logic.Upgrades;
 using MelonLoader;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace CMS21Together.ClientSide.Data
         
         public GameObject localPlayer;
         public GarageLoader garageLoader;
+        public GarageAndToolsTab garageAndToolsTab;
         public SpringClampLogic springClampLogic;
         public FPSInputController playerController;
         public TireChangerLogic tireChanger;
@@ -38,6 +40,7 @@ namespace CMS21Together.ClientSide.Data
             carWash = Object.FindObjectOfType<CarWashLogic>();
             engineStand = Object.FindObjectOfType<EngineStandLogic>();
             screenFader = Object.FindObjectOfType<ScreenFader>();
+            garageAndToolsTab = Object.FindObjectOfType<GarageAndToolsTab>();
            
             carLoaders = new[]
             {

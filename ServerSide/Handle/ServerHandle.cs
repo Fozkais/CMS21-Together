@@ -527,6 +527,21 @@ namespace CMS21Together.ServerSide.Handle
 
         #endregion
 
+        #region CampainSync
+
+            public static void GarageUpgrade(int _fromClient, Packet _packet)
+            {
+                bool interactive = _packet.ReadBool();
+                string updgradeID = _packet.ReadString();
+                bool on = _packet.ReadBool();
+
+                ServerData.garageUpgrades[(interactive, updgradeID)] = on;
+                
+                ServerSend.GarageUpgrade(_fromClient, interactive, updgradeID, on);
+            }
+
+        #endregion
+
 
     }
 }

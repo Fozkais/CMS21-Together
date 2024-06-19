@@ -50,8 +50,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                         CustomUIManager.lobbyMenuButtons[i].gameObject.SetActive(true);
                         if (i == 0 && client)
                         {
-                            CustomMainMenu.section.buttons[i].isDisabled = true;
-                            CustomMainMenu.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
+                            CustomUIMain.section.buttons[i].isDisabled = true;
+                            CustomUIMain.section.buttons[i].DoStateTransition(SelectionState.Disabled, true);
                         }
                     }
                 }
@@ -62,7 +62,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             }
             else
             {
-                CustomHostMenu.DisableSavesMenu();
+                CustomUIHost.DisableSavesMenu();
                 CreateLobbyMenu(client);
                 CustomUIManager.inLobbyWindow = true;
             }
@@ -70,7 +70,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void CreateLobbyMenu(bool client=false)
         {
-            GameObject template = CustomMainMenu.templateButtonObject;
+            GameObject template =  CustomUIManager.templateButton;
             isSet = true;
 
             if (client)
@@ -102,7 +102,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             MainMenuButton  startButton = startObject.GetComponent<MainMenuButton>();
 
             startTransform.parent = parent;
-            startTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            startTransform.parentInternal =  CustomUIManager.templateButton.GetComponent<RectTransform>().parentInternal;
             startButton.Y = 26;
             /*startButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
             CustomUIManager.lobbyMenuButtons.Add(startButton);
@@ -138,7 +138,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             MainMenuButton  readyButton = readyObject.GetComponent<MainMenuButton>();
 
             readyTransform.parent = parent;
-            readyTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            readyTransform.parentInternal =  CustomUIManager.templateButton.GetComponent<RectTransform>().parentInternal;
             readyButton.Y = 27;
             /*readyButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
             CustomUIManager.lobbyMenuButtons.Add(readyButton);
@@ -172,7 +172,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
 
             backTransform.parent = parent;
-            backTransform.parentInternal = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+            backTransform.parentInternal =  CustomUIManager.templateButton.GetComponent<RectTransform>().parentInternal;
             backButton.Y = 28;
             /*backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
             CustomUIManager.lobbyMenuButtons.Add(backButton);
@@ -186,7 +186,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 Action backtoMenu = delegate
                 {
                     DisableLobby(); 
-                    CustomMainMenu.EnableMultiplayerMenu();
+                   // CustomUIMain.EnableMultiplayerMenu();
                 };
                 backButton.OnClick.AddListener(backtoMenu);
             }
@@ -197,7 +197,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 Action backtoMenu = delegate
                 {
                     DisableLobby(true); 
-                    CustomHostMenu.CreateSavesMenu();
+                    CustomUIHost.CreateSavesMenu();
                 };
                 backButton.OnClick.AddListener(backtoMenu);
             }
@@ -213,6 +213,15 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             SavesManager.ModSaves[saveIndex].alreadyLoaded = true;
             SavesManager.SaveModSave(saveIndex);
         }
+        
+        private static void StartGame2()
+        {
+            //ServerSend.SendCarLoadInfo(Client.Instance.Id);
+            
+            StartGame(saveIndex);
+            SavesManager.ModSaves[saveIndex].alreadyLoaded = true;
+            SavesManager.SaveModSave(saveIndex);
+        }
 
         public static void CreateLobbyDisplay(bool client=false)
         {
@@ -223,7 +232,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             kickButtons = new List<GameObject>();
             
             
-            Transform textParent = CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parent;
+            Transform textParent =  CustomUIManager.templateButton.GetComponent<RectTransform>().parent;
             
             
             float startYPosition = 100f;
@@ -242,7 +251,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 
             backgroundPanel2Image.color = backgroundColor;
             
-            var textObject = Object.Instantiate(CustomMainMenu.templateTextObject); 
+            /*var textObject = Object.Instantiate(CustomUIMain.templateTextObject); 
             RectTransform textTransform = textObject.GetComponent<RectTransform>();
             Text textComponent = textObject.GetComponent<Text>();
             
@@ -254,7 +263,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             textComponent.text = "Usernames :"; 
             textObject.SetActive(true);
             
-            var text2Object = Object.Instantiate(CustomMainMenu.templateTextObject); 
+            var text2Object = Object.Instantiate(CustomUIMain.templateTextObject); 
             RectTransform text2Transform = text2Object.GetComponent<RectTransform>();
             Text text2Component = text2Object.GetComponent<Text>();
             
@@ -289,7 +298,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 backgrounds.Add(backgroundPanelObject);
                 
                 
-                GameObject pseudoTextObject = Object.Instantiate(CustomMainMenu.templateTextObject);
+                GameObject pseudoTextObject = Object.Instantiate(CustomUIMain.templateTextObject);
                 RectTransform pseudoTextTransform = pseudoTextObject.GetComponent<RectTransform>();
                 Text pseudoTextComponent = pseudoTextObject.GetComponent<Text>();
                 
@@ -304,7 +313,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 
                 usernameText.Add(pseudoTextObject);
                 
-                GameObject readyTextObject = Object.Instantiate(CustomMainMenu.templateTextObject);
+                GameObject readyTextObject = Object.Instantiate(CustomUIMain.templateTextObject);
                 RectTransform readyTextTransform = readyTextObject.GetComponent<RectTransform>();
                 Text readyTextComponent = readyTextObject.GetComponent<Text>();
                 
@@ -319,7 +328,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 readyText.Add(readyTextObject);
 
                 // Création du bouton pour "Kick"
-                GameObject kickButtonObject = Object.Instantiate(CustomMainMenu.templateButtonObject); 
+                GameObject kickButtonObject = Object.Instantiate( CustomUIManager.templateButton); 
                 RectTransform kickButtonTransform = kickButtonObject.GetComponent<RectTransform>();
                 MainMenuButton kickButtonComponent = kickButtonObject.GetComponent<MainMenuButton>();
                 
@@ -337,7 +346,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     kickButtonComponent.isDisabled = true;
                     kickButtonComponent.DoStateTransition(SelectionState.Disabled, true);
                 }
-            }
+            }*/
         }
 
         

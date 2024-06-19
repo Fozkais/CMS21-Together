@@ -161,7 +161,7 @@ namespace CMS21Together.Shared
 
                     profileData[index] = save;
                     Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
+                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Normal);
                     Singleton<GameManager>.Instance.ProfileManager.Load();
                 
                     ModSaves[index].Name =  name;
@@ -181,7 +181,7 @@ namespace CMS21Together.Shared
                 gameManager.ProfileManager.selectedProfile = index;
                 gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
                 Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
+                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Normal);
                 gameManager.ProfileManager.Load();
                 
                 MelonLogger.Msg("-------------------Save Info---------------------");

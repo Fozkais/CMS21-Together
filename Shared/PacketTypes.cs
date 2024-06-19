@@ -49,7 +49,9 @@ namespace CMS21Together.Shared
             engineCrane,
             oilBin,
             springClampGroup,
-            springClampClear
+            springClampClear,
+            
+            garageUpgrade
             
         #endregion
 

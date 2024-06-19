@@ -397,6 +397,20 @@ namespace CMS21Together.ClientSide.Handle
 
         #endregion
 
+        #region CampaignSync
+            public static void GarageUpdgrade(bool interactive,string upgradeID, bool on)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.garageUpgrade))
+                {
+                    _packet.Write(interactive);
+                    _packet.Write(upgradeID);
+                    _packet.Write(on);
+                    
+                    SendTCPData(_packet);
+                }
+            }
+            
+        #endregion
 
 
     }

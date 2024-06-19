@@ -299,14 +299,14 @@ namespace CMS21Together.ClientSide.Data.Car
                 return true;
             else if (handled.TintColor.isDifferent(toHandle.TintColor))
                 return true;
-            else if (handled.isTinted != toHandle.IsTinted)
+            /*else if (handled.isTinted != toHandle.IsTinted)
                 return true;
             else if (handled.livery != toHandle.Livery)
                 return true;
             else if (Math.Abs(handled.liveryStrength - toHandle.LiveryStrength) > 0.01f)
                 return true;
             else if (Math.Abs(handled.conditionStructure - toHandle.StructureCondition) > 0.01f)
-                return true;
+                return true;*/
             else if (Math.Abs(handled.washFactor - toHandle.WashFactor) > 0.01f)
                 return true;
 

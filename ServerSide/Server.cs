@@ -228,6 +228,8 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.carParts, ServerHandle.CarParts},
                 {(int)PacketTypes.bodyPart, ServerHandle.BodyPart},
                 {(int)PacketTypes.bodyParts, ServerHandle.BodyParts},
+                
+                {(int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgrade},
             };
             MelonLogger.Msg("Initialized Packets!");
         }

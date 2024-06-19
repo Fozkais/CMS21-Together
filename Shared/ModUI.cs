@@ -197,6 +197,17 @@ namespace CMS21Together.Shared
                         {
                             MelonLogger.Msg("Found a valid save slot!: " + index);
                             SavesManager.LoadSave(save);
+                            
+                            if(!ServerData.isRunning)
+                                Server.Start();
+                            else
+                            {
+                                Server.Stop();
+                                Server.Start();
+                            }
+                            window = guiWindow.lobby;
+                            SavesManager.LoadSave(save);
+                            saveIndex = save.saveIndex;
                             break;
                         }
                     }
@@ -411,7 +422,7 @@ namespace CMS21Together.Shared
         private void StartGame(int _saveIndex)
         {
             SavesManager.StartGame(_saveIndex);
-            ServerSend.StartGame(new ModProfileData(SavesManager.GetProfile(_saveIndex)));
+            ServerSend.StartGame(/*new ModProfileData(SavesManager.GetProfile(_saveIndex))*/ null);
         }
         private void JoinLobby()
         {

@@ -35,7 +35,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
-    <Compile Include="ClientSide\Data\Car\CarHarmonyPatches.cs" />
+    <Compile Include="ClientSide\Data\Campaign\CampaignHarmonyHooks.cs" />
+    <Compile Include="ClientSide\Data\Campaign\ModJobs.cs" />
+    <Compile Include="ClientSide\Data\Campaign\ModSkills.cs" />
+    <Compile Include="ClientSide\Data\Car\CarHarmonyHooks.cs" />
     <Compile Include="ClientSide\Data\Car\CarInitialization.cs" />
     <Compile Include="ClientSide\Data\Car\CarManagement.cs" />
     <Compile Include="ClientSide\Data\Car\CarUpdate.cs" />
@@ -43,10 +46,12 @@
     <Compile Include="ClientSide\Data\Car\PartsReferences.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\ContentManager.cs" />
-    <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUIHost.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomLobbyMenu.cs" />
-    <Compile Include="ClientSide\Data\CustomUI\CustomMainMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUIMain.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUISaves.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModCarWashLogic.cs" />
     <Compile Include="ClientSide\Data\GarageInteraction\ModEngineCrane.cs" />

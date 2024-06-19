@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Campaign;
 using CMS21Together.ClientSide.Data.Car;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.GarageInteraction;
@@ -76,7 +77,7 @@ namespace CMS21Together.ClientSide.Handle
                     {
                         Client.Instance.Disconnect();
                         CustomLobbyMenu.DisableLobby(true); 
-                        CustomMainMenu.EnableMultiplayerMenu();
+                       // CustomUIMain.EnableMultiplayerMenu();
                     }
                     
                     Application.runInBackground = false;
@@ -580,9 +581,9 @@ namespace CMS21Together.ClientSide.Handle
                     {
                         ClientData.Instance.LoadedCars.Remove(ClientData.Instance.LoadedCars.First(s => 
                             s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
-                        CarHarmonyPatches.ListenToDeleteCar = false;
+                        CarHarmonyHooks.ListenToDeleteCar = false;
                         carLoader.DeleteCar();
-                        CarHarmonyPatches.ListenToDeleteCar = true;
+                        CarHarmonyHooks.ListenToDeleteCar = true;
                         MelonLogger.Msg("CL: Removing car...");
                     }
                 }
@@ -702,6 +703,34 @@ namespace CMS21Together.ClientSide.Handle
 
         #endregion
 
+        #region CampaignSync
+
+            public static void GarageUpgrade(Packet _packet)
+            {
+                bool interactive = _packet.ReadBool();
+                string upgradeID = _packet.ReadString();
+                bool on = _packet.ReadBool();
+
+               
+                
+                _packet.Dispose();
+            }
+
+            public IEnumerator GarageUpgrade(bool interactive, string upgradeID,  bool on)
+            {
+                while (!GameData.DataInitialized)
+                    yield return new WaitForSeconds(.1f);
+                
+                CampaignHarmonyHooks.ListenToUpgrades = false;
+                var upgradeTool = GameData.Instance.garageAndToolsTab;
+
+                if (interactive)
+                    upgradeTool.SwitchInteractiveObjects(upgradeID, on);
+                else
+                    upgradeTool.StartCoroutine(upgradeTool.SwitchObjectsUnlock(upgradeID, on));
+            }
+
+        #endregion
 
     }
 }

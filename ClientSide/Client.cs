@@ -125,6 +125,8 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
                 { (int)PacketTypes.carParts, ClientHandle.CarParts},
                 { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
+                
+                { (int)PacketTypes.garageUpgrade, ClientHandle.GarageUpgrade},
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -133,7 +135,7 @@ namespace CMS21Together.ClientSide
         {
             if (isConnected)
             {
-                CarHarmonyPatches.ListenToDeleteCar = false;
+                CarHarmonyHooks.ListenToDeleteCar = false;
                 
                 Application.runInBackground = false;
                 isConnected = false;
@@ -155,7 +157,7 @@ namespace CMS21Together.ClientSide
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
-            CarHarmonyPatches.ListenToDeleteCar = true;
+            CarHarmonyHooks.ListenToDeleteCar = true;
             ApiCalls.API_M2(ContentManager.Instance.OwnedContents);
         }
     }

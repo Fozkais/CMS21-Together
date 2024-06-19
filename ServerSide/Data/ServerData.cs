@@ -17,6 +17,7 @@ namespace CMS21Together.ServerSide.Data
 
         public static bool isRunning;
         public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new Dictionary<ModIOSpecialType, ModCarPlace>();
+        public static Dictionary<(bool, string), bool> garageUpgrades = new Dictionary<(bool, string), bool>();
         public static ModEngineStand engineStand = new ModEngineStand();
 
         public static void ResetData()

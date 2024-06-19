@@ -16,7 +16,7 @@ using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.CustomUI
 {
-    public static class CustomHostMenu
+    public static class CustomUIHost
     {
         public static bool isSet;
         public static bool isSavesSet;
@@ -37,144 +37,48 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         };
 
 
-
-        public static void DisableHostMenu()
+        public static void InitializeHostMenu()
         {
-            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
-            {
-                if (CustomUIManager.hostMenuButtons[i] != null)
-                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(false);
-            }
+            GameObject parent = new GameObject("MP_HostButtons");
+            parent.transform.parent = GameObject.Find("MainButtons").transform.parent;
+            parent.transform.localPosition = new Vector3(-380, 0, 0);
+            parent.transform.localScale = new Vector3(.65f, .65f, .65f);
 
-            CustomMainMenu.EnableMultiplayerMenu();
+            CustomUIManager.MP_Host_Parent = parent.transform;
+            
+            Vector2 b1_pos = new Vector2(20, 58);
+            Vector2 b1_size = new Vector2(336, 65);
+            Action b1_action = delegate { OpenSavesMenu(); };
+            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Load/Create a game");
+            CustomUIBuilder.CreateNewButton(UISection.MP_Host, b1_info, false);
+            
+            Vector2 b2_pos = new Vector2(20, -17);
+            Vector2 b2_size = new Vector2(336, 65);
+            Action b2_action = delegate {  };
+            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Delete a game");
+            CustomUIBuilder.CreateNewButton(UISection.MP_Host, b2_info, true);
+            
+            Vector2 b3_pos = new Vector2(20, -317);
+            Vector2 b3_size = new Vector2(336, 65);
+            Action b3_action = delegate { OpenMultiplayerMenu(); };
+            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Back to menu");
+            CustomUIBuilder.CreateNewButton(UISection.MP_Host, b3_info, false);
+            
+            CustomUIManager.DisableUI(UISection.MP_Host);
         }
 
-        public static void EnableHostMenu()
+        private static void OpenMultiplayerMenu()
         {
-            for (int i = 0; i < CustomUIManager.multiplayerMenuButtons.Count; i++)
-            {
-                if (CustomUIManager.multiplayerMenuButtons[i] != null)
-                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
-            }
-            for (int i = 0; i < CustomUIManager.hostMenuButtons.Count; i++)
-            {
-                if (CustomUIManager.hostMenuButtons[i] != null)
-                    CustomUIManager.hostMenuButtons[i].gameObject.SetActive(true);
-            }
-            
+            CustomUIManager.DisableUI(UISection.MP_Host);
+            CustomUIManager.EnableUI(UISection.MP_Main);
         }
-
-        public static void CreateHostMenu()
+        
+        private static void OpenSavesMenu()
         {
-            if (isSet)
-            {
-                EnableHostMenu();
-                DisableSavesMenu();
-                return;
-            }
-
-            for (int i = 0; i < CustomUIManager.multiplayerMenuButtons.Count; i++)
-            {
-                if (CustomUIManager.multiplayerMenuButtons[i] != null)
-                    CustomUIManager.multiplayerMenuButtons[i].gameObject.SetActive(false);
-            }
-
-            isSet = true;
-            Transform parent = CustomMainMenu.templateButtonObject.transform;
-
-
-            var LoadObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
-            RectTransform loadTransform = LoadObject.GetComponent<RectTransform>();
-            MainMenuButton loadButton = LoadObject.GetComponent<MainMenuButton>();
-
-            loadTransform.parent = parent;
-            loadTransform.parentInternal =
-                CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            loadButton.Y = 12;
-            /*loadButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
-            CustomUIManager.hostMenuButtons.Add(loadButton);
-
-            loadTransform.anchoredPosition = new Vector2(-5, 58);
-            loadTransform.sizeDelta = new Vector2(288, 55);
-            loadButton.GetComponentInChildren<Text>().text = "Load/Create a game";
-            loadButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action loadAction = delegate
-            {
-                if (!displaySaves)
-                {
-                    if (!isSavesSet)
-                        CreateSavesMenu();
-                    else
-                        EnableSavesMenu();
-                }
-                else
-                {
-                    DisableSavesMenu();
-                }
-            };
-            loadButton.OnClick.AddListener(loadAction);
-            LoadObject.SetActive(true);
+            CustomUIManager.DisableUI(UISection.MP_Host);
             
-            var DeleteObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
-            RectTransform DeleteTransform = DeleteObject.GetComponent<RectTransform>();
-            MainMenuButton DeleteButton = DeleteObject.GetComponent<MainMenuButton>();
-
-            DeleteTransform.parent = parent;
-            DeleteTransform.parentInternal =
-                CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            DeleteButton.Y = 13;
-            CustomUIManager.hostMenuButtons.Add(DeleteButton);
-            /*DeleteButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
-
-            DeleteTransform.anchoredPosition = new Vector2(-5, 5);
-            DeleteTransform.sizeDelta = new Vector2(288, 55);
-            DeleteButton.GetComponentInChildren<Text>().text = "Delete a game";
-            DeleteButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action deleteAction = delegate
-            {
-                
-            };
-            DeleteButton.OnClick.AddListener(deleteAction);
-            DeleteObject.SetActive(true);
-            
-            DeleteButton.isDisabled = true;
-            DeleteButton.DoStateTransition(SelectionState.Disabled, true);
-
-
-            var backObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
-            RectTransform backTransform = backObject.GetComponent<RectTransform>();
-            MainMenuButton backButton = backObject.GetComponent<MainMenuButton>();
-
-            backTransform.parent = parent;
-            backTransform.parentInternal =
-                CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
-            backButton.Y = 14;
-            /*backButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
-            CustomUIManager.hostMenuButtons.Add(backButton);
-
-            backTransform.anchoredPosition = new Vector2(-5, -200);
-            backTransform.sizeDelta = new Vector2(288, 55);
-            backButton.GetComponentInChildren<Text>().text = "Back to menu";
-            backButton.OnClick = new MainMenuButton.ButtonEvent();
-            Action backtoMenu = delegate
-            {
-                DisableHostMenu();
-                CustomMainMenu.EnableMultiplayerMenu();
-                if (displaySaves)
-                {
-                    DisableSavesMenu();
-                }
-
-                DisableInputsWindow();
-            };
-            backButton.OnClick.AddListener(backtoMenu);
-            backObject.SetActive(true);
-
-        }
-
-        public static void EnableDeleteAction()
-        {
-            
+            CustomUISaves.saveIndex = 0;
+            CustomUIManager.EnableUI(UISection.MP_Saves);
         }
 
         public static void CreateSavesMenu()
@@ -187,9 +91,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             displaySaves = true;
             isSavesSet = true;
-            Transform parent = CustomMainMenu.templateButtonObject.transform;
+            Transform parent =  CustomUIManager.templateButton.transform;
 
-            MainMenuManager manager = CustomMainMenu.section.menuManager;
+            MainMenuManager manager = CustomUIMain.section.menuManager;
             manager.HideAds();
 
             int index = 0;
@@ -201,13 +105,13 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                         break;
                 }
 
-                var saveObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
+                var saveObject = Object.Instantiate( CustomUIManager.templateButton);
                 RectTransform saveTransform = saveObject.GetComponent<RectTransform>();
                 MainMenuButton saveButton = saveObject.GetComponent<MainMenuButton>();
 
                 saveTransform.parent = parent;
                 saveTransform.parentInternal =
-                    CustomMainMenu.templateButtonObject.GetComponent<RectTransform>().parentInternal;
+                    CustomUIManager.templateButton.GetComponent<RectTransform>().parentInternal;
                 saveButton.Y = 15 + i;
                 /*saveButton.OnMouseHover =
                     CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
@@ -254,13 +158,13 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
             isnewSaveSet = true;
 
-            var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+            var window = CustomUIMain.section.transform.parent.FindChild("NameWindow");
             var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
             window.gameObject.SetActive(true);
 
             Transform parent = window.transform;
 
-            var cancelObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
+            var cancelObject = Object.Instantiate( CustomUIManager.templateButton);
             RectTransform cancelTransform = cancelObject.GetComponent<RectTransform>();
             MainMenuButton cancelButton = cancelObject.GetComponent<MainMenuButton>();
 
@@ -278,12 +182,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             cancelButton.OnClick.AddListener(backtoMenu);
             cancelObject.SetActive(true);
 
-            var confirmObject = Object.Instantiate(CustomMainMenu.templateButtonObject);
+            var confirmObject = Object.Instantiate( CustomUIManager.templateButton);
             RectTransform confirmsTransform = confirmObject.GetComponent<RectTransform>();
             MainMenuButton confirmButton = confirmObject.GetComponent<MainMenuButton>();
 
             confirmsTransform.parent = parent;
-            confirmsTransform.parentInternal = parent;
+            confirmsTransform.parentInternal = parent;  
             confirmButton.Y = 24;
             /*confirmButton.OnMouseHover = CustomMainMenu.templateButtonObject.GetComponent<MainMenuButton>().OnMouseHover;*/
             CustomUIManager.inputFieldButtons.Add(confirmButton);
@@ -326,7 +230,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 }
             }
 
-            var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+            var window = CustomUIMain.section.transform.parent.FindChild("NameWindow");
             window.gameObject.SetActive(false);
         }
         private static void EnableNewSaveWindow(int buttonIndex, int saveIndex)
@@ -339,12 +243,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 }
             }
 
-            var window = CustomMainMenu.section.transform.parent.FindChild("NameWindow");
+            var window = CustomUIMain.section.transform.parent.FindChild("NameWindow");
                 var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
                 window.gameObject.SetActive(true);
                 saveWindow.inputField.m_Text = "SaveName";
 
-                var confirmButton = CustomMainMenu.section.buttons[25];
+                var confirmButton = CustomUIMain.section.buttons[25];
 
                 confirmButton.OnClick = new MainMenuButton.ButtonEvent();
                 Action confirmAction;
@@ -396,7 +300,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 }
             }
             
-            MainMenuManager manager = CustomMainMenu.section.menuManager;
+            MainMenuManager manager = CustomUIMain.section.menuManager;
             manager.ShowAds();
         }
         private static void EnableSavesMenu()

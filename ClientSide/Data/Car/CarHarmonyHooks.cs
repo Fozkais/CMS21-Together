@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 namespace CMS21Together.ClientSide.Data.Car
 {
     [HarmonyPatch]
-    public static class CarHarmonyPatches
+    public static class CarHarmonyHooks
     {
         public static bool ListenToCursorBlock;
         public static bool ListenToDeleteCar = true;
@@ -137,7 +137,7 @@ namespace CMS21Together.ClientSide.Data.Car
             {
                 if (ClientData.Instance.GameReady)
                 {
-                    CarHarmonyPatches.ListenToDeleteCar = false;
+                    CarHarmonyHooks.ListenToDeleteCar = false;
                     try
                     {
                         if (newSceneName != "garage")

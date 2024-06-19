@@ -193,6 +193,15 @@ namespace CMS21Together.ServerSide.Handle
                     SendTCPData(fromclient, _packet);
                 }
             }
+            
+            public static void SendKeepAliveConfirmation(int fromclient)
+            {
+                using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
+                {
+                    SendTCPData(fromclient, packet);
+                }
+            }
+            
         #endregion
 
         #region PlayerData
@@ -521,15 +530,23 @@ namespace CMS21Together.ServerSide.Handle
             
         #endregion
 
-        public static void SendKeepAliveConfirmation(int fromclient)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
+
+        #region CampaignSync
+
+            public static void GarageUpgrade(int fromClient, bool interactive, string updgradeID, bool on)
             {
-                SendTCPData(fromclient, packet);
+                using (Packet _packet = new Packet((int)PacketTypes.garageUpgrade))
+                {
+                    _packet.Write(interactive);
+                    _packet.Write(updgradeID);
+                    _packet.Write(on);
+
+                    SendTCPDataToAll(fromClient, _packet);
+                }
             }
-        }
+        
 
-
+        #endregion
 
     }
 }
