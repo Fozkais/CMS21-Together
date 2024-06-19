@@ -12,22 +12,26 @@ namespace CMS21Together.Shared.Data
         public int carLoaderID;
         public string carID;
         public ModPartInfo partInfo;
+        public ModCarInfoData carInfo;
+        public ModFluidsData fluidsData;
         
         public int carVersion;
         public int carPosition;
         
-        public int CarLifterState;
-
-        public bool isCarReady;
+        public int CarLifterState; // TODO: Implement for AutoResync
+        
         public bool isReferenced;
         public bool isHandled;
         
-        public bool isFromServer = false;
+        public bool isFromServer;
         public bool receivedOtherParts = true;
         public bool receivedEngineParts = true;
         public bool receivedDriveshaftParts = true;
         public bool receivedSuspensionParts = true;
         public bool receivedBodyParts = true;
+        
+        public bool hoodSkip;
+        
         public bool CarFullyReceived 
         { 
             get => receivedDriveshaftParts && receivedOtherParts && 
@@ -68,8 +72,8 @@ namespace CMS21Together.Shared.Data
             this.carPosition = _car.carPosition;
             this.carVersion = _car.carVersion;
 
+            this.hoodSkip = false;
             this.isFromServer = true;
-            this.isCarReady = false;
             this.isHandled = false;
             this.isReferenced = false;
             this.receivedOtherParts = false;

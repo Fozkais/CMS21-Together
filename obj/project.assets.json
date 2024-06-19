@@ -1304,11 +1304,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj",
+      "projectUniqueName": "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj",
       "projectName": "CMS21-Together",
-      "projectPath": "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj",
+      "projectPath": "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj",
       "packagesPath": "C:\\Users\\brand\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\brand\\CMS21-Together\\obj\\",
+      "outputPath": "E:\\Rider Project\\CMS21-TogetherMain\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "configFilePaths": [

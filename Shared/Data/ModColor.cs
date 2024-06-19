@@ -32,22 +32,13 @@ namespace CMS21Together.Shared.Data
             return new Color(color.r, color.g, color.b, color.a);
         }
         
-        public bool isDifferent(Color color)
+        public bool IsDifferent(Color color, float tolerance = 0.00f)
         {
-            if (Mathf.Abs(this.r - color.r) > 0.01f)
-            {
-                if (Mathf.Abs(this.g - color.g) > 0.01f)
-                {
-                    if (Mathf.Abs(this.b - color.b) > 0.01f)
-                    {
-                        if (Mathf.Abs(this.a - color.a) > 0.01f)
-                        {
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
+            return Mathf.Abs(this.r - color.r) > tolerance ||
+                   Mathf.Abs(this.g - color.g) > tolerance ||
+                   Mathf.Abs(this.b - color.b) > tolerance ||
+                   Mathf.Abs(this.a - color.a) > tolerance;
         }
+
     }
 }

@@ -37,8 +37,12 @@ namespace CMS21Together.Shared.Data
         {
             if (_part == null) { return; }
 
+            if(!String.IsNullOrEmpty(_part.name))
+                this.name = _part.name;
+            else
+                this.name = "hood";
+
             this.carPartID = _carPartID;
-            this.name = _part.name;
             this.switched = _part.Switched;
             this.inprogress = _part.Switched;
             this.condition = _part.Condition;

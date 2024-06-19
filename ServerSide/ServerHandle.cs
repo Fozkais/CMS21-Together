@@ -7,11 +7,10 @@ using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
-using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.ServerSide.Handle
+namespace CMS21Together.ServerSide
 {
     public class ServerHandle
     {
@@ -352,7 +351,7 @@ namespace CMS21Together.ServerSide.Handle
 
         #region CarData
 
-            public static void CarResync(int _fromClient, Packet _packet)
+            public static void CarsResync(int _fromClient, Packet _packet)
             {
                 var phase = _packet.ReadBool();
                 if (phase)
@@ -363,6 +362,39 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     var carToResync  = _packet.Read<List<(int, string)>>();
                     ServerData.players[_fromClient].carToResync = carToResync;
+                }
+            }
+            
+            public static void CarResync(int _fromClient, Packet _packet)
+            {
+                int carLoaderID = _packet.ReadInt();
+
+                if (ServerData.LoadedCars.TryGetValue(carLoaderID, out var car))
+                {
+                    ServerSend.CarSpawn(_fromClient, new ModCar(car), false, true);
+                        
+                    List<ModPartScript> otherParts = new List<ModPartScript>();
+                    for (int i = 0; i < car.partInfo.OtherParts.Count; i++)
+                    {
+                        for (int j = 0; j < car.partInfo.OtherParts[i].Count; j++)
+                        {
+                            otherParts.Add(car.partInfo.OtherParts[i][j]);
+                        }
+                    }
+                    List<ModPartScript> suspensionPart = new List<ModPartScript>();
+                    for (int i = 0; i < car.partInfo.SuspensionParts.Count; i++)
+                    {
+                        for (int j = 0; j < car.partInfo.SuspensionParts[i].Count; j++)
+                        {
+                            suspensionPart.Add(car.partInfo.SuspensionParts[i][j]);
+                        }
+                    }
+                        
+                    ServerSend.PartScripts(_fromClient, otherParts, car.carLoaderID, ModPartType.other,true);
+                    ServerSend.PartScripts(_fromClient,  car.partInfo.EngineParts.Values.ToList(), car.carLoaderID, ModPartType.engine,true);
+                    ServerSend.PartScripts(_fromClient,  car.partInfo.DriveshaftParts.Values.ToList(), car.carLoaderID, ModPartType.driveshaft,true);
+                    ServerSend.PartScripts(_fromClient, suspensionPart, car.carLoaderID, ModPartType.suspension,true);
+                    ServerSend.BodyParts(_fromClient,  car.partInfo.BodyParts.Values.ToList(), car.carLoaderID, true);
                 }
             }
 
@@ -377,7 +409,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     if (player.carToResync.Contains((_car.carLoaderID, _car.carID)))
                     {
-                        ServerSend.CarInfo(clientID, new ModCar(_car), false, true);
+                        ServerSend.CarSpawn(clientID, new ModCar(_car), false, true);
                         
                         List<ModPartScript> otherParts = new List<ModPartScript>();
                         for (int i = 0; i < _car.partInfo.OtherParts.Count; i++)
@@ -406,7 +438,7 @@ namespace CMS21Together.ServerSide.Handle
                 }
             }
 
-            public static void CarInfo(int _fromClient, Packet _packet)
+            public static void CarSpawn(int _fromClient, Packet _packet)
             {
                 bool removed = _packet.ReadBool();
                 ModCar car = _packet.Read<ModCar>();
@@ -428,8 +460,31 @@ namespace CMS21Together.ServerSide.Handle
                     }
                 }
                 
-                ServerSend.CarInfo(_fromClient, car, removed);
+                ServerSend.CarSpawn(_fromClient, car, removed);
             }
+
+            public static void CarInfo(int _fromClient, Packet _packet)
+            {
+                ModCarInfoData data = _packet.Read<ModCarInfoData>();
+                int loaderID = _packet.ReadInt();
+
+                if (!ServerData.LoadedCars.ContainsKey(loaderID))
+                    ServerData.LoadedCars[loaderID].carInfo = data;
+
+                ServerSend.CarInfo(data, loaderID, _fromClient);
+            }
+            
+            public static void CarFluids(int _fromClient, Packet _packet)
+            {
+                ModFluidsData data = _packet.Read<ModFluidsData>();
+                int loaderID = _packet.ReadInt();
+
+                if (!ServerData.LoadedCars.ContainsKey(loaderID))
+                    ServerData.LoadedCars[loaderID].fluidsData = data;
+
+                ServerSend.CarFluidData(data, loaderID, _fromClient);
+            }
+
             public static void CarPart(int _fromClient, Packet _packet)
             {
                 ModPartScript carPart = _packet.Read<ModPartScript>();
@@ -497,18 +552,13 @@ namespace CMS21Together.ServerSide.Handle
                 
                 MelonLogger.Msg($"SV: Received BodyParts :  {carParts.Count} ");
             
-                if (ServerData.LoadedCars.Any(s => s.Value.carLoaderID == carLoaderID))
+                if (ServerData.LoadedCars.TryGetValue(carLoaderID, out var car))
                 {
-                    ModCar car = ServerData.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                    if (car.partInfo != null)
+                    if (car.partInfo == null) car.partInfo = new ModPartInfo();
+                    
+                    foreach (ModCarPart carPart in carParts)
                     {
-                        if ( car.partInfo.BodyParts == null)
-                            car.partInfo.BodyParts = new Dictionary<int, ModCarPart>();
-                        
-                        foreach (ModCarPart carPart in carParts)
-                        {
-                            car.partInfo.BodyParts[carPart.carPartID] =  carPart;
-                        }
+                        car.partInfo.BodyParts[carPart.carPartID] =  carPart;
                     }
                 }
             

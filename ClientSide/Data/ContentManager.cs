@@ -37,6 +37,9 @@ namespace CMS21Together.ClientSide.Data
                 Destroy(this);
             }
             
+            string ApiCheck = ApiCalls.API_M4();
+                MelonLogger.Msg($"[TogetherAPI] {ApiCheck}.");
+            
             GetGameVersion();
             CheckContent();
         }

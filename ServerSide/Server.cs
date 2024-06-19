@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
-using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
@@ -221,7 +220,9 @@ namespace CMS21Together.ServerSide
                 {(int)PacketTypes.springClampClear, ServerHandle.SpringClampClear},
                 {(int)PacketTypes.toolMove, ServerHandle.ToolsMove},
                 
+                {(int)PacketTypes.carResyncs, ServerHandle.CarsResync},
                 {(int)PacketTypes.carResync, ServerHandle.CarResync},
+                {(int)PacketTypes.carSpawn, ServerHandle.CarSpawn},
                 {(int)PacketTypes.carInfo, ServerHandle.CarInfo},
                 {(int)PacketTypes.carPosition, ServerHandle.CarPosition},
                 {(int)PacketTypes.carPart, ServerHandle.CarPart},

@@ -1,5 +1,4 @@
 using CMS21Together.ClientSide.Data.Car;
-using CMS21Together.ClientSide.Handle;
 using HarmonyLib;
 using Il2Cpp;
 
@@ -18,7 +17,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
 
             if (listenToOilBinAction)
             {
-                int carLoaderID = CarInitialization.ConvertCarLoaderID(__instance.gameObject.gameObject.name[10].ToString());
+                int carLoaderID = CarManager.GetCarLoaderID(__instance.gameObject.gameObject.name[10].ToString());
                 ClientSend.SendOilBin(carLoaderID);
             }
         }

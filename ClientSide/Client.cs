@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Car;
 using CMS21Together.ClientSide.Data.PlayerData;
-using CMS21Together.ClientSide.Handle;
 using CMS21Together.ClientSide.Transport;
 using CMS21Together.Shared;
 using MelonLoader;
@@ -118,13 +117,15 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.springClampClear, ClientHandle.SpringClampClear},
                 { (int)PacketTypes.toolMove, ClientHandle.ToolsMove},
                 
+                { (int)PacketTypes.carSpawn, ClientHandle.CarSpawn},
                 { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
+                { (int)PacketTypes.carfluidsData, ClientHandle.CarFluidsData},
                 //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
                 { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
-                { (int)PacketTypes.carPart, ClientHandle.CarPart},
-                { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
-                { (int)PacketTypes.carParts, ClientHandle.CarParts},
-                { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
+                { (int)PacketTypes.carPart, ClientHandle.PartScript},
+                { (int)PacketTypes.bodyPart, ClientHandle.CarPart},
+                { (int)PacketTypes.carParts, ClientHandle.PartScripts},
+                { (int)PacketTypes.bodyParts, ClientHandle.CarParts},
             };
             MelonLogger.Msg("Initialized Packets!");
         }
@@ -133,7 +134,7 @@ namespace CMS21Together.ClientSide
         {
             if (isConnected)
             {
-                CarHarmonyPatches.ListenToDeleteCar = false;
+                CarHarmonyHooks.ListenToDeleteCar = false;
                 
                 Application.runInBackground = false;
                 isConnected = false;
@@ -155,7 +156,7 @@ namespace CMS21Together.ClientSide
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }
-            CarHarmonyPatches.ListenToDeleteCar = true;
+            CarHarmonyHooks.ListenToDeleteCar = true;
             ApiCalls.API_M2(ContentManager.Instance.OwnedContents);
         }
     }

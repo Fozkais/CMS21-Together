@@ -13,7 +13,7 @@ using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.ClientSide.Handle
+namespace CMS21Together.ClientSide
 {
     public class ClientHandle : MonoBehaviour
     {
@@ -538,74 +538,7 @@ namespace CMS21Together.ClientSide.Handle
         #endregion
 
         #region CarData
-
-            public static void CarInfo(Packet _packet)
-            {
-                bool removed = _packet.ReadBool();
-                ModCar car = _packet.Read<ModCar>();
-                
-                MelonLogger.Msg($"CL: Received new car from server!");
-
-                MelonCoroutines.Start(CarInfo(removed, car));
-                _packet.Dispose();
-            }
-
-            private static IEnumerator CarInfo(bool removed, ModCar car)
-            {
-                while(ClientData.Instance.GameReady == false) // DO NOT REMOVE!
-                    yield return new WaitForSeconds(1);
-                
-                MelonLogger.Msg($"GameReady processing car : {car.carID}");
-                
-                CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
-
-                bool checkCondition = ClientData.Instance.LoadedCars.Any(s =>
-                    s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID);
-                
-                if (!removed)
-                {
-                    if (!checkCondition)
-                    {
-                        ClientData.Instance.LoadedCars.Add(car.carLoaderID, car);
-                    }
-                    ModCar _car  = ClientData.Instance.LoadedCars.First(s 
-                        => s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Value;
-                    
-                    MelonCoroutines.Start(CarManagement.CarSpawnFade(_car));
-                    MelonLogger.Msg($"CL: Loading:{_car.carID} , {car.carLoaderID}");
-                }
-                else
-                {
-                    if (checkCondition)
-                    {
-                        ClientData.Instance.LoadedCars.Remove(ClientData.Instance.LoadedCars.First(s => 
-                            s.Value.carLoaderID == car.carLoaderID && s.Value.carID == car.carID).Key);
-                        CarHarmonyPatches.ListenToDeleteCar = false;
-                        carLoader.DeleteCar();
-                        CarHarmonyPatches.ListenToDeleteCar = true;
-                        MelonLogger.Msg("CL: Removing car...");
-                    }
-                }
-            }
-
-            public static void CarPart(Packet _packet)
-            {
-                ModPartScript carPart = _packet.Read<ModPartScript>();
-                int carLoaderID = _packet.ReadInt();
-                
-
-                if (carLoaderID == -1)
-                {
-                    MelonCoroutines.Start( ModEngineStandLogic.HandleNewPart(carPart));
-                    _packet.Dispose();
-                    return;
-                }
-                
-                MelonCoroutines.Start(CarUpdate.HandleNewPart(carPart, carLoaderID));
-                
-                _packet.Dispose();
-            }
-            
+        
             public static void CarPosition(Packet _packet)
             {
                 int carLoaderID = _packet.ReadInt();
@@ -627,78 +560,138 @@ namespace CMS21Together.ClientSide.Handle
                 }
             }
             
-            public static void CarParts(Packet _packet)
+            public static void CarSpawn(Packet _packet)
             {
-                List<ModPartScript> carParts = _packet.Read<List<ModPartScript>>();
-                int carLoaderID = _packet.ReadInt();
-                ModPartType partType = _packet.Read<ModPartType>();
+                bool removed = _packet.ReadBool();
+                ModCar car = _packet.Read<ModCar>();
+                car.isFromServer = true;
+                
+                MelonLogger.Msg($"CL: Received new car from server!");
 
-                MelonLogger.Msg($"Received parts list for : {partType}!!");
-                if(carParts.Count > 0)
-                    MelonCoroutines.Start(CarManagement.LoadCarParts(carParts, carLoaderID));
-
-                MelonCoroutines.Start(CarReceivedUpdate(partType, carLoaderID));
-
+                MelonCoroutines.Start(CarSpawn(removed, car));
                 _packet.Dispose();
             }
 
-            private static IEnumerator CarReceivedUpdate(ModPartType carPart, int carLoaderID)
+            private static IEnumerator CarSpawn(bool removed, ModCar car)
             {
-                var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
-                yield return waitforCar;
+                while(GameData.DataInitialized == false) // DO NOT REMOVE!
+                    yield return new WaitForSeconds(1);
                 
-                ModCar car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                switch (carPart)
+                MelonLogger.Msg($"GameData Initialized, processing car : {car.carID}");
+                
+                CarLoader carLoader = GameData.Instance.carLoaders[car.carLoaderID];
+
+                bool checkCondition = ClientData.Instance.LoadedCars.ContainsKey(car.carLoaderID);
+                
+                if (!removed)
                 {
-                    case ModPartType.other:
-                        car.receivedOtherParts = true;
-                        break;
-                    case ModPartType.engine:
-                        car.receivedEngineParts = true;
-                        break;
-                    case ModPartType.suspension:
-                        car.receivedSuspensionParts = true;
-                        break;
-                    case ModPartType.driveshaft:
-                        car.receivedDriveshaftParts = true;
-                        break;
+                    if (!checkCondition)
+                        ClientData.Instance.LoadedCars.Add(car.carLoaderID, car);
+                    
+                    ModCar _car = ClientData.Instance.LoadedCars[car.carLoaderID];
+                    
+                    MelonCoroutines.Start(CarManager.SpawnCar(car));
+                    MelonLogger.Msg($"CL: Loading:{_car.carID} , {car.carLoaderID}");
+                }
+                else
+                {
+                    if (checkCondition)
+                    {
+                        ClientData.Instance.LoadedCars.Remove(car.carLoaderID);
+                        
+                        CarHarmonyHooks.ListenToDeleteCar = false;
+                        carLoader.DeleteCar();
+                        CarHarmonyHooks.ListenToDeleteCar = true;
+                        MelonLogger.Msg("CL: Removing car...");
+                    }
                 }
             }
+            
+            public static void CarInfo(Packet _packet)
+            {
+                ModCarInfoData data = _packet.Read<ModCarInfoData>();
+                int loaderID = _packet.ReadInt();
 
-            public static void BodyPart(Packet _packet)
+                if (!ClientData.Instance.LoadedCars.ContainsKey(loaderID))
+                    ClientData.Instance.LoadedCars[loaderID].carInfo = data;
+
+                GameData.Instance.carLoaders[loaderID].CarInfoData = data.ToGame(data);
+            }
+            
+            public static void CarFluidsData(Packet _packet)
+            {
+                ModFluidsData data = _packet.Read<ModFluidsData>();
+                int loaderID = _packet.ReadInt();
+
+                FluidsData _data = data.ToGame();
+
+                if (!ClientData.Instance.LoadedCars.ContainsKey(loaderID))
+                    ClientData.Instance.LoadedCars[loaderID].fluidsData = data;
+
+                GameData.Instance.carLoaders[loaderID].FluidsData.Copy(_data);
+            }
+
+            public static void PartScript(Packet _packet)
+            {
+                ModPartScript partScript = _packet.Read<ModPartScript>();
+                int carLoaderID = _packet.ReadInt();
+                
+                MelonLogger.Msg("Received PartScript");
+                
+                if (carLoaderID == -1)
+                {
+                    MelonCoroutines.Start( ModEngineStandLogic.HandleNewPart(partScript));
+                    _packet.Dispose();
+                    return;
+                }
+                
+                MelonCoroutines.Start(CarManager.HandlePartScript(partScript, carLoaderID));
+                
+                _packet.Dispose();
+            }
+            
+            public static void PartScripts(Packet _packet)
+            {
+                List<ModPartScript> partScripts = _packet.Read<List<ModPartScript>>();
+                int carLoaderID = _packet.ReadInt();
+                ModPartType partType = _packet.Read<ModPartType>();
+
+                MelonLogger.Msg($"Received PartScripts for : {partType}!!");
+                
+                if(partScripts.Count > 0)
+                    MelonCoroutines.Start(CarManager.HandlePartScripts(partScripts, carLoaderID));
+                
+                _packet.Dispose();
+            }
+            
+
+            public static void CarPart(Packet _packet)
             {
                 ModCarPart carPart = _packet.Read<ModCarPart>();
                 int carLoaderID = _packet.ReadInt();
                 
-                MelonLogger.Msg("Received BodyPart");
+                MelonLogger.Msg("Received CarPart");
                 
-                MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(carPart, carLoaderID));
+               // MelonCoroutines.Start(CarUpdate.HandleNewBodyPart(carPart, carLoaderID));
+                MelonCoroutines.Start(CarManager.HandleCarPart(carPart, carLoaderID));
                 
                 _packet.Dispose();
             }
             
-            public static void BodyParts(Packet _packet)
+            public static void CarParts(Packet _packet)
             {
                 List<ModCarPart> carParts = _packet.Read<List<ModCarPart>>();
                 int carLoaderID = _packet.ReadInt();
                 
-                MelonLogger.Msg("Received BodyParts list !!");
+                MelonLogger.Msg("Received CarParts !!");
 
-                MelonCoroutines.Start(CarManagement.LoadBodyParts(carParts, carLoaderID));
-
-                MelonCoroutines.Start(CarReceivedUpdate(carLoaderID));
+                //MelonCoroutines.Start(CarManagement.LoadBodyParts(carParts, carLoaderID));
+                MelonCoroutines.Start(CarManager.HandleCarParts(carParts, carLoaderID));
+               // MelonCoroutines.Start(CarReceivedUpdate(carLoaderID));
                 
                 _packet.Dispose();
             }
             
-            private static IEnumerator CarReceivedUpdate(int carLoaderID)
-            {
-                var waitforCar = MelonCoroutines.Start(CarManagement.WaitCarToBeReady(carLoaderID));
-                yield return waitforCar;
-                
-                var car = ClientData.Instance.LoadedCars.First(s => s.Value.carLoaderID == carLoaderID).Value;
-                car.receivedBodyParts = true;
-            }
 
         #endregion
 

@@ -1,6 +1,5 @@
 using System.Linq;
 using CMS21Together.ClientSide.Data.Car;
-using CMS21Together.ClientSide.Handle;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using Il2Cpp;
@@ -32,7 +31,7 @@ namespace CMS21Together.ClientSide.Data.GarageInteraction
 
             if (listentoCraneAction)
             {
-                int carLoaderID = CarInitialization.ConvertCarLoaderID(__instance.gameObject.gameObject.name[10].ToString());
+                int carLoaderID = CarManager.GetCarLoaderID(__instance.gameObject.gameObject.name[10].ToString());
                 ClientSend.EngineCraneHandle(carLoaderID);
             }
         }

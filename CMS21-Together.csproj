@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,12 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
-    <Compile Include="ClientSide\Data\Car\CarHarmonyPatches.cs" />
-    <Compile Include="ClientSide\Data\Car\CarInitialization.cs" />
-    <Compile Include="ClientSide\Data\Car\CarManagement.cs" />
-    <Compile Include="ClientSide\Data\Car\CarUpdate.cs" />
-    <Compile Include="ClientSide\Data\Car\PartsHandle.cs" />
-    <Compile Include="ClientSide\Data\Car\PartsReferences.cs" />
+    <Compile Include="ClientSide\ClientHandle.cs" />
+    <Compile Include="ClientSide\ClientSend.cs" />
+    <Compile Include="ClientSide\Data\Car\CarHandle.cs" />
+    <Compile Include="ClientSide\Data\Car\CarReferences.cs" />
+    <Compile Include="ClientSide\Data\Car\CarHarmonyHooks.cs" />
+    <Compile Include="ClientSide\Data\Car\CarManager.cs" />
+    <Compile Include="ClientSide\Data\Car\CarUpdater.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\ContentManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
@@ -63,18 +64,16 @@
     <Compile Include="ClientSide\Data\PlayerData\Rotation.cs" />
     <Compile Include="ClientSide\Data\PlayerData\SceneHarmonyPatches.cs" />
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
-    <Compile Include="ClientSide\Handle\ClientHandle.cs" />
-    <Compile Include="ClientSide\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="MainMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSide\Data\CarPartHandle.cs" />
     <Compile Include="ServerSide\Data\ServerData.cs" />
-    <Compile Include="ServerSide\Handle\ServerHandle.cs" />
-    <Compile Include="ServerSide\Handle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\ServerHandle.cs" />
+    <Compile Include="ServerSide\ServerSend.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
     <Compile Include="Shared\ApiCalls.cs" />
@@ -83,6 +82,8 @@
     <Compile Include="Shared\Data\ModBodyPartData.cs" />
     <Compile Include="Shared\Data\ModBonusPartData.cs" />
     <Compile Include="Shared\Data\ModCar.cs" />
+    <Compile Include="Shared\Data\ModCarFluid.cs" />
+    <Compile Include="Shared\Data\ModCarFluidType.cs" />
     <Compile Include="Shared\Data\ModCarInfoData.cs" />
     <Compile Include="Shared\Data\ModCarPart.cs" />
     <Compile Include="Shared\Data\ModCarPlace.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="Shared\Data\ModDifficultyLevel.cs" />
     <Compile Include="Shared\Data\ModEngineData.cs" />
     <Compile Include="Shared\Data\ModEngineStand.cs" />
+    <Compile Include="Shared\Data\ModFluidData.cs" />
+    <Compile Include="Shared\Data\ModFluidsData.cs" />
     <Compile Include="Shared\Data\ModGearboxData.cs" />
     <Compile Include="Shared\Data\ModGroupItem.cs" />
     <Compile Include="Shared\Data\ModIOSpecialType.cs" />

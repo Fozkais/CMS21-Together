@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
@@ -7,7 +6,7 @@ using CMS21Together.Shared.Data;
 using Il2Cpp;
 using MelonLoader;
 
-namespace CMS21Together.ClientSide.Handle
+namespace CMS21Together.ClientSide
 {
     public class ClientSend
     {
@@ -312,7 +311,7 @@ namespace CMS21Together.ClientSide.Handle
         #region CarData
             public static void SendModCar(ModCar modCar, bool removed=false)
             {
-                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                using (Packet _packet = new Packet((int)PacketTypes.carSpawn))
                 {
                     _packet.Write(removed);
                     _packet.Write(modCar);
@@ -321,6 +320,29 @@ namespace CMS21Together.ClientSide.Handle
                 }
                 //MelonLogger.Msg("Send car info to server");
             }
+            
+            public static void SendCarInfoData(ModCarInfoData carInfoData, int carLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                {
+                    _packet.Write(carInfoData);
+                    _packet.Write(carLoaderID);
+
+                    SendTCPData(_packet);
+                }
+            }
+            
+            public static void SendCarFluidsData(ModFluidsData carFluidsData, int carLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carfluidsData))
+                {
+                    _packet.Write(carFluidsData);
+                    _packet.Write(carLoaderID);
+
+                    SendTCPData(_packet);
+                }
+            }
+            
             public static void SendCarPart(int carCarLoaderID, ModPartScript modPartScript)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carPart))
@@ -380,7 +402,7 @@ namespace CMS21Together.ClientSide.Handle
             
             public static void SendResyncCars(List<(int,string)> carToResync = null)
             {
-                using (Packet _packet = new Packet((int)PacketTypes.carResync))
+                using (Packet _packet = new Packet((int)PacketTypes.carResyncs))
                 {
                     if(carToResync == null)
                         _packet.Write(true);
@@ -393,11 +415,21 @@ namespace CMS21Together.ClientSide.Handle
                     SendTCPData(_packet);
                 }
             }
+            
+            public static void SendResyncCar(int carLoaderID)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carResyncs))
+                {
+                    _packet.Write(carLoaderID);
+                    
+                    SendTCPData(_packet);
+                }
+            }
         
 
         #endregion
 
 
-
+      
     }
 }

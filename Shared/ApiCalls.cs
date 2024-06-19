@@ -72,6 +72,27 @@ namespace CMS21Together.Shared
             return null;
         }
         
+        public static string API_M4()
+        {
+            Assembly loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
+                .FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
+            string className = "TogetherModAPI.MainApi";  // Remplacez par le nom complet de votre classe
+            
+            Type myClassType = loadedAssembly.GetType(className);
+            if (myClassType != null)
+            {
+                // Obtenir la méthode statique ResetDLCs
+                MethodInfo apiMethod4 = myClassType.GetMethod("PSM4", BindingFlags.Static | BindingFlags.Public);
+                if (apiMethod4 != null)
+                {
+                    var a = apiMethod4.Invoke(null, null);
+                    return (string)a; 
+                }
+            }
+
+            return "";
+        }
+        
         public static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
         {
             Stream stream = DataHelper.LoadContent("CMS21Together.Assets.TogetherModAPI.dll");
@@ -80,7 +101,6 @@ namespace CMS21Together.Shared
             stream.Read(assemblyData, 0, assemblyData.Length);
             
             return Assembly.Load(assemblyData);
-            
         }
     }
 }

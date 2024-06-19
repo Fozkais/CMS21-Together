@@ -26,8 +26,11 @@ namespace CMS21Together.Shared
             playerSceneChange,
             stats,
             
+            carResyncs,
             carResync,
+            carSpawn,
             carInfo,
+            carfluidsData,
             carPosition,
             carPart,
             carParts,

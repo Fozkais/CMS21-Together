@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace CMS21Together.ServerSide.Handle
+namespace CMS21Together.ServerSide
 {
     public class ServerSend
     {
@@ -426,9 +426,9 @@ namespace CMS21Together.ServerSide.Handle
 
         #region CarData
         
-            public static void CarInfo(int fromClient, ModCar car, bool removed, bool resync=false)
+            public static void CarSpawn(int fromClient, ModCar car, bool removed, bool resync=false)
             {
-                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                using (Packet _packet = new Packet((int)PacketTypes.carSpawn))
                 {
                     _packet.Write(removed);
                     _packet.Write(car);
@@ -445,6 +445,29 @@ namespace CMS21Together.ServerSide.Handle
                     }
                 }
             }
+            
+            public static void CarInfo(ModCarInfoData data, int loaderID, int fromClient)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carInfo))
+                {
+                    _packet.Write(data);
+                    _packet.Write(loaderID);
+                    
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
+            public static void CarFluidData(ModFluidsData data, int loaderID, int fromClient)
+            {
+                using (Packet _packet = new Packet((int)PacketTypes.carfluidsData))
+                {
+                    _packet.Write(data);
+                    _packet.Write(loaderID);
+                    
+                    SendTCPDataToAll(fromClient, _packet);
+                }
+            }
+            
             public static void PartScript(int fromClient, int carLoaderID, ModPartScript carPart, bool resync=false)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.carPart))
@@ -508,16 +531,7 @@ namespace CMS21Together.ServerSide.Handle
                     SendTCPDataToAll(fromClient, _packet);
                 }
             }
-            
-            public static void CarResync(int fromClient, List<(int,string)> carOnServer)
-            {
-                using (Packet _packet = new Packet((int)PacketTypes.carResync))
-                {
-                    _packet.Write(carOnServer);
-
-                    SendTCPData(fromClient, _packet);
-                }
-            }
+        
             
         #endregion
 
@@ -530,6 +544,6 @@ namespace CMS21Together.ServerSide.Handle
         }
 
 
-
+       
     }
 }

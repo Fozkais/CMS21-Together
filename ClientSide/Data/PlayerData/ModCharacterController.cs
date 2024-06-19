@@ -25,6 +25,7 @@ namespace CMS21Together.ClientSide.Data.PlayerData
         private void Awake()
         {
             _animator = GetComponent<Animator>();
+            _animator.applyRootMotion = false;
         }
 
         public void UpdatePlayer()
