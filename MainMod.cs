@@ -15,7 +15,7 @@ using Steamworks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using SteamClient = Steamworks.SteamClient;
-using SteamManager = CMS21Together.Shared.SteamManager;
+using SteamManager = CMS21Together.Shared.Steam.SteamManager;
 
 // ReSharper disable All
 

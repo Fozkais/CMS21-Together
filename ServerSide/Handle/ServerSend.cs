@@ -6,30 +6,86 @@ using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Steam;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace CMS21Together.ServerSide.Handle
 {
-    public class ServerSend
+    public static class ServerSend
     {
         #region Functions
-        private static void SendTCPData(int _toClient, Packet _packet)//, SteamId steamId)
+
+        private static void SendData(int _toClient,  Packet _packet, bool reliable = true)
+        {
+            _packet.WriteLength();
+            if (MainMod.NetworkType == NetworkType.steamNetworking)
+            {
+                if (SteamServer.Instance.isLobby)
+                    SteamManager.currentLobby.SendChatString(_toClient.ToString() + " " + _packet);
+                else
+                    Server.steamServer.Send(_toClient, _packet.ToArray(), reliable);
+            }
+            else
+            {
+                if (reliable)
+                    SendTCPData(_toClient, _packet);
+                else
+                    SendUDPData(_toClient, _packet);
+            }
+        }
+        private static void SendDataToAll(Packet _packet, bool reliable = true)
+        {
+            _packet.WriteLength();
+            if (MainMod.NetworkType == NetworkType.steamNetworking)
+            {
+                foreach (int clientID in Server.steamServer.clients.Keys)
+                {
+                    Server.steamServer.Send(clientID, _packet.ToArray(), reliable);
+                }
+            }
+            else
+            {
+                if (reliable)
+                    SendTcpDataToAll(_packet);
+                else
+                    SendUDPDataToAll(_packet);
+            }
+        }
+        private static void SendDataToAll(int _exceptClient,Packet _packet, bool reliable = true)
+        {
+            _packet.WriteLength();
+            if (MainMod.NetworkType == NetworkType.steamNetworking)
+            {
+                foreach (int clientID in Server.steamServer.clients.Keys)
+                {
+                    if(clientID != _exceptClient)
+                        Server.steamServer.Send(clientID, _packet.ToArray(), reliable);
+                }
+            }
+            else
+            {
+                if (reliable)
+                    SendTcpDataToAll(_exceptClient, _packet);
+                else
+                    SendUDPDataToAll(_exceptClient, _packet);
+            }
+        }
+        
+        private static void SendTCPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();
             if(Server.clients.ContainsKey(_toClient))
                 Server.clients[_toClient].tcp.SendData(_packet);
         }
-
-        private static void SendUDPData(int _toClient, Packet _packet)//, SteamId steamId)
+        private static void SendUDPData(int _toClient, Packet _packet)
         {
             _packet.WriteLength();
             if(Server.clients.ContainsKey(_toClient))
                 Server.clients[_toClient].udp.SendData(_packet);
         }
-
-        private static void SendTCPDataToAll(Packet _packet)
+        private static void SendTcpDataToAll(Packet _packet)
         {
             _packet.WriteLength();
             foreach (ServerClient client in Server.clients.Values)
@@ -37,8 +93,7 @@ namespace CMS21Together.ServerSide.Handle
                 client.tcp.SendData(_packet);
             }
         }
-
-        private static void SendTCPDataToAll(int _exceptClient, Packet _packet)
+        private static void SendTcpDataToAll(int _exceptClient, Packet _packet)
         {
             _packet.WriteLength();
 
@@ -48,7 +103,6 @@ namespace CMS21Together.ServerSide.Handle
                     client.tcp.SendData(_packet);
             }
         }
-
         private static void SendUDPDataToAll(Packet _packet)
         {
             _packet.WriteLength();
@@ -57,7 +111,6 @@ namespace CMS21Together.ServerSide.Handle
                 client.udp.SendData(_packet);
             }
         }
-
         private static void SendUDPDataToAll(int _exceptClient, Packet _packet)
         {
             _packet.WriteLength();
@@ -67,6 +120,7 @@ namespace CMS21Together.ServerSide.Handle
                     client.udp.SendData(_packet);
             }
         }
+        
         #endregion
         
         #region Lobby
@@ -78,7 +132,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_msg);
                     _packet.Write(_toClient);
 
-                    SendTCPData(_toClient, _packet);
+                    SendData(_toClient, _packet);
                 }
             }
 
@@ -89,7 +143,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_msg);
                     _packet.Write(id);
 
-                    SendTCPDataToAll(_packet);
+                    SendDataToAll(_packet);
                 }
             }
             
@@ -99,7 +153,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(new ReadOnlyDictionary<string,bool>(infos));
 
-                    SendTCPDataToAll(_packet);
+                    SendDataToAll(_packet);
                 }
             }
             
@@ -110,7 +164,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_ready);
                     _packet.Write(_id);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    SendDataToAll(_fromClient, _packet);
                 }
             }
             
@@ -121,7 +175,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(info);
                    // MelonLogger.Msg("SV: Sended a Player Info!");
 
-                    SendTCPDataToAll(_packet);
+                    SendDataToAll(_packet);
                 }
             }
 
@@ -132,7 +186,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(info);
                    // MelonLogger.Msg("SV: Sended All Players Info!");
 
-                    SendTCPDataToAll(_packet);
+                    SendDataToAll(_packet);
                 }
             }
 
@@ -142,7 +196,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     if(saveData != null)
                         _packet.Write(saveData);
-                    SendTCPDataToAll(Client.Instance.Id, _packet);
+                    SendDataToAll(Client.Instance.Id, _packet);
                 }
                 MelonCoroutines.Start(DelaySpawnPlayer());
             }
@@ -154,7 +208,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(player);
                     _packet.Write(id);
 
-                    SendTCPDataToAll(_packet);
+                    SendDataToAll(_packet);
                 }
             }
 
@@ -174,28 +228,36 @@ namespace CMS21Together.ServerSide.Handle
                 MelonLogger.Msg("Sending Spawn Player Packets");
                 
                 foreach (ServerClient _client in Server.clients.Values)
+                {
+                    if (ServerData.players.TryGetValue(_client.id, out var player))
                     {
-                        if (ServerData.players.TryGetValue(_client.id, out var player))
+                        /*if (_client.id != Client.Instance.Id)
                         {
-                            /*if (_client.id != Client.Instance.Id)
-                            {
-                                ServerSend.SpawnPlayer(_client.id, ServerData.players[_client.id]);
-                            }*/
-                            ServerSend.SpawnPlayer(_client.id, player);
-                        }
+                            ServerSend.SpawnPlayer(_client.id, ServerData.players[_client.id]);
+                        }*/
+                        ServerSend.SpawnPlayer(_client.id, player);
                     }
+                }
             }
             
             public static void keepAlive(int fromclient)
             {
                 using (Packet _packet = new Packet((int)PacketTypes.keepAlive))
                 {
-                    SendTCPData(fromclient, _packet);
+                    SendData(fromclient, _packet);
                 }
             }
         #endregion
 
         #region PlayerData
+        
+            public static void SendKeepAliveConfirmation(int fromclient)
+            {
+                using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
+                {
+                    SendData(fromclient, packet);
+                }
+            }
         
             public static void SendInitialPosition(int _fromClient, Vector3Serializable _position)
             {
@@ -204,7 +266,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_fromClient);
                     _packet.Write(_position);
                     
-                    SendUDPDataToAll(_fromClient, _packet);
+                    SendDataToAll(_fromClient, _packet, false);
                 }
             }
         
@@ -215,7 +277,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(fromClient);
                     _packet.Write(position);
                     
-                    SendUDPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet, false);
                 }
             }
                 
@@ -226,7 +288,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(fromClient);
                     _packet.Write(rotation);
 
-                    SendUDPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet, false);
                 }
             }
                 
@@ -237,7 +299,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(fromClient);
                     _packet.Write(scene);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
 
@@ -248,7 +310,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(value);
                     _packet.Write(type);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -260,9 +322,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_status);
 
                     if(!resync)
-                        SendTCPDataToAll(_fromClient, _packet);
+                        SendDataToAll(_fromClient, _packet);
                     else
-                        SendTCPData(_fromClient, _packet);
+                        SendData(_fromClient, _packet);
                 }
             }
             public static void SendInventoryGroupItem(int _fromClient, ModGroupItem _item, bool _status, bool resync=false)
@@ -273,9 +335,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(_status);
 
                     if(!resync)
-                        SendTCPDataToAll(_fromClient, _packet);
+                        SendDataToAll(_fromClient, _packet);
                     else
-                        SendTCPData(_fromClient, _packet);
+                        SendData(_fromClient, _packet);
                 }
             }
             
@@ -289,7 +351,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(state);
                     _packet.Write(carLoaderID);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             public static void SendTireChange(int fromClient, ModGroupItem item, bool instant, bool connect, bool resetAction)
@@ -301,7 +363,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(connect);
                     _packet.Write(resetAction);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             public static void WheelBalancer(int fromClient, ModWheelBalancerActionType aType, ModGroupItem item=null)
@@ -311,7 +373,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(aType);
                     if(item != null)   {_packet.Write(item);}
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -321,7 +383,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(newAngle);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -334,9 +396,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(rot);
                         
                     if(!resync)
-                        SendTCPDataToAll(fromClient, _packet);
+                        SendDataToAll(fromClient, _packet);
                     else
-                        SendTCPData(fromClient, _packet);
+                        SendData(fromClient, _packet);
                 }
                 MelonLogger.Msg("Send EngineGroup");
             }
@@ -347,7 +409,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(engineItem);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -355,7 +417,7 @@ namespace CMS21Together.ServerSide.Handle
             {
                 using (Packet packet = new Packet((int)PacketTypes.takeOffEngineFromStand))
                 {
-                    SendTCPDataToAll(_fromClient, packet);
+                    SendDataToAll(_fromClient, packet);
                 }
             }
             
@@ -375,7 +437,7 @@ namespace CMS21Together.ServerSide.Handle
                         _packet.Write(carLoaderID);
                     }
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    SendDataToAll(_fromClient, _packet);
                 }
             }
             
@@ -387,7 +449,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(instant);
                     _packet.Write(mount);
 
-                    SendTCPDataToAll(_fromClient, _packet);
+                    SendDataToAll(_fromClient, _packet);
                 }
             }
             
@@ -397,7 +459,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(loaderID);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -406,7 +468,7 @@ namespace CMS21Together.ServerSide.Handle
             {
                 using (Packet packet = new Packet((int)PacketTypes.springClampClear))
                 {
-                    SendTCPDataToAll(_fromClient, packet);
+                    SendDataToAll(_fromClient, packet);
                 }
             }
             
@@ -418,7 +480,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(place);
                     _packet.Write(playSound);
                         
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -436,12 +498,12 @@ namespace CMS21Together.ServerSide.Handle
                     if (!resync)
                     {
                         MelonLogger.Msg($"Send new car info: {car.carID}");
-                        SendTCPDataToAll(fromClient, _packet);
+                        SendDataToAll(fromClient, _packet);
                     }
                     else
                     {
                         MelonLogger.Msg($"Send resync car info: {car.carID}");
-                        SendTCPData(fromClient, _packet);
+                        SendData(fromClient, _packet);
                     }
                 }
             }
@@ -453,9 +515,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(carLoaderID);
 
                     if (!resync)
-                        SendTCPDataToAll(fromClient, _packet);
+                        SendDataToAll(fromClient, _packet);
                     else
-                        SendTCPData(fromClient, _packet);
+                        SendData(fromClient, _packet);
                 }
             }
             public static void BodyPart(int fromClient, int carLoaderID, ModCarPart carPart)
@@ -466,7 +528,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(carLoaderID);
                     
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             public static void PartScripts(int fromClient, List<ModPartScript> carParts, int carLoaderID, ModPartType modPartType, bool resync = false)
@@ -478,9 +540,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(modPartType);
                     
                     if(!resync)
-                        SendTCPDataToAll(fromClient, _packet);
+                        SendDataToAll(fromClient, _packet);
                     else
-                        SendTCPData(fromClient, _packet);
+                        SendData(fromClient, _packet);
                 }
             }
             
@@ -492,9 +554,9 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(carLoaderID);
                     
                     if(!resync)
-                        SendTCPDataToAll(fromClient, _packet);
+                        SendDataToAll(fromClient, _packet);
                     else
-                        SendTCPData(fromClient, _packet);
+                        SendData(fromClient, _packet);
                 }
                 MelonLogger.Msg($"SV: Sent bodyParts : {carParts.Count} ");
             }
@@ -505,7 +567,7 @@ namespace CMS21Together.ServerSide.Handle
                     _packet.Write(carLoaderID);
                     _packet.Write(carPosition);
 
-                    SendTCPDataToAll(fromClient, _packet);
+                    SendDataToAll(fromClient, _packet);
                 }
             }
             
@@ -515,21 +577,11 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     _packet.Write(carOnServer);
 
-                    SendTCPData(fromClient, _packet);
+                    SendData(fromClient, _packet);
                 }
             }
             
         #endregion
-
-        public static void SendKeepAliveConfirmation(int fromclient)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.keepAliveConfirmed))
-            {
-                SendTCPData(fromclient, packet);
-            }
-        }
-
-
-
+        
     }
 }

@@ -46,6 +46,10 @@ namespace CMS21Together.ServerSide
 
                 udpListener = new UdpClient(Port);
                 udpListener.BeginReceive(UDPReceiveCallback, null);
+                
+                Application.runInBackground = true;
+
+                Client.Instance.ConnectToServer("127.0.0.1");
             }
             else
             {
@@ -58,9 +62,7 @@ namespace CMS21Together.ServerSide
             ServerData.isRunning = true;
             isStopping = false;
             
-            Application.runInBackground = true;
-            
-            Client.Instance.ConnectToServer("127.0.0.1");
+                
 
             MelonCoroutines.Start(CheckForInactiveClientsRoutine());
         }

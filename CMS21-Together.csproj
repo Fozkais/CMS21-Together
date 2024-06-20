@@ -131,7 +131,9 @@
     <Compile Include="Shared\Player.cs" />
     <Compile Include="Shared\PreferencesManager.cs" />
     <Compile Include="Shared\SavesManager.cs" />
-    <Compile Include="Shared\SteamManager.cs" />
+    <Compile Include="Shared\Steam\ConvertExtensions.cs" />
+    <Compile Include="Shared\Steam\SteamManager.cs" />
+    <Compile Include="Shared\Steam\SteamUtils.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
