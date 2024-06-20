@@ -66,6 +66,7 @@
     <Compile Include="ClientSide\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\SteamClient.cs" />
+    <Compile Include="ClientSide\SteamLobbyClient.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="MainMod.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="ServerSide\Handle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\SteamLobby.cs" />
     <Compile Include="ServerSide\SteamServer.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
@@ -133,7 +135,7 @@
     <Compile Include="Shared\SavesManager.cs" />
     <Compile Include="Shared\Steam\ConvertExtensions.cs" />
     <Compile Include="Shared\Steam\SteamManager.cs" />
-    <Compile Include="Shared\Steam\SteamUtils.cs" />
+    <Compile Include="Shared\Steam\NetworkingUtils.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>

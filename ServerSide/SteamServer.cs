@@ -7,7 +7,6 @@ using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
 using UnityEngine;
-using SteamUtils = CMS21Together.Shared.Steam.SteamUtils;
 
 namespace CMS21Together.ServerSide
 {
@@ -16,42 +15,28 @@ namespace CMS21Together.ServerSide
         public static SteamServer Instance;
         public SocketManager socket;
         
-        public Dictionary<int, SteamConnection> clients = new Dictionary<int, SteamConnection>();
+        public Dictionary<int, Connection> clients = new Dictionary<int, Connection>();
         private static int nextId = 0;
         public bool isLobby;
         
-        public async void HostLobby()
-        {
-            Instance = this;
-            
-            await SteamMatchmaking.CreateLobbyAsync(MainMod.MAX_PLAYER);
-            clients = new Dictionary<int, SteamConnection>();
-            for (int i = 0; i < MainMod.MAX_PLAYER; i++)
-            {
-                clients[i] = new SteamConnection();
-            }
-
-            isLobby = true;
-            CreateServer();
-        }
         
         public void CreateServer()
         {
             socket = SteamNetworkingSockets.CreateRelaySocket<SteamServer>();
         }
 
-        public int ConnectClient(SteamId steamId)
+        public int ConnectClient(Connection connection)
         {
             int id = nextId++;
-            clients[id] = new SteamConnection(steamId);
+            clients[id] = connection;
             return id;
         }
         
         public  void Send(int connectionId, byte[] data, bool reliable)
         {
-            if (clients.TryGetValue(connectionId, out SteamConnection steamConn))
+            if (clients.TryGetValue(connectionId, out Connection steamConn))
             {
-                var conn = steamConn.Connection;
+                var conn = steamConn;
                 
                 Result res;
                 if(!reliable)
@@ -103,7 +88,7 @@ namespace CMS21Together.ServerSide
 
             ThreadManager.ExecuteOnMainThread<Exception>(ex =>
             {
-                using (Packet _packet = new Packet(SteamUtils.ConvertIntPtrToByteArray(data, size)))
+                using (Packet _packet = new Packet(NetworkingUtils.ConvertIntPtrToByteArray(data, size)))
                 {
                     int _packetId = _packet.ReadInt();
                     int id = _packet.ReadInt(); // TODO: ensure clientID is written on send Method
@@ -116,20 +101,5 @@ namespace CMS21Together.ServerSide
             // connection.SendMessage( data, size, SendType.Reliable); TODO: Adapt ServerSend to use this method.
         }
     }
-
-    public struct SteamConnection
-    {
-        public SteamId SteamId;
-        public Connection Connection;
-
-        public SteamConnection(SteamId id, Connection conn)
-        {
-            SteamId = id;
-            Connection = conn;
-        }
-        public SteamConnection(SteamId id)
-        {
-            SteamId = id;
-        }
-    }
+    
 }

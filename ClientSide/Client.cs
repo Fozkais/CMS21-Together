@@ -23,9 +23,11 @@ namespace CMS21Together.ClientSide
         public int Id;
         public ClientTCP tcp;
         public ClientUDP udp;
+        
+        public SteamLobbyClient lobbyClient;
+        public SteamClient steamClient;
 
         public bool isConnected;
-        public static bool forceDisconnected;
 
         public delegate void PacketHandler(Packet _packet);
 
@@ -78,7 +80,8 @@ namespace CMS21Together.ClientSide
             }
             else
             {
-                SteamClient.JoinLobbyWithID();
+                lobbyClient = new SteamLobbyClient();
+                lobbyClient.JoinLobbyWithID();
             }
 
             if (!isConnected)

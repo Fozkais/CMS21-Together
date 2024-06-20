@@ -21,56 +21,28 @@ namespace CMS21Together.Shared.Steam
         {
             SteamClient.Init(1190000);
             
-            SteamMatchmaking.OnLobbyCreated += LobbyCreated;
-            SteamMatchmaking.OnLobbyEntered += LobbyEntered;
-            SteamMatchmaking.OnLobbyMemberJoined += LobbyMemberJoined;
-            SteamFriends.OnGameLobbyJoinRequested += GameLobbyJoinRequested;
+            SteamMatchmaking.OnLobbyCreated += SteamLobby.LobbyCreated;
+            SteamMatchmaking.OnLobbyEntered += SteamLobby.LobbyEntered;
+            SteamMatchmaking.OnChatMessage += ChatMessage;
+            SteamFriends.OnGameLobbyJoinRequested += SteamLobby.GameLobbyJoinRequested;
         }
 
-        private static void LobbyMemberJoined(Lobby lobby, Friend friend)
+        private static void ChatMessage(Lobby lobby, Friend from, string message)
         {
-           
+            string messageFor = message[0].ToString() + message[1];
+            if(messageFor == "-1")
+                SteamLobby.Instance.HandleMessage(message);
+            else
+                SteamLobbyClient.Instance.HandleMessage(message);
         }
 
         public static void Close()
         {
-            SteamMatchmaking.OnLobbyCreated -= LobbyCreated;
-            SteamMatchmaking.OnLobbyEntered -= LobbyEntered;
-            SteamFriends.OnGameLobbyJoinRequested -= GameLobbyJoinRequested;
+            SteamMatchmaking.OnLobbyCreated -= SteamLobby.LobbyCreated;
+            SteamMatchmaking.OnLobbyEntered -= SteamLobby.LobbyEntered;
+            SteamFriends.OnGameLobbyJoinRequested -= SteamLobby.GameLobbyJoinRequested;
             
             SteamClient.Shutdown();
-        }
-
-        private async static void GameLobbyJoinRequested(Lobby lobby, SteamId steamID)
-        {
-            MelonLogger.Msg($"{steamID.ToString()} is trying to join lobby.");
-            await lobby.Join();
-            
-            
-            
-            int id = SteamServer.Instance.ConnectClient(steamID);
-            ServerSend.Welcome(id, "Welcome to the steam server!");
-        }
-
-        private static void LobbyEntered(Lobby lobby)
-        {
-            currentLobby = lobby;
-            Client.Instance.isConnected = true;
-            MelonLogger.Msg("Connected to lobby successfully");
-        }
-
-        private static void LobbyCreated(Result callback, Lobby lobby)
-        {
-            if (callback == Result.OK)
-            {
-                lobby.SetFriendsOnly();
-                lobby.SetJoinable(true);
-
-                lobbyCode = SteamUtils.ConvertLobbyID(lobby.Id.Value);
-                
-                MelonLogger.Msg("Lobby created successfully!");
-                MelonLogger.Msg($"Lobby ID: {lobby.Id.ToString()} , Code : {lobbyCode}");
-            }
         }
         
         

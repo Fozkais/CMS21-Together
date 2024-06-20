@@ -22,7 +22,7 @@ namespace CMS21Together.ServerSide.Handle
             _packet.WriteLength();
             if (MainMod.NetworkType == NetworkType.steamNetworking)
             {
-                if (SteamServer.Instance.isLobby)
+                if (Server.isLobby)
                     SteamManager.currentLobby.SendChatString(_toClient.ToString() + " " + _packet);
                 else
                     Server.steamServer.Send(_toClient, _packet.ToArray(), reliable);

@@ -14,7 +14,7 @@ using UnityEngine;
 
 namespace CMS21Together.ServerSide
 {
-     public class Server
+     public static class Server
      {
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
@@ -28,7 +28,9 @@ namespace CMS21Together.ServerSide
         private static UdpClient udpListener;
         private static bool isStopping;
 
+        public static SteamLobby steamLobby;
         public static SteamServer steamServer;
+        public static bool isLobby;
 
         public static void Start()
         {
@@ -53,8 +55,8 @@ namespace CMS21Together.ServerSide
             }
             else
             {
-                steamServer = new SteamServer();
-                steamServer.HostLobby();
+                steamLobby = new SteamLobby();
+                steamLobby.HostLobby();
             }
             
 

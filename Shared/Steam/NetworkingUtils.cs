@@ -5,7 +5,7 @@ using MelonLoader;
 
 namespace CMS21Together.Shared.Steam
 {
-    public static class SteamUtils
+    public static class NetworkingUtils
     {
         public static string ConvertLobbyID(ulong lobbyID)
         {
