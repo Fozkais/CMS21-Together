@@ -1,21 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
+using System.Threading.Tasks;
+using CMS21Together.ServerSide;
 using MelonLoader;
+using Steamworks;
+using Steamworks.Data;
 
 namespace CMS21Together.Shared.Steam
 {
     public static class NetworkingUtils
     {
-        public static string ConvertLobbyID(ulong lobbyID)
+
+        public static ServerClient GetClientFromConnection(Connection connection)
         {
-            string code = lobbyID.ToBase36();
+            return Server.clients.First(s => s.Value.steam.connection.Id == connection.Id).Value;
+        }
+        
+        
+        public static string ConvertServerID(SteamId lobbyID)
+        {
+            string code = lobbyID.Value.ToBase36();
             
             code = code.PadLeft(5, '0');
             code = code.PadRight(6, '0');
-
             
-            MelonLogger.Msg("Lobby Code : " + code);
             return code;
         }
         
@@ -28,6 +38,7 @@ namespace CMS21Together.Shared.Steam
             // Convertir le code de la base 36 en ulong
             ulong lobbyID = ulong.Parse(code, System.Globalization.NumberStyles.Integer);
 
+            MelonLogger.Msg("Initial code : " + code);
             MelonLogger.Msg("Converted code : " + lobbyID);
             return lobbyID;
         }
@@ -36,6 +47,7 @@ namespace CMS21Together.Shared.Steam
         {
             byte[] byteArray = new byte[size];
             Marshal.Copy(ptr, byteArray, 0, size);
+            NetworkingUtils.FreeIntPtr(ptr);
             return byteArray;
         }
         
@@ -46,8 +58,18 @@ namespace CMS21Together.Shared.Steam
 
             // Copie les données du tableau de bytes dans la mémoire non managée
             Marshal.Copy(byteArray, 0, ptr, byteArray.Length);
-
+            NetworkingUtils.FreeIntPtr(ptr);
             return ptr;
+        }
+        
+        public async static void FreeIntPtr(IntPtr ptr)
+        {
+            await Task.Delay(1000);
+            
+            if (ptr != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(ptr);
+            }
         }
         
     }

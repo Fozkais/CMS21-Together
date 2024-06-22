@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -65,8 +65,7 @@
     <Compile Include="ClientSide\Data\PlayerData\Stats.cs" />
     <Compile Include="ClientSide\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Handle\ClientSend.cs" />
-    <Compile Include="ClientSide\SteamClient.cs" />
-    <Compile Include="ClientSide\SteamLobbyClient.cs" />
+    <Compile Include="ClientSide\Transport\ClientSteam.cs" />
     <Compile Include="ClientSide\Transport\ClientTCP.cs" />
     <Compile Include="ClientSide\Transport\ClientUDP.cs" />
     <Compile Include="MainMod.cs" />
@@ -77,8 +76,8 @@
     <Compile Include="ServerSide\Handle\ServerSend.cs" />
     <Compile Include="ServerSide\ServerClient.cs" />
     <Compile Include="ServerSide\Server.cs" />
-    <Compile Include="ServerSide\SteamLobby.cs" />
-    <Compile Include="ServerSide\SteamServer.cs" />
+    <Compile Include="ServerSide\SteamNetworkSocket.cs" />
+    <Compile Include="ServerSide\Transport\ServerSteam.cs" />
     <Compile Include="ServerSide\Transport\ServerTCP.cs" />
     <Compile Include="ServerSide\Transport\ServerUDP.cs" />
     <Compile Include="Shared\ApiCalls.cs" />
@@ -134,8 +133,8 @@
     <Compile Include="Shared\PreferencesManager.cs" />
     <Compile Include="Shared\SavesManager.cs" />
     <Compile Include="Shared\Steam\ConvertExtensions.cs" />
-    <Compile Include="Shared\Steam\SteamManager.cs" />
     <Compile Include="Shared\Steam\NetworkingUtils.cs" />
+    <Compile Include="Shared\Steam\ModSteamManager.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -210,28 +209,28 @@
     <EmbeddedResource Include="Assets\lobbyBorder.png" />
     <EmbeddedResource Include="Assets\player.assets" />
     <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
-    <Content Include="Libs\0Harmony.dll" />
-    <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
-    <Content Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
-    <Content Include="Libs\Il2CppInterop.Runtime.dll" />
-    <Content Include="Libs\Il2Cppmscorlib.dll" />
-    <Content Include="Libs\MelonLoader.dll" />
-    <Content Include="Libs\Newtonsoft.Json.dll" />
+    <None Include="Libs\0Harmony.dll" />
+    <None Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <None Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
+    <None Include="Libs\Il2CppInterop.Runtime.dll" />
+    <None Include="Libs\Il2Cppmscorlib.dll" />
+    <None Include="Libs\MelonLoader.dll" />
+    <None Include="Libs\Newtonsoft.Json.dll" />
     <Content Include="Libs\steam_api64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
-    <Content Include="Libs\UnityEngine.CoreModule.dll" />
-    <Content Include="Libs\UnityEngine.dll" />
-    <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
-    <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
-    <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
-    <Content Include="Libs\UnityEngine.InputModule.dll" />
-    <Content Include="Libs\UnityEngine.PhysicsModule.dll" />
-    <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
-    <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
-    <Content Include="Libs\UnityEngine.UI.dll" />
-    <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
+    <None Include="Libs\UnityEngine.AssetBundleModule.dll" />
+    <None Include="Libs\UnityEngine.CoreModule.dll" />
+    <None Include="Libs\UnityEngine.dll" />
+    <None Include="Libs\UnityEngine.ImageConversionModule.dll" />
+    <None Include="Libs\UnityEngine.IMGUIModule.dll" />
+    <None Include="Libs\UnityEngine.InputLegacyModule.dll" />
+    <None Include="Libs\UnityEngine.InputModule.dll" />
+    <None Include="Libs\UnityEngine.PhysicsModule.dll" />
+    <None Include="Libs\UnityEngine.TextCoreModule.dll" />
+    <None Include="Libs\UnityEngine.TextRenderingModule.dll" />
+    <None Include="Libs\UnityEngine.UI.dll" />
+    <None Include="Libs\UnityEngine.UIElementsModule.dll" />
     <Content Include="Libs\Facepunch.Steamworks.Win64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

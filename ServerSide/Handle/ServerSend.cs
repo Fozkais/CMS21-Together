@@ -8,6 +8,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Steam;
 using MelonLoader;
+using Steamworks.Data;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,111 +17,30 @@ namespace CMS21Together.ServerSide.Handle
     public static class ServerSend
     {
         #region Functions
-
         private static void SendData(int _toClient,  Packet _packet, bool reliable = true)
         {
             _packet.WriteLength();
-            if (MainMod.NetworkType == NetworkType.steamNetworking)
-            {
-                if (Server.isLobby)
-                    SteamManager.currentLobby.SendChatString(_toClient.ToString() + " " + _packet);
-                else
-                    Server.steamServer.Send(_toClient, _packet.ToArray(), reliable);
-            }
-            else
-            {
-                if (reliable)
-                    SendTCPData(_toClient, _packet);
-                else
-                    SendUDPData(_toClient, _packet);
-            }
+            MelonLogger.Msg($"SendData[{_toClient}]");
+            Server.clients[_toClient].SendData(_packet, reliable);
         }
         private static void SendDataToAll(Packet _packet, bool reliable = true)
         {
             _packet.WriteLength();
-            if (MainMod.NetworkType == NetworkType.steamNetworking)
+            foreach (KeyValuePair<int,ServerClient> serverClient in Server.clients)
             {
-                foreach (int clientID in Server.steamServer.clients.Keys)
-                {
-                    Server.steamServer.Send(clientID, _packet.ToArray(), reliable);
-                }
+                serverClient.Value.SendData(_packet, reliable);
             }
-            else
-            {
-                if (reliable)
-                    SendTcpDataToAll(_packet);
-                else
-                    SendUDPDataToAll(_packet);
-            }
+            
         }
         private static void SendDataToAll(int _exceptClient,Packet _packet, bool reliable = true)
         {
             _packet.WriteLength();
-            if (MainMod.NetworkType == NetworkType.steamNetworking)
+            foreach (KeyValuePair<int,ServerClient> serverClient in Server.clients)
             {
-                foreach (int clientID in Server.steamServer.clients.Keys)
-                {
-                    if(clientID != _exceptClient)
-                        Server.steamServer.Send(clientID, _packet.ToArray(), reliable);
-                }
-            }
-            else
-            {
-                if (reliable)
-                    SendTcpDataToAll(_exceptClient, _packet);
-                else
-                    SendUDPDataToAll(_exceptClient, _packet);
+                if(serverClient.Key != _exceptClient)
+                    serverClient.Value.SendData(_packet, reliable);
             }
         }
-        
-        private static void SendTCPData(int _toClient, Packet _packet)
-        {
-            _packet.WriteLength();
-            if(Server.clients.ContainsKey(_toClient))
-                Server.clients[_toClient].tcp.SendData(_packet);
-        }
-        private static void SendUDPData(int _toClient, Packet _packet)
-        {
-            _packet.WriteLength();
-            if(Server.clients.ContainsKey(_toClient))
-                Server.clients[_toClient].udp.SendData(_packet);
-        }
-        private static void SendTcpDataToAll(Packet _packet)
-        {
-            _packet.WriteLength();
-            foreach (ServerClient client in Server.clients.Values)
-            {
-                client.tcp.SendData(_packet);
-            }
-        }
-        private static void SendTcpDataToAll(int _exceptClient, Packet _packet)
-        {
-            _packet.WriteLength();
-
-            foreach (ServerClient client in Server.clients.Values)
-            {
-                if (client.id != _exceptClient)
-                    client.tcp.SendData(_packet);
-            }
-        }
-        private static void SendUDPDataToAll(Packet _packet)
-        {
-            _packet.WriteLength();
-            foreach (ServerClient client in Server.clients.Values)
-            {
-                client.udp.SendData(_packet);
-            }
-        }
-        private static void SendUDPDataToAll(int _exceptClient, Packet _packet)
-        {
-            _packet.WriteLength();
-            foreach (ServerClient client in Server.clients.Values)
-            {
-                if (client.id != _exceptClient)
-                    client.udp.SendData(_packet);
-            }
-        }
-        
         #endregion
         
         #region Lobby

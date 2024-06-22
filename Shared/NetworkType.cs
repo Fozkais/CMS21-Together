@@ -3,6 +3,7 @@
     public enum NetworkType
     {
         steamNetworking,
-        TcpUdp
+        TcpUdp,
+        none
     }
 }

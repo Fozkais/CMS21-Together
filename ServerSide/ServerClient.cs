@@ -16,12 +16,17 @@ namespace CMS21Together.ServerSide
         
         public ServerTCP tcp;
         public ServerUDP udp;
+        public ServerSteam steam;
+        public bool isUsed;
+
+        public NetworkType connectedType = NetworkType.none;
 
         public ServerClient(int _clientId)
         {
             id = _clientId;
             tcp = new ServerTCP(id);
             udp = new ServerUDP(id);
+            steam = new ServerSteam(id);
         }
 
 
@@ -31,6 +36,21 @@ namespace CMS21Together.ServerSide
             MelonLogger.Msg($"SV: New player ! {_playerName}, ID:{id}");
             
             ServerSend.SendPlayersInfo(ServerData.players);
+        }
+
+        public void SendData(Packet _packet, bool reliable)
+        {
+            if(connectedType == NetworkType.none)
+                MelonLogger.Msg($"[ServerClient:{id}] is connected to None type?...");
+            else if(connectedType == NetworkType.steamNetworking)
+                steam.SendData(_packet, reliable);
+            else if (connectedType == NetworkType.TcpUdp)
+            {
+                if(reliable) 
+                    tcp.SendData(_packet);
+                else 
+                    udp.SendData(_packet);
+            }
         }
 
         public void Disconnect(int _id)
@@ -46,6 +66,9 @@ namespace CMS21Together.ServerSide
             
             tcp.Disconnect();
             udp.Disconnect();
+            steam.Disconnect();
+            
+            Server.clients[id].isUsed = false;
         }
     }
 }

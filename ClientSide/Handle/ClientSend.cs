@@ -2,25 +2,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Steam;
 using Il2Cpp;
 using MelonLoader;
+using Steamworks.Data;
 
 namespace CMS21Together.ClientSide.Handle
 {
-    public class ClientSend
+    public static class ClientSend
     {
-        private static void SendTCPData(Packet _packet)
+        private static void SendData(Packet _packet,bool reliable = true)
         {
             _packet.WriteLength();
-            Client.Instance.tcp.SendData(_packet);
-        }
-        
-        private static void SendUDPData(Packet _packet)
-        {
-            _packet.WriteLength();
-            Client.Instance.udp.SendData(_packet);
+            Client.Instance.SendData(_packet, reliable);
         }
         
         #region Lobby and connection
@@ -35,7 +32,7 @@ namespace CMS21Together.ClientSide.Handle
                 _packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
                 _packet.Write(ContentManager.Instance.gameVersion);
                     
-                SendTCPData(_packet);
+                SendData(_packet);
             }
             Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
             ClientSend.KeepAlive();
@@ -45,7 +42,7 @@ namespace CMS21Together.ClientSide.Handle
         {
             using (Packet _packet = new Packet((int)PacketTypes.keepAlive))
             {
-                SendTCPData(_packet);
+                SendData(_packet);
             }
         }
 
@@ -56,7 +53,7 @@ namespace CMS21Together.ClientSide.Handle
                 _packet.Write(b);
                 _packet.Write(number);
                     
-                SendTCPData(_packet);
+                SendData(_packet);
             }
         }
             
@@ -66,7 +63,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 _packet.Write(id);
                     
-                SendTCPData(_packet);
+                SendData(_packet);
             }
         }
         #endregion
@@ -80,7 +77,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(position);
                         
-                    SendUDPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void SendPosition(Vector3Serializable position)
@@ -89,7 +86,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(position);
                     
-                    SendUDPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void SendRotation(QuaternionSerializable rotation)
@@ -98,7 +95,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(rotation);
                     
-                    SendUDPData(_packet);
+                    SendData(_packet);
                 }
             }
             
@@ -108,7 +105,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(scene);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void Stats(int diff, ModStats stats)
@@ -118,7 +115,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(diff);
                     _packet.Write(stats);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             
@@ -133,7 +130,7 @@ namespace CMS21Together.ClientSide.Handle
                         _packet.Write(status);
                     }
                     
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void SendInventoryGroupItem(ModGroupItem _Item, bool status, bool resync=false)
@@ -147,7 +144,7 @@ namespace CMS21Together.ClientSide.Handle
                         _packet.Write(status);
                     }
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             
@@ -162,7 +159,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(state);
                     _packet.Write(carLoaderID);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void TireChanger(ModGroupItem modGroupItem=null, bool instant=false, bool connect=false, bool resetAction=false)
@@ -174,7 +171,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(connect);
                     _packet.Write(resetAction);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void WheelBalancer(int type, GroupItem groupItem)
@@ -185,7 +182,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(aType);
                     if(aType == ModWheelBalancerActionType.setGroup || aType == ModWheelBalancerActionType.start)
                         _packet.Write(new ModGroupItem(groupItem));
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             
@@ -195,7 +192,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(newAngle);
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg("Sent EngineAngle");
             }
@@ -206,7 +203,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(modItem);
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg("Sent Engine");
             }
@@ -219,7 +216,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(position);
                     _packet.Write(rotation);
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg("Sent EngineGroup");
             }
@@ -228,7 +225,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.EngineStandResync))
                 {
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg("Sent Engine Resync");
             }
@@ -237,7 +234,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.takeOffEngineFromStand))
                 {
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg("Sent Engine take off");
             }
@@ -257,7 +254,7 @@ namespace CMS21Together.ClientSide.Handle
                         _packet.Write(carLoaderId);
                     }
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                     MelonLogger.Msg("Sent EngineCrane");
                 }
             }
@@ -270,7 +267,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(instant);
                     _packet.Write(mount);
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                     MelonLogger.Msg("Sent SpringClamp");
                 }
             }
@@ -279,7 +276,7 @@ namespace CMS21Together.ClientSide.Handle
             {
                 using (Packet _packet = new Packet((int)PacketTypes.springClampClear))
                 {
-                    SendTCPData(_packet);
+                    SendData(_packet);
                     MelonLogger.Msg("Sent ClearSpringClamp");
                 }
             }
@@ -290,7 +287,7 @@ namespace CMS21Together.ClientSide.Handle
                 {
                     _packet.Write(carLoaderID);
                     
-                    SendTCPData(_packet);
+                    SendData(_packet);
                     MelonLogger.Msg("Sent OilBin");
                 }
             }
@@ -303,7 +300,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(place);
                     _packet.Write(playSound);
                         
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
                 
@@ -317,7 +314,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(removed);
                     _packet.Write(modCar);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 //MelonLogger.Msg("Send car info to server");
             }
@@ -329,7 +326,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(carCarLoaderID);
                     
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void SendBodyPart(int carCarLoaderID, ModCarPart modCarPart)
@@ -340,7 +337,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(carCarLoaderID);
                     
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             public static void SendPartsScript(List<ModPartScript> otherPartsBuffer, int carCarLoaderID, ModPartType modPartType)
@@ -351,7 +348,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(carCarLoaderID);
                     _packet.Write(modPartType);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg($"Sent part : {modPartType} , {otherPartsBuffer.Count}");
             }
@@ -363,7 +360,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(bodyPartsBuffer);
                     _packet.Write(carCarLoaderID);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
                 MelonLogger.Msg($"Sent bodyParts : {bodyPartsBuffer.Count}");
             }
@@ -374,7 +371,7 @@ namespace CMS21Together.ClientSide.Handle
                     _packet.Write(carLoaderID);
                     _packet.Write(placeNo);
 
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
             
@@ -390,7 +387,7 @@ namespace CMS21Together.ClientSide.Handle
                         _packet.Write(carToResync);
                     }
                     
-                    SendTCPData(_packet);
+                    SendData(_packet);
                 }
             }
         

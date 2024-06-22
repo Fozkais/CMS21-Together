@@ -7,6 +7,7 @@ using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Steam;
 using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
@@ -19,18 +20,16 @@ namespace CMS21Together.ServerSide
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
         public static Dictionary<int, ServerClient> clients = new Dictionary<int, ServerClient>();
-
         public delegate void packetHandler(int _fromClient, Packet _packet);
-        public static Dictionary<int, DateTime> lastClientActivity = new Dictionary<int, DateTime>();
         public static Dictionary<int, packetHandler> packetHandlers;
 
+        public static NetworkType currentType = NetworkType.TcpUdp;
         public static TcpListener tcpListener;
-        private static UdpClient udpListener;
-        private static bool isStopping;
-
-        public static SteamLobby steamLobby;
-        public static SteamServer steamServer;
-        public static bool isLobby;
+        public static UdpClient udpListener;
+        public static SocketManager steamListener;
+        
+        public static bool isStopping;
+        public static string serverID;
 
         public static void Start()
         {
@@ -40,62 +39,46 @@ namespace CMS21Together.ServerSide
             MelonLogger.Msg("Starting server...");
             InitializeServerData();
 
-            if (MainMod.NetworkType == NetworkType.TcpUdp)
+            if (currentType == NetworkType.TcpUdp)
             {
-                tcpListener = new TcpListener(IPAddress.Any, Port);
-                tcpListener.Start();
-                tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-
-                udpListener = new UdpClient(Port);
-                udpListener.BeginReceive(UDPReceiveCallback, null);
-                
-                Application.runInBackground = true;
-
-                Client.Instance.ConnectToServer("127.0.0.1");
+                MelonLogger.Msg("Starting TCP Server...");
+                StartTCPServer();
+                Client.Instance.ConnectToServer("127.0.0.1", NetworkType.TcpUdp); // Connect host to server
             }
             else
-            {
-                steamLobby = new SteamLobby();
-                steamLobby.HostLobby();
+            { 
+                MelonLogger.Msg("Starting Steam Server...");
+                StartSteamServer();
+                StartTCPServer(); // Required for host (cant connect to P2P server on local)
+                Client.Instance.ConnectToServer("127.0.0.1", NetworkType.TcpUdp); // Connect host to server
             }
             
 
             MelonLogger.Msg($"Server started successfully !");
-            ServerData.isRunning = true;
             isStopping = false;
+            ServerData.isRunning = true;
             
-                
-
-            MelonCoroutines.Start(CheckForInactiveClientsRoutine());
-        }
-
-        public static void CheckForInactiveClients()
-        {
-            // Délai maximum d'inactivité (en secondes)
-            int maxInactivityDelay = 60;
-            foreach (KeyValuePair<int, DateTime> entry in lastClientActivity)
-            {
-                int clientId = entry.Key;
-                DateTime lastActivity = entry.Value;
-
-                if ((DateTime.Now - lastActivity).TotalSeconds > maxInactivityDelay)
-                {
-                    // Le client est inactif depuis trop longtemps, le déconnecter
-                    ServerSend.DisconnectClient(clientId, "Client Inactive for too long...");
-                    clients.Remove(clientId);
-                    lastClientActivity.Remove(clientId);
-                }
-            }
+            Application.runInBackground = true;
+            MelonCoroutines.Start(ServerData.CheckForInactiveClientsRoutine());
         }
         
-
-        public static IEnumerator CheckForInactiveClientsRoutine()
+        private static void StartSteamServer()
         {
-            while (true)
-            {
-                yield return new WaitForSeconds(10); // Vérifier toutes les 10 secondes
-                CheckForInactiveClients();
-            }
+            steamListener = SteamNetworkingSockets.CreateRelaySocket<SteamNetworkSocket>();
+            serverID = NetworkingUtils.ConvertServerID(ModSteamManager.Instance.clientData.PlayerSteamId);
+            MelonLogger.Msg($"ServerID: {serverID}");
+        }
+
+        private static void StartTCPServer()
+        {
+            tcpListener = new TcpListener(IPAddress.Any, Port);
+            tcpListener.Start();
+            tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
+
+            udpListener = new UdpClient(Port);
+            udpListener.BeginReceive(UDPReceiveCallback, null);
+            
+            MelonLogger.Msg("Started TCP Server.");
         }
 
         public static void Stop()
@@ -133,12 +116,14 @@ namespace CMS21Together.ServerSide
             
             TcpClient _client = tcpListener.EndAcceptTcpClient(_result);
             tcpListener.BeginAcceptTcpClient(TCPConnectCallback, null);
-           // MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
+            
+            MelonLogger.Msg($"Incoming connection from {_client.Client.RemoteEndPoint}...");
 
            foreach (int ClientID in clients.Keys)
            {
-               if (clients[ClientID].tcp.socket == null)
+               if (clients[ClientID].isUsed == false)
                {
+                   MelonLogger.Msg($"Connecting client with id:{ClientID}.");
                    clients[ClientID].tcp.Connect(_client);
                    return;
                }
@@ -146,58 +131,42 @@ namespace CMS21Together.ServerSide
 
             MelonLogger.Msg($"{_client.Client.RemoteEndPoint} failed to connect: Server full!");
         }
-        
         private static void UDPReceiveCallback(IAsyncResult result)
         {
-                if(isStopping)
-                    return;
-                try
-                {
-                    IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
-                    byte[] _data = udpListener.EndReceive(result, ref receivedIP);
-                    udpListener.BeginReceive(UDPReceiveCallback, null);
-                    
-                    if (_data.Length < 4)
-                        return;
-                    
-
-                    using (Packet _packet = new Packet(_data))
-                    {
-                        int _clientId = _packet.ReadInt();
-                        if (_clientId == 0)
-                            return;
-                        
-                        if (clients[_clientId].udp.endPoint == null)
-                        {
-                            clients[_clientId].udp.Connect(receivedIP);
-                            return;
-                        }
-                        
-                        
-                        if (clients[_clientId].udp.endPoint.ToString() == receivedIP.ToString())
-                        {
-                            clients[_clientId].udp.HandleData(_packet);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MelonLogger.Msg($"Error receiving UDP data: {ex}");
-                }
-            }
-
-        public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet)
-        {
+            if(isStopping)
+                return;
             try
             {
-                if (_clientEndPoint != null)
+                IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
+                byte[] _data = udpListener.EndReceive(result, ref receivedIP);
+                udpListener.BeginReceive(UDPReceiveCallback, null);
+                    
+                if (_data.Length < 4)
+                    return;
+                    
+
+                using (Packet _packet = new Packet(_data))
                 {
-                    udpListener.BeginSend(_packet.ToArray(), _packet.Length(), _clientEndPoint, null, null);
+                    int _clientId = _packet.ReadInt();
+                    if (_clientId == 0)
+                        return;
+                        
+                    if (clients[_clientId].udp.endPoint == null)
+                    {
+                        clients[_clientId].udp.Connect(receivedIP);
+                        return;
+                    }
+                        
+                        
+                    if (clients[_clientId].udp.endPoint.ToString() == receivedIP.ToString())
+                    {
+                        clients[_clientId].udp.HandleData(_packet);
+                    }
                 }
             }
-            catch (Exception _ex)
+            catch (Exception ex)
             {
-                MelonLogger.Msg($"Error sending data to {_clientEndPoint} via UDP: {_ex}");
+                MelonLogger.Msg($"Error receiving UDP data: {ex}");
             }
         }
 

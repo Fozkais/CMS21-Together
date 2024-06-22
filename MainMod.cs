@@ -9,13 +9,12 @@ using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Handle;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Steam;
 using Il2Cpp;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using SteamClient = Steamworks.SteamClient;
-using SteamManager = CMS21Together.Shared.Steam.SteamManager;
 
 // ReSharper disable All
 
@@ -29,12 +28,11 @@ namespace CMS21Together
         public const string ASSEMBLY_MOD_VERSION = "0.3.5";
         public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
-
-        public static NetworkType NetworkType = NetworkType.TcpUdp;
         
         public Client client;
         public ModUI modUI;
         public ContentManager contentManager;
+        public ModSteamManager steamManager;
 
         public bool isModInitialized;
 
@@ -55,8 +53,9 @@ namespace CMS21Together
             
             contentManager = modObject.AddComponent<ContentManager>();
             
+            steamManager = modObject.AddComponent<ModSteamManager>();
+            steamManager.Initialize();
             
-            SteamManager.Initialize();
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
@@ -114,7 +113,8 @@ namespace CMS21Together
         {
             if(!isModInitialized) {return;}
             
-            SteamClient.RunCallbacks();
+            if(SteamClient.IsValid)
+                SteamClient.RunCallbacks();
             
             if (GameData.DataInitialized)
             {
@@ -178,8 +178,6 @@ namespace CMS21Together
                     ServerSend.DisconnectClient(id, "Server is shutting down.");
                 }
             }
-            
-            SteamManager.Close();
         }
     }
 }

@@ -38,7 +38,9 @@ namespace CMS21Together.ServerSide.Transport
 
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
                 
-
+                Server.clients[id].isUsed = true;
+                Server.clients[id].connectedType = NetworkType.TcpUdp;
+                
                 ServerSend.Welcome(id, "Welcome to the server!");
             }
 

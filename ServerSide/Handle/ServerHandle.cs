@@ -68,7 +68,7 @@ namespace CMS21Together.ServerSide.Handle
                 ServerSend.SendKeepAliveConfirmation(_fromclient);
 
                 // Mettre à jour la dernière activité du client
-                Server.lastClientActivity[_fromclient] = DateTime.Now;
+                ServerData.lastClientActivity[_fromclient] = DateTime.Now;
             }
             
             public static void Disconnect(int _fromClient, Packet _packet)

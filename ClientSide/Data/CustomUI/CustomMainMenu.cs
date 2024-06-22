@@ -93,31 +93,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             mpButton.OnClick.AddListener(openMenu);
             mpButton.AssignAction(openMenu);
         }
-        
-        /*private static void OpenDlcs()
-        {
-            var parent = section.transform.parent.parent;
-            var dlc = parent.Find("DLCs").gameObject;
-            dlc.SetActive(true);
-
-            if (dlc.GetComponent<DLCWindow>().menuManager == null)
-                dlc.GetComponent<DLCWindow>().menuManager = Object.FindObjectOfType<MainMenuManager>();
-            
-            dlc.GetComponent<DLCWindow>().EnableUI();
-            dlc.GetComponent<DLCWindow>().SetAsActive();
-            dlc.GetComponent<DLCWindow>().PrepareArrows();
-            CustomUIManager.DisableInputFix(true, true, section);
-            dlc.GetComponent<DLCWindow>().menuManager.DisableParallax();
-            dlc.GetComponent<DLCWindow>().menuManager.ChangeParallaxGrayscale(1f);
-            dlc.GetComponent<DLCWindow>().menuManager.ChangeLogoGrayscale(1f);
-            CustomUIManager.SetButtonsAlphaFix(0.2f, section);
-            dlc.GetComponent<DLCWindow>().PrepareFirstPage();
-            dlc.GetComponent<DLCWindow>().DrawPage();
-            dlc.GetComponent<DLCWindow>().PrepareDescriptions();
-            dlc.GetComponent<DLCWindow>().EnableGrid();
-            dlc.GetComponent<DLCWindow>().RegisterGridEvents();
-            dlc.GetComponent<DLCWindow>().RegisterButtonsEvents();
-        }*/
 
         public static void MultiplayerMenu()
         {
@@ -239,17 +214,29 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void ChangeNetworkType()
         {
-            switch (MainMod.NetworkType)
+            switch (Client.Instance.currentType)
             {
                 case NetworkType.TcpUdp:
-                    MainMod.NetworkType = NetworkType.steamNetworking;
+                    Client.Instance.currentType = NetworkType.steamNetworking;
                     
                     break;
                 case NetworkType.steamNetworking:
-                    MainMod.NetworkType = NetworkType.TcpUdp;
+                    Client.Instance.currentType = NetworkType.TcpUdp;
                     break;
             }
-            MelonLogger.Msg("Networking Type as been set to : " + MainMod.NetworkType.ToString());
+            
+            switch (Server.currentType)
+            {
+                case NetworkType.TcpUdp:
+                    Server.currentType = NetworkType.steamNetworking;
+                    
+                    break;
+                case NetworkType.steamNetworking:
+                    Server.currentType = NetworkType.TcpUdp;
+                    break;
+            }
+            MelonLogger.Msg("Client Networking Type as been set to : " + Client.Instance.currentType.ToString());
+            MelonLogger.Msg("Server Networking Type as been set to : " + Server.currentType.ToString());
             // TODO: Show a info box to tell on wich networking type is being used 
         }
 
@@ -312,7 +299,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
                 if (!phase)
                 {
-                    window.GetComponentInChildren<Text>().text = "Enter IP Address";
+                    window.GetComponentInChildren<Text>().text = "Enter IP Address or ServerID";
                     saveWindow.inputField.text = Client.Instance.ip;
                     
                     GameObject confirmButtonObject = Object.Instantiate(templateButtonObject); 

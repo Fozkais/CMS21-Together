@@ -6,8 +6,11 @@ using CMS21Together.ClientSide.Data.PlayerData;
 using CMS21Together.ClientSide.Handle;
 using CMS21Together.ClientSide.Transport;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Steam;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace CMS21Together.ClientSide
 {
@@ -23,17 +26,14 @@ namespace CMS21Together.ClientSide
         public int Id;
         public ClientTCP tcp;
         public ClientUDP udp;
-        
-        public SteamLobbyClient lobbyClient;
-        public SteamClient steamClient;
+        public ClientSteam steam;
 
+        public NetworkType currentType = NetworkType.TcpUdp;
         public bool isConnected;
 
         public delegate void PacketHandler(Packet _packet);
-
         public static Dictionary<int, PacketHandler> PacketHandlers;
-
-        public ThreadManager threadManager;
+        
 
         public void Awake()
         {
@@ -56,20 +56,24 @@ namespace CMS21Together.ClientSide
         }
 
 
-        public void ConnectToServer(string _ipAdress)
+        public void ConnectToServer(string _ipAdress, NetworkType type=NetworkType.none)
         {
+            if (type == NetworkType.none) type = currentType;
+            
             InitializeClientData();
             Instance.ip = _ipAdress;
             Instance.port = MainMod.PORT;
 
-            ClientData data = new ClientData();
-            ClientData.Instance = data;
+            ClientData.Instance = new ClientData();
+            isConnected = true;
 
-            if (MainMod.NetworkType == NetworkType.TcpUdp)
+            currentType = type;
+            
+            if (type == NetworkType.TcpUdp)
             {
+                MelonLogger.Msg("Connecting via TCP...");
                 try
                 {
-                    isConnected = true;
                     tcp.Connect();
                 }
                 catch (Exception ex) // Capturer toutes les exceptions possibles
@@ -80,14 +84,29 @@ namespace CMS21Together.ClientSide
             }
             else
             {
-                lobbyClient = new SteamLobbyClient();
-                lobbyClient.JoinLobbyWithID();
+                MelonLogger.Msg("Connecting via Steam...");
+                SteamId hostID = NetworkingUtils.ConvertCode(_ipAdress);
+                steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(hostID);
             }
 
             if (!isConnected)
             {
                 // Traiter les erreurs de connexion ici
                 PacketHandlers.Clear();
+            }
+        }
+
+        public void SendData(Packet _packet, bool reliable)
+        {
+            switch (currentType)
+            {
+                case NetworkType.TcpUdp:
+                    if(reliable) tcp.SendData(_packet);
+                    else udp.SendData(_packet);
+                    break;
+                case NetworkType.steamNetworking:
+                    steam.SendData(_packet, reliable);
+                    break;
             }
         }
 
@@ -135,7 +154,7 @@ namespace CMS21Together.ClientSide
                 { (int)PacketTypes.carParts, ClientHandle.CarParts},
                 { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
             };
-            MelonLogger.Msg("Initialized Packets!");
+            MelonLogger.Msg("Initialized Client Packets!");
         }
         
         public void Disconnect()
