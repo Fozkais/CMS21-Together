@@ -1,5 +1,7 @@
 using System;
 using CMS21Together.Shared;
+using MelonLoader;
+using Steamworks;
 using Steamworks.Data;
 
 namespace CMS21Together.ServerSide.Transport;
@@ -18,9 +20,14 @@ public class ServerSteam
 
     public void SendData(Packet _packet, bool reliable=true)
     {
+        MelonLogger.Msg($"Sending data throught Steam Relay");
         byte[] data = _packet.ToArray();
         SendType type = reliable ? SendType.Reliable : SendType.Unreliable;
-        connection.SendMessage(data, type);
+        Result res = connection.SendMessage(data, type);
+        if(res != Result.OK)
+            MelonLogger.Msg($"Could not send packet:{res.ToString()}.");
+        else
+            MelonLogger.Msg($"Sent packet. {res.ToString()}");
     }
 
     public void HandleData(byte[] _data)

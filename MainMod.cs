@@ -151,6 +151,11 @@ namespace CMS21Together
             ThreadManager.UpdateThread();
         }
 
+        public override void OnFixedUpdate()
+        {
+            base.OnFixedUpdate();
+        }
+
         public override void OnLateUpdate()
         {
             if(!isModInitialized) {return;}

@@ -13,6 +13,7 @@ namespace CMS21Together.ServerSide
         public override void OnConnectionChanged(Connection connection, ConnectionInfo info)
         {
             ulong clientSteamID = info.Identity.SteamId;
+            
             if (info.State == ConnectionState.Connecting)
             {
                 bool isFull = true;
@@ -33,23 +34,25 @@ namespace CMS21Together.ServerSide
         
                 if((res = connection.Accept()) == Result.OK)
                 {
-                    MelonLogger.Msg($"Accepting connection {clientSteamID}");         
-                    int id = 0;
-                    foreach (int ClientID in Server.clients.Keys)
-                    {
-                        if (Server.clients[ClientID].isUsed == false)
-                        {
-                            Server.clients[ClientID].steam.Link(connection);
-                            Server.clients[ClientID].connectedType = NetworkType.steamNetworking;
-                            id = ClientID;
-                        }
-                    }
-            
-                    ServerSend.Welcome(id);
+                    MelonLogger.Msg($"Accepting connection for SteamID:{clientSteamID}");         
                 }
                 else
                 {          
                     MelonLogger.Msg($"Connection {clientSteamID} could not be accepted: {res.ToString()}");
+                }
+            }
+            else if (info.State == ConnectionState.Connected)
+            {
+                MelonLogger.Msg("A client is successfully Connected.");
+                foreach (int ClientID in Server.clients.Keys)
+                {
+                    if (Server.clients[ClientID].isUsed == false)
+                    {
+                        Server.clients[ClientID].steam.Link(connection);
+                        Server.clients[ClientID].connectedType = NetworkType.steamNetworking;
+                        ServerSend.Welcome(ClientID);
+                        break;
+                    }
                 }
             }
         }
