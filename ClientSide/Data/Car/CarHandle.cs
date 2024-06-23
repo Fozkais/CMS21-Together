@@ -300,10 +300,10 @@ public static class CarHandle
             return true;
         if ((Math.Abs(handled.conditionPaint - toHandle.ConditionPaint) > 0.01f))
             return true;
-        /* if (handled.colors.IsDifferent(toHandle.Color))
+         if (handled.colors.IsDifferent(toHandle.Color))
              return true;
          if (handled.TintColor.IsDifferent(toHandle.TintColor))
-             return true;*/
+             return true;
          if (handled.isTinted != toHandle.IsTinted)
              return true;
          if (handled.livery != toHandle.Livery)

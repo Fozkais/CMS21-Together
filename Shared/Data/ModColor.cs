@@ -1,4 +1,5 @@
 using System;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Shared.Data
@@ -21,10 +22,10 @@ namespace CMS21Together.Shared.Data
         
         public ModColor(Color color)
         {
-            r = color.r;
-            g = color.g;
-            b = color.b;
-            a = color.a;
+            r = Mathf.Round(color.r * 1000f) / 1000f;
+            g = Mathf.Round(color.g * 1000f) / 1000f;
+            b = Mathf.Round(color.b * 1000f) / 1000f;
+            a = Mathf.Round(color.a * 1000f) / 1000f;
         }
         
         public static Color ToColor(ModColor color)
@@ -32,7 +33,7 @@ namespace CMS21Together.Shared.Data
             return new Color(color.r, color.g, color.b, color.a);
         }
         
-        public bool IsDifferent(Color color, float tolerance = 0.00f)
+        public bool IsDifferent(Color color, float tolerance = 0.03f)
         {
             return Mathf.Abs(this.r - color.r) > tolerance ||
                    Mathf.Abs(this.g - color.g) > tolerance ||
