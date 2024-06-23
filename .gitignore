@@ -4,3 +4,5 @@
 /.info
 /.cache
 /.json
+/obj/
+/.user
