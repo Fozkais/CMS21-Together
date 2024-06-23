@@ -43,6 +43,7 @@
     <Compile Include="ClientSide\Data\Car\CarManager.cs" />
     <Compile Include="ClientSide\Data\Car\CarUpdater.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Data\ClientDebug.cs" />
     <Compile Include="ClientSide\Data\ContentManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomHostMenu.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomLobbyMenu.cs" />

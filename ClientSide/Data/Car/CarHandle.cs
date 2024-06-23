@@ -80,10 +80,14 @@ public static class CarHandle
                 car.fluidsData = new ModFluidsData(GameData.Instance.carLoaders[car.carLoaderID].FluidsData);
                 ClientSend.SendCarInfoData(car.carInfo, car.carLoaderID);
                 ClientSend.SendCarFluidsData(car.fluidsData, car.carLoaderID);
+
+                List<ModCarPart> carParts = car.partInfo.BodyParts.Values.ToList();
+
+                BodyPartsAdditionalCheck(carParts,car.partInfo.BodyPartsReferences.Values.ToList());
                 
                 ClientSend.SendPartsScript(car.partInfo.SuspensionParts.SelectMany(s => s.Value).ToList(), car.carLoaderID, ModPartType.suspension); 
                 ClientSend.SendPartsScript(car.partInfo.OtherParts.SelectMany(s => s.Value).ToList(), car.carLoaderID, ModPartType.other); 
-                ClientSend.SendBodyParts(car.partInfo.BodyParts.Values.ToList(), car.carLoaderID); 
+                ClientSend.SendBodyParts(carParts, car.carLoaderID); 
                 ClientSend.SendPartsScript(car.partInfo.DriveshaftParts.Values.ToList(), car.carLoaderID, ModPartType.driveshaft); 
                 ClientSend.SendPartsScript(car.partInfo.EngineParts.Values.ToList(), car.carLoaderID, ModPartType.engine); 
                 
@@ -91,6 +95,18 @@ public static class CarHandle
             
             
         }
+    }
+
+    private static void BodyPartsAdditionalCheck(List<ModCarPart> beingSent, List<CarPart> reference)
+    {
+        MelonLogger.Msg("------ Additional Checks ------");
+        MelonLogger.Msg($"ReferenceCount:{reference.Count} , HandleCount:{beingSent.Count}");
+        for (int i = 0; i < beingSent.Count; i++)
+        {
+            beingSent[i].name = reference[beingSent[i].carPartID].name;
+            beingSent[i].unmounted = reference[beingSent[i].carPartID].Unmounted;
+        }
+        MelonLogger.Msg("------ Additional Checks End ------");
     }
     
     private static IEnumerator HandleBodyPartsCoroutine(ModCar car)
@@ -105,7 +121,7 @@ public static class CarHandle
             if (!car.isHandled)
             {
                 ModCarPart newPart = new ModCarPart(references[i], i);
-                        
+                MelonLogger.Msg($"New carpart: {newPart.name} , {newPart.unmounted} ");
                 if(!handle.ContainsKey(i))
                     handle.Add(i, newPart);
             }
@@ -114,17 +130,9 @@ public static class CarHandle
                 if (car.isFromServer)  yield break;
                 if (CheckForDifferences(handle[i], references[i]))
                 {
+                    //MelonLogger.Msg($"{references[i].name} , {references[i].Unmounted} : {handle[i].name} , {handle[i].unmounted} ");
                     handle[i] = new ModCarPart(references[i], i);
-                    
-                    if (handle[i].carPartID == 0 && !car.hoodSkip)
-                    {
-                        car.hoodSkip = true;
-                        MelonLogger.Msg("Performed HoodSkip.");
-                    }
-                    else
-                    {
-                        ClientSend.SendBodyPart(car.carLoaderID, handle[i]);
-                    }
+                    ClientSend.SendBodyPart(car.carLoaderID, handle[i]);
                 }
             }
         }

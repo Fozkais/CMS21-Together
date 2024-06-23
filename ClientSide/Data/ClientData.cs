@@ -40,12 +40,7 @@ namespace CMS21Together.ClientSide.Data
         public int playerExp;
 
         public bool GameReady;
-
-
-        public void SpawnCar(string carName, int carLoaderID)
-        {
-            ServerSend.CarSpawn(2, new ModCar(carLoaderID, carName, 0, 1), false, false);
-        }
+        
 
         public IEnumerator Initialize()
         {

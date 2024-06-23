@@ -30,8 +30,6 @@ namespace CMS21Together.Shared.Data
         public bool receivedSuspensionParts = true;
         public bool receivedBodyParts = true;
         
-        public bool hoodSkip;
-        
         public bool CarFullyReceived 
         { 
             get => receivedDriveshaftParts && receivedOtherParts && 
@@ -71,8 +69,7 @@ namespace CMS21Together.Shared.Data
             this.partInfo = new ModPartInfo();
             this.carPosition = _car.carPosition;
             this.carVersion = _car.carVersion;
-
-            this.hoodSkip = false;
+            
             this.isFromServer = true;
             this.isHandled = false;
             this.isReferenced = false;

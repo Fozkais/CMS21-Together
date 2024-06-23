@@ -1,3 +1,6 @@
 /bin/Debug/
 /obj/Debug/
 /.idea
+/.info
+/.cache
+/.json
