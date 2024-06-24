@@ -25,7 +25,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static GameObject templateText;
         public static GameObject templateInputField;
         
-        public static MainMenuButton multiplayerButton;
         public static List<MainMenuButton> multiplayerMenuButtons = new List<MainMenuButton>();
         public static List<MainMenuButton> hostMenuButtons = new List<MainMenuButton>();
         public static List<MainMenuButton> saveButtons = new List<MainMenuButton>();
@@ -61,6 +60,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             
             GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
             templateButton = GameObject.Find("MainMenuButton");
+            templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
             templateText = templateButton.GetComponentInChildren<Text>().gameObject;
             
             CustomUIMain.InitializeMainMenu();
@@ -78,7 +78,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomUIHost.displaySaves = false;
             CustomLobbyMenu.isSet = false;
             inLobbyWindow = false;
-            multiplayerButton = null;
             multiplayerMenuButtons = new List<MainMenuButton>();
             hostMenuButtons = new List<MainMenuButton>();
             saveButtons = new List<MainMenuButton>();

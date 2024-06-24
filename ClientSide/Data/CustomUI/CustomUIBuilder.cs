@@ -17,28 +17,109 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts)
         {
-            var imgObject = new GameObject("Image");
-            var img = imgObject.AddComponent<Image>();
+            var inputFieldObject = new GameObject("InputFieldWindow");
+            var img = inputFieldObject.AddComponent<Image>();
             img.rectTransform.parent = GetParentFromSection(CustomUIManager.currentSection);
             img.rectTransform.parentInternal = GetParentFromSection(CustomUIManager.currentSection);
             
-            img.color = new Color(  .031f, .027f, .033f  , 1);
+            img.color = new Color(  .031f, .027f, .033f  , 0.85f);
             img.rectTransform.sizeDelta = size;
             img.rectTransform.anchoredPosition = position;
             
-            tmpInputWindow.Add(imgObject);
-            
-            Vector2 b1_pos = position;
+            tmpInputWindow.Add(inputFieldObject);
+
+            Vector2 b1_pos = new Vector2(-200, -100);
             Vector2 b1_size = new Vector2(168, 65);
             Action b1_action = actions[0];
-            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], imgObject.transform);
-            tmpInputWindow.Add(CustomUIBuilder.CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
+            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             
-            Vector2 b2_pos = position + new Vector2(110, 0);
+            Vector2 b2_pos = new Vector2(200, -100);
             Vector2 b2_size = new Vector2(168, 65);
             Action b2_action = actions[1];
-            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], imgObject.transform);
-            tmpInputWindow.Add( CustomUIBuilder.CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
+            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
+            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
+            
+            
+            /*Vector2 i2_pos = new Vector2(0, -100);
+            Vector2 i2_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateNewInputField(i2_pos, i2_size, "Username", inputFieldObject.transform));*/
+            
+            
+            Vector2 t1_pos = new Vector2(660, 100);
+            Vector2 t1_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
+            
+            Vector2 i1_pos = new Vector2(0, 175);
+            Vector2 i1_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+            
+            tmpInputWindow[1].SetActive(true);
+            tmpInputWindow[2].SetActive(true);
+        }
+
+        public static GameObject CreateNewInputField(Vector2 position, Vector2 size,Transform parent)
+        {
+            var inputFieldObject = Object.Instantiate(CustomUIManager.templateInputField, parent, true);
+            GameObject inputField = null;
+            
+            for (int i = 0; i < inputFieldObject.transform.childCount; i++)
+            {
+                GameObject obj = inputFieldObject.transform.GetChild(i).gameObject;
+                if (obj.name != "InputField")
+                    Object.Destroy(obj);
+                else
+                    inputField = obj;
+            }
+
+            inputFieldObject.GetComponent<Image>().enabled = false;
+            
+            inputFieldObject.GetComponent<RectTransform>().anchoredPosition = position;
+            inputFieldObject.GetComponent<RectTransform>().sizeDelta = size;
+
+
+            /*MelonLogger.Msg($"ChildrenCount = {inputFieldObject.transform.childCount}");
+            if (inputField != null)
+            {
+                MelonLogger.Msg($"ChildrenCount = {inputField.transform.childCount}");
+                var placeHolder = inputField.GetComponentsInChildren<Text>()[0].gameObject;
+                if (placeHolder != null)
+                {
+                    placeHolder.GetComponent<Text>().text = placeholderText; // <- was a parameter
+                    placeHolder.SetActive(true);
+                }
+                
+                inputField.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+            }*/
+            
+            inputFieldObject.SetActive(true);
+            return inputFieldObject;
+        }
+
+        public static GameObject CreateText(Vector2 position, Vector2 size, string text, int fontSize, Transform parent)
+        {
+            GameObject textObject = Object.Instantiate(CustomUIManager.templateText, parent, true);
+            RectTransform textRect = textObject.GetComponent<RectTransform>();
+            textRect.sizeDelta = size;
+            textRect.localPosition = position;
+
+            textObject.GetComponent<Text>().text = text;
+            textObject.GetComponent<Text>().fontSize = fontSize;
+
+            return textObject;
+        }
+
+        public static GameObject CreateImage(ButtonImage image, Transform parent)
+        {
+            var imgObject = new GameObject("Image");
+            imgObject.transform.parent = parent;
+            imgObject.AddComponent<Image>();
+            imgObject.GetComponent<Image>().sprite = image.sprite;
+            imgObject.transform.position = image.position;
+            imgObject.transform.localPosition = image.position;
+            imgObject.transform.localScale = image.scale;
+
+            return imgObject;
         }
         
         public static ButtonState CreateNewButton(UISection section, ButtonInfo buttonInfo, bool disabled, ButtonImage image=null, bool save=true)
@@ -71,13 +152,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             if (image != null)
             {
                 buttonObject.GetComponentInChildren<Text>().gameObject.SetActive(false);
-                var imgObject = new GameObject("Image");
-                imgObject.transform.parent = buttonObject.transform;
-                imgObject.AddComponent<Image>();
-                imgObject.GetComponent<Image>().sprite = image.sprite;
-                imgObject.transform.position = image.position;
-                imgObject.transform.localPosition = image.position;
-                imgObject.transform.localScale = image.scale;
+                CreateImage(image, buttonObject.transform);
             }
             else
             {

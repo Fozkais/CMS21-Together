@@ -1,8 +1,12 @@
 using System;
+using System.Linq;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
+using Il2CppCMS.MainMenu.Controls;
+using MelonLoader;
 using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.CustomUI
@@ -102,8 +106,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static void SaveButtonAction(int index)
         {
-            int validIndex = index + 4;
-            if (SavesManager.ModSaves[validIndex].Name != "EmptySave")
+            if (GetSaveName(index) != "New game")
             {
                 if (!ServerData.isRunning)
                     Server.Start();
@@ -112,8 +115,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     Server.Stop();
                     Server.Start();
                 }
-                CustomLobbyMenu.saveIndex = index;
-                SavesManager.LoadSave(SavesManager.ModSaves[index]);
+                CustomLobbyMenu.saveIndex = index+4;
+                SavesManager.LoadSave(SavesManager.ModSaves[index+4]);
                 
                 CustomUIManager.DisableUI(UISection.MP_Saves);
                 CustomUIManager.EnableUI(UISection.MP_Lobby);
@@ -123,19 +126,43 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 CustomUIManager.LockUI(CustomUIManager.currentSection);
                 
-                Vector2 position = new Vector2(800, 800);
-                Vector2 size = new Vector2(600, 400);
+                Vector2 position = new Vector2(600, 0);
+                Vector2 size = new Vector2(600, 300);
                 Action a1 = delegate
                 {
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[0]);
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[1]);
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[2]);
+                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    
+                    
+                    
+                    CustomUIBuilder.tmpInputWindow.Clear();
+                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+                };
+                Action a2 = delegate
+                {
+
+                    var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
+                    InputField inputField = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
+                    string saveName = inputField.text;
+
+                    if (SavesManager.ModSaves.Any(save => save.Value.Name == saveName))
+                    {
+                        MelonLogger.Msg("A save with the same name already exists."); // TODO: add a info window to display on game
+                        return;
+                    }
+
+                    SavesManager.ModSaves[index+4].Name = saveName;
+                    CustomUIManager.MP_Saves_Buttons[index].button.GetComponentInChildren<Text>().text = SavesManager.ModSaves[index+4].Name;
+                    CustomUIManager.MP_Saves_Buttons[index].button.OnEnable();
+                    
+                    
+                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
                     
                     CustomUIBuilder.tmpInputWindow.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
                 
-                Action a2 = delegate {  CustomUIManager.UnlockUI(CustomUIManager.currentSection); };
                 CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}); 
             }
         }

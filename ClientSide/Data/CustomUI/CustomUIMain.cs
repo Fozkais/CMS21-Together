@@ -33,8 +33,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static void InitializeMainMenu()
         {
-            Vector3 V3null = Vector3.zero;
-            
             CustomUIManager.V_Main_Parent = GameObject.Find("MainButtons").GetComponent<MainSection>().transform;
 
             var V_Main_Buttons =  CustomUIManager.V_Main_Parent.GetComponentsInChildren<MainMenuButton>();
