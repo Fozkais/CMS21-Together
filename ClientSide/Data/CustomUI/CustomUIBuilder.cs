@@ -57,6 +57,51 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             tmpInputWindow[1].SetActive(true);
             tmpInputWindow[2].SetActive(true);
         }
+        
+        public static void CreateNewDoubleInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts)
+        {
+            var inputFieldObject = new GameObject("DoubleInputFieldWindow");
+            var img = inputFieldObject.AddComponent<Image>();
+            img.rectTransform.parent = GetParentFromSection(CustomUIManager.currentSection);
+            img.rectTransform.parentInternal = GetParentFromSection(CustomUIManager.currentSection);
+            
+            img.color = new Color(  .031f, .027f, .033f  , 0.85f);
+            img.rectTransform.sizeDelta = size;
+            img.rectTransform.anchoredPosition = position;
+            
+            tmpInputWindow.Add(inputFieldObject);
+
+            Vector2 b1_pos = new Vector2(-200, -150);
+            Vector2 b1_size = new Vector2(168, 65);
+            Action b1_action = actions[0];
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
+            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
+            
+            Vector2 b2_pos = new Vector2(200, -150);
+            Vector2 b2_size = new Vector2(168, 65);
+            Action b2_action = actions[1];
+            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
+            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
+            
+            Vector2 t1_pos = new Vector2(530, 140);
+            Vector2 t1_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter server address :", 16, inputFieldObject.transform));
+            
+            Vector2 t2_pos = new Vector2(530, 20);
+            Vector2 t2_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateText(t2_pos, t2_size, "Enter username :", 16, inputFieldObject.transform));
+            
+            Vector2 i1_pos = new Vector2(0, 250);
+            Vector2 i1_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+            
+            Vector2 i2_pos = new Vector2(0, 130);
+            Vector2 i2_size = new Vector2(400, 100);
+            tmpInputWindow.Add(CreateNewInputField(i2_pos, i2_size, inputFieldObject.transform));
+            
+            tmpInputWindow[1].SetActive(true);
+            tmpInputWindow[2].SetActive(true);
+        }
 
         public static GameObject CreateNewInputField(Vector2 position, Vector2 size,Transform parent)
         {

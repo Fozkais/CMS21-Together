@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using CMS21Together.Shared;
 using HarmonyLib;
@@ -83,7 +84,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             
             Vector2 b2_pos = new Vector2(20, -17);
             Vector2 b2_size = new Vector2(336, 65);
-            Action b2_action = delegate {  };
+            Action b2_action = delegate { JoinWindow(); };
             ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Join a game");
             CustomUIBuilder.CreateNewButton(UISection.MP_Main, b2_info, false); 
             
@@ -126,172 +127,58 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomUIManager.EnableUI(UISection.V_Main);
         }
         
-        private static void EnableJoinWindow(bool phase, string ip = null)
+        private static void OpenLobby()
         {
-            if (CustomUIMain.section != null)
-            {
-                for (int i = 0; i < CustomUIMain.section.buttons.Length; i++)
-                {
-                    if (i > 22 && i <= 25)
-                    {
-                        if (CustomUIMain.section.buttons[i] != null)
-                        {
-                            CustomUIMain.section.buttons[i].gameObject.SetActive(true);
-
-                        }
-                    }
-                }
-
-                var window = CustomUIMain.section.transform.parent.FindChild("NameWindow");
-                var saveWindow = window.GetComponentInChildren<NewSaveWindow>();
-                window.gameObject.SetActive(true);
-
-                if (!phase)
-                {
-                    window.GetComponentInChildren<Text>().text = "Enter IP Address";
-                    saveWindow.inputField.text = Client.Instance.ip;
-                    
-                    GameObject confirmButtonObject = Object.Instantiate( CustomUIManager.templateButton); 
-                    GameObject cancelButtonObject = Object.Instantiate( CustomUIManager.templateButton); 
-                    
-                    RectTransform confirmButtonTransform = confirmButtonObject.GetComponent<RectTransform>();
-                    MainMenuButton confirmButtonComponent = confirmButtonObject.GetComponent<MainMenuButton>();
-                
-                    confirmButtonTransform.parent = window;
-                    confirmButtonTransform.parentInternal = window;
-                
-                    confirmButtonTransform.anchoredPosition = new Vector2(145, -100);
-                    confirmButtonTransform.sizeDelta = new Vector2(120, 50);
-                
-                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Confirm"; 
-                    confirmButtonObject.SetActive(true);
-
-                    confirmButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
-                    Action confirmAction;
-                    confirmAction = ConfirmJoinAction(new []{confirmButtonObject, cancelButtonObject},false, saveWindow.inputField);
-                    confirmButtonComponent.OnClick.AddListener(confirmAction);
-                    
-                    RectTransform cancelButtonTransform =cancelButtonObject.GetComponent<RectTransform>();
-                    MainMenuButton cancelButtonComponent = cancelButtonObject.GetComponent<MainMenuButton>();
-                
-                    cancelButtonTransform.parent = window;
-                    cancelButtonTransform.parentInternal = window;
-                
-                    cancelButtonTransform.anchoredPosition = new Vector2(-145, -100);
-                    cancelButtonTransform.sizeDelta = new Vector2(120, 50);
-                
-                    cancelButtonTransform.GetComponentInChildren<Text>().text = "Cancel"; 
-                    cancelButtonObject.SetActive(true);
-
-                    cancelButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
-                    Action cancelAction;
-                    cancelAction = delegate {
-                        DisableInputsWindow(new []{confirmButtonObject, cancelButtonObject});
-                        saveWindow.inputField.text = "";
-                    };
-                    cancelButtonComponent.OnClick.AddListener(cancelAction);
-                }
-                else
-                {
-                    window.GetComponentInChildren<Text>().text = "Enter Username";
-                    saveWindow.inputField.text = Client.Instance.username;
-                    
-                    GameObject cancelButtonObject = Object.Instantiate( CustomUIManager.templateButton); 
-                    GameObject confirmButtonObject = Object.Instantiate( CustomUIManager.templateButton); 
-                    
-                    RectTransform confirmButtonTransform = confirmButtonObject.GetComponent<RectTransform>();
-                    MainMenuButton confirmButtonComponent = confirmButtonObject.GetComponent<MainMenuButton>();
-                
-                    confirmButtonTransform.parent = window;
-                    confirmButtonTransform.parentInternal = window;
-                
-                    confirmButtonTransform.anchoredPosition = new Vector2(145, -100);
-                    confirmButtonTransform.sizeDelta = new Vector2(120, 50);
-                
-                    confirmButtonComponent.GetComponentInChildren<Text>().text = "Connect"; 
-                    confirmButtonObject.SetActive(true);
-
-                    confirmButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
-                    Action confirmAction;
-                    confirmAction = ConfirmJoinAction(new []{confirmButtonObject, cancelButtonObject}, true, saveWindow.inputField, ip);
-                    confirmButtonComponent.OnClick.AddListener(confirmAction);
-                    
-                    RectTransform cancelButtonTransform =cancelButtonObject.GetComponent<RectTransform>();
-                    MainMenuButton cancelButtonComponent = cancelButtonObject.GetComponent<MainMenuButton>();
-                
-                    cancelButtonTransform.parent = window;
-                    cancelButtonTransform.parentInternal = window;
-                
-                    cancelButtonTransform.anchoredPosition = new Vector2(-145, -100);
-                    cancelButtonTransform.sizeDelta = new Vector2(120, 50);
-                    
-                    cancelButtonTransform.GetComponentInChildren<Text>().text = "Cancel"; 
-                    cancelButtonObject.SetActive(true);
-
-                    cancelButtonComponent.OnClick = new MainMenuButton.ButtonEvent();
-                    Action cancelAction;
-                    cancelAction = delegate
-                    {
-                        DisableInputsWindow(new []{confirmButtonObject, cancelButtonObject});
-                        saveWindow.inputField.text = "";
-                    };
-                    cancelButtonComponent.OnClick.AddListener(cancelAction);
-                }
-            }
+            CustomUIManager.DisableUI(UISection.MP_Main);
+            CustomUIManager.EnableUI(UISection.MP_Lobby);
         }
-        private static void DisableInputsWindow(GameObject[] buttons)
-        {
-            if (CustomUIMain.section != null)
-            {
-                for (int i = 0; i < CustomUIMain.section.buttons.Length; i++)
-                {
-                    if (i > 22 && i <= 25)
-                    {
-                        if (CustomUIMain.section.buttons[i] != null)
-                        {
-                            CustomUIMain.section.buttons[i].gameObject.SetActive(false);
-                        }
-                    }
-                }
 
-                foreach (GameObject button in buttons)
-                {
-                    Object.Destroy(button);
-                }
+        private static void JoinWindow()
+        { 
+            CustomUIManager.LockUI(CustomUIManager.currentSection);
                 
-                var window = CustomUIMain.section.transform.parent.FindChild("NameWindow");
-                window.gameObject.SetActive(false);
-            }
-        }
-        private static Action ConfirmJoinAction( GameObject[] buttons, bool phase,InputField input, string ip=null)
-        {
-            return () =>
+            Vector2 position = new Vector2(600, 0);
+            Vector2 size = new Vector2(600, 400);
+            Action a1 = delegate
             {
-                if (!phase)
-                {
-                    DisableInputsWindow(buttons);
-                    EnableJoinWindow(true, input.text);
-                }
-                else
-                {
-                    DisableInputsWindow(buttons);
-                    
-                    Client.Instance.username = input.text;
-                    Client.Instance.ip = ip;
-                    PreferencesManager.SavePreferences();
-
-                    if (!string.IsNullOrEmpty(Client.Instance.username))
-                    {
-                        Client.Instance.ConnectToServer(ip);
-                        Application.runInBackground = true;
-                        
-                        CustomLobbyMenu.OpenLobby(true);
-                    }
-
-                }
+                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                
+                CustomUIBuilder.tmpInputWindow.Clear();
+                CustomUIManager.UnlockUI(CustomUIManager.currentSection);
             };
+            Action a2 = delegate
+            {
 
+                var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
+                InputField inputFiel2 = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
+                InputField inputFiel1 = CustomUIBuilder.tmpInputWindow[_index-1].GetComponentInChildren<InputField>();
+                string username = inputFiel2.text;
+                string address = inputFiel1.text;
+                
+                Client.Instance.username = username;
+                Client.Instance.ip = address;
+                PreferencesManager.SavePreferences();
 
+                if (!string.IsNullOrEmpty(Client.Instance.username))
+                {
+                    Client.Instance.ConnectToServer(address);
+                    Application.runInBackground = true;
+
+                    OpenLobby();
+                }
+                else
+                    return;
+                
+                
+                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                
+                CustomUIBuilder.tmpInputWindow.Clear();
+                CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+            };
+            
+            CustomUIBuilder.CreateNewDoubleInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Join"}); 
         }
         
         [HarmonyPatch(typeof(MainSection), "OnMouseHover")]
