@@ -34,7 +34,9 @@ namespace CMS21Together.ClientSide.Handle
                     
                 SendData(_packet);
             }
-            Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+            if(Client.Instance.currentType == NetworkType.TcpUdp)
+                Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+            
             ClientSend.KeepAlive();
         }
             

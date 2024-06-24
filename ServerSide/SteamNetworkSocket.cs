@@ -16,6 +16,7 @@ namespace CMS21Together.ServerSide
             
             if (info.State == ConnectionState.Connecting)
             {
+                OnConnecting(connection, info);
                 bool isFull = true;
                 foreach (int ClientID in Server.clients.Keys)
                 {
@@ -43,7 +44,6 @@ namespace CMS21Together.ServerSide
             }
             else if (info.State == ConnectionState.Connected)
             {
-                MelonLogger.Msg("A client is successfully Connected.");
                 foreach (int ClientID in Server.clients.Keys)
                 {
                     if (Server.clients[ClientID].isUsed == false)
@@ -51,6 +51,7 @@ namespace CMS21Together.ServerSide
                         Server.clients[ClientID].steam.Link(connection);
                         Server.clients[ClientID].connectedType = NetworkType.steamNetworking;
                         ServerSend.Welcome(ClientID);
+                        OnConnected(connection, info);
                         break;
                     }
                 }
@@ -59,37 +60,14 @@ namespace CMS21Together.ServerSide
 
         public override void OnConnecting(Connection connection, ConnectionInfo info)
         {
-            MelonLogger.Msg("A client is connecting...");
-            /*bool isFull = true;
-            foreach (int ClientID in Server.clients.Keys)
-            {
-                if (Server.clients[ClientID].isUsed == false)
-                {
-                    isFull = false;
-                }
-            }
-
-            if (!isFull)
-                connection.Accept();
-            else
-                connection.Close();*/
+            MelonLogger.Msg("A client is trying to connect...");
+            base.OnConnecting(connection, info);
         }
 
         public override void OnConnected(Connection connection, ConnectionInfo info)
         {
             MelonLogger.Msg("A client connected successfully.");
-            /*int id = 0;
-            foreach (int ClientID in Server.clients.Keys)
-            {
-                if (Server.clients[ClientID].isUsed == false)
-                {
-                    Server.clients[ClientID].steam.Link(connection);
-                    Server.clients[ClientID].connectedType = NetworkType.steamNetworking;
-                    id = ClientID;
-                }
-            }
-            
-            ServerSend.Welcome(id);*/
+            base.OnConnected(connection, info);
         }
 
         public override void OnDisconnected(Connection connection, ConnectionInfo info)

@@ -1,5 +1,6 @@
 using System;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Steam;
 using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
@@ -20,27 +21,46 @@ public class ServerSteam
 
     public void SendData(Packet _packet, bool reliable=true)
     {
-        MelonLogger.Msg($"Sending data throught Steam Relay");
-        byte[] data = _packet.ToArray();
         SendType type = reliable ? SendType.Reliable : SendType.Unreliable;
-        Result res = connection.SendMessage(data, type);
+        
+        byte[] data = _packet.ToArray();
+        IntPtr _data = NetworkingUtils.ConvertByteArrayToIntPtr(data);
+        
+        Result res = connection.SendMessage(_data, data.Length, type);
         if(res != Result.OK)
             MelonLogger.Msg($"Could not send packet:{res.ToString()}.");
-        else
-            MelonLogger.Msg($"Sent packet. {res.ToString()}");
+        
+        NetworkingUtils.FreeIntPtr(_data);
     }
 
     public void HandleData(byte[] _data)
     {
-        ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+        int _packetLenght = 0;
+        Packet receivedData = new Packet();
+                
+        receivedData.SetBytes(_data);
+        if (receivedData.UnreadLength() >= 4)
         {
-            using (Packet _packet = new Packet(_data))
+            _packetLenght = receivedData.ReadInt();
+            if (_packetLenght <= 0)
             {
-                int _packetId = _packet.ReadInt();
-                if(Server.packetHandlers.ContainsKey(_packetId))
-                    Server.packetHandlers[_packetId](id, _packet);
+                return;
             }
-        }, null);
+        }
+
+        while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
+        {
+            byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
+            ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+            {
+                using (Packet _packet = new Packet(_packetBytes))
+                {
+                    int _packetId = _packet.ReadInt();
+                    if (Server.packetHandlers.ContainsKey(_packetId))
+                        Server.packetHandlers[_packetId](id, _packet);
+                }
+            }, null);
+        }
     }
 
     public void Disconnect() { connection.Close();}

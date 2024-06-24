@@ -27,6 +27,13 @@ public class ClientSteam : ConnectionManager
             MelonLogger.Msg("Disconnected.");
             Close();
         }
+        else if (info.State == ConnectionState.Dead)
+        {
+            Connected = false;
+            OnDisconnected(info);
+            MelonLogger.Msg("Disconnected.");
+            Close();
+        }
         else
         {
             MelonLogger.Msg($"Connection state changed: {info.State.ToString()}");
@@ -53,29 +60,49 @@ public class ClientSteam : ConnectionManager
 
     public override void OnMessage(IntPtr data, int size, long messageNum, long recvTime, int channel)
     {
-        MelonLogger.Msg("Received data from server.");
         base.OnMessage(data, size, messageNum, recvTime, channel);
-            
+        
         byte[] _data =  NetworkingUtils.ConvertIntPtrToByteArray(data, size);
-        ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+        
+        int _packetLenght = 0;
+        Packet receivedData = new Packet();
+    
+        receivedData.SetBytes(_data);
+        if (receivedData.UnreadLength() >= 4)
         {
-            using (Packet _packet = new Packet(_data))
+            _packetLenght = receivedData.ReadInt();
+            if (_packetLenght <= 0)
             {
-                int _packetId = _packet.ReadInt();
-                // MelonLogger.Msg("Received a packet with id:" + _packetId + " !");
-                if (Client.PacketHandlers.ContainsKey(_packetId))
-                {
-                    Client.PacketHandlers[_packetId](_packet);
-                }
-                else
-                    MelonLogger.Msg("packet is Invalid !!!");
+                return;
             }
-        },  null);
+        }
+
+        while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
+        {
+           byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
+           //MelonLogger.Msg("Reading packet lenght:" + _packetBytes);
+           ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+           {
+               using (Packet _packet = new Packet(_packetBytes))
+               {
+                   int _packetId = _packet.ReadInt();
+                   // MelonLogger.Msg("Received a packet with id:" + _packetId + " !");
+                   if (Client.PacketHandlers.ContainsKey(_packetId))
+                   {
+                       Client.PacketHandlers[_packetId](_packet);
+                   }
+                   else
+                       MelonLogger.Msg("packet is Invalid !!!");
+               }
+           }, null);
+        }
     }
 
     public void SendData(Packet _packet, bool reliable)
     {
         SendType sendType = reliable ? SendType.Reliable : SendType.Unreliable; // Reliable=TCP , Unrealiable=UDP
-        Connection.SendMessage(NetworkingUtils.ConvertByteArrayToIntPtr(_packet.ToArray()), _packet.Length(), sendType);
+        Result res = Connection.SendMessage(NetworkingUtils.ConvertByteArrayToIntPtr(_packet.ToArray()), _packet.Length(), sendType);
+        if(res != Result.OK)
+            MelonLogger.Msg($"Issue while sending data:{res}");
     }
 }

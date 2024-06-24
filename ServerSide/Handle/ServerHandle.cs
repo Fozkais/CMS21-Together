@@ -28,25 +28,34 @@ namespace CMS21Together.ServerSide.Handle
                 ReadOnlyDictionary<string, bool> content = _packet.Read<ReadOnlyDictionary<string, bool>>();
                 string modVersion = _packet.ReadString();
                 string gameVersion = _packet.ReadString();
+                
+                MelonLogger.Msg($"ClientInfo: {_username} , {_clientIdCheck} ,  {modVersion} , {gameVersion}");
 
                 if (gameVersion != ContentManager.Instance.gameVersion)
                 {
                     ServerSend.DisconnectClient(_fromClient, $"Game is not on same version as Server ! ({ContentManager.Instance.gameVersion})");
                     return;
                 }
+                MelonLogger.Msg("Pass1");
 
                 if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
                 {
                     ServerSend.DisconnectClient(_fromClient, $"Mod is not on same version as Server ! ({MainMod.ASSEMBLY_MOD_VERSION}))");
                     return;
                 }
-
+                MelonLogger.Msg("Pass2");
+                
                 var a = ApiCalls.API_M1(content, ContentManager.Instance.OwnedContents);
                 ServerSend.ContentInfo(a);
                 
+                MelonLogger.Msg("Pass3");
+                
                 if (!ClientData.Instance.GameReady)
                 {
-                    MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
+                    if(Server.clients[_fromClient].connectedType == NetworkType.TcpUdp)
+                        MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} connected succesfully and is now {_username}.");
+                    else
+                        MelonLogger.Msg($" SV: {Server.clients[_fromClient].steam.connection.Id} connected succesfully and is now {_username}.");
 
                     if (_fromClient != _clientIdCheck)
                     {
@@ -58,6 +67,7 @@ namespace CMS21Together.ServerSide.Handle
                 {
                     ServerSend.DisconnectClient(_fromClient, "Player couldn't connect a already started game!");
                 }
+                MelonLogger.Msg("Pass4");
 
             }
             

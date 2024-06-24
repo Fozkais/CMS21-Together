@@ -20,7 +20,7 @@ namespace CMS21Together.ServerSide.Handle
         private static void SendData(int _toClient,  Packet _packet, bool reliable = true)
         {
             _packet.WriteLength();
-            MelonLogger.Msg($"SendData[{_toClient}]");
+            //MelonLogger.Msg($"SendData[{_toClient}]");
             Server.clients[_toClient].SendData(_packet, reliable);
         }
         private static void SendDataToAll(Packet _packet, bool reliable = true)

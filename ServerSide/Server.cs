@@ -26,7 +26,7 @@ namespace CMS21Together.ServerSide
         public static NetworkType currentType = NetworkType.TcpUdp;
         public static TcpListener tcpListener;
         public static UdpClient udpListener;
-        public static SocketManager steamListener;
+        public static SteamNetworkSocket steamListener;
         
         public static bool isStopping;
         public static string serverID;
@@ -98,6 +98,8 @@ namespace CMS21Together.ServerSide
                 udpListener.Close();
             if(tcpListener != null)
                 tcpListener.Stop();
+            if (steamListener != null)
+                steamListener.Close();
             
             if(clients != null)
                 clients.Clear();

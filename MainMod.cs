@@ -114,7 +114,13 @@ namespace CMS21Together
             if(!isModInitialized) {return;}
             
             if(SteamClient.IsValid)
+            {
                 SteamClient.RunCallbacks();
+                if(Client.Instance.steam != null)
+                    Client.Instance.steam.Receive();
+                if(Server.steamListener != null)
+                    Server.steamListener.Receive();
+            }
             
             if (GameData.DataInitialized)
             {
@@ -149,11 +155,6 @@ namespace CMS21Together
                 }
             }
             ThreadManager.UpdateThread();
-        }
-
-        public override void OnFixedUpdate()
-        {
-            base.OnFixedUpdate();
         }
 
         public override void OnLateUpdate()

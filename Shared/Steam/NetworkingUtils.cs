@@ -15,7 +15,10 @@ namespace CMS21Together.Shared.Steam
 
         public static ServerClient GetClientFromConnection(Connection connection)
         {
-            return Server.clients.First(s => s.Value.steam.connection.Id == connection.Id).Value;
+            ServerClient SV_client = Server.clients.First(s => s.Value.steam.connection.Id == connection.Id).Value;
+            if(SV_client == null)
+                MelonLogger.Msg($"Did not found a valid client.");
+            return SV_client;
         }
         
         
@@ -47,7 +50,6 @@ namespace CMS21Together.Shared.Steam
         {
             byte[] byteArray = new byte[size];
             Marshal.Copy(ptr, byteArray, 0, size);
-            NetworkingUtils.FreeIntPtr(ptr);
             return byteArray;
         }
         
@@ -58,14 +60,11 @@ namespace CMS21Together.Shared.Steam
 
             // Copie les données du tableau de bytes dans la mémoire non managée
             Marshal.Copy(byteArray, 0, ptr, byteArray.Length);
-            NetworkingUtils.FreeIntPtr(ptr);
             return ptr;
         }
         
-        public async static void FreeIntPtr(IntPtr ptr)
+        public static void FreeIntPtr(IntPtr ptr)
         {
-            await Task.Delay(1000);
-            
             if (ptr != IntPtr.Zero)
             {
                 Marshal.FreeHGlobal(ptr);

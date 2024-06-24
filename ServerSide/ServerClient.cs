@@ -40,7 +40,7 @@ namespace CMS21Together.ServerSide
 
         public void SendData(Packet _packet, bool reliable)
         {
-            if(connectedType == NetworkType.none)
+            if(connectedType == NetworkType.none && isUsed)
                 MelonLogger.Msg($"[ServerClient:{id}] is connected to None type?...");
             else if(connectedType == NetworkType.steamNetworking)
                 steam.SendData(_packet, reliable);
