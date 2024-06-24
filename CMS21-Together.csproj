@@ -47,7 +47,7 @@
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\ContentManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIHost.cs" />
-    <Compile Include="ClientSide\Data\CustomUI\CustomLobbyMenu.cs" />
+    <Compile Include="ClientSide\Data\CustomUI\CustomUILobby.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIMain.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs" />
@@ -127,7 +127,6 @@
     <Compile Include="Shared\Data\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\ModWheelData.cs" />
     <Compile Include="Shared\ModSceneManager.cs" />
-    <Compile Include="Shared\ModUI.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />
     <Compile Include="Shared\Player.cs" />

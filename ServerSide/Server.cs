@@ -103,8 +103,7 @@ namespace CMS21Together.ServerSide
                 clients.Clear();
             if(packetHandlers != null)
                 packetHandlers.Clear();
-
-            ModUI.Instance.window = guiWindow.main;
+            
             MelonLogger.Msg("Server Closed.");
 
         }

@@ -60,12 +60,10 @@ namespace CMS21Together.ClientSide.Handle
             }
         }
             
-        public static void Disconnect(int id)
+        public static void Disconnect()
         {
             using (Packet _packet = new Packet((int)PacketTypes.disconnect))
             {
-                _packet.Write(id);
-                    
                 SendTCPData(_packet);
             }
         }

@@ -135,6 +135,8 @@ namespace CMS21Together.ClientSide
         {
             if (isConnected)
             {
+                ClientSend.Disconnect();
+                
                 CarHarmonyHooks.ListenToDeleteCar = false;
                 
                 Application.runInBackground = false;
@@ -152,8 +154,7 @@ namespace CMS21Together.ClientSide
                 
                 ModInventory.handledGroupItem.Clear();
                 ModInventory.handledItem.Clear();
-
-                ModUI.Instance.window = guiWindow.main;
+                
                 
                 MelonLogger.Msg("CL : Disconnected from server.");
             }

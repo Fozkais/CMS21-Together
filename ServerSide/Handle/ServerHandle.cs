@@ -73,9 +73,7 @@ namespace CMS21Together.ServerSide.Handle
             
             public static void Disconnect(int _fromClient, Packet _packet)
             {
-                int id = _packet.ReadInt();
-                
-                Server.clients[_fromClient].Disconnect(id);
+                Server.clients[_fromClient].Disconnect(_fromClient);
                 MelonLogger.Msg($" SV: {Server.clients[_fromClient].tcp.socket.Client.RemoteEndPoint} " + $"has disconnected.");
             }
             

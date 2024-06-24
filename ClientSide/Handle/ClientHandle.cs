@@ -75,8 +75,7 @@ namespace CMS21Together.ClientSide.Handle
                         GameManager.Instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
                     else
                     {
-                        Client.Instance.Disconnect();
-                        CustomLobbyMenu.DisableLobby(true); 
+                        CustomUILobby.OpenMainMenu();
                        // CustomUIMain.EnableMultiplayerMenu();
                     }
                     
@@ -92,6 +91,7 @@ namespace CMS21Together.ClientSide.Handle
                 int _id = _packet.ReadInt();
 
                 ClientData.Instance.players[_id].isReady = _ready;
+                CustomUILobby.ChangeReadyState(_id, _ready);
                 _packet.Dispose();
             }
             
@@ -99,30 +99,27 @@ namespace CMS21Together.ClientSide.Handle
             {
                 Player info = _packet.Read<Player>();
                 ClientData.Instance.players[info.id] = info;
-                
-                MelonLogger.Msg($"Received {info.username}, {info.id} info from server.");
+                CustomUILobby.AddPlayerToLobby(info.username, info.id);  
+                MelonLogger.Msg($"Received {info.username}, ID:{info.id} info from server.");
                 _packet.Dispose();
             }
             public static void PlayersInfo(Packet _packet)
             {
                 Dictionary<int, Player> info = _packet.Read<Dictionary<int, Player>>();
-                if(info != null)
+                if (info != null)
+                {
                     ClientData.Instance.players = info;
+                }
                 else
                     MelonLogger.Msg("Received player info is null!");
                 _packet.Dispose();
+
+               
             }
             
             public static void StartGame(Packet _packet)
             {
-               // ModProfileData saveData = _packet.Read<ModProfileData>();
-
-              //  SavesManager.profileData[22] = saveData.ToGame();
-               // Singleton<GameManager>.Instance.GameDataManager.ProfileData = SavesManager.profileData;
-                
                 SavesManager.LoadSave(null, true);
-                ModUI.Instance.showModUI = false;
-                
                 _packet.Dispose();
             }
             

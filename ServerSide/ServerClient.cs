@@ -30,7 +30,7 @@ namespace CMS21Together.ServerSide
             ServerData.players[id] = new Player(id, _playerName, new Vector3(0, 0, 0));
             MelonLogger.Msg($"SV: New player ! {_playerName}, ID:{id}");
             
-            ServerSend.SendPlayersInfo(ServerData.players);
+            ServerSend.SendPlayerInfo(ServerData.players[id]);
         }
 
         public void Disconnect(int _id)

@@ -15,7 +15,40 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static List<GameObject> tmpInputWindow = new List<GameObject>();
 
-        public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts)
+
+        public static void BuildLobbyHeader()
+        {
+            var lobbyHeaderObject = new GameObject("LobbyHeader");
+            var img = lobbyHeaderObject.AddComponent<Image>();
+            img.rectTransform.parent = GetParentFromSection(UISection.MP_Lobby);
+            img.rectTransform.parentInternal = GetParentFromSection(UISection.MP_Lobby);
+            
+            img.color = new Color(  .031f, .027f, .033f  , 0.85f);
+            img.rectTransform.sizeDelta = new Vector2(600, 75);
+            img.rectTransform.anchoredPosition = new Vector2(600, 175);
+            
+            CustomUIManager.MP_Lobby_Addition.Add(lobbyHeaderObject);
+            
+            Vector2 t1_pos = new Vector2(500, 0);
+            Vector2 t1_size = new Vector2(400, 100);
+            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform));
+            
+            Vector2 t2_pos = new Vector2(680, 0);
+            Vector2 t2_size = new Vector2(400, 100);
+            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform));
+            
+            Vector2 t3_pos = new Vector2(940, 0);
+            Vector2 t3_size = new Vector2(400, 100);
+            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform));
+            
+            CustomUIManager.MP_Lobby_Addition[0].SetActive(true);
+            CustomUIManager.MP_Lobby_Addition[1].SetActive(true);
+            CustomUIManager.MP_Lobby_Addition[2].SetActive(true);
+            CustomUIManager.MP_Lobby_Addition[3].SetActive(true);
+        }
+        
+        
+        public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts, InputFieldType type)
         {
             var inputFieldObject = new GameObject("InputFieldWindow");
             var img = inputFieldObject.AddComponent<Image>();
@@ -39,16 +72,18 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             Action b2_action = actions[1];
             ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
             tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
-            
-            
-            /*Vector2 i2_pos = new Vector2(0, -100);
-            Vector2 i2_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateNewInputField(i2_pos, i2_size, "Username", inputFieldObject.transform));*/
-            
-            
+
             Vector2 t1_pos = new Vector2(660, 100);
             Vector2 t1_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
+
+            if (type == InputFieldType.newSave)
+            {
+                tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
+            }
+            else
+            {
+                tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter username :", 16, inputFieldObject.transform));
+            }
             
             Vector2 i1_pos = new Vector2(0, 175);
             Vector2 i1_size = new Vector2(400, 100);
@@ -259,6 +294,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         }
     }
 
+    public enum InputFieldType
+    {
+        newSave,
+        username
+    }
     public class ButtonImage
     {
         public Sprite sprite;

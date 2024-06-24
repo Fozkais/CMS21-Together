@@ -108,18 +108,48 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if (GetSaveName(index) != "New game")
             {
-                if (!ServerData.isRunning)
-                    Server.Start();
-                else
+                Vector2 position = new Vector2(600, 0);
+                Vector2 size = new Vector2(600, 300);
+                Action a1 = delegate
                 {
-                    Server.Stop();
-                    Server.Start();
-                }
-                CustomLobbyMenu.saveIndex = index+4;
-                SavesManager.LoadSave(SavesManager.ModSaves[index+4]);
+                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    
+                    
+                    
+                    CustomUIBuilder.tmpInputWindow.Clear();
+                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+                };
+                Action a2 = delegate
+                {
+
+                    var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
+                    InputField inputField = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
+                    string username = inputField.text;
+
+                    Client.Instance.username = username;
+                    PreferencesManager.SavePreferences();
+                    
+                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    
+                    CustomUIBuilder.tmpInputWindow.Clear();
+                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+                    
+                    if (!ServerData.isRunning)
+                        Server.Start();
+                    else
+                    {
+                        Server.Stop();
+                        Server.Start();
+                    }
+                    CustomUILobby.saveIndex = index+4;
+                    SavesManager.LoadSave(SavesManager.ModSaves[index+4]);
                 
-                CustomUIManager.DisableUI(UISection.MP_Saves);
-                CustomUIManager.EnableUI(UISection.MP_Lobby);
+                    CustomUIManager.DisableUI(UISection.MP_Saves);
+                    CustomUIManager.EnableUI(UISection.MP_Lobby);
+                };
+                CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}, InputFieldType.username); 
                 
             }
             else
@@ -163,7 +193,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
                 
-                CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}); 
+                CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}, InputFieldType.newSave); 
             }
         }
     }

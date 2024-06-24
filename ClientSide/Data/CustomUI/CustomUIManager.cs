@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using HarmonyLib;
 using Il2Cpp;
@@ -19,16 +20,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     [HarmonyPatch]
     public static class CustomUIManager
     {
-
-        public static bool inLobbyWindow;
+        
         public static GameObject templateButton;
         public static GameObject templateText;
         public static GameObject templateInputField;
         
-        public static List<MainMenuButton> multiplayerMenuButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> hostMenuButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> saveButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> inputFieldButtons = new List<MainMenuButton>();
         public static List<MainMenuButton> lobbyMenuButtons = new List<MainMenuButton>();
 
         public static List<ButtonState> V_Main_Buttons = new List<ButtonState>();
@@ -36,6 +32,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static List<ButtonState> MP_Host_Buttons = new List<ButtonState>();
         public static List<ButtonState> MP_Lobby_Buttons = new List<ButtonState>();
         public static List<ButtonState> MP_Saves_Buttons = new List<ButtonState>();
+        public static List<GameObject>  MP_Lobby_Addition = new List<GameObject>();
         
         public static Transform V_Main_Parent;
         public static Transform MP_Main_Parent;
@@ -67,70 +64,50 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomUIMain.InitializeMultiplayerMenu();
             CustomUIHost.InitializeHostMenu();
             CustomUISaves.InitializeSavesMenu();
+            CustomUILobby.InitializeLobbyMenu();
 
         }
-
-        private static void ResetUI()
-        {
-            CustomUIHost.isSet = false;
-            CustomUIHost.isSavesSet = false;
-            CustomUIHost.isnewSaveSet = false;
-            CustomUIHost.displaySaves = false;
-            CustomLobbyMenu.isSet = false;
-            inLobbyWindow = false;
-            multiplayerMenuButtons = new List<MainMenuButton>();
-            hostMenuButtons = new List<MainMenuButton>();
-            saveButtons = new List<MainMenuButton>();
-            inputFieldButtons = new List<MainMenuButton>();
-            lobbyMenuButtons = new List<MainMenuButton>();
-            CustomLobbyMenu.backgrounds = new List<GameObject>();
-            CustomLobbyMenu.readyText = new List<GameObject>();
-            CustomLobbyMenu.usernameText = new List<GameObject>();
-            CustomLobbyMenu.kickButtons = new List<GameObject>();
-            SavesManager.Initialize();
-        }
+        
 
         public static void UpdateLobby()
         {
-            if (!inLobbyWindow) return;
-
-            for (int i = 0; i < 4; i++)
+            /*for (int i = 0; i < 4; i++)
             {
                 if (ClientData.Instance.players.TryGetValue(i + 1, out var player))
                 {
-                    if (CustomLobbyMenu.usernameText.All(s => s.GetComponent<Text>().text != player.username))
+                    if (CustomUILobby.usernameText.All(s => s.GetComponent<Text>().text != player.username))
                     {
-                        if (!CustomLobbyMenu.backgrounds[i].active)
+                        if (!CustomUILobby.backgrounds[i].active)
                         {
-                            CustomLobbyMenu.backgrounds[i].SetActive(true);
-                            CustomLobbyMenu.usernameText[i].SetActive(true);
-                            CustomLobbyMenu.usernameText[i].GetComponent<Text>().text = player.username;
-                            CustomLobbyMenu.readyText[i].SetActive(true);
-                            CustomLobbyMenu.kickButtons[i].SetActive(true);
+                            CustomUILobby.backgrounds[i].SetActive(true);
+                            CustomUILobby.usernameText[i].SetActive(true);
+                            CustomUILobby.usernameText[i].GetComponent<Text>().text = player.username;
+                            CustomUILobby.readyText[i].SetActive(true);
+                            CustomUILobby.kickButtons[i].SetActive(true);
 
                         }
                     }
                     else
                     {
                         if (player.isReady)
-                            CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Ready";
+                            CustomUILobby.readyText[i].GetComponent<Text>().text = "Ready";
                         else
-                            CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Not Ready";
+                            CustomUILobby.readyText[i].GetComponent<Text>().text = "Not Ready";
 
                     }
                 }
                 else
                 {
-                    if (CustomLobbyMenu.backgrounds[i].active)
-                        CustomLobbyMenu.backgrounds[i].SetActive(false);
-                    if (CustomLobbyMenu.usernameText[i].active)
-                        CustomLobbyMenu.usernameText[i].SetActive(false);
-                    if (CustomLobbyMenu.readyText[i].active)
-                        CustomLobbyMenu.readyText[i].SetActive(false);
-                    if (CustomLobbyMenu.kickButtons[i].active)
-                        CustomLobbyMenu.kickButtons[i].SetActive(false);
+                    if (CustomUILobby.backgrounds[i].active)
+                        CustomUILobby.backgrounds[i].SetActive(false);
+                    if (CustomUILobby.usernameText[i].active)
+                        CustomUILobby.usernameText[i].SetActive(false);
+                    if (CustomUILobby.readyText[i].active)
+                        CustomUILobby.readyText[i].SetActive(false);
+                    if (CustomUILobby.kickButtons[i].active)
+                        CustomUILobby.kickButtons[i].SetActive(false);
                 }
-            }
+            }*/
         }
         
 
@@ -146,7 +123,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             else if (section == UISection.MP_Host)
                 DisableUIList(MP_Host_Buttons);
             else if (section == UISection.MP_Lobby)
+            {
+                DisableUIAddition(MP_Lobby_Addition);
                 DisableUIList(MP_Lobby_Buttons);
+            }
             else if (section == UISection.MP_Saves)
                 DisableUIList(MP_Saves_Buttons);
         }
@@ -164,7 +144,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             else if (section == UISection.MP_Saves)
                 LockUIList(MP_Saves_Buttons);
         }
-        
         public static void UnlockUI(UISection section)
         {
             if (section == UISection.V_Main)
@@ -191,7 +170,27 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             else if (section == UISection.MP_Host)
                 EnableUIList(MP_Host_Buttons);
             else if (section == UISection.MP_Lobby)
+            {
+                switch (ServerData.isRunning)
+                {
+                    case false:
+                        MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Disconnect";
+                        MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
+                        
+                        MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Disabled, true);
+                        MP_Lobby_Buttons[0].button.SetDisabled(true, true);
+                        break;
+                    case true:
+                        MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Back to saves";
+                        MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
+                        
+                        MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Normal, true);
+                        MP_Lobby_Buttons[0].button.SetDisabled(false, true);
+                        break;
+                }
                 EnableUIList(MP_Lobby_Buttons);
+                EnableUIAddition(MP_Lobby_Addition);
+            }
             else if (section == UISection.MP_Saves)
                 EnableUIList(MP_Saves_Buttons);
             
@@ -216,6 +215,28 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             foreach (ButtonState buttonState in buttonsToDisable)
             {
                 buttonState.button.gameObject.SetActive(false);
+            }
+        }
+        private static void DisableUIAddition(List<GameObject> objectsToDisable)
+        {
+            for (var index = 0; index < objectsToDisable.Count; index++)
+            {
+                var obj = objectsToDisable[index];
+                if (index > 3)
+                {
+                    objectsToDisable.Remove(obj);
+                    Object.Destroy(obj);
+                }
+                else
+                    obj.SetActive(false);
+            }
+        }
+        
+        private static void EnableUIAddition(List<GameObject> objectsToEnable)
+        {
+            foreach (GameObject obj in objectsToEnable)
+            {
+                obj.SetActive(true);
             }
         }
         

@@ -28,7 +28,6 @@ namespace CMS21Together
         public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
         
         public Client client;
-        public ModUI modUI;
         public ContentManager contentManager;
 
         public bool isModInitialized;
@@ -45,22 +44,12 @@ namespace CMS21Together
             client = modObject.AddComponent<Client>();
             client.Awake();
             
-            modUI = modObject.AddComponent<ModUI>();
-            modUI.Awake();
-            
             contentManager = modObject.AddComponent<ContentManager>();
             
             PreferencesManager.LoadPreferences();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
             
-        }
-        
-
-        public override void OnGUI()
-        {
-            if(!isModInitialized) {return;}
-            modUI.OnGUI();
         }
         public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
         {
@@ -144,7 +133,6 @@ namespace CMS21Together
         public override void OnLateUpdate()
         {
             if(!isModInitialized) {return;}
-            modUI.showUI();
             
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {

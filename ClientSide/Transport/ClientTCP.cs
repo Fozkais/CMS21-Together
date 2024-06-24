@@ -59,8 +59,7 @@ namespace CMS21Together.ClientSide.Transport
             }
             catch // Capturer toutes les exceptions possibles
             {
-                CustomLobbyMenu.DisableLobby(); 
-               // CustomUIMain.EnableMultiplayerMenu();
+                CustomUILobby.OpenMainMenu();
             }
         }
 
