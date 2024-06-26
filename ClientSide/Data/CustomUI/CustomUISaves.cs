@@ -4,6 +4,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using Il2CppCMS.MainMenu.Controls;
+using Il2CppCMS.UI.Controls;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
@@ -172,8 +173,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 {
 
                     var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
+                    
                     InputField inputField = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
+                    StringSelector selector = CustomUIBuilder.tmpInputWindow[_index-1].GetComponentInChildren<StringSelector>();
                     string saveName = inputField.text;
+                    int selectectGamemode = selector.Current;
 
                     if (SavesManager.ModSaves.Any(save => save.Value.Name == saveName))
                     {
@@ -182,9 +186,9 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     }
 
                     SavesManager.ModSaves[index+4].Name = saveName;
+                    SavesManager.ModSaves[index + 4].selectedGamemode = SavesManager.GetGamemodeFromInt(selectectGamemode);
                     CustomUIManager.MP_Saves_Buttons[index].button.GetComponentInChildren<Text>().text = SavesManager.ModSaves[index+4].Name;
                     CustomUIManager.MP_Saves_Buttons[index].button.OnEnable();
-                    
                     
                     for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
                         Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);

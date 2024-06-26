@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Il2CppCMS.MainMenu.Controls;
+using Il2CppCMS.UI.Controls;
 using Il2CppCMS.UI.Logic;
 using MelonLoader;
 using UnityEngine;
@@ -46,6 +48,25 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomUIManager.MP_Lobby_Addition[2].SetActive(true);
             CustomUIManager.MP_Lobby_Addition[3].SetActive(true);
         }
+
+        public static StringSelector CreateNewChoiceButton(Vector2 position, Vector2 size, string[] choices, Transform parent)
+        {
+            var selectorObject = Object.Instantiate(CustomUIManager.templateChoiceButton);
+            var rectTransform = selectorObject.GetComponent<RectTransform>();
+            
+            rectTransform.parent = parent;
+            rectTransform.parentInternal = parent;
+
+            rectTransform.anchoredPosition = position;
+            rectTransform.sizeDelta = size;
+            
+            StringSelector selector = selectorObject.GetComponent<StringSelector>();
+            selector.options = new Il2CppSystem.Collections.Generic.List<string>();
+            for (int i = 0; i < choices.Length; i++)
+                selector.options.Add(choices[i]);
+
+            return selector;
+        }
         
         
         public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts, InputFieldType type)
@@ -73,21 +94,44 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
             tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
 
-            Vector2 t1_pos = new Vector2(660, 100);
-            Vector2 t1_size = new Vector2(400, 100);
+           
 
             if (type == InputFieldType.newSave)
             {
+                Vector2 t1_pos = new Vector2(660, 130);
+                Vector2 t1_size = new Vector2(400, 100);
                 tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
+                
+                Vector2 t2_pos = new Vector2(660, 5);
+                Vector2 t2_size = new Vector2(400, 100);
+                tmpInputWindow.Add(CreateText(t2_pos, t2_size, "Gamemode :", 16, inputFieldObject.transform));
+                
+                Vector2 s1_pos = new Vector2(-180, 0);
+                Vector2 s1_size = new Vector2(400, 100);
+                StringSelector selector = CreateNewChoiceButton(s1_pos, s1_size, new[] { "Sandbox", "Campaign" }, inputFieldObject.transform);
+                tmpInputWindow.Add(selector.gameObject);
+                selector.gameObject.SetActive(true);
+                selector.EnableArrows();
+                selector.SetValue(0);
+                selector.optionText.resizeTextMaxSize = 24;
+                selector.optionText.GetComponent<RectTransform>().anchoredPosition = new Vector2(-125, 2.5f);
+                selector.rightArrow.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, 0);
+                
+                Vector2 i1_pos = new Vector2(0, 260);
+                Vector2 i1_size = new Vector2(400, 100);
+                tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
             }
             else
             {
+                Vector2 t1_pos = new Vector2(660, 100);
+                Vector2 t1_size = new Vector2(400, 100);
                 tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter username :", 16, inputFieldObject.transform));
+                Vector2 i1_pos = new Vector2(0, 175);
+                Vector2 i1_size = new Vector2(400, 100);
+                tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
             }
             
-            Vector2 i1_pos = new Vector2(0, 175);
-            Vector2 i1_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+           
             
             tmpInputWindow[1].SetActive(true);
             tmpInputWindow[2].SetActive(true);

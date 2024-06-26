@@ -9,6 +9,7 @@ using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.MainMenu.Sections;
 using Il2CppCMS.MainMenu.Windows;
 using Il2CppCMS.UI;
+using Il2CppCMS.UI.Controls;
 using Il2CppCMS.UI.Helpers;
 using Il2CppCMS.UI.Logic;
 using MelonLoader;
@@ -24,8 +25,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static GameObject templateButton;
         public static GameObject templateText;
         public static GameObject templateInputField;
-        
-        public static List<MainMenuButton> lobbyMenuButtons = new List<MainMenuButton>();
+        public static GameObject templateChoiceButton;
 
         public static List<ButtonState> V_Main_Buttons = new List<ButtonState>();
         public static List<ButtonState> MP_Main_Buttons = new List<ButtonState>();
@@ -59,6 +59,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             templateButton = GameObject.Find("MainMenuButton");
             templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
             templateText = templateButton.GetComponentInChildren<Text>().gameObject;
+            templateChoiceButton = GameObject.Find("MainMenuWindows").transform.GetChild(3).GetChild(0).gameObject
+                .GetComponentInChildren<StringSelector>().gameObject;
+
+            ResetLists();
             
             CustomUIMain.InitializeMainMenu();
             CustomUIMain.InitializeMultiplayerMenu();
@@ -67,7 +71,17 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             CustomUILobby.InitializeLobbyMenu();
 
         }
-        
+
+        private static void ResetLists()
+        {
+            V_Main_Buttons.Clear();
+            MP_Lobby_Buttons.Clear();
+            MP_Lobby_Addition.Clear();
+            MP_Saves_Buttons.Clear();
+            MP_Main_Buttons.Clear();
+            MP_Host_Buttons.Clear();
+        }
+
 
         public static void UpdateLobby()
         {

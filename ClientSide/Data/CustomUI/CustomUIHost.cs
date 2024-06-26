@@ -35,11 +35,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Load/Create a game");
             CustomUIBuilder.CreateNewButton(UISection.MP_Host, b1_info, false);
             
-            Vector2 b2_pos = new Vector2(20, -17);
+            /*Vector2 b2_pos = new Vector2(20, -17);
             Vector2 b2_size = new Vector2(336, 65);
-            Action b2_action = delegate {  };
-            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Delete a game");
-            CustomUIBuilder.CreateNewButton(UISection.MP_Host, b2_info, true);
+            Action b2_action = delegate {  }; 
+            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Delete a game"); // Moved into save info
+            CustomUIBuilder.CreateNewButton(UISection.MP_Host, b2_info, true);*/
             
             Vector2 b3_pos = new Vector2(20, -317);
             Vector2 b3_size = new Vector2(336, 65);

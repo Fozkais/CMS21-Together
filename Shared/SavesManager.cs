@@ -123,6 +123,8 @@ namespace CMS21Together.Shared
             
             if(clientSave) { index = MainMod.MAX_SAVE_COUNT; name = "ClientSave"; }
             else { index = saveData.saveIndex; name = saveData.Name; }
+
+            DifficultyLevel level = GetDifficultyFromGamemode(saveData.selectedGamemode);
             
             gameManager.ProfileManager.selectedProfile = index;
             gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
@@ -161,7 +163,7 @@ namespace CMS21Together.Shared
 
                     profileData[index] = save;
                     Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Normal);
+                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
                     Singleton<GameManager>.Instance.ProfileManager.Load();
                 
                     ModSaves[index].Name =  name;
@@ -181,7 +183,7 @@ namespace CMS21Together.Shared
                 gameManager.ProfileManager.selectedProfile = index;
                 gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
                 Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Normal);
+                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
                 gameManager.ProfileManager.Load();
                 
                 MelonLogger.Msg("-------------------Save Info---------------------");
@@ -196,8 +198,15 @@ namespace CMS21Together.Shared
             if (!clientSave){ SaveModSave(index); }
             if (clientSave) { StartGame(MainMod.MAX_SAVE_COUNT+1); }
         }
-        
-        
+
+        private static DifficultyLevel GetDifficultyFromGamemode(Gamemode saveDataSelectedGamemode)
+        {
+            if (saveDataSelectedGamemode == Gamemode.campaign)
+                return DifficultyLevel.Normal;
+            return DifficultyLevel.Sandbox;
+        }
+
+
         public static void SaveModSave(int saveIndex)
         {
             ModSaveData modSaveData = SavesManager.ModSaves[saveIndex];
@@ -280,6 +289,13 @@ namespace CMS21Together.Shared
                     File.WriteAllText(saveFileName, serializedSave);
                 }
             }
+        }
+
+        public static Gamemode GetGamemodeFromInt(int selectectGamemode)
+        {
+            if (selectectGamemode == 1)
+                return Gamemode.campaign;
+            return Gamemode.sandbox;
         }
     }
 }
