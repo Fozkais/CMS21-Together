@@ -17,6 +17,51 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         public static List<GameObject> tmpInputWindow = new List<GameObject>();
 
+        
+        public static void CreateSaveInfoPanel()
+        {
+            var saveInfoObject = new GameObject("SaveInfoWindow");
+            
+            var img = saveInfoObject.AddComponent<Image>();
+            img.rectTransform.parent = GetParentFromSection(CustomUIManager.currentSection);
+            img.rectTransform.parentInternal = GetParentFromSection(CustomUIManager.currentSection);
+            img.color = new Color(  .031f, .027f, .033f  , 0.85f);
+            img.rectTransform.sizeDelta =  new Vector2(600, 700);
+            img.rectTransform.anchoredPosition =  new Vector2(460, -50);
+
+            Vector2 t1_pos = new Vector2(620, 315);
+            Vector2 t1_size = new Vector2(400, 100);
+            CreateText(t1_pos, t1_size, "Save Info", 16, saveInfoObject.transform);
+            
+            var splitter1 = new GameObject("splitter");
+            var splitter1Img = splitter1.AddComponent<Image>();
+            splitter1Img.rectTransform.parent = saveInfoObject.transform;
+            splitter1Img.rectTransform.parentInternal = saveInfoObject.transform;
+            splitter1Img.color = new Color(  1f, 1f, 1f  , 0.5f);
+            splitter1Img.rectTransform.sizeDelta =  new Vector2(580, 5);
+            splitter1Img.rectTransform.anchoredPosition =  new Vector2(0, 280);
+
+            
+            Vector2 t2_pos = new Vector2(620, 230);
+            Vector2 t2_size = new Vector2(400, 100);
+            CreateText(t2_pos, t2_size, "Name :", 14, saveInfoObject.transform);
+            
+            var splitter2 = Object.Instantiate(splitter1);
+            var splitter2Img = splitter2.GetComponent<Image>();
+            splitter2.transform.parent = saveInfoObject.transform;
+            splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, 210);
+            
+            Vector2 t3_pos = new Vector2(620, 150);
+            Vector2 t3_size = new Vector2(400, 100);
+            CreateText(t3_pos, t3_size, "Gamemode :", 14, saveInfoObject.transform);
+            
+            var splitter3 = Object.Instantiate(splitter1);
+            var splitter3Img = splitter2.GetComponent<Image>();
+            splitter3.transform.parent = saveInfoObject.transform;
+            splitter3Img.rectTransform.anchoredPosition =  new Vector2(0, 130);
+            
+            tmpInputWindow.Add(saveInfoObject);
+        }
 
         public static void BuildLobbyHeader()
         {

@@ -109,15 +109,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if (GetSaveName(index) != "New game")
             {
-                Vector2 position = new Vector2(600, 0);
+                CustomUIBuilder.CreateSaveInfoPanel();
+                /*Vector2 position = new Vector2(600, 0);
                 Vector2 size = new Vector2(600, 300);
                 Action a1 = delegate
                 {
                     for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
                         Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
-                    
-                    
-                    
+
+
+
                     CustomUIBuilder.tmpInputWindow.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
@@ -130,13 +131,13 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
                     Client.Instance.username = username;
                     PreferencesManager.SavePreferences();
-                    
+
                     for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
                         Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
-                    
+
                     CustomUIBuilder.tmpInputWindow.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
-                    
+
                     if (!ServerData.isRunning)
                         Server.Start();
                     else
@@ -146,12 +147,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     }
                     CustomUILobby.saveIndex = index+4;
                     SavesManager.LoadSave(SavesManager.ModSaves[index+4]);
-                
+
                     CustomUIManager.DisableUI(UISection.MP_Saves);
                     CustomUIManager.EnableUI(UISection.MP_Lobby);
                 };
-                CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}, InputFieldType.username); 
-                
+                CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Close", "Confirm"}, InputFieldType.username); */
+
             }
             else
             {
