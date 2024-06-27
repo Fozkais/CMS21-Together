@@ -7,7 +7,7 @@ namespace CMS21Together.Shared.Data
     {
         public string Name;
         public int saveIndex;
-        public Gamemode selectedGamemode;
+        public Gamemode selectedGamemode = Gamemode.none;
         public bool alreadyLoaded;
 
         public ModSaveData(string saveName, Gamemode gamemode,int index, bool loaded)
@@ -32,8 +32,8 @@ namespace CMS21Together.Shared.Data
     [Serializable]
     public enum Gamemode
     {
-        sandbox,
-        campaign,
-        none
+        none,
+        Sandbox,
+        Campaign
     }
 }

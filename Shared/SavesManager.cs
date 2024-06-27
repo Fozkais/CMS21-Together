@@ -124,6 +124,9 @@ namespace CMS21Together.Shared
             if(clientSave) { index = MainMod.MAX_SAVE_COUNT; name = "ClientSave"; }
             else { index = saveData.saveIndex; name = saveData.Name; }
 
+            if (saveData.selectedGamemode == Gamemode.none)
+                saveData.selectedGamemode = Gamemode.Sandbox;
+            
             DifficultyLevel level = GetDifficultyFromGamemode(saveData.selectedGamemode);
             
             gameManager.ProfileManager.selectedProfile = index;
@@ -201,7 +204,7 @@ namespace CMS21Together.Shared
 
         private static DifficultyLevel GetDifficultyFromGamemode(Gamemode saveDataSelectedGamemode)
         {
-            if (saveDataSelectedGamemode == Gamemode.campaign)
+            if (saveDataSelectedGamemode == Gamemode.Campaign)
                 return DifficultyLevel.Normal;
             return DifficultyLevel.Sandbox;
         }
@@ -294,8 +297,15 @@ namespace CMS21Together.Shared
         public static Gamemode GetGamemodeFromInt(int selectectGamemode)
         {
             if (selectectGamemode == 1)
-                return Gamemode.campaign;
-            return Gamemode.sandbox;
+                return Gamemode.Campaign;
+            return Gamemode.Sandbox;
+        }
+        
+        public static Gamemode GetGamemodeFromDifficulty(DifficultyLevel difficultyLevel)
+        {
+            if (difficultyLevel == DifficultyLevel.Sandbox)
+                return Gamemode.Sandbox;
+            return Gamemode.Campaign;
         }
     }
 }

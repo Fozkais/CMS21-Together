@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
+using Il2Cpp;
 using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.UI.Controls;
 using Il2CppCMS.UI.Logic;
+using Il2CppSystem.Globalization;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,7 +22,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         public static List<GameObject> tmpInputWindow = new List<GameObject>();
 
         
-        public static void CreateSaveInfoPanel()
+        public static void CreateSaveInfoPanel(ModSaveData saveData)
         {
             var saveInfoObject = new GameObject("SaveInfoWindow");
             
@@ -38,27 +42,52 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             splitter1Img.rectTransform.parent = saveInfoObject.transform;
             splitter1Img.rectTransform.parentInternal = saveInfoObject.transform;
             splitter1Img.color = new Color(  1f, 1f, 1f  , 0.5f);
-            splitter1Img.rectTransform.sizeDelta =  new Vector2(580, 5);
+            splitter1Img.rectTransform.sizeDelta =  new Vector2(580, 2);
             splitter1Img.rectTransform.anchoredPosition =  new Vector2(0, 280);
 
+            if (saveData.selectedGamemode == Gamemode.none)
+                saveData.selectedGamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.profileData[saveData.saveIndex].Difficulty);
+
+            string time;
+            var timePlayed = TimeSpan.FromMinutes(SavesManager.profileData[saveData.saveIndex].PlayTime);
+            if (timePlayed.TotalHours >= 1.0)
+            {
+                time = $"{Math.Round(timePlayed.TotalHours)} h";
+            }
+            else if (!(timePlayed.TotalMinutes < 1.0))
+            {
+                time = $"{Math.Round(timePlayed.TotalMinutes)} min";
+            }
+            else
+            {
+             time = "1 min";
+            }
+            
+            CultureInfo currentCulture = CultureInfo.CurrentCulture;
+            CultureInfo.CurrentCulture = GlobalData.DefaultCultureInfo;
+            string lastSave = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(SavesManager.profileData[saveData.saveIndex].LastSave)).ToLocalTime().DateTime.ToString("g");
+            CultureInfo.CurrentCulture = currentCulture;
             
             Vector2 t2_pos = new Vector2(620, 230);
             Vector2 t2_size = new Vector2(400, 100);
-            CreateText(t2_pos, t2_size, "Name :", 14, saveInfoObject.transform);
+            CreateText(t2_pos, t2_size, "Name : " + saveData.Name, 14, saveInfoObject.transform);
             
-            var splitter2 = Object.Instantiate(splitter1);
-            var splitter2Img = splitter2.GetComponent<Image>();
-            splitter2.transform.parent = saveInfoObject.transform;
-            splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, 210);
-            
-            Vector2 t3_pos = new Vector2(620, 150);
+            Vector2 t3_pos = new Vector2(620, 180);
             Vector2 t3_size = new Vector2(400, 100);
-            CreateText(t3_pos, t3_size, "Gamemode :", 14, saveInfoObject.transform);
+            CreateText(t3_pos, t3_size, "Gamemode : " + saveData.selectedGamemode.ToString(), 14, saveInfoObject.transform);
             
-            var splitter3 = Object.Instantiate(splitter1);
-            var splitter3Img = splitter2.GetComponent<Image>();
-            splitter3.transform.parent = saveInfoObject.transform;
-            splitter3Img.rectTransform.anchoredPosition =  new Vector2(0, 130);
+            Vector2 t4_pos = new Vector2(620, 130);
+            Vector2 t4_size = new Vector2(400, 100);
+            CreateText(t4_pos, t4_size, "Time Played : " +  time, 14, saveInfoObject.transform);
+            
+            Vector2 t5_pos = new Vector2(620, 80);
+            Vector2 t5_size = new Vector2(400, 100);
+            CreateText(t5_pos, t5_size, "Last save : " +  lastSave, 14, saveInfoObject.transform);
+            
+            var splitter2 = Object.Instantiate(splitter1, saveInfoObject.transform, true);
+            var splitter2Img = splitter2.GetComponent<Image>();
+            splitter2Img.rectTransform.sizeDelta =  new Vector2(580, 2);
+            splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, 30);
             
             tmpInputWindow.Add(saveInfoObject);
         }
@@ -417,6 +446,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     {
         public MainMenuButton button;
         public bool Disabled;
+        public bool isPressed;
     }
 
     public enum UISection

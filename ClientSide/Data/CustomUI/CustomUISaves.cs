@@ -88,6 +88,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static void OpenHostMenu()
         {
+            for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    
+            CustomUIBuilder.tmpInputWindow.Clear();
+            
             CustomUIManager.DisableUI(UISection.MP_Saves);
             CustomUIManager.EnableUI(UISection.MP_Host);
         }
@@ -109,7 +114,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
         {
             if (GetSaveName(index) != "New game")
             {
-                CustomUIBuilder.CreateSaveInfoPanel();
+                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                CustomUIBuilder.tmpInputWindow.Clear();
+                
+                CustomUIBuilder.CreateSaveInfoPanel(SavesManager.ModSaves[index+4]);
                 /*Vector2 position = new Vector2(600, 0);
                 Vector2 size = new Vector2(600, 300);
                 Action a1 = delegate
@@ -156,6 +165,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             }
             else
             {
+                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    
+                CustomUIBuilder.tmpInputWindow.Clear();
+                
                 CustomUIManager.LockUI(CustomUIManager.currentSection);
                 
                 Vector2 position = new Vector2(600, 0);
@@ -165,14 +179,11 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
                         Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
                     
-                    
-                    
                     CustomUIBuilder.tmpInputWindow.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
                 Action a2 = delegate
                 {
-
                     var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
                     
                     InputField inputField = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
