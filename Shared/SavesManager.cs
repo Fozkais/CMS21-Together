@@ -22,6 +22,8 @@ namespace CMS21Together.Shared
         private const string MOD_FOLDER_PATH = @"Mods\togetherMod\";
         private const string SAVE_FOLDER_PATH = MOD_FOLDER_PATH + "saves";
 
+        private const string GAME_SAVE_FOLDER = "%USERPROFILE%/AppData/LocalLow/Red Dot Games/Car Mechanic Simulator 2021/Save/";
+
         public static void Initialize()
         {
             for (int i = 0; i < 4; i++)
@@ -230,8 +232,19 @@ namespace CMS21Together.Shared
         public static void RemoveModSave(int index) 
         {
             ModSaves[index] = new ModSaveData("EmptySave", index, false);
-            string saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{index}.cms21mp");
+            string modSaveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{index}.cms21mp");
+            string saveFilePath = Path.Combine(GAME_SAVE_FOLDER, $"profile{index}.cms21b");
 
+            if (File.Exists(modSaveFilePath)) 
+            {
+                File.Delete(modSaveFilePath);
+                MelonLogger.Msg($"Mod save file at {modSaveFilePath} deleted");
+            }
+            else 
+            {
+                MelonLogger.Error("Error deleting  mod save file ");
+            }
+            
             if (File.Exists(saveFilePath)) 
             {
                 File.Delete(saveFilePath);

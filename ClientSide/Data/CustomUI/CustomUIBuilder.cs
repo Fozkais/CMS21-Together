@@ -19,21 +19,23 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     {
         private static int CurrentButtonIndex = 6;
 
-        public static List<GameObject> tmpInputWindow = new List<GameObject>();
+        public static List<GameObject> tmpWindow = new List<GameObject>();
+        public static List<GameObject> tmpWindow2 = new List<GameObject>();
 
         
         public static void CreateSaveInfoPanel(ModSaveData saveData)
         {
             var saveInfoObject = new GameObject("SaveInfoWindow");
+            tmpWindow.Add(saveInfoObject);
             
             var img = saveInfoObject.AddComponent<Image>();
             img.rectTransform.parent = GetParentFromSection(CustomUIManager.currentSection);
             img.rectTransform.parentInternal = GetParentFromSection(CustomUIManager.currentSection);
             img.color = new Color(  .031f, .027f, .033f  , 0.85f);
-            img.rectTransform.sizeDelta =  new Vector2(600, 700);
+            img.rectTransform.sizeDelta =  new Vector2(600, 420);
             img.rectTransform.anchoredPosition =  new Vector2(460, -50);
 
-            Vector2 t1_pos = new Vector2(620, 315);
+            Vector2 t1_pos = new Vector2(620, 150);
             Vector2 t1_size = new Vector2(400, 100);
             CreateText(t1_pos, t1_size, "Save Info", 16, saveInfoObject.transform);
             
@@ -43,53 +45,107 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             splitter1Img.rectTransform.parentInternal = saveInfoObject.transform;
             splitter1Img.color = new Color(  1f, 1f, 1f  , 0.5f);
             splitter1Img.rectTransform.sizeDelta =  new Vector2(580, 2);
-            splitter1Img.rectTransform.anchoredPosition =  new Vector2(0, 280);
+            splitter1Img.rectTransform.anchoredPosition =  new Vector2(0, 120);
 
             if (saveData.selectedGamemode == Gamemode.none)
                 saveData.selectedGamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.profileData[saveData.saveIndex].Difficulty);
 
             string time;
-            var timePlayed = TimeSpan.FromMinutes(SavesManager.profileData[saveData.saveIndex].PlayTime);
-            if (timePlayed.TotalHours >= 1.0)
+            string lastSave;
+            if (saveData.alreadyLoaded)
             {
-                time = $"{Math.Round(timePlayed.TotalHours)} h";
-            }
-            else if (!(timePlayed.TotalMinutes < 1.0))
-            {
-                time = $"{Math.Round(timePlayed.TotalMinutes)} min";
+                var timePlayed = TimeSpan.FromMinutes(SavesManager.profileData[saveData.saveIndex].PlayTime);
+                if (timePlayed.TotalHours >= 1.0)
+                {
+                    time = $"{Math.Round(timePlayed.TotalHours)} h";
+                }
+                else if (!(timePlayed.TotalMinutes < 1.0))
+                {
+                    time = $"{Math.Round(timePlayed.TotalMinutes)} min";
+                }
+                else
+                {
+                 time = "1 min";
+                }
+                
+                CultureInfo currentCulture = CultureInfo.CurrentCulture;
+                CultureInfo.CurrentCulture = GlobalData.DefaultCultureInfo;
+                lastSave = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(SavesManager.profileData[saveData.saveIndex].LastSave)).ToLocalTime().DateTime.ToString("g");
+                CultureInfo.CurrentCulture = currentCulture;
             }
             else
             {
-             time = "1 min";
+                time = "0 min";
+                lastSave = "Never";
             }
             
-            CultureInfo currentCulture = CultureInfo.CurrentCulture;
-            CultureInfo.CurrentCulture = GlobalData.DefaultCultureInfo;
-            string lastSave = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(SavesManager.profileData[saveData.saveIndex].LastSave)).ToLocalTime().DateTime.ToString("g");
-            CultureInfo.CurrentCulture = currentCulture;
             
-            Vector2 t2_pos = new Vector2(620, 230);
+            Vector2 t2_pos = new Vector2(620, 70);
             Vector2 t2_size = new Vector2(400, 100);
             CreateText(t2_pos, t2_size, "Name : " + saveData.Name, 14, saveInfoObject.transform);
             
-            Vector2 t3_pos = new Vector2(620, 180);
+            Vector2 t3_pos = new Vector2(620, 20);
             Vector2 t3_size = new Vector2(400, 100);
             CreateText(t3_pos, t3_size, "Gamemode : " + saveData.selectedGamemode.ToString(), 14, saveInfoObject.transform);
             
-            Vector2 t4_pos = new Vector2(620, 130);
+            Vector2 t4_pos = new Vector2(620, -30);
             Vector2 t4_size = new Vector2(400, 100);
             CreateText(t4_pos, t4_size, "Time Played : " +  time, 14, saveInfoObject.transform);
             
-            Vector2 t5_pos = new Vector2(620, 80);
+            Vector2 t5_pos = new Vector2(620, -70);
             Vector2 t5_size = new Vector2(400, 100);
             CreateText(t5_pos, t5_size, "Last save : " +  lastSave, 14, saveInfoObject.transform);
             
             var splitter2 = Object.Instantiate(splitter1, saveInfoObject.transform, true);
             var splitter2Img = splitter2.GetComponent<Image>();
             splitter2Img.rectTransform.sizeDelta =  new Vector2(580, 2);
-            splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, 30);
+            splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, -110);
             
-            tmpInputWindow.Add(saveInfoObject);
+            Action b1_action = delegate
+            {
+                CustomUIManager.LockUI(CustomUIManager.currentSection);
+                
+                Vector2 position = new Vector2(600, 0);
+                Vector2 size = new Vector2(600, 300);
+                Action a1 = delegate
+                {
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
+                    
+                    CustomUIBuilder.tmpWindow2.Clear();
+                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+                };
+                Action a2 = delegate
+                {
+                    
+                    PreferencesManager.SavePreferences();
+
+                    SavesManager.RemoveModSave(saveData.saveIndex);
+                    
+                    CustomUIManager.MP_Saves_Buttons[saveData.saveIndex-4].button.GetComponentInChildren<Text>().text = "New Game";
+                    CustomUIManager.MP_Saves_Buttons[saveData.saveIndex-4].button.OnEnable();
+                    
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpWindow[i]);
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
+
+                    tmpWindow.Clear();
+                    tmpWindow2.Clear();
+                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
+                };
+                CreateNewInputWindow(position, size, new[] { a1, a2 }, new []{"Cancel", "Confirm"}, InputFieldType.deleteSave);
+            };
+            Vector2 b1_pos = new Vector2(-10, -155);
+            Vector2 b1_size = new Vector2(168, 65);
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, "Delete", saveInfoObject.transform);
+            tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
+            tmpWindow[tmpWindow.Count-1].SetActive(true);
+            
+            var splitter3 = Object.Instantiate(splitter1, saveInfoObject.transform, true);
+            var splitter3Img = splitter3.GetComponent<Image>();
+            splitter3Img.rectTransform.sizeDelta =  new Vector2(580, 2);
+            splitter3Img.rectTransform.anchoredPosition =  new Vector2(0, -200);
         }
 
         public static void BuildLobbyHeader()
@@ -142,7 +198,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             return selector;
         }
         
-        
         public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts, InputFieldType type)
         {
             var inputFieldObject = new GameObject("InputFieldWindow");
@@ -154,19 +209,19 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             img.rectTransform.sizeDelta = size;
             img.rectTransform.anchoredPosition = position;
             
-            tmpInputWindow.Add(inputFieldObject);
+            tmpWindow2.Add(inputFieldObject);
 
             Vector2 b1_pos = new Vector2(-200, -100);
             Vector2 b1_size = new Vector2(168, 65);
             Action b1_action = actions[0];
             ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
-            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
+            tmpWindow2.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             
             Vector2 b2_pos = new Vector2(200, -100);
             Vector2 b2_size = new Vector2(168, 65);
             Action b2_action = actions[1];
             ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
-            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
+            tmpWindow2.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
 
            
 
@@ -174,16 +229,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             {
                 Vector2 t1_pos = new Vector2(660, 130);
                 Vector2 t1_size = new Vector2(400, 100);
-                tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
+                tmpWindow2.Add(CreateText(t1_pos, t1_size, "Enter save name :", 16, inputFieldObject.transform));
                 
                 Vector2 t2_pos = new Vector2(660, 5);
                 Vector2 t2_size = new Vector2(400, 100);
-                tmpInputWindow.Add(CreateText(t2_pos, t2_size, "Gamemode :", 16, inputFieldObject.transform));
+                tmpWindow2.Add(CreateText(t2_pos, t2_size, "Gamemode :", 16, inputFieldObject.transform));
                 
                 Vector2 s1_pos = new Vector2(-180, 0);
                 Vector2 s1_size = new Vector2(400, 100);
                 StringSelector selector = CreateNewChoiceButton(s1_pos, s1_size, new[] { "Sandbox", "Campaign" }, inputFieldObject.transform);
-                tmpInputWindow.Add(selector.gameObject);
+                tmpWindow2.Add(selector.gameObject);
                 selector.gameObject.SetActive(true);
                 selector.EnableArrows();
                 selector.SetValue(0);
@@ -193,22 +248,26 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 
                 Vector2 i1_pos = new Vector2(0, 260);
                 Vector2 i1_size = new Vector2(400, 100);
-                tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+                tmpWindow2.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
             }
-            else
+            else if (type == InputFieldType.username)
             {
                 Vector2 t1_pos = new Vector2(660, 100);
                 Vector2 t1_size = new Vector2(400, 100);
-                tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter username :", 16, inputFieldObject.transform));
+                tmpWindow2.Add(CreateText(t1_pos, t1_size, "Enter username :", 16, inputFieldObject.transform));
                 Vector2 i1_pos = new Vector2(0, 175);
                 Vector2 i1_size = new Vector2(400, 100);
-                tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+                tmpWindow2.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
             }
-            
-           
-            
-            tmpInputWindow[1].SetActive(true);
-            tmpInputWindow[2].SetActive(true);
+            else if (type == InputFieldType.deleteSave)
+            {
+                Vector2 t1_pos = new Vector2(800, 50);
+                Vector2 t1_size = new Vector2(400, 100);
+                tmpWindow2.Add(CreateText(t1_pos, t1_size, "Delete the save ?", 16, inputFieldObject.transform));
+                
+            }
+            tmpWindow2[1].SetActive(true);
+            tmpWindow2[2].SetActive(true);
         }
         
         public static void CreateNewDoubleInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts)
@@ -222,38 +281,38 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             img.rectTransform.sizeDelta = size;
             img.rectTransform.anchoredPosition = position;
             
-            tmpInputWindow.Add(inputFieldObject);
+            tmpWindow.Add(inputFieldObject);
 
             Vector2 b1_pos = new Vector2(-200, -150);
             Vector2 b1_size = new Vector2(168, 65);
             Action b1_action = actions[0];
             ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
-            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
+            tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             
             Vector2 b2_pos = new Vector2(200, -150);
             Vector2 b2_size = new Vector2(168, 65);
             Action b2_action = actions[1];
             ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
-            tmpInputWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
+            tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
             
             Vector2 t1_pos = new Vector2(530, 140);
             Vector2 t1_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateText(t1_pos, t1_size, "Enter server address :", 16, inputFieldObject.transform));
+            tmpWindow.Add(CreateText(t1_pos, t1_size, "Enter server address :", 16, inputFieldObject.transform));
             
             Vector2 t2_pos = new Vector2(530, 20);
             Vector2 t2_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateText(t2_pos, t2_size, "Enter username :", 16, inputFieldObject.transform));
+            tmpWindow.Add(CreateText(t2_pos, t2_size, "Enter username :", 16, inputFieldObject.transform));
             
             Vector2 i1_pos = new Vector2(0, 250);
             Vector2 i1_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+            tmpWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
             
             Vector2 i2_pos = new Vector2(0, 130);
             Vector2 i2_size = new Vector2(400, 100);
-            tmpInputWindow.Add(CreateNewInputField(i2_pos, i2_size, inputFieldObject.transform));
+            tmpWindow.Add(CreateNewInputField(i2_pos, i2_size, inputFieldObject.transform));
             
-            tmpInputWindow[1].SetActive(true);
-            tmpInputWindow[2].SetActive(true);
+            tmpWindow[1].SetActive(true);
+            tmpWindow[2].SetActive(true);
         }
 
         public static GameObject CreateNewInputField(Vector2 position, Vector2 size,Transform parent)
@@ -283,7 +342,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                 var placeHolder = inputField.GetComponentsInChildren<Text>()[0].gameObject;
                 if (placeHolder != null)
                 {
-                    placeHolder.GetComponent<Text>().text = placeholderText; // <- was a parameter
+                    placeHolder.GetComponent<Text>().text = placeholderText; // placeholderText was a parameter
                     placeHolder.SetActive(true);
                 }
                 
@@ -415,7 +474,8 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     public enum InputFieldType
     {
         newSave,
-        username
+        username,
+        deleteSave
     }
     public class ButtonImage
     {
@@ -446,7 +506,6 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     {
         public MainMenuButton button;
         public bool Disabled;
-        public bool isPressed;
     }
 
     public enum UISection

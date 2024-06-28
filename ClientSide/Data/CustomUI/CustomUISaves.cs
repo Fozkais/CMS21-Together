@@ -15,6 +15,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI
     public static class CustomUISaves
     {
         public static int saveIndex = 0;
+        private static (bool, int) pressed;
         
         public static void InitializeSavesMenu()
         {
@@ -88,10 +89,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static void OpenHostMenu()
         {
-            for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+            for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
+                Object.Destroy(CustomUIBuilder.tmpWindow[i]);
                     
-            CustomUIBuilder.tmpInputWindow.Clear();
+            CustomUIBuilder.tmpWindow.Clear();
             
             CustomUIManager.DisableUI(UISection.MP_Saves);
             CustomUIManager.EnableUI(UISection.MP_Host);
@@ -112,12 +113,16 @@ namespace CMS21Together.ClientSide.Data.CustomUI
 
         private static void SaveButtonAction(int index)
         {
+            for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
+                Object.Destroy(CustomUIBuilder.tmpWindow[i]);
+            CustomUIBuilder.tmpWindow.Clear();
+            
+            for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
+            CustomUIBuilder.tmpWindow2.Clear();
+            
             if (GetSaveName(index) != "New game")
             {
-                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
-                CustomUIBuilder.tmpInputWindow.Clear();
-                
                 CustomUIBuilder.CreateSaveInfoPanel(SavesManager.ModSaves[index+4]);
                 /*Vector2 position = new Vector2(600, 0);
                 Vector2 size = new Vector2(600, 300);
@@ -165,29 +170,24 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             }
             else
             {
-                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
-                    
-                CustomUIBuilder.tmpInputWindow.Clear();
-                
                 CustomUIManager.LockUI(CustomUIManager.currentSection);
                 
                 Vector2 position = new Vector2(600, 0);
                 Vector2 size = new Vector2(600, 300);
                 Action a1 = delegate
                 {
-                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
                     
-                    CustomUIBuilder.tmpInputWindow.Clear();
+                    CustomUIBuilder.tmpWindow2.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
                 Action a2 = delegate
                 {
-                    var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
+                    var _index = CustomUIBuilder.tmpWindow2.Count - 1;
                     
-                    InputField inputField = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
-                    StringSelector selector = CustomUIBuilder.tmpInputWindow[_index-1].GetComponentInChildren<StringSelector>();
+                    InputField inputField = CustomUIBuilder.tmpWindow2[_index].GetComponentInChildren<InputField>();
+                    StringSelector selector = CustomUIBuilder.tmpWindow2[_index-1].GetComponentInChildren<StringSelector>();
                     string saveName = inputField.text;
                     int selectectGamemode = selector.Current;
 
@@ -201,11 +201,12 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     SavesManager.ModSaves[index + 4].selectedGamemode = SavesManager.GetGamemodeFromInt(selectectGamemode);
                     CustomUIManager.MP_Saves_Buttons[index].button.GetComponentInChildren<Text>().text = SavesManager.ModSaves[index+4].Name;
                     CustomUIManager.MP_Saves_Buttons[index].button.OnEnable();
+                    SavesManager.SaveModSave(index + 4);
                     
-                    for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                        Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                        Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
                     
-                    CustomUIBuilder.tmpInputWindow.Clear();
+                    CustomUIBuilder.tmpWindow2.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                 };
                 

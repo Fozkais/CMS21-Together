@@ -141,18 +141,18 @@ namespace CMS21Together.ClientSide.Data.CustomUI
             Vector2 size = new Vector2(600, 400);
             Action a1 = delegate
             {
-                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpWindow[i]);
                 
-                CustomUIBuilder.tmpInputWindow.Clear();
+                CustomUIBuilder.tmpWindow.Clear();
                 CustomUIManager.UnlockUI(CustomUIManager.currentSection);
             };
             Action a2 = delegate
             {
 
-                var _index = CustomUIBuilder.tmpInputWindow.Count - 1;
-                InputField inputFiel2 = CustomUIBuilder.tmpInputWindow[_index].GetComponentInChildren<InputField>();
-                InputField inputFiel1 = CustomUIBuilder.tmpInputWindow[_index-1].GetComponentInChildren<InputField>();
+                var _index = CustomUIBuilder.tmpWindow.Count - 1;
+                InputField inputFiel2 = CustomUIBuilder.tmpWindow[_index].GetComponentInChildren<InputField>();
+                InputField inputFiel1 = CustomUIBuilder.tmpWindow[_index-1].GetComponentInChildren<InputField>();
                 string username = inputFiel2.text;
                 string address = inputFiel1.text;
                 
@@ -171,10 +171,10 @@ namespace CMS21Together.ClientSide.Data.CustomUI
                     return;
                 
                 
-                for (int i = 0; i < CustomUIBuilder.tmpInputWindow.Count; i++)
-                    Object.Destroy(CustomUIBuilder.tmpInputWindow[i]);
+                for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
+                    Object.Destroy(CustomUIBuilder.tmpWindow[i]);
                 
-                CustomUIBuilder.tmpInputWindow.Clear();
+                CustomUIBuilder.tmpWindow.Clear();
                 CustomUIManager.UnlockUI(CustomUIManager.currentSection);
             };
             
