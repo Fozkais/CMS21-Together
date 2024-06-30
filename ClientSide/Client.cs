@@ -43,7 +43,7 @@ public class Client : MonoBehaviour
         ConnectToServer();
     }
 
-    public void ConnectToServer()
+    private void ConnectToServer()
     {
         InitializeClientData();
 

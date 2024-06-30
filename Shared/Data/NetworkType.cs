@@ -3,5 +3,6 @@
 public enum NetworkType
 {
     tcp,
+    udp,
     steam
 }

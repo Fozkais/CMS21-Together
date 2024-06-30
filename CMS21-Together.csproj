@@ -42,6 +42,13 @@
     <Compile Include="ClientSide\Transports\ClientUDP.cs" />
     <Compile Include="MainMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServerSide\Data\ServerData.cs" />
+    <Compile Include="ServerSide\Server.cs" />
+    <Compile Include="ServerSide\ServerConnection.cs" />
+    <Compile Include="ServerSide\SteamSocket.cs" />
+    <Compile Include="ServerSide\Transports\SteamConnection.cs" />
+    <Compile Include="ServerSide\Transports\TCPConnection.cs" />
+    <Compile Include="ServerSide\Transports\UDPConnection.cs" />
     <Compile Include="Shared\ApiCalls.cs" />
     <Compile Include="Shared\DataHelper.cs" />
     <Compile Include="Shared\Data\GameScene.cs" />
@@ -209,9 +216,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ServerSide\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
