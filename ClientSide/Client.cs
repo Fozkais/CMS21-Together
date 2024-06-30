@@ -1,163 +1,74 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Car;
-using CMS21Together.ClientSide.Data.PlayerData;
-using CMS21Together.ClientSide.Transport;
-using CMS21Together.Shared;
+using CMS21Together.ClientSide.Transports;
+using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-namespace CMS21Together.ClientSide
+namespace CMS21Together.ClientSide;
+
+[RegisterTypeInIl2Cpp]
+public class Client : MonoBehaviour
 {
-    [RegisterTypeInIl2Cpp]
-    public class Client: MonoBehaviour
+    public static Client Instance;
+    public bool isConnected;
+
+    public delegate void PacketHandler(Packet _packet);
+    public static Dictionary<int, PacketHandler> PacketHandlers;
+    
+    public NetworkType networkType;
+
+    public ClientSteam steam;
+    public ClientTCP tcp;
+    public ClientUDP udp;
+
+    public void Initialize()
     {
-        public static Client Instance;
-        public static int dataBufferSize = 4096;
-
-        public string username = "player";
-        public string ip = "127.0.0.1";
-        public int port;
-        public int Id;
-        public ClientTCP tcp;
-        public ClientUDP udp;
-
-        public bool isConnected;
-        public static bool forceDisconnected;
-
-        public delegate void PacketHandler(Packet _packet);
-
-        public static Dictionary<int, PacketHandler> PacketHandlers;
-
-        public ThreadManager threadManager;
-
-        public void Awake()
+        if (Instance == null)
+            Instance = this;
+        else if (Instance != this)
         {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else if (Instance != this)
-            {
-                MelonLogger.Msg("Instance already exists, destroying object!");
-                Destroy(this);
-            }
+            MelonLogger.Msg("Instance already exists, destroying object!");
+            Destroy(this);
+        }
+    }
+
+    public void ConnectToServer(NetworkType type)
+    {
+        networkType = type;
+        ClientData.Instance = new ClientData();
+        ConnectToServer();
+    }
+
+    public void ConnectToServer()
+    {
+        InitializeClientData();
+
+        if (networkType == NetworkType.steam)
+        {
+            // add when steamNetworking is implemented
+        }
+        else if (networkType == NetworkType.tcp)
+        {
             tcp = new ClientTCP();
             udp = new ClientUDP();
+
+            tcp.Connect();
         }
 
-        public void ClientOnApplicationQuit()
+        isConnected = true;
+    }
+
+    private void InitializeClientData()
+    {
+        PacketHandlers = new Dictionary<int, PacketHandler>()
         {
-           // ClientSend.Disconnect(Instance.Id); TODO:FIX
-        }
+        };
+    }
 
-
-        public void ConnectToServer(string _ipAdress)
-        {
-            InitializeClientData();
-            Instance.ip = _ipAdress;
-            Instance.port = MainMod.PORT;
-
-            ClientData data = new ClientData();
-            ClientData.Instance = data;
-
-            try
-            {
-                isConnected = true;
-                tcp.Connect();
-                //udp.Connect(((IPEndPoint)tcp.socket.Client.LocalEndPoint).Port);
-            }
-            catch (Exception ex) // Capturer toutes les exceptions possibles
-            {
-                MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
-                Client.Instance.Disconnect();
-            }
-
-            if (!isConnected)
-            {
-                // Traiter les erreurs de connexion ici
-                PacketHandlers.Clear();
-            }
-        }
-
-        private void InitializeClientData()
-        {
-            PacketHandlers = new Dictionary<int, PacketHandler>()
-            {
-                { (int)PacketTypes.welcome, ClientHandle.Welcome },
-                { (int)PacketTypes.contentInfo, ClientHandle.ContentsInfo },
-                { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
-                { (int)PacketTypes.keepAliveConfirmed, ClientHandle.KeepAliveConfirmation},
-                { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
-                { (int)PacketTypes.readyState, ClientHandle.ReadyState },
-                { (int)PacketTypes.playerInfo, ClientHandle.PlayerInfo },
-                { (int)PacketTypes.playersInfo, ClientHandle.PlayersInfo },
-                { (int)PacketTypes.startGame, ClientHandle.StartGame },
-                { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
-                
-                { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
-                { (int)PacketTypes.playerInitialPos, ClientHandle.playerInitialPos },
-                { (int)PacketTypes.playerRotation, ClientHandle.playerRotation},
-                { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange},
-                { (int)PacketTypes.stats, ClientHandle.playerStats},
-                { (int)PacketTypes.inventoryItem, ClientHandle.InventoryItem},
-                { (int)PacketTypes.inventoryGroupItem, ClientHandle.InventoryGroupItem},
-                
-                { (int)PacketTypes.lifter, ClientHandle.Lifter},
-                { (int)PacketTypes.tireChanger, ClientHandle.TireChange},
-                { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer},
-                { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
-                { (int)PacketTypes.takeOffEngineFromStand, ClientHandle.TakeOffEngineFromStand},
-                { (int)PacketTypes.engineCrane, ClientHandle.EngineCrane},
-                { (int)PacketTypes.setEngineOnStand, ClientHandle.setEngineOnStand},
-                { (int)PacketTypes.setGroupEngineOnStand, ClientHandle.setGroupEngineOnStand},
-                { (int)PacketTypes.oilBin, ClientHandle.OilBin},
-                { (int)PacketTypes.springClampGroup, ClientHandle.SpringClampGroup},
-                { (int)PacketTypes.springClampClear, ClientHandle.SpringClampClear},
-                { (int)PacketTypes.toolMove, ClientHandle.ToolsMove},
-                
-                { (int)PacketTypes.carSpawn, ClientHandle.CarSpawn},
-                { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
-                { (int)PacketTypes.carfluidsData, ClientHandle.CarFluidsData},
-                //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
-                { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
-                { (int)PacketTypes.carPart, ClientHandle.PartScript},
-                { (int)PacketTypes.bodyPart, ClientHandle.CarPart},
-                { (int)PacketTypes.carParts, ClientHandle.PartScripts},
-                { (int)PacketTypes.bodyParts, ClientHandle.CarParts},
-            };
-            MelonLogger.Msg("Initialized Packets!");
-        }
-        
-        public void Disconnect()
-        {
-            if (isConnected)
-            {
-                CarHarmonyHooks.ListenToDeleteCar = false;
-                
-                Application.runInBackground = false;
-                isConnected = false;
-                tcp.Disconnect();
-                udp.Disconnect();
-                if(tcp.socket != null)
-                    tcp.socket.Close();
-                if (udp.socket != null)
-                    udp.socket.Close();
-
-                ClientData.Instance.GameReady = false;
-                ClientData.Instance = null;
-                GameData.Instance = null;
-                
-                ModInventory.handledGroupItem.Clear();
-                ModInventory.handledItem.Clear();
-
-                ModUI.Instance.window = guiWindow.main;
-                
-                MelonLogger.Msg("CL : Disconnected from server.");
-            }
-            CarHarmonyHooks.ListenToDeleteCar = true;
-            ApiCalls.API_M2(ContentManager.Instance.OwnedContents);
-        }
+    public void Disconnect()
+    {
+        // TODO: Implement Disconnect
     }
 }

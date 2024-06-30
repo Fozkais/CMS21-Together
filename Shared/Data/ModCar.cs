@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using CMS21Together.ClientSide.Data;
 using Il2Cpp;
-using UnityEngine.Serialization;
 
 namespace CMS21Together.Shared.Data
 {
@@ -39,18 +37,6 @@ namespace CMS21Together.Shared.Data
 
 
         public ModCar() {}
-
-        public ModCar(int _carLoaderID, int _carVersion,int _carPosition=-1)
-        {
-            this.carLoaderID = _carLoaderID;
-            this.carID = GameData.Instance.carLoaders[_carLoaderID].carToLoad;
-            this.partInfo = new ModPartInfo();
-            this.carPosition = _carPosition;
-            this.carVersion = _carVersion;
-
-            this.isFromServer = false;
-        }
-        
         public ModCar(int _carLoaderID, string _carID, int _carVersion,int _carPosition=-1)
         {
             this.carLoaderID = _carLoaderID;
