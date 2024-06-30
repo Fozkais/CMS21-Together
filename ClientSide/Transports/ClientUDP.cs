@@ -22,7 +22,7 @@ public class ClientUDP
             socket.BeginReceive(ReceiveCallback, null);
 
             using Packet packet = new Packet();
-            SendData(packet);
+            Send(packet);
         }
         catch (Exception e)
         {
@@ -30,7 +30,7 @@ public class ClientUDP
         }
     }
 
-    private void SendData(Packet packet)
+    public void Send(Packet packet)
     {
         try
         {

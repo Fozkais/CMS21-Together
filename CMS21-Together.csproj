@@ -92,6 +92,7 @@
     <Compile Include="Shared\Data\Vanilla\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelsAlignment.cs" />
+    <Compile Include="Shared\SteamworksUtils.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +104,9 @@
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Facepunch.Steamworks.Win64">
+      <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
       <HintPath>Libs\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
@@ -174,6 +178,7 @@
     <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
     <Content Include="Libs\0Harmony.dll" />
     <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
+    <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
     <Content Include="Libs\Il2Cppcom.rlabrecque.steamworks.net.dll" />
     <Content Include="Libs\Il2CppInterop.Runtime.dll" />
     <Content Include="Libs\Il2Cppmscorlib.dll" />

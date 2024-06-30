@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Transports;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -47,7 +49,8 @@ public class Client : MonoBehaviour
 
         if (networkType == NetworkType.steam)
         {
-            // add when steamNetworking is implemented
+            SteamId lobbyID = SteamworksUtils.ConvertLobbyID(""); // TODO:Fix
+            steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
         }
         else if (networkType == NetworkType.tcp)
         {
@@ -58,6 +61,20 @@ public class Client : MonoBehaviour
         }
 
         isConnected = true;
+    }
+
+    public void SendData(Packet packet, bool reliable)
+    {
+        switch (networkType)
+        {
+            case NetworkType.tcp:
+                if(reliable) tcp.Send(packet);
+                else udp.Send(packet);
+                break;
+            case NetworkType.steam:
+                steam.Send(packet, reliable);
+                break;
+        }
     }
 
     private void InitializeClientData()
