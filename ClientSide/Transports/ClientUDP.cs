@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 
@@ -16,7 +17,7 @@ public class ClientUDP
         socket = new UdpClient();
         try
         {
-            endPoint = new IPEndPoint(IPAddress.Parse(""), MainMod.PORT); // TODO fix 
+            endPoint = new IPEndPoint(IPAddress.Parse(ClientData.UserData.ip), MainMod.PORT);
             socket.Connect(endPoint);
 
             socket.BeginReceive(ReceiveCallback, null);
@@ -34,7 +35,7 @@ public class ClientUDP
     {
         try
         {
-            packet.InsertInt(0); // TODO fix 
+            packet.InsertInt(ClientData.UserData.playerID);
             if (socket != null)
                 socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
         }
@@ -91,7 +92,7 @@ public class ClientUDP
         }, null);
     }
 
-    private void Disconnect()
+    public void Disconnect()
     {
         if (socket != null)
         {

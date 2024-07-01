@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 
@@ -25,7 +26,7 @@ public class ClientTCP
             };
             receiveBuffer = new byte[dataBufferSize];
 
-            socket.BeginConnect("", MainMod.PORT, ConnectCallback, socket); // TODO fix 
+            socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
         }
         catch (Exception e)
         {

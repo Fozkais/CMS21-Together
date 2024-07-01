@@ -37,6 +37,7 @@
     <Compile Include="ClientSide\Client.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\UserData.cs" />
     <Compile Include="ClientSide\Transports\ClientSteam.cs" />
     <Compile Include="ClientSide\Transports\ClientTCP.cs" />
     <Compile Include="ClientSide\Transports\ClientUDP.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Shared\Data\Vanilla\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelsAlignment.cs" />
+    <Compile Include="Shared\TogetherModManager.cs" />
     <Compile Include="Shared\SteamworksUtils.cs" />
     <Compile Include="ThreadManager.cs" />
   </ItemGroup>

@@ -49,7 +49,7 @@ public class Client : MonoBehaviour
 
         if (networkType == NetworkType.steam)
         {
-            SteamId lobbyID = SteamworksUtils.ConvertLobbyID(""); // TODO:Fix
+            SteamId lobbyID = SteamworksUtils.ConvertLobbyID(ClientData.UserData.lobbyID);
             steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
         }
         else if (networkType == NetworkType.tcp)
@@ -86,6 +86,15 @@ public class Client : MonoBehaviour
 
     public void Disconnect()
     {
-        // TODO: Implement Disconnect
+        if(!isConnected) return;
+
+        Application.runInBackground = false;
+        isConnected = false;
+        
+        tcp.Disconnect();
+        udp.Disconnect();
+        MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
+        // ApiCalls.API_M2(ContentManager.Instance.OwnedContents); TODO: Fix
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
-
+using CMS21Together.ClientSide;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
@@ -27,6 +28,10 @@ namespace CMS21Together
         {
             GameObject modObject = new GameObject("TogetherMod");
             Object.DontDestroyOnLoad(modObject);
+
+            var cl = modObject.AddComponent<Client>();
+            var sv = modObject.AddComponent<Server>();
+            cl.Initialize();
            
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
