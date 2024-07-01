@@ -25,6 +25,8 @@ public class Server : MonoBehaviour
     public UdpClient udp;
     public SteamSocket steam;
 
+    public bool isRunning;
+
     public void StartServer(NetworkType type)
     {
         networkType = type;
@@ -58,7 +60,33 @@ public class Server : MonoBehaviour
         }
         
         Application.runInBackground = true;
+        isRunning = true;
         MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
+    }
+
+    public void CloseServer()
+    {
+        if(!isRunning) return;
+        
+        isRunning = false;
+            
+        Application.runInBackground = false;
+        foreach (int id in clients.Keys)
+        {
+          //  ServerSend.DisconnectClient(id, "Server is shutting down.");
+        }
+
+        if(udp != null)
+            udp.Close();
+        if(tcp != null)
+            tcp.Stop();
+            
+        if(clients != null)
+            clients.Clear();
+        if(packetHandlers != null)
+            packetHandlers.Clear();
+            
+        MelonLogger.Msg("[Server->CloseServer] Server Closed.");
     }
 
     private void UDPReceiveCallback(IAsyncResult result)
