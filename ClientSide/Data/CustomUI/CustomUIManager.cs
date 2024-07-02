@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2CppCMS.MainMenu.Sections;
 using Il2CppCMS.UI.Controls;
@@ -46,6 +47,9 @@ public static class CustomUIManager
     {
         yield return new WaitForSeconds(0.1f);
         yield return new WaitForEndOfFrame();
+
+        CustomUIBuilder.LoadCustomlogo();
+        SavesManager.Initialize();
         
         GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
         templateButton = GameObject.Find("MainMenuButton");
