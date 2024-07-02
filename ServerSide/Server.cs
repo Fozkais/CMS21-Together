@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 using Steamworks;
@@ -16,7 +18,7 @@ public class Server : MonoBehaviour
 {
     public static Server Instance;
     
-    public delegate void packetHandler(int _fromClient, Packet _packet);
+    public delegate void packetHandler(int fromClient, Packet packet);
     public static Dictionary<int, packetHandler> packetHandlers;
     
     public Dictionary<int, ServerConnection> clients = new Dictionary<int, ServerConnection>();
@@ -150,6 +152,8 @@ public class Server : MonoBehaviour
 
         packetHandlers = new Dictionary<int, packetHandler>()
         {
+            { (int)PacketTypes.connect, ServerHandle.ConnectValidationPacket },
+            { (int)PacketTypes.disconnect, ServerHandle.DisconnectPacket },
         };
     }
 }

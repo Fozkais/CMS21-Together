@@ -1,5 +1,6 @@
 ﻿using System;
 using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using MelonLoader;
@@ -33,6 +34,7 @@ namespace CMS21Together
             var sv = modObject.AddComponent<Server>();
             cl.Initialize();
            
+            TogetherModManager.LoadUserData();
             isModInitialized = true;
             LoggerInstance.Msg("Together Mod Initialized!");
         }
@@ -45,6 +47,7 @@ namespace CMS21Together
         public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
         {
             if(!isModInitialized) {return;}
+            CustomUIManager.OnSceneChange(sceneName);
             
         }
 

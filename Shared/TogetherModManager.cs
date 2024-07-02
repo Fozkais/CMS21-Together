@@ -13,6 +13,8 @@ public static class TogetherModManager
     
     public static UserData LoadUserData()
     {
+        if (currentUserData != null) return currentUserData;
+        
         currentUserData = new UserData();
         if (File.Exists(userDataPath))
         {

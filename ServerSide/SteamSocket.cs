@@ -5,7 +5,7 @@ using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
 
-namespace CMS21Together.ServerSide.Transports;
+namespace CMS21Together.ServerSide;
 
 public class SteamSocket : SocketManager
 {
@@ -48,7 +48,7 @@ public class SteamSocket : SocketManager
                 if (Server.Instance.clients[ClientID].isConnected == false)
                 {
                     Server.Instance.clients[ClientID].steam.connection = connection;
-                    Server.Instance.clients[ClientID].connectionType = NetworkType.steam;
+                    Server.Instance.clients[ClientID].Connect(NetworkType.steam, null);
                     OnConnected(connection, info);
                     break;
                 }
@@ -58,13 +58,14 @@ public class SteamSocket : SocketManager
     
     public override void OnConnecting(Connection connection, ConnectionInfo info)
     {
-        MelonLogger.Msg("[SteamSocket->OnDisconnected] A client is trying to connect...");
+        MelonLogger.Msg("[SteamSocket->OnConnecting] A client is trying to connect...");
+        
         base.OnConnecting(connection, info);
     }
 
     public override void OnConnected(Connection connection, ConnectionInfo info)
     {
-        MelonLogger.Msg("[SteamSocket->OnDisconnected] A client connected successfully.");
+        MelonLogger.Msg("[SteamSocket->OnConnected] A client connected successfully.");
         base.OnConnected(connection, info);
     }
 

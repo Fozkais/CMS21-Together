@@ -1,4 +1,5 @@
-﻿using CMS21Together.Shared;
+﻿using System.Collections.Generic;
+using CMS21Together.Shared;
 
 namespace CMS21Together.ClientSide.Data;
 
@@ -11,4 +12,6 @@ public class ClientData
     {
         UserData = TogetherModManager.LoadUserData();
     }
+
+    public Dictionary<int, UserData> ConnectedClients = new Dictionary<int, UserData>();
 }

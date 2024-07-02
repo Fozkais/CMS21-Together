@@ -43,6 +43,8 @@
     <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs" />
     <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
+    <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\UserData.cs" />
     <Compile Include="ClientSide\Transports\ClientSteam.cs" />
     <Compile Include="ClientSide\Transports\ClientTCP.cs" />
@@ -50,6 +52,8 @@
     <Compile Include="MainMod.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServerSide\Data\ServerData.cs" />
+    <Compile Include="ServerSide\Data\ServerHandle.cs" />
+    <Compile Include="ServerSide\Data\ServerSend.cs" />
     <Compile Include="ServerSide\Server.cs" />
     <Compile Include="ServerSide\ServerConnection.cs" />
     <Compile Include="ServerSide\SteamSocket.cs" />
@@ -66,7 +70,6 @@
     <Compile Include="Shared\Data\ModColor.cs" />
     <Compile Include="Shared\Data\ModSaveData.cs" />
     <Compile Include="Shared\Data\NetworkType.cs" />
-    <Compile Include="Shared\Data\Packet.cs" />
     <Compile Include="Shared\Data\Vanilla\ModBodyPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModBonusPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModCarFluid.cs" />
@@ -109,6 +112,8 @@
     <Compile Include="Shared\Data\Vanilla\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelsAlignment.cs" />
+    <Compile Include="Shared\Packet.cs" />
+    <Compile Include="Shared\PacketTypes.cs" />
     <Compile Include="Shared\SavesManager.cs" />
     <Compile Include="Shared\TogetherModManager.cs" />
     <Compile Include="Shared\SteamworksUtils.cs" />

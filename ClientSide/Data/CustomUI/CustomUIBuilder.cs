@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
 using Il2CppCMS.MainMenu.Controls;
 using Il2CppCMS.UI.Controls;
 using Il2CppCMS.UI.Logic;
+using Il2CppInterop.Runtime;
 using Il2CppSystem.Globalization;
 using MelonLoader;
 using UnityEngine;
@@ -20,6 +22,30 @@ public static class CustomUIBuilder
 
         public static List<GameObject> tmpWindow = new List<GameObject>();
         public static List<GameObject> tmpWindow2 = new List<GameObject>();
+        
+        public static void LoadCustomlogo()
+        {
+            Stream stream = DataHelper.LoadContent("CMS21Together.Assets.cms21TogetherLogo.png");
+
+            byte[] buffer = new byte[stream.Length];
+            stream.Read(buffer, 0, (int)stream.Length);
+
+            Object[] textures = Object.FindObjectsOfTypeIncludingAssets(Il2CppType.Of<Texture2D>());
+            if (textures.Length < 1) { return; }
+            
+            for (var index = 0; index < textures.Length; index++)
+            {
+                Texture2D texture = textures[index].TryCast<Texture2D>();
+
+                if (texture != null)
+                {
+                    if (texture.name == "cms21Logo")
+                    {
+                        ImageConversion.LoadImage(texture, buffer);
+                    }
+                }
+            }
+        }
 
         
         public static void CreateSaveInfoPanel(ModSaveData saveData)

@@ -1,5 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
 using CMS21Together.Shared.Data;
 using MelonLoader;
@@ -35,6 +37,8 @@ public class ServerConnection
             connectionType = NetworkType.tcp;
         }
         
+        if(connectionType != NetworkType.udp)
+            ServerSend.ConnectPacket(id, "Connected to the server.");
         isConnected = true;
     }
     
@@ -58,5 +62,11 @@ public class ServerConnection
         steam.Disconnect();
             
         isConnected = false;
+    }
+
+    public void SendToLobby(string username)
+    {
+        ServerData.Instance.ConnectedClients[id] = new UserData(username, id);
+        ServerSend.UserDataPacket(ServerData.Instance.ConnectedClients[id]);
     }
 }

@@ -72,7 +72,7 @@ public static class UI_Lobby
             CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
         }
         
-        public static void AddPlayerToLobby(string username, int index)
+        public static void AddPlayerToLobby(string username, int index) // TODO: add a way for player to deseapear from lobby
         {
             var lobbyPlayerObject = new GameObject("LobbyPlayer");
             var img = lobbyPlayerObject.AddComponent<Image>();

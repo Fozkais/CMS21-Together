@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -81,6 +82,9 @@ public class Client : MonoBehaviour
     {
         PacketHandlers = new Dictionary<int, PacketHandler>()
         {
+            { (int)PacketTypes.connect, ClientHandle.ConnectPacket },
+            { (int)PacketTypes.disconnect, ClientHandle.DisconnectPacket },
+            { (int)PacketTypes.userData, ClientHandle.UserDataPacket },
         };
     }
 
