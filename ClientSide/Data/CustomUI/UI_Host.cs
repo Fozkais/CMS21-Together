@@ -48,7 +48,7 @@ public static class UI_Host
         {
             CustomUIManager.DisableUI(CustomUISection.MP_Host);
             
-            //CustomUISaves.saveIndex = 0; TODO: Uncomment when saves are implemented
+            UI_Saves.saveIndex = 0;
             CustomUIManager.EnableUI(CustomUISection.MP_Saves);
         }
 }
