@@ -45,6 +45,8 @@
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
+    <Compile Include="ClientSide\Data\Player\Movement.cs" />
+    <Compile Include="ClientSide\Data\Player\Rotation.cs" />
     <Compile Include="ClientSide\Data\UserData.cs" />
     <Compile Include="ClientSide\Transports\ClientSteam.cs" />
     <Compile Include="ClientSide\Transports\ClientTCP.cs" />
@@ -112,6 +114,8 @@
     <Compile Include="Shared\Data\Vanilla\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelsAlignment.cs" />
+    <Compile Include="Shared\Data\Vanilla\QuaternionSerializable.cs" />
+    <Compile Include="Shared\Data\Vanilla\Vector3Serializable.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />
     <Compile Include="Shared\SavesManager.cs" />

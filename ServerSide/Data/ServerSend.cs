@@ -2,6 +2,7 @@
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -70,4 +71,23 @@ public static class ServerSend
 
     #endregion
 
+    public static void PositionPacket(int fromClient, Vector3Serializable position)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.position))
+        {
+            packet.Write(position);
+                    
+            SendData(fromClient, packet);
+        }
+    }
+
+    public static void RotationPacket(int fromClient, QuaternionSerializable rotation)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.rotation))
+        {
+            packet.Write(rotation);
+                    
+            SendData(fromClient, packet);
+        }
+    }
 }

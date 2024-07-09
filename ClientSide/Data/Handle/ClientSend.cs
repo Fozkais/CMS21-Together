@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -22,6 +23,24 @@ public class ClientSend
             packet.Write(ContentManager.Instance.gameVersion);*/
             packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
                     
+            SendData(packet);
+        }
+    }
+
+    public static void PositionPacket(Vector3Serializable position)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.position))
+        {
+            packet.Write(position);
+            SendData(packet);
+        }
+    }
+    
+    public static void RotationPacket(QuaternionSerializable rotation)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.rotation))
+        {
+            packet.Write(rotation);
             SendData(packet);
         }
     }

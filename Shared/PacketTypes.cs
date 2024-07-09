@@ -4,5 +4,8 @@ public enum PacketTypes
 {
     connect,
     disconnect,
-    userData
+    userData,
+    
+    position,
+    rotation
 }

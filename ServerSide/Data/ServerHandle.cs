@@ -1,4 +1,5 @@
 ﻿using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
@@ -35,5 +36,21 @@ public static class ServerHandle
     {
         MelonLogger.Msg("[ServerHandle->DisconnectPacket] as disconnected from server.");
         Server.Instance.clients[fromclient].Disconnect();
+    }
+    
+    public static void PositionPacket(int fromClient, Packet packet)
+    {
+        Vector3Serializable _position = packet.Read<Vector3Serializable>();
+        ServerData.Instance.ConnectedClients[fromClient].position = _position;
+                
+        ServerSend.PositionPacket(fromClient, _position);
+    }
+                
+    public static void RotationPacket(int fromClient, Packet packet)
+    {
+        QuaternionSerializable _rotation = packet.Read<QuaternionSerializable>();
+        ServerData.Instance.ConnectedClients[fromClient].rotation = _rotation;
+                    
+        ServerSend.RotationPacket(fromClient, _rotation);
     }
 }
