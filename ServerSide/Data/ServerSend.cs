@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
@@ -75,6 +76,7 @@ public static class ServerSend
     {
         using (Packet packet = new Packet((int)PacketTypes.position))
         {
+            packet.Write(fromClient);
             packet.Write(position);
                     
             SendData(fromClient, packet);
@@ -85,7 +87,30 @@ public static class ServerSend
     {
         using (Packet packet = new Packet((int)PacketTypes.rotation))
         {
+            packet.Write(fromClient);
             packet.Write(rotation);
+                    
+            SendData(fromClient, packet);
+        }
+    }
+
+    public static void ItemPacket(int fromClient, ModItem item, InventoryAction action)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.item))
+        {
+            packet.Write(action);
+            packet.Write(item);
+                    
+            SendData(fromClient, packet);
+        }
+    }
+    
+    public static void GroupItemPacket(int fromClient, ModGroupItem item, InventoryAction action)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.groupItem))
+        {
+            packet.Write(action);
+            packet.Write(item);
                     
             SendData(fromClient, packet);
         }

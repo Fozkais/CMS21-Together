@@ -1,4 +1,6 @@
-﻿using CMS21Together.Shared.Data;
+﻿using System.Linq;
+using CMS21Together.ClientSide.Data.Player;
+using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using MelonLoader;
 
@@ -52,5 +54,73 @@ public static class ServerHandle
         ServerData.Instance.ConnectedClients[fromClient].rotation = _rotation;
                     
         ServerSend.RotationPacket(fromClient, _rotation);
+    }
+    
+    public static void ItemPacket(int _fromClient, Packet _packet)
+    {
+        InventoryAction action = _packet.Read<InventoryAction>();
+                
+
+        if (action != InventoryAction.resync)
+        {
+            ModItem item = _packet.Read<ModItem>();
+                    
+            if (action == InventoryAction.add)
+            {
+                if (!ServerData.Instance.items.Any(s => s.UID == item.UID))
+                {
+                    ServerData.Instance.items.Add(item);
+                }
+            }
+            else
+            {
+                if (ServerData.Instance.items.Any(s => s.UID == item.UID))
+                {
+                    int index = ServerData.Instance.items.FindIndex(s => s.UID == item.UID);
+                    ServerData.Instance.items.Remove(ServerData.Instance.items[index]);
+                }
+            }
+            ServerSend.ItemPacket(_fromClient, item, action);
+            return;
+        }
+
+        foreach (ModItem modItem in ServerData.Instance.items)
+        {
+            ServerSend.ItemPacket(_fromClient, modItem, action);
+        }
+    }
+    
+    public static void GroupItemPacket(int _fromClient, Packet _packet)
+    {
+        InventoryAction action = _packet.Read<InventoryAction>();
+                
+
+        if (action != InventoryAction.resync)
+        {
+            ModGroupItem item = _packet.Read<ModGroupItem>();
+                    
+            if (action == InventoryAction.add)
+            {
+                if (!ServerData.Instance.groupItems.Any(s => s.UID == item.UID))
+                {
+                    ServerData.Instance.groupItems.Add(item);
+                }
+            }
+            else
+            {
+                if (ServerData.Instance.groupItems.Any(s => s.UID == item.UID))
+                {
+                    int index = ServerData.Instance.groupItems.FindIndex(s => s.UID == item.UID);
+                    ServerData.Instance.groupItems.Remove(ServerData.Instance.groupItems[index]);
+                }
+            }
+            ServerSend.GroupItemPacket(_fromClient, item, action);
+            return;
+        }
+
+        foreach (ModGroupItem modItem in ServerData.Instance.groupItems)
+        {
+            ServerSend.GroupItemPacket(_fromClient, modItem, action);
+        }
     }
 }

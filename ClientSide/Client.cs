@@ -88,6 +88,9 @@ public class Client : MonoBehaviour
             
             { (int)PacketTypes.position, ClientHandle.PositionPacket },
             { (int)PacketTypes.rotation, ClientHandle.RotationPacket },
+            
+            { (int)PacketTypes.item, ClientHandle.ItemPacket },
+            { (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
         };
     }
 

@@ -55,4 +55,22 @@ public static class ClientHandle
         Rotation.UpdateRotation(id, rotation);
         packet.Dispose();
     }
+    
+    public static void ItemPacket(Packet packet)
+    {
+        InventoryAction action = packet.Read<InventoryAction>();
+        ModItem item = packet.Read<ModItem>();
+
+        MelonCoroutines.Start(Inventory.HandleItem(item, action));
+        packet.Dispose();
+    }
+    
+    public static void GroupItemPacket(Packet packet)
+    {
+        InventoryAction action = packet.Read<InventoryAction>();
+        ModGroupItem item = packet.Read<ModGroupItem>();
+
+        MelonCoroutines.Start(Inventory.HandleGroupItem(item, action));
+        packet.Dispose();
+    }
 }

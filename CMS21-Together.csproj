@@ -45,6 +45,7 @@
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
+    <Compile Include="ClientSide\Data\Player\Inventory.cs" />
     <Compile Include="ClientSide\Data\Player\Movement.cs" />
     <Compile Include="ClientSide\Data\Player\Rotation.cs" />
     <Compile Include="ClientSide\Data\UserData.cs" />

@@ -3,6 +3,7 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
+using Inventory = Il2Cpp.Inventory;
 
 namespace CMS21Together.ClientSide.Data;
 
@@ -16,7 +17,7 @@ public class ClientData
         UserData = TogetherModManager.LoadUserData();
         LoadPlayerPrefab();
     }
-
+    
     public Dictionary<int, UserData> ConnectedClients = new Dictionary<int, UserData>();
     public GameObject playerPrefab;
 

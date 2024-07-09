@@ -7,5 +7,7 @@ public enum PacketTypes
     userData,
     
     position,
-    rotation
+    rotation,
+    item,
+    groupItem
 }
