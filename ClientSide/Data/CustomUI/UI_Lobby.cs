@@ -97,7 +97,7 @@ public static class UI_Lobby
             img.rectTransform.parent = CustomUIBuilder.GetParentFromSection(CustomUISection.MP_Lobby);
             img.rectTransform.parentInternal = CustomUIBuilder.GetParentFromSection(CustomUISection.MP_Lobby);
             
-            Vector2 pos = new Vector2(600, 175 - ( CustomUIManager.MP_Lobby_Addition.Count * 75));
+            Vector2 pos = new Vector2(500, 175 - ( CustomUIManager.MP_Lobby_Addition.Count * 75));
             
             img.color = new Color(  .031f, .027f, .033f  , 0.85f);
             img.rectTransform.sizeDelta = new Vector2(600, 75);
@@ -165,6 +165,6 @@ public static class UI_Lobby
         private static void StartGame(int _saveIndex)
         {
             SavesManager.StartGame(_saveIndex);
-           // ServerSend.StartGame(null);
+            ServerSend.StartPacket(SavesManager.ModSaves[_saveIndex].selectedGamemode);
         }
 }

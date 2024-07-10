@@ -60,13 +60,17 @@ public static class ServerSend
             }
         }
         
-        public static void UserDataPacket(UserData userData)
+        public static void UserDataPacket(UserData userData, int id=-1)
         {
             using (Packet packet = new Packet((int)PacketTypes.userData))
             {
                 packet.Write(userData);
                     
-                SendDataToAll(packet);
+                    
+                if(id == -1)
+                    SendDataToAll(packet);
+                else
+                    SendData(id, packet);
             }
         }
         public static void ReadyPacket(int fromClient, bool ready, int id)
@@ -77,6 +81,16 @@ public static class ServerSend
                 packet.Write(ready);
                     
                 SendDataToAll(fromClient, packet);
+            }
+        }
+        
+        public static void StartPacket(Gamemode gamemode)
+        {
+            using (Packet packet = new Packet((int)PacketTypes.start))
+            {
+                packet.Write(gamemode);
+                
+                SendDataToAll(ClientData.UserData.playerID, packet);
             }
         }
 
@@ -147,6 +161,5 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
-
-
+    
 }
