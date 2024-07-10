@@ -8,7 +8,7 @@ public class ServerData
 {
     public static ServerData Instance;
     
-    public Dictionary<int, UserData> ConnectedClients = new Dictionary<int, UserData>();
+    public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
     public List<ModItem> items = new List<ModItem>();
     public List<ModGroupItem> groupItems = new List<ModGroupItem>();
     public int money, scrap;

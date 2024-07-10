@@ -154,6 +154,7 @@ public class Server : MonoBehaviour
         {
             { (int)PacketTypes.connect, ServerHandle.ConnectValidationPacket },
             { (int)PacketTypes.disconnect, ServerHandle.DisconnectPacket },
+            { (int)PacketTypes.readyState, ServerHandle.ReadyPacket },
             
             { (int)PacketTypes.position, ServerHandle.PositionPacket },
             { (int)PacketTypes.rotation, ServerHandle.RotationPacket },

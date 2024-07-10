@@ -42,6 +42,14 @@ public static class ClientHandle
         UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
         MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
     }
+
+    public static void ReadyPacket(Packet packet)
+    {
+        int id = packet.ReadInt();
+        bool ready = packet.Read<bool>();
+        
+        ClientData.Instance.connectedClients[id].isReady = ready;
+    }
     
     public static void PositionPacket(Packet packet)
     {

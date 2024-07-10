@@ -66,7 +66,7 @@ public class ServerConnection
 
     public void SendToLobby(string username)
     {
-        ServerData.Instance.ConnectedClients[id] = new UserData(username, id);
-        ServerSend.UserDataPacket(ServerData.Instance.ConnectedClients[id]);
+        ServerData.Instance.connectedClients[id] = new UserData(username, id);
+        ServerSend.UserDataPacket(ServerData.Instance.connectedClients[id]);
     }
 }

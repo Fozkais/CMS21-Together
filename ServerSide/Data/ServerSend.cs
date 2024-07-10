@@ -69,6 +69,16 @@ public static class ServerSend
                 SendDataToAll(userData.playerID, packet);
             }
         }
+        public static void ReadyPacket(int fromClient, bool ready, int id)
+        {
+            using (Packet packet = new Packet((int)PacketTypes.readyState))
+            {
+                packet.Write(id);
+                packet.Write(ready);
+                    
+                SendDataToAll(fromClient, packet);
+            }
+        }
 
     #endregion
 
@@ -137,4 +147,6 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+
+
 }

@@ -27,6 +27,17 @@ public class ClientSend
             SendData(packet);
         }
     }
+    
+    public static void ReadyPacket(bool isReady, int playerID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.readyState))
+        {
+            packet.Write(playerID);
+            packet.Write(isReady);
+                    
+            SendData(packet);
+        }
+    }
 
     public static void PositionPacket(Vector3Serializable position)
     {
@@ -89,4 +100,5 @@ public class ClientSend
             SendData(packet);
         }
     }
+    
 }

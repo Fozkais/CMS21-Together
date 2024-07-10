@@ -15,16 +15,16 @@ public class UserData
     public string lobbyID;
     
     [JsonIgnore] public int playerID;
+    [JsonIgnore] public bool isReady;
+    
     [JsonIgnore] public GameScene scene;
     [JsonIgnore] public Vector3Serializable position;
     [JsonIgnore] public QuaternionSerializable rotation;
     
+    
     [JsonIgnore][NonSerialized] public GameObject userObject;
     [JsonIgnore][NonSerialized] public Animator userAnimator;
-    [JsonIgnore] [NonSerialized] public Vector3Serializable lastPosition;
-
-    
-    
+    [JsonIgnore][NonSerialized] public Vector3Serializable lastPosition;
     
     public UserData()
     {
@@ -53,5 +53,11 @@ public class UserData
             userObject.name = username;
         }
             
+    }
+
+    public void DestroyPlayer()
+    {
+        if(userObject == null) return;
+        Object.Destroy(userObject);
     }
 }

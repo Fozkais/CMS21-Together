@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
@@ -27,14 +28,14 @@ public static class UI_Lobby
             Vector2 b1_size = new Vector2(336, 65);
             Action b1_action = delegate
             {
-              //  foreach (var player in ServerData.players.Values)
-               // {
-                 //   if (player != null && !player.isReady)
-                  //  {
-                  //      return;
-                  //  }
-              //  }
-             //   MelonCoroutines.Start(StartGame());
+                foreach (var player in ServerData.Instance.connectedClients.Values)
+                {
+                    if (player != null && !player.isReady)
+                    {
+                        return;
+                    }
+                }
+                MelonCoroutines.Start(StartGame());
             };
             ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Start game");
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b1_info, false); 
@@ -43,19 +44,19 @@ public static class UI_Lobby
             Vector2 b2_size = new Vector2(336, 65);
             Action b2_action = delegate
             {
-              //  foreach (int i in ClientData.Instance.players.Keys)
-              //  {
-                //    Player player =  ClientData.Instance.players[i];
-                //    if (player != null)
-                 //   {
-                  //      if (player.id == Client.Instance.Id)
-                     //   {
-                      //      player.isReady = !player.isReady;
-                           // ClientSend.SendReadyState(player.isReady, i);
-                       //     ChangeReadyState(i, player.isReady);
-                      //  }
-                  //  }
-            //    }
+                foreach (int i in ClientData.Instance.connectedClients.Keys)
+                {
+                    UserData player =  ClientData.Instance.connectedClients[i];
+                    if (player != null)
+                    {
+                        if (player.playerID == ClientData.UserData.playerID)
+                        {
+                            player.isReady = !player.isReady;
+                            ClientSend.ReadyPacket(player.isReady, i);
+                            ChangeReadyState(i, player.isReady);
+                        }
+                    }
+                }
             };
             ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Toggle Ready");
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b2_info, false); 

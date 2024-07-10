@@ -5,11 +5,12 @@ public enum PacketTypes
     connect,
     disconnect,
     userData,
+    readyState,
     
     position,
     rotation,
     item,
     groupItem,
     stat,
-    lifter
+    lifter,
 }

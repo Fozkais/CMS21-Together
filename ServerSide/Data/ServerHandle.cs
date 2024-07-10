@@ -40,10 +40,20 @@ public static class ServerHandle
         Server.Instance.clients[fromclient].Disconnect();
     }
     
+    public static void ReadyPacket(int fromClient, Packet packet)
+    {
+        int id = packet.ReadInt();
+        bool ready = packet.Read<bool>();
+
+        ServerData.Instance.connectedClients[id].isReady = ready;
+
+        ServerSend.ReadyPacket(fromClient,ready, id);
+    }
+    
     public static void PositionPacket(int fromClient, Packet packet)
     {
         Vector3Serializable _position = packet.Read<Vector3Serializable>();
-        ServerData.Instance.ConnectedClients[fromClient].position = _position;
+        ServerData.Instance.connectedClients[fromClient].position = _position;
                 
         ServerSend.PositionPacket(fromClient, _position);
     }
@@ -51,7 +61,7 @@ public static class ServerHandle
     public static void RotationPacket(int fromClient, Packet packet)
     {
         QuaternionSerializable _rotation = packet.Read<QuaternionSerializable>();
-        ServerData.Instance.ConnectedClients[fromClient].rotation = _rotation;
+        ServerData.Instance.connectedClients[fromClient].rotation = _rotation;
                     
         ServerSend.RotationPacket(fromClient, _rotation);
     }
