@@ -77,14 +77,13 @@ public class Server : MonoBehaviour
     {
         if(!isRunning) return;
         
-        isRunning = false;
-            
-        Application.runInBackground = false;
         foreach (int id in clients.Keys)
         {
-          //  ServerSend.DisconnectClient(id, "Server is shutting down.");
+            ServerSend.DisconnectPacket(id, "Server is shutting down.");
         }
-
+        isRunning = false;
+        Application.runInBackground = false;
+        
         if(udp != null)
             udp.Close();
         if(tcp != null)

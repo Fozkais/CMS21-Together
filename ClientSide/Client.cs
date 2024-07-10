@@ -4,9 +4,11 @@ using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using Il2Cpp;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 namespace CMS21Together.ClientSide;
@@ -97,6 +99,13 @@ public class Client : MonoBehaviour
         
         tcp.Disconnect();
         udp.Disconnect();
+
+        if (SceneManager.GetActiveScene().name != "Menu")
+        {
+            var manager = NotificationCenter.m_instance;
+            manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
+        }
+        
         MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
         // ApiCalls.API_M2(ContentManager.Instance.OwnedContents); TODO: Fix
 

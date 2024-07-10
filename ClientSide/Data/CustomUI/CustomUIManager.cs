@@ -42,7 +42,16 @@ public static class CustomUIManager
     public static void OnSceneChange(string scene)
     {
         if (scene == "Menu")
+        {
             MelonCoroutines.Start(InitializeCustomUI());
+
+            if (Server.Instance.isRunning)
+                Server.Instance.CloseServer();
+            if(Client.Instance.isConnected)
+                Client.Instance.Disconnect();
+            
+            Application.runInBackground = false;
+        }
     }
     
     private static IEnumerator InitializeCustomUI()
