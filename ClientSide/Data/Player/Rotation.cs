@@ -12,9 +12,9 @@ public class Rotation
 
     public static void SetSpawnRotation(int id, QuaternionSerializable rotation)
     {
-        if(!ClientData.Instance.ConnectedClients.ContainsKey(id)) return;
+        if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
 
-        var player = ClientData.Instance.ConnectedClients[id];
+        var player = ClientData.Instance.connectedClients[id];
         
         if(player.scene != ClientData.UserData.scene) return;
         if(player.userObject == null) return;
@@ -24,9 +24,9 @@ public class Rotation
     
     public static void UpdateRotation(int id, QuaternionSerializable rotation)
     {
-        if(!ClientData.Instance.ConnectedClients.ContainsKey(id)) return;
+        if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
 
-        var player = ClientData.Instance.ConnectedClients[id];
+        var player = ClientData.Instance.connectedClients[id];
         
         if(player.scene != ClientData.UserData.scene) return;
         if (player.userObject == null)

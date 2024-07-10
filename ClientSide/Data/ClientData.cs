@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
 using Inventory = Il2Cpp.Inventory;
@@ -18,7 +19,8 @@ public class ClientData
         LoadPlayerPrefab();
     }
     
-    public Dictionary<int, UserData> ConnectedClients = new Dictionary<int, UserData>();
+    public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
+    public Dictionary<int, ModCar> loadedCars = new Dictionary<int, ModCar>();
     public GameObject playerPrefab;
     public int scrap, money;
 

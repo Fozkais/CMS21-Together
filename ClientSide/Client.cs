@@ -93,6 +93,8 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
             
             { (int)PacketTypes.stat, ClientHandle.StatPacket },
+            
+            { (int)PacketTypes.lifter, ClientHandle.LifterPacket },
         };
     }
 

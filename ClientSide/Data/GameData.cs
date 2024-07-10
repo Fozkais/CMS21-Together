@@ -10,6 +10,7 @@ public class GameData
     
     public GameObject localPlayer;
     public Inventory localInventory;
+    public CarLoader[] carLoaders;
     public bool isReady;
 
     public GameData()
@@ -17,6 +18,14 @@ public class GameData
         Instance = this;
         localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
         localInventory = GameScript.Get().GetComponent<Inventory>();
+        carLoaders = new[]
+        {
+            GameScript.Get().carOnScene[0],
+            GameScript.Get().carOnScene[3],
+            GameScript.Get().carOnScene[4],
+            GameScript.Get().carOnScene[1],
+            GameScript.Get().carOnScene[2]
+        };
 
         isReady = true;
     }

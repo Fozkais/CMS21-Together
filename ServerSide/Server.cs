@@ -162,6 +162,8 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
             
             { (int)PacketTypes.stat, ServerHandle.StatPacket },
+            
+            { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
         };
     }
 }

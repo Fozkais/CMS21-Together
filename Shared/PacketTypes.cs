@@ -10,5 +10,6 @@ public enum PacketTypes
     rotation,
     item,
     groupItem,
-    stat
+    stat,
+    lifter
 }

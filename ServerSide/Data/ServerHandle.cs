@@ -140,4 +140,12 @@ public static class ServerHandle
         }
         ServerSend.StatPacket(fromClient, value, type);
     }
+    
+    public static void LifterPacket(int fromClient, Packet packet)
+    {
+        ModLifterState state = packet.Read<ModLifterState>();
+        int carLoaderID = packet.ReadInt();
+
+        ServerSend.LifterPacket(fromClient, state, carLoaderID);
+    }
 }

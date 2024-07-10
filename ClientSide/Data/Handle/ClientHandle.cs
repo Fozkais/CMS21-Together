@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
@@ -37,7 +38,7 @@ public static class ClientHandle
     {
         UserData data = packet.Read<UserData>();
 
-        ClientData.Instance.ConnectedClients[data.playerID] = data;
+        ClientData.Instance.connectedClients[data.playerID] = data;
         UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
         MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
     }
@@ -92,5 +93,25 @@ public static class ClientHandle
                 GlobalData.PlayerScraps = value;
                 break;
         }
+    }
+
+    public static void LifterPacket(Packet packet)
+    {
+        if(ClientData.UserData.scene != GameScene.garage) return;
+        
+        ModLifterState state = packet.Read<ModLifterState>();
+        int carLoaderID = packet.ReadInt();
+        
+        if(!ClientData.Instance.loadedCars.ContainsKey(carLoaderID-1)) return;
+
+        var lifter = GameData.Instance.carLoaders[carLoaderID - 1].lifter;
+        LifterLogic.listen = false;
+
+        if ((int)state > (int)lifter.currentState)
+            lifter.Action(0);
+        else
+            lifter.Action(1);
+
+        ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state;
     }
 }

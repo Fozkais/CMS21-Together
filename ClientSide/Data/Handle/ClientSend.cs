@@ -78,4 +78,15 @@ public class ClientSend
             SendData(packet);
         }
     }
+
+    public static void LifterPacket(ModLifterState state, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.lifter))
+        {
+            packet.Write(state);
+            packet.Write(carLoaderID);
+            
+            SendData(packet);
+        }
+    }
 }

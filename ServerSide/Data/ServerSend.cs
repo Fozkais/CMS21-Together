@@ -66,7 +66,7 @@ public static class ServerSend
             {
                 packet.Write(userData);
                     
-                SendData(userData.playerID, packet);
+                SendDataToAll(userData.playerID, packet);
             }
         }
 
@@ -79,7 +79,7 @@ public static class ServerSend
             packet.Write(fromClient);
             packet.Write(position);
                     
-            SendData(fromClient, packet);
+            SendDataToAll(fromClient, packet);
         }
     }
 
@@ -90,7 +90,7 @@ public static class ServerSend
             packet.Write(fromClient);
             packet.Write(rotation);
                     
-            SendData(fromClient, packet);
+            SendDataToAll(fromClient, packet);
         }
     }
 
@@ -101,7 +101,7 @@ public static class ServerSend
             packet.Write(action);
             packet.Write(item);
                     
-            SendData(fromClient, packet);
+            SendDataToAll(fromClient, packet);
         }
     }
     
@@ -112,7 +112,7 @@ public static class ServerSend
             packet.Write(action);
             packet.Write(item);
                     
-            SendData(fromClient, packet);
+            SendDataToAll(fromClient, packet);
         }
     }
 
@@ -123,7 +123,18 @@ public static class ServerSend
             packet.Write(value);
             packet.Write(type);
                     
-            SendData(fromClient, packet);
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void LifterPacket(int fromClient, ModLifterState state, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.lifter))
+        {
+            packet.Write(state);
+            packet.Write(carLoaderID);
+
+            SendDataToAll(fromClient, packet);
         }
     }
 }

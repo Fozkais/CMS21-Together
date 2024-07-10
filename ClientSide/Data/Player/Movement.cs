@@ -15,9 +15,9 @@ public static class Movement
 
     public static void SetSpawnPosition(int id, Vector3Serializable position)
     {
-        if(!ClientData.Instance.ConnectedClients.ContainsKey(id)) return;
+        if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
 
-        var player = ClientData.Instance.ConnectedClients[id];
+        var player = ClientData.Instance.connectedClients[id];
         
         if(player.scene != ClientData.UserData.scene) return;
         if(player.userObject == null) return;
@@ -27,9 +27,9 @@ public static class Movement
     
     public static void UpdatePosition(int id, Vector3Serializable position)
     {
-        if(!ClientData.Instance.ConnectedClients.ContainsKey(id)) return;
+        if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
 
-        var player = ClientData.Instance.ConnectedClients[id];
+        var player = ClientData.Instance.connectedClients[id];
         
         if(player.scene != ClientData.UserData.scene) return;
         if (player.userObject == null)
