@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
@@ -9,12 +11,15 @@ using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.CustomUI;
 
 public static class UI_Lobby
 {
      public static int  saveIndex;
+     private static Dictionary<int, GameObject> lobbyPlayer = new Dictionary<int, GameObject>();
+     
         public static void InitializeLobbyMenu()
         {
             GameObject parent = new GameObject("MP_LobbyButtons");
@@ -37,7 +42,7 @@ public static class UI_Lobby
                 }
                 MelonCoroutines.Start(StartGame());
             };
-            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Start game");
+            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Start game", 0);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b1_info, false); 
             
             Vector2 b2_pos = new Vector2(20, -17);
@@ -58,13 +63,13 @@ public static class UI_Lobby
                     }
                 }
             };
-            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Toggle Ready");
+            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Toggle Ready", 1);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b2_info, false); 
             
             Vector2 b3_pos = new Vector2(20, -317);
             Vector2 b3_size = new Vector2(336, 65);
             Action b3_action = delegate { OpenMainMenu(); };
-            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Disconnect");
+            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Disconnect", 2);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b3_info, false); // Need to be last
 
             CustomUIBuilder.BuildLobbyHeader();
@@ -72,49 +77,60 @@ public static class UI_Lobby
             
             CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
         }
-        
-        public static void AddPlayerToLobby(string username, int index) // TODO: add a way for player to deseapear from lobby
+
+        public static void RemovePlayerFromLobby(int index)
         {
+            if (CustomUIManager.MP_Lobby_Addition.Any(elt => elt.Item1 == index))
+            {
+                var elt = CustomUIManager.MP_Lobby_Addition.First(elt => elt.Item1 == index);
+                Object.Destroy(elt.Item2);
+                CustomUIManager.MP_Lobby_Addition.Remove(elt);
+            }
+        }
+        
+        public static void AddPlayerToLobby(string username, int index)
+        {
+            if(CustomUIManager.MP_Lobby_Addition.Any(elt => elt.Item1 == index)) return;
+            
             var lobbyPlayerObject = new GameObject("LobbyPlayer");
             var img = lobbyPlayerObject.AddComponent<Image>();
             img.rectTransform.parent = CustomUIBuilder.GetParentFromSection(CustomUISection.MP_Lobby);
             img.rectTransform.parentInternal = CustomUIBuilder.GetParentFromSection(CustomUISection.MP_Lobby);
             
-            Vector2 pos = new Vector2(600, 175 - (index * 75));
+            Vector2 pos = new Vector2(600, 175 - ( CustomUIManager.MP_Lobby_Addition.Count * 75));
             
             img.color = new Color(  .031f, .027f, .033f  , 0.85f);
             img.rectTransform.sizeDelta = new Vector2(600, 75);
             img.rectTransform.anchoredPosition = pos;
             
-            CustomUIManager.MP_Lobby_Addition.Add(lobbyPlayerObject);
+            CustomUIManager.MP_Lobby_Addition.Add((index, lobbyPlayerObject));
             
-            Vector2 t1_pos = new Vector2(500, 0);
+            Vector2 t1_pos = new Vector2(620, 0);
             Vector2 t1_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t1_pos, t1_size, username, 16, lobbyPlayerObject.transform);
             
-            Vector2 t2_pos = new Vector2(680, 0);
+            Vector2 t2_pos = new Vector2(800, 0);
             Vector2 t2_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t2_pos, t2_size, "Not ready", 16, lobbyPlayerObject.transform);
             
-            Vector2 t3_pos = new Vector2(940, 0);
+            Vector2 t3_pos = new Vector2(1060, 0);
             Vector2 t3_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t3_pos, t3_size, "?ms", 16, lobbyPlayerObject.transform);
             
-            CustomUIManager.MP_Lobby_Addition[0].SetActive(true);
+            CustomUIManager.MP_Lobby_Addition[0].Item2.SetActive(true);
         }
 
         public static void ChangeReadyState(int index, bool ready)
         {
             if (ready)
             {
-                CustomUIManager.MP_Lobby_Addition[3 + index].transform.GetChild(1).GetComponent<Text>().text = "Ready";
+                CustomUIManager.MP_Lobby_Addition[index].Item2.transform.GetChild(1).GetComponent<Text>().text = "Ready";
             }
             else
             {
-                CustomUIManager.MP_Lobby_Addition[3 + index].transform.GetChild(1).GetComponent<Text>().text =
-                    "Not Ready";
+                CustomUIManager.MP_Lobby_Addition[index].Item2.transform.GetChild(1).GetComponent<Text>().text = "Not Ready";
             }
-            CustomUIManager.MP_Lobby_Addition[3 + index].transform.GetChild(1).GetComponent<Text>().OnEnable();
+            CustomUIManager.MP_Lobby_Addition[index].Item2.transform.GetChild(1).GetComponent<Text>().OnEnable();
         }
         
 

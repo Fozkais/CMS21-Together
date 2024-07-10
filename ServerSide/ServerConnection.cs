@@ -21,24 +21,31 @@ public class ServerConnection
     public ServerConnection(int i)
     {
         id = i;
+        tcp = new TCPConnection(id);
+        udp = new UDPConnection(id);
+        steam = new SteamConnection(id);
     }
 
-    public void Connect(NetworkType connectType, object obj)
+    public void Connect(TcpClient connection)
     {
-        if (connectType == NetworkType.tcp)
-        {
-            tcp.Connect((TcpClient)obj);
-            connectionType = connectType;
-        }
-
-        if (connectionType == NetworkType.udp)
-        {
-            udp.Connect((IPEndPoint)obj);
-            connectionType = NetworkType.tcp;
-        }
+        tcp.Connect(connection);
+        connectionType = NetworkType.tcp;
+        isConnected = true;
         
-        if(connectionType != NetworkType.udp)
-            ServerSend.ConnectPacket(id, "Connected to the server.");
+        ServerSend.ConnectPacket(id, "Connected to the server.");
+    }
+    
+    public void Connect()
+    {
+        connectionType = NetworkType.steam;
+        isConnected = true;
+        
+        ServerSend.ConnectPacket(id, "Connected to the server.");
+    }
+    
+    public void Connect(IPEndPoint endpoint)
+    {
+        udp.Connect(endpoint);
         isConnected = true;
     }
     
@@ -68,5 +75,6 @@ public class ServerConnection
     {
         ServerData.Instance.connectedClients[id] = new UserData(username, id);
         ServerSend.UserDataPacket(ServerData.Instance.connectedClients[id]);
+        MelonLogger.Msg($"[ServerConnection->SendToLobby] Sent {username} to lobby!");
     }
 }

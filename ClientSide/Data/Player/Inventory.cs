@@ -21,7 +21,7 @@ public static class Inventory
     
     
     
-    [HarmonyPatch(typeof(Inventory), "Add", new Type[] { typeof(Item), typeof(bool) })]
+    [HarmonyPatch(typeof(Il2Cpp.Inventory), "Add", new Type[] { typeof(Item), typeof(bool) })]
     [HarmonyPrefix]
     public static void AddItemHook(Item item, bool showPopup = false)
     {
@@ -35,7 +35,7 @@ public static class Inventory
         }
     }
     
-    [HarmonyPatch(typeof(Inventory), "AddGroup")]
+    [HarmonyPatch(typeof(Il2Cpp.Inventory), "AddGroup")]
     [HarmonyPrefix]
     public static void AddGroupItemHook(GroupItem group)
     {
@@ -49,7 +49,7 @@ public static class Inventory
         }
     }
     
-    [HarmonyPatch(typeof(Inventory), "Delete")]
+    [HarmonyPatch(typeof(Il2Cpp.Inventory), "Delete")]
     [HarmonyPrefix]
     public static void RemoveItemHook(Item item,  Il2Cpp.Inventory __instance)
     {
@@ -67,7 +67,7 @@ public static class Inventory
             
     }
 
-    [HarmonyPatch(typeof(Inventory), "DeleteGroup")]
+    [HarmonyPatch(typeof(Il2Cpp.Inventory), "DeleteGroup")]
     [HarmonyPrefix]
     public static void RemoveGroupItemHook(long UId)
     {
@@ -81,7 +81,7 @@ public static class Inventory
         }
     }
 
-    [HarmonyPatch(typeof(Inventory), "Load")]
+    [HarmonyPatch(typeof(Il2Cpp.Inventory), "Load")]
     [HarmonyPrefix]
     public static bool LoadHook(Il2Cpp.Inventory __instance)
     {

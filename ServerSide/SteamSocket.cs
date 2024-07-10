@@ -47,8 +47,9 @@ public class SteamSocket : SocketManager
             {
                 if (Server.Instance.clients[ClientID].isConnected == false)
                 {
+                    MelonLogger.Msg($"[OnConnectionChanged]Connecting Client.");
                     Server.Instance.clients[ClientID].steam.connection = connection;
-                    Server.Instance.clients[ClientID].Connect(NetworkType.steam, null);
+                    Server.Instance.clients[ClientID].Connect();
                     OnConnected(connection, info);
                     break;
                 }

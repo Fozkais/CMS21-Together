@@ -6,4 +6,5 @@ public class ButtonState
 {
     public MainMenuButton button;
     public bool Disabled;
+    public int index;
 }

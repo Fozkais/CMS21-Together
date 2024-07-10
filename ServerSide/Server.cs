@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
@@ -49,7 +51,9 @@ public class Server : MonoBehaviour
             udp.BeginReceive(UDPReceiveCallback, null);
 
             steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
-            
+
+            ClientData.UserData.ip = "127.0.0.1";
+            Client.Instance.ConnectToServer(NetworkType.tcp);
         }
         else if (networkType == NetworkType.tcp)
         {
@@ -57,8 +61,11 @@ public class Server : MonoBehaviour
             tcp.Start();
             tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
 
-            udp = new UdpClient();
+            udp = new UdpClient(MainMod.PORT);
             udp.BeginReceive(UDPReceiveCallback, null);
+            
+            ClientData.UserData.ip = "127.0.0.1";
+            Client.Instance.ConnectToServer(NetworkType.tcp);
         }
         
         Application.runInBackground = true;
@@ -93,6 +100,7 @@ public class Server : MonoBehaviour
 
     private void UDPReceiveCallback(IAsyncResult result)
     {
+        if(!isRunning) return;
         try
         {
             IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
@@ -110,7 +118,8 @@ public class Server : MonoBehaviour
                         
                 if (clients[_clientId].udp.endPoint == null)
                 {
-                    clients[_clientId].Connect(NetworkType.udp, receivedIP);
+                    MelonLogger.Msg($"[UDPReceiveCallback]Connecting Client.");
+                    clients[_clientId].Connect(receivedIP);
                     return;
                 }
                 if (clients[_clientId].udp.endPoint.ToString() == receivedIP.ToString())
@@ -125,6 +134,8 @@ public class Server : MonoBehaviour
 
     private void TCPConnectCallback(IAsyncResult result)
     {
+        if(!isRunning) return;
+        
         TcpClient _client = tcp.EndAcceptTcpClient(result);
         tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
             
@@ -134,7 +145,7 @@ public class Server : MonoBehaviour
         {
             if (clients[ClientID].isConnected == false)
             {
-                clients[ClientID].Connect(NetworkType.tcp, _client);
+                clients[ClientID].Connect(_client);
                 MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{ClientID}.");
                 return;
             }

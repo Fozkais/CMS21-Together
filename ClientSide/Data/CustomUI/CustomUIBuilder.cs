@@ -160,7 +160,7 @@ public static class CustomUIBuilder
             };
             Vector2 b1_pos = new Vector2(-10, -155);
             Vector2 b1_size = new Vector2(168, 65);
-            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, "Delete", saveInfoObject.transform);
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, "Delete", -1,saveInfoObject.transform);
             tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             tmpWindow[tmpWindow.Count-1].SetActive(true);
             
@@ -178,27 +178,25 @@ public static class CustomUIBuilder
             img.rectTransform.parentInternal = GetParentFromSection(CustomUISection.MP_Lobby);
             
             img.color = new Color(  .031f, .027f, .033f  , 0.85f);
-            img.rectTransform.sizeDelta = new Vector2(600, 75);
+            img.rectTransform.sizeDelta = new Vector2(500, 75);
             img.rectTransform.anchoredPosition = new Vector2(600, 175);
             
-            CustomUIManager.MP_Lobby_Addition.Add(lobbyHeaderObject);
+            CustomUIManager.MP_Lobby_Addition.Add((0, lobbyHeaderObject));
             
-            Vector2 t1_pos = new Vector2(500, 0);
+            Vector2 t1_pos = new Vector2(620, 0);
             Vector2 t1_size = new Vector2(400, 100);
-            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform));
+            CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
             
-            Vector2 t2_pos = new Vector2(680, 0);
+            Vector2 t2_pos = new Vector2(800, 0);
             Vector2 t2_size = new Vector2(400, 100);
-            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform));
+            CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
             
-            Vector2 t3_pos = new Vector2(940, 0);
+            Vector2 t3_pos = new Vector2(1060, 0);
             Vector2 t3_size = new Vector2(400, 100);
-            CustomUIManager.MP_Lobby_Addition.Add(CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform));
+            CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
             
-            CustomUIManager.MP_Lobby_Addition[0].SetActive(true);
-            CustomUIManager.MP_Lobby_Addition[1].SetActive(true);
-            CustomUIManager.MP_Lobby_Addition[2].SetActive(true);
-            CustomUIManager.MP_Lobby_Addition[3].SetActive(true);
+            CustomUIManager.MP_Lobby_Addition[0].Item2.SetActive(true);
+
         }
 
         public static StringSelector CreateNewSelector(Vector2 position, Vector2 size, string[] choices, Transform parent)
@@ -220,7 +218,7 @@ public static class CustomUIBuilder
             return selector;
         }
         
-        public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts, InputFieldType type)
+        public static void CreateNewInputWindow(Vector2 position, Vector2 size, Action[] actions, string[] texts,InputFieldType type)
         {
             var inputFieldObject = new GameObject("InputFieldWindow");
             var img = inputFieldObject.AddComponent<Image>();
@@ -236,13 +234,13 @@ public static class CustomUIBuilder
             Vector2 b1_pos = new Vector2(-200, -100);
             Vector2 b1_size = new Vector2(168, 65);
             Action b1_action = actions[0];
-            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], -1, inputFieldObject.transform);
             tmpWindow2.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             
             Vector2 b2_pos = new Vector2(200, -100);
             Vector2 b2_size = new Vector2(168, 65);
             Action b2_action = actions[1];
-            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
+            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], -1, inputFieldObject.transform);
             tmpWindow2.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
 
            
@@ -308,13 +306,13 @@ public static class CustomUIBuilder
             Vector2 b1_pos = new Vector2(-200, -150);
             Vector2 b1_size = new Vector2(168, 65);
             Action b1_action = actions[0];
-            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], inputFieldObject.transform);
+            ButtonInfo buttonInfo1 = new ButtonInfo(b1_pos, b1_size, b1_action, texts[0], -1,inputFieldObject.transform);
             tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo1, false, null,false).button.gameObject);
             
             Vector2 b2_pos = new Vector2(200, -150);
             Vector2 b2_size = new Vector2(168, 65);
             Action b2_action = actions[1];
-            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], inputFieldObject.transform);
+            ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], -1,inputFieldObject.transform);
             tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
             
             Vector2 t1_pos = new Vector2(530, 140);
@@ -513,14 +511,16 @@ public static class CustomUIBuilder
         public Action action;
         public string text;
         public Transform customParent;
+        public int index;
 
-        public ButtonInfo(Vector2 _position, Vector2 _size, Action _action, string _text, Transform _customParent=null)
+        public ButtonInfo(Vector2 _position, Vector2 _size, Action _action, string _text, int _index,Transform _customParent=null)
         {
             position = _position;
             size = _size;
             action = _action;
             text = _text;
             customParent = _customParent;
+            index = _index;
         }
     }
     

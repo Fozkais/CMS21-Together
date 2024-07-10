@@ -41,7 +41,7 @@ public class UI_Main
             Vector2 b1_pos = new Vector2(95, 58);
             Vector2 b1_size = new Vector2(45, 45);
             Action b1_action = delegate { OpenMultiplayerMenu(); };
-            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "");
+            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "", 0);
             CustomUIBuilder.CreateNewButton(CustomUISection.V_Main, b1_info, false, buttonImage); 
         }
 
@@ -58,31 +58,31 @@ public class UI_Main
             Vector2 b1_pos = new Vector2(20, 58);
             Vector2 b1_size = new Vector2(336, 65);
             Action b1_action = delegate { OpenHostMenu(); };
-            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Host a game");
+            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Host a game", 0);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b1_info, false); 
             
             Vector2 b2_pos = new Vector2(20, -17);
             Vector2 b2_size = new Vector2(336, 65);
             Action b2_action = delegate { JoinWindow(); };
-            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Join a game");
+            ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Join a game", 1);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b2_info, false); 
             
             Vector2 b3_pos = new Vector2(20, -167);
             Vector2 b3_size = new Vector2(336, 65);
             Action b3_action = delegate {  };
-            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Network type");
+            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Network type", 2);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b3_info, true);
             
             Vector2 b4_pos = new Vector2(20, -242);
             Vector2 b4_size = new Vector2(336, 65);
             Action b4_action = delegate {  };
-            ButtonInfo b4_info = new ButtonInfo(b4_pos, b4_size, b4_action, "Mod settings");
+            ButtonInfo b4_info = new ButtonInfo(b4_pos, b4_size, b4_action, "Mod settings", 3);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b4_info, true);
             
             Vector2 b5_pos = new Vector2(20, -317);
             Vector2 b5_size = new Vector2(336, 65);
             Action b5_action = delegate { OpenMainMenu(); };
-            ButtonInfo b5_info = new ButtonInfo(b5_pos, b5_size, b5_action, "Back to menu");
+            ButtonInfo b5_info = new ButtonInfo(b5_pos, b5_size, b5_action, "Back to menu", 4);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b5_info, false);
 
             CustomUIManager.DisableUI(CustomUISection.MP_Main);

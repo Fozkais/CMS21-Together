@@ -20,7 +20,7 @@ public static class UI_Host
             Vector2 b1_pos = new Vector2(20, 58);
             Vector2 b1_size = new Vector2(336, 65);
             Action b1_action = delegate { OpenSavesMenu(); };
-            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Load/Create a game");
+            ButtonInfo b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Load/Create a game", 0);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Host, b1_info, false);
             
             /*Vector2 b2_pos = new Vector2(20, -17);
@@ -32,7 +32,7 @@ public static class UI_Host
             Vector2 b3_pos = new Vector2(20, -317);
             Vector2 b3_size = new Vector2(336, 65);
             Action b3_action = delegate { OpenMultiplayerMenu(); };
-            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Back to menu");
+            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Back to menu", 1);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Host, b3_info, false);
             
             CustomUIManager.DisableUI(CustomUISection.MP_Host);

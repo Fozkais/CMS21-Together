@@ -9,7 +9,7 @@ public static class TogetherModManager
     
     private const string ModFolderPath = @"Mods\togetherMod\";
     private const string userDataPath = ModFolderPath + "userData.ini";
-    public static UserData currentUserData;
+    private static UserData currentUserData;
     
     public static UserData LoadUserData()
     {

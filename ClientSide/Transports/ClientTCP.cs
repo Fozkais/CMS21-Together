@@ -46,6 +46,7 @@ public class ClientTCP
             }
 
             stream = socket.GetStream();
+            receivedData = new Packet();
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
         }
         catch (Exception e)

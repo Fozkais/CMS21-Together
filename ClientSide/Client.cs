@@ -26,17 +26,6 @@ public class Client : MonoBehaviour
     public ClientTCP tcp;
     public ClientUDP udp;
 
-    public void Initialize()
-    {
-        if (Instance == null)
-            Instance = this;
-        else if (Instance != this)
-        {
-            MelonLogger.Msg("Instance already exists, destroying object!");
-            Destroy(this);
-        }
-    }
-
     public void ConnectToServer(NetworkType type)
     {
         networkType = type;

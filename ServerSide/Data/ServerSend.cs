@@ -66,7 +66,7 @@ public static class ServerSend
             {
                 packet.Write(userData);
                     
-                SendDataToAll(userData.playerID, packet);
+                SendDataToAll(packet);
             }
         }
         public static void ReadyPacket(int fromClient, bool ready, int id)

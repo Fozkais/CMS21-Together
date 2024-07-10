@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
@@ -10,6 +11,7 @@ using Il2CppCMS.UI.Logic;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.CustomUI;
 
@@ -27,7 +29,7 @@ public static class CustomUIManager
     public static List<ButtonState> MP_Saves_Buttons = new List<ButtonState>();
    
     public static List<ButtonState> MP_Lobby_Buttons = new List<ButtonState>();
-    public static List<GameObject>  MP_Lobby_Addition = new List<GameObject>();
+    public static List<(int, GameObject)>  MP_Lobby_Addition = new List<(int, GameObject)>();
     
     public static Transform V_Main_Parent;
     public static Transform MP_Main_Parent;
@@ -195,11 +197,34 @@ public static class CustomUIManager
                 obj.SetActive(false);
         }
     }
+    
+    private static void DisableUIAddition(List<(int, GameObject)> objectsToDisable)
+    {
+        for (var index = 0; index < objectsToDisable.Count; index++)
+        {
+            var obj = objectsToDisable[index];
+            if (index > 3)
+            {
+                objectsToDisable.Remove(obj);
+                Object.Destroy(obj.Item2);
+            }
+            else
+                obj.Item2.SetActive(false);
+        }
+    }
     private static void EnableUIAddition(List<GameObject> objectsToEnable)
     {
         foreach (GameObject obj in objectsToEnable)
         {
             obj.SetActive(true);
+        }
+    }
+    
+    private static void EnableUIAddition(List<(int,GameObject)> objectsToEnable)
+    {
+        foreach ((int, GameObject) obj in objectsToEnable)
+        {
+            obj.Item2.SetActive(true);
         }
     }
     
