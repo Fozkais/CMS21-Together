@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data.Vanilla;
 using UnityEngine;
@@ -7,6 +8,7 @@ namespace CMS21Together.ClientSide.Data.Player;
 
 public static class Movement
 {
+
     private static float minDistance = 0.01f;
     private static Vector3 lastPosition;
 
@@ -35,7 +37,28 @@ public static class Movement
             player.SpawnPlayer();
         }
 
-        player.userObject.transform.Translate(position.toVector3() * Time.deltaTime);
+       // player.userObject.transform.Translate(position.toVector3() * Time.deltaTime);
+       if (player.lastPosition != null)
+       {
+           Vector3 direction = (position.toVector3() - player.lastPosition.toVector3()).normalized;
+           float speed = (position.toVector3() - player.lastPosition.toVector3()).magnitude / Time.deltaTime;
+
+           // Mettre à jour les animations
+           UpdateAnimations(player.userAnimator, direction, speed);
+       }
+
+       // Mettre à jour la position
+       player.userObject.transform.position = position.toVector3();
+       player.lastPosition = position;
+    }
+    
+    private static void UpdateAnimations(Animator animator, Vector3 direction, float speed)
+    {
+        float horizontalSpeed = direction.x * speed;
+        float verticalSpeed = direction.z * speed;
+
+        animator.SetFloat("Vertical", Mathf.Lerp(animator.GetFloat("Vertical"), verticalSpeed, Time.deltaTime * 10f));
+        animator.SetFloat("Horizontal", Mathf.Lerp(animator.GetFloat("Horizontal"), horizontalSpeed, Time.deltaTime * 10f));
     }
 
     public static void SendPosition()
@@ -43,7 +66,7 @@ public static class Movement
         if(GameData.Instance.localPlayer == null) return;
 
         Vector3 position = GameData.Instance.localPlayer.transform.position;
-        position.y -= 0.72f; // ???
+        position.y -= 0.72f; // probably fix player flying
         if (Vector3.Distance(position, lastPosition) > minDistance)
         {
             lastPosition = position;

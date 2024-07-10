@@ -18,8 +18,14 @@ public class UserData
     [JsonIgnore] public GameScene scene;
     [JsonIgnore] public Vector3Serializable position;
     [JsonIgnore] public QuaternionSerializable rotation;
+    
     [JsonIgnore][NonSerialized] public GameObject userObject;
+    [JsonIgnore][NonSerialized] public Animator userAnimator;
+    [JsonIgnore] [NonSerialized] public Vector3Serializable lastPosition;
 
+    
+    
+    
     public UserData()
     {
         username = "player";
@@ -43,6 +49,7 @@ public class UserData
         else
         {
             userObject = Object.Instantiate(ClientData.Instance.playerPrefab, position.toVector3(), rotation.toQuaternion());
+            userAnimator = userObject.AddComponent<Animator>();
             userObject.name = username;
         }
             
