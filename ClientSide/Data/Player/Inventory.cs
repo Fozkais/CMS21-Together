@@ -16,8 +16,14 @@ public static class Inventory
 {
     public static List<ModItem> items = new List<ModItem>();
     public static List<ModGroupItem> groupItems = new List<ModGroupItem>();
-
     private static bool loadSkip;
+
+    public static void Reset()
+    {
+        items.Clear();
+        groupItems.Clear();
+        loadSkip = false;
+    }
     
     
     
@@ -128,7 +134,8 @@ public static class Inventory
 
     public static IEnumerator HandleItem(ModItem item, InventoryAction action)
     {
-        yield return GameData.Instance.GameReady();
+        yield return GameData.GameReady();
+        
         switch (action)
         {
             case InventoryAction.add:
@@ -149,7 +156,7 @@ public static class Inventory
     }
     public static IEnumerator HandleGroupItem(ModGroupItem item, InventoryAction action)
     {
-        yield return GameData.Instance.GameReady();
+        yield return GameData.GameReady();
         switch (action)
         {
             case InventoryAction.add:

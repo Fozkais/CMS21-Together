@@ -77,6 +77,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.disconnect, ClientHandle.DisconnectPacket },
             { (int)PacketTypes.userData, ClientHandle.UserDataPacket },
             { (int)PacketTypes.readyState, ClientHandle.ReadyPacket },
+            { (int)PacketTypes.start, ClientHandle.StartPacket },
             
             { (int)PacketTypes.position, ClientHandle.PositionPacket },
             { (int)PacketTypes.rotation, ClientHandle.RotationPacket },

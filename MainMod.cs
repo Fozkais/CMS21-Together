@@ -6,6 +6,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 // ReSharper disable All
@@ -54,7 +55,12 @@ namespace CMS21Together
         public override void OnUpdate()
         {
             if(!isModInitialized) {return;}
-          
+
+            if (SceneManager.GetActiveScene().name == "garage")
+            {
+                ClientData.Instance.UpdateClient();
+            }
+            
             ThreadManager.UpdateThread();
         }
 

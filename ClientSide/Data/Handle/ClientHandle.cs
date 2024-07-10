@@ -2,6 +2,7 @@
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using Il2Cpp;
@@ -49,6 +50,17 @@ public static class ClientHandle
         bool ready = packet.Read<bool>();
         
         ClientData.Instance.connectedClients[id].isReady = ready;
+        UI_Lobby.ChangeReadyState(id, ready);
+    }
+    
+    public static void StartPacket(Packet packet)
+    {
+        Gamemode gamemode = packet.Read<Gamemode>();
+
+        ModSaveData data = new ModSaveData();
+        data.selectedGamemode = gamemode;
+        
+        SavesManager.LoadSave(data, true);
     }
     
     public static void PositionPacket(Packet packet)

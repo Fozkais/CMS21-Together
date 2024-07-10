@@ -25,6 +25,7 @@ public class Rotation
     public static void UpdateRotation(int id, QuaternionSerializable rotation)
     {
         if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
+        if(!GameData.isReady) return;
 
         var player = ClientData.Instance.connectedClients[id];
         

@@ -11,11 +11,10 @@ public class GameData
     public GameObject localPlayer;
     public Inventory localInventory;
     public CarLoader[] carLoaders;
-    public bool isReady;
+    public static bool isReady;
 
     public GameData()
     {
-        Instance = this;
         localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
         localInventory = GameScript.Get().GetComponent<Inventory>();
         carLoaders = new[]
@@ -30,7 +29,7 @@ public class GameData
         isReady = true;
     }
 
-    public IEnumerator GameReady()
+    public static IEnumerator GameReady()
     {
         while (!isReady)
             yield return new WaitForSeconds(0.2f);

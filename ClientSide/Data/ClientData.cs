@@ -4,7 +4,6 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
-using Inventory = Il2Cpp.Inventory;
 
 namespace CMS21Together.ClientSide.Data;
 
@@ -17,6 +16,8 @@ public class ClientData
     {
         UserData = TogetherModManager.LoadUserData();
         LoadPlayerPrefab();
+        
+        Inventory.Reset();
     }
     
     public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
@@ -27,6 +28,11 @@ public class ClientData
 
     public void UpdateClient()
     {
+        if (GameData.Instance == null)
+        {
+            GameData.Instance = new GameData();
+        }
+        
         Movement.SendPosition();
         Rotation.SendRotation();
         Stats.SyncStats();

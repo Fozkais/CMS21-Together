@@ -74,6 +74,10 @@ public class ServerConnection
     public void SendToLobby(string username)
     {
         ServerData.Instance.connectedClients[id] = new UserData(username, id);
+        foreach (UserData data in  ServerData.Instance.connectedClients.Values)
+        {
+            ServerSend.UserDataPacket(data, id);
+        }
         ServerSend.UserDataPacket(ServerData.Instance.connectedClients[id]);
         MelonLogger.Msg($"[ServerConnection->SendToLobby] Sent {username} to lobby!");
     }

@@ -8,7 +8,6 @@ namespace CMS21Together.ClientSide.Data.Player;
 
 public static class Movement
 {
-
     private static float minDistance = 0.01f;
     private static Vector3 lastPosition;
 
@@ -28,6 +27,7 @@ public static class Movement
     public static void UpdatePosition(int id, Vector3Serializable position)
     {
         if(!ClientData.Instance.connectedClients.ContainsKey(id)) return;
+        if(!GameData.isReady) return;
 
         var player = ClientData.Instance.connectedClients[id];
         

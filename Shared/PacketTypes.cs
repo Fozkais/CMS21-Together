@@ -13,4 +13,5 @@ public enum PacketTypes
     groupItem,
     stat,
     lifter,
+    start
 }
