@@ -115,4 +115,15 @@ public static class ServerSend
             SendData(fromClient, packet);
         }
     }
+
+    public static void StatPacket(int fromClient, int value, ModStats type)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.stat))
+        {
+            packet.Write(value);
+            packet.Write(type);
+                    
+            SendData(fromClient, packet);
+        }
+    }
 }

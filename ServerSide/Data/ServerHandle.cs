@@ -56,7 +56,7 @@ public static class ServerHandle
         ServerSend.RotationPacket(fromClient, _rotation);
     }
     
-    public static void ItemPacket(int _fromClient, Packet _packet)
+    public static void ItemPacket(int fromClient, Packet _packet)
     {
         InventoryAction action = _packet.Read<InventoryAction>();
                 
@@ -80,17 +80,17 @@ public static class ServerHandle
                     ServerData.Instance.items.Remove(ServerData.Instance.items[index]);
                 }
             }
-            ServerSend.ItemPacket(_fromClient, item, action);
+            ServerSend.ItemPacket(fromClient, item, action);
             return;
         }
 
         foreach (ModItem modItem in ServerData.Instance.items)
         {
-            ServerSend.ItemPacket(_fromClient, modItem, action);
+            ServerSend.ItemPacket(fromClient, modItem, action);
         }
     }
     
-    public static void GroupItemPacket(int _fromClient, Packet _packet)
+    public static void GroupItemPacket(int fromClient, Packet _packet)
     {
         InventoryAction action = _packet.Read<InventoryAction>();
                 
@@ -114,13 +114,30 @@ public static class ServerHandle
                     ServerData.Instance.groupItems.Remove(ServerData.Instance.groupItems[index]);
                 }
             }
-            ServerSend.GroupItemPacket(_fromClient, item, action);
+            ServerSend.GroupItemPacket(fromClient, item, action);
             return;
         }
 
         foreach (ModGroupItem modItem in ServerData.Instance.groupItems)
         {
-            ServerSend.GroupItemPacket(_fromClient, modItem, action);
+            ServerSend.GroupItemPacket(fromClient, modItem, action);
         }
+    }
+    
+    public static void StatPacket(int fromClient, Packet packet)
+    {
+        int value = packet.ReadInt();
+        ModStats type = packet.Read<ModStats>();
+                
+        switch (type)
+        {
+            case ModStats.money:
+                ServerData.Instance.money = value;
+                break;
+            case ModStats.scrap:
+                ServerData.Instance.scrap = value;
+                break;
+        }
+        ServerSend.StatPacket(fromClient, value, type);
     }
 }

@@ -37,7 +37,7 @@ public static class Movement
             player.SpawnPlayer();
         }
 
-       // player.userObject.transform.Translate(position.toVector3() * Time.deltaTime);
+       // player.userObject.transform.Translate(position.toVector3() * Time.deltaTime); without animation method
        if (player.lastPosition != null)
        {
            Vector3 direction = (position.toVector3() - player.lastPosition.toVector3()).normalized;

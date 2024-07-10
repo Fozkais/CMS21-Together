@@ -3,7 +3,9 @@ using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using Il2Cpp;
 using MelonLoader;
+using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -72,5 +74,23 @@ public static class ClientHandle
 
         MelonCoroutines.Start(Inventory.HandleGroupItem(item, action));
         packet.Dispose();
+    }
+
+    public static void StatPacket(Packet packet)
+    {
+        int value = packet.ReadInt();
+        ModStats type = packet.Read<ModStats>();
+                
+        switch (type)
+        {
+            case ModStats.money:
+                ClientData.Instance.money = value;
+                GlobalData.PlayerMoney = value;
+                break;
+            case ModStats.scrap:
+                ClientData.Instance.scrap = value;
+                GlobalData.PlayerScraps = value;
+                break;
+        }
     }
 }

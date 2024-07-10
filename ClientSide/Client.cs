@@ -91,6 +91,8 @@ public class Client : MonoBehaviour
             
             { (int)PacketTypes.item, ClientHandle.ItemPacket },
             { (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
+            
+            { (int)PacketTypes.stat, ClientHandle.StatPacket },
         };
     }
 

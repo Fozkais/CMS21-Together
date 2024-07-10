@@ -67,4 +67,15 @@ public class ClientSend
             SendData(packet);
         }
     }
+
+    public static void StatPacket(int diff, ModStats type)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.stat))
+        {
+            packet.Write(diff);
+            packet.Write(type);
+            
+            SendData(packet);
+        }
+    }
 }

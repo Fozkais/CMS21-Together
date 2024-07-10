@@ -160,6 +160,8 @@ public class Server : MonoBehaviour
             
             { (int)PacketTypes.item, ServerHandle.ItemPacket },
             { (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
+            
+            { (int)PacketTypes.stat, ServerHandle.StatPacket },
         };
     }
 }

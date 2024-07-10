@@ -20,13 +20,14 @@ public class ClientData
     
     public Dictionary<int, UserData> ConnectedClients = new Dictionary<int, UserData>();
     public GameObject playerPrefab;
+    public int scrap, money;
 
 
     public void UpdateClient()
     {
         Movement.SendPosition();
         Rotation.SendRotation();
-        
+        Stats.SyncStats();
     }
     private void LoadPlayerPrefab()
     {
@@ -34,31 +35,26 @@ public class ClientData
 
         if (playerBundle)
         {
-
             GameObject player = playerBundle.LoadAsset<GameObject>("playerModel");
-
-            GameObject Nplayer = Object.Instantiate(player);
-           // Nplayer.AddComponent<ModCharacterController>(); TODO: reimplement
-                
+            GameObject playerInstance = Object.Instantiate(player);
+            
             Material material;
-                
             Texture baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
             baseTexture.filterMode = FilterMode.Point;
             Texture normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
             baseTexture.filterMode = FilterMode.Point;
-                
-                
+            
             material = new Material(Shader.Find("HDRP/Unlit"));
             material.mainTexture = baseTexture;
             material.SetTexture("_BumpMap", normalTexture);
 
-            Nplayer.GetComponentInChildren<SkinnedMeshRenderer>().material = material;
+            playerInstance.GetComponentInChildren<SkinnedMeshRenderer>().material = material;
                 
-            Nplayer.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
-            Nplayer.transform.position = new Vector3(0, -10, 0);
-            Nplayer.transform.rotation = new Quaternion(0, 180, 0, 0);
+            playerInstance.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
+            playerInstance.transform.position = new Vector3(0, -10, 0);
+            playerInstance.transform.rotation = new Quaternion(0, 180, 0, 0);
                     
-            playerPrefab = Nplayer; 
+            playerPrefab = playerInstance; 
                     
             Object.DontDestroyOnLoad(playerPrefab);
                     

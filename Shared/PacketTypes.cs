@@ -9,5 +9,6 @@ public enum PacketTypes
     position,
     rotation,
     item,
-    groupItem
+    groupItem,
+    stat
 }
