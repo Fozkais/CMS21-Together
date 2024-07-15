@@ -34,7 +34,7 @@ public static class CarSpawnManager
     }
     public static IEnumerator LoadCarFromServer(ModNewCarData data, int carLoaderID)
     {
-        while (!GameData.isReady)
+        while (!ClientData.GameReady)
             yield return new WaitForSeconds(0.25f);
 
         yield return new WaitForEndOfFrame();

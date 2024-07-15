@@ -89,7 +89,10 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.stat, ClientHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ClientHandle.LifterPacket },
+            
             { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
+            { (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
+            { (int)PacketTypes.partScript, ClientHandle.PartScriptPacket},
         };
     }
 

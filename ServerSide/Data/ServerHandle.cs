@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -165,8 +167,26 @@ public static class ServerHandle
         ModNewCarData carData = packet.Read<ModNewCarData>();
         int carLoaderID = packet.ReadInt();
 
-        ServerData.Instance.CarData = carData;
+        ServerData.Instance.CarSpawnDatas[carLoaderID] = carData;
 
         ServerSend.LoadCarPacket(fromClient, carData, carLoaderID);
+    }
+
+    public static void BodyPartPacket(int fromClient, Packet packet)
+    {
+        ModCarPart carPart = packet.Read<ModCarPart>();
+        int carLoaderID = packet.ReadInt();
+        
+        ServerData.Instance.UpdateBodyParts(carPart, carLoaderID);
+        ServerSend.BodyPartPacket(fromClient, carPart, carLoaderID);
+    }
+    
+    public static void PartScriptPacket(int fromClient, Packet packet)
+    {
+        ModPartScript partScript = packet.Read<ModPartScript>();
+        int carLoaderID = packet.ReadInt();
+        
+        ServerData.Instance.UpdatePartScripts(partScript, carLoaderID);
+        ServerSend.PartScriptPacket(fromClient, partScript, carLoaderID);
     }
 }

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Garage.Car;
 using Il2Cpp;
 
 namespace CMS21Together.Shared.Data.Vanilla
@@ -27,12 +29,12 @@ namespace CMS21Together.Shared.Data.Vanilla
         public bool outsaidRustEnabled;
         public float dent;
         public string additionalString;
-        public List<string> mountUnmountWith = new List<string>();
+        public List<ModCarPart> connectedParts = new List<ModCarPart>();
         public int quality;
         public float Dust;
         public float washFactor;
         
-        public ModCarPart(CarPart _part, int _carPartID)
+        public ModCarPart(CarPart _part, int _carPartID, int carLoaderID)
         {
             if (_part == null) { return; }
 
@@ -62,9 +64,11 @@ namespace CMS21Together.Shared.Data.Vanilla
             this.Dust = _part.Dust;
             this.washFactor = _part.WashFactor;
 
-            foreach (String partAttached in _part.ConnectedParts)
+            foreach (String attachedPart in _part.ConnectedParts)
             {
-                this.mountUnmountWith.Add(partAttached);
+                CarPart part = GameData.Instance.carLoaders[carLoaderID].GetCarPart(attachedPart);
+                PartUpdateHooks.FindBodyPartInDictionary(ClientData.Instance.loadedCars[carLoaderID], attachedPart, out int key);
+                connectedParts.Add(new ModCarPart(part, key,carLoaderID));
             }
 
             this.quality = _part.Quality;

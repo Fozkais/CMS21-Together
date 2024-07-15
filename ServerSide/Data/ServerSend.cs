@@ -4,6 +4,7 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -172,5 +173,29 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+
+    public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.bodyPart))
+        {
+            packet.Write(carPart);
+            packet.Write(carLoaderID);
+            
+            SendDataToAll(fromClient, packet);
+        }
+        MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
+    }
     
+    public static void PartScriptPacket(int fromClient,ModPartScript partScript, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.partScript))
+        {
+            packet.Write(partScript);
+            packet.Write(carLoaderID);
+            
+            SendDataToAll(fromClient, packet);
+        }
+        MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
+    }
+
 }

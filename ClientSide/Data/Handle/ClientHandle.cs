@@ -145,4 +145,24 @@ public static class ClientHandle
 
         MelonCoroutines.Start(CarSpawnManager.LoadCarFromServer(carData, carLoaderID));
     }
+    
+    public static void BodyPartPacket(Packet packet)
+    {
+        ModCarPart carPart = packet.Read<ModCarPart>();
+        int carLoaderID = packet.ReadInt();
+        
+        MelonLogger.Msg("[ClientHandle->BodyPartPacket] Receive BodyPart.");
+        MelonCoroutines.Start(PartsUpdater.UpdateBodyParts(carPart, carLoaderID));
+    }
+    
+    public static void PartScriptPacket(Packet packet)
+    {
+        ModPartScript partScript = packet.Read<ModPartScript>();
+        int carLoaderID = packet.ReadInt();
+        
+        MelonLogger.Msg("[ClientHandle->PartScriptPacket] Receive PartScript.");
+        MelonCoroutines.Start(PartsUpdater.UpdatePartScripts(partScript, carLoaderID));
+    }
+
+
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -12,14 +13,19 @@ public class ClientData
 {
     public static ClientData Instance;
     public static UserData UserData;
+    public static bool GameReady;
 
     public ClientData()
     {
+        GameReady = false;
+        GameData.Instance = null;
         UserData = TogetherModManager.LoadUserData();
         LoadPlayerPrefab();
         
         Inventory.Reset();
         CarSpawnManager.Reset();
+        CarSpawnHooks.Reset();
+        
     }
     
     public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
@@ -27,16 +33,29 @@ public class ClientData
     public GameObject playerPrefab;
     public int scrap, money;
 
+  
+
 
     public void UpdateClient()
     {
         if (GameData.Instance == null)
-            GameData.Instance = new GameData();
+            MelonCoroutines.Start(InitializeGameData());
         
         Movement.SendPosition();
         Rotation.SendRotation();
         Stats.SyncStats();
     }
+
+    private IEnumerator InitializeGameData()
+    {
+        GameData.Instance = new GameData();
+        
+        yield return new WaitForSeconds(2);
+        yield return new WaitForEndOfFrame();
+
+        GameReady = true;
+    }
+    
     private void LoadPlayerPrefab()
     {
         var playerBundle = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.player.assets")));

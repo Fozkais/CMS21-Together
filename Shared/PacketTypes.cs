@@ -14,5 +14,7 @@ public enum PacketTypes
     stat,
     lifter,
     start,
-    loadCar
+    loadCar,
+    bodyPart,
+    partScript
 }

@@ -60,7 +60,7 @@ public static class PartsReferencer
             for (int j = 0; j < suspensionParts.Count; j++)
             {
                 if (!reference.ContainsKey(i))
-                    reference.Add(i, new List<PartScript>() { suspensionParts[j] });
+                    reference.Add(i, new List<PartScript>());
                 if (!reference[i].Contains(suspensionParts[j]))
                     reference[i].Add(suspensionParts[j]);
             }
@@ -96,7 +96,7 @@ public static class PartsReferencer
         for (int i = 0; i < engineParts.Count; i++) 
         {
             if(!reference.ContainsKey(i))
-                reference.Add(i, engineParts[i]);
+                reference.Add(i,  engineParts[i]);
         }
     }
     private static IEnumerator GetOtherPartCoroutine(ModCar car)
@@ -113,9 +113,9 @@ public static class PartsReferencer
 
             for (int j = 0; j < parts.Count; j++)
             {
-                if(!reference.ContainsKey(i))
-                    reference.Add(i, new List<PartScript>() {parts[j]});
-                else if(!reference[i].Contains(parts[j]))
+                if (!reference.ContainsKey(i))
+                    reference.Add(i, new List< PartScript>());
+                if (!reference[i].Contains(parts[j]))
                     reference[i].Add(parts[j]);
             }
         }
@@ -130,7 +130,7 @@ public static class PartsReferencer
         for (int i = 0; i < bodyParts.Count; i++)
         {
             if(!reference.ContainsKey(i))
-                reference.Add(i, bodyParts[i]);
+                reference.Add(i,  bodyParts[i]);
         }
     }
 }

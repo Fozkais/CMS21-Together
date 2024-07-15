@@ -175,7 +175,10 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.stat, ServerHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
+            
             { (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
+            { (int)PacketTypes.bodyPart, ServerHandle.BodyPartPacket },
+            { (int)PacketTypes.partScript, ServerHandle.PartScriptPacket },
         };
     }
 }
