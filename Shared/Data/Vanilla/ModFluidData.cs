@@ -1,7 +1,7 @@
 ﻿using System;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data;
+namespace CMS21Together.Shared.Data.Vanilla;
 
 [Serializable]
 public class ModFluidData
@@ -23,7 +23,7 @@ public class ModFluidData
         FluidData data = new FluidData();
         data.Level = Level;
         data.Condition = Condition;
-        data.CarFluid = CarFluid.ToGame();
+        data.CarFluid = CarFluid != null ? CarFluid.ToGame() : null;
 
         return data;
     }

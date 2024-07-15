@@ -1,7 +1,7 @@
 using System;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public class ModBodyPartData
@@ -26,7 +26,12 @@ namespace CMS21Together.Shared.Data
 
         public ModBodyPartData(BodyPartData data)
         {
-            Color = new ModColor(data.Color.element[0],data.Color.element[1],data.Color.element[2],data.Color.element[3]);
+            if (data == null) return;
+    
+            Color = data.Color != null 
+                ? new ModColor(data.Color.element[0], data.Color.element[1], data.Color.element[2], data.Color.element[3]) 
+                : new ModColor(0, 0, 0, 0); // Default color if data.Color is null
+
             Condition = data.Condition;
             Dent = data.Dent;
             Dust = data.Dust;
@@ -39,11 +44,15 @@ namespace CMS21Together.Shared.Data
             PaintType = data.PaintType;
             Quality = data.Quality;
             Switched = data.Switched;
-            TintColor = new ModColor(data.TintColor.element[0], data.TintColor.element[1], data.TintColor.element[2], data.TintColor.element[3]);
+            TintColor = data.TintColor != null 
+                ? new ModColor(data.TintColor.element[0], data.TintColor.element[1], data.TintColor.element[2], data.TintColor.element[3]) 
+                : new ModColor(0, 0, 0, 0); // Default tint color if data.TintColor is null
+
             TunedID = data.TunedID;
             Unmounted = data.Unmounted;
             WashFactor = data.WashFactor;
         }
+
         
         public BodyPartData ToGame()
         {

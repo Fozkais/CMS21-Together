@@ -1,4 +1,4 @@
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     public enum ModPartType
     {

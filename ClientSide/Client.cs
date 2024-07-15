@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Transports;
@@ -88,6 +89,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.stat, ClientHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ClientHandle.LifterPacket },
+            { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
         };
     }
 

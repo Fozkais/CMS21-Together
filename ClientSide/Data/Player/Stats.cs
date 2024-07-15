@@ -2,6 +2,7 @@
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using Il2Cpp;
 
 namespace CMS21Together.ClientSide.Data.Player;

@@ -100,5 +100,15 @@ public class ClientSend
             SendData(packet);
         }
     }
-    
+
+    public static void LoadCarPacket(ModNewCarData carData, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.loadCar))
+        {
+            packet.Write(carData);
+            packet.Write(carLoaderID);
+            
+            SendData(packet);
+        }
+    }
 }

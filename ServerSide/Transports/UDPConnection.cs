@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 

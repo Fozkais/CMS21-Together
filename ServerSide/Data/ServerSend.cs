@@ -162,4 +162,15 @@ public static class ServerSend
         }
     }
     
+    public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.loadCar))
+        {
+            packet.Write(carData);
+            packet.Write(carLoaderID);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
+    
 }

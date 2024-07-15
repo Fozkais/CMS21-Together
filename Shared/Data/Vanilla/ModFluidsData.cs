@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Il2Cpp;
+using MelonLoader;
 
-namespace CMS21Together.Shared.Data;
+namespace CMS21Together.Shared.Data.Vanilla;
 
 [Serializable]
 public struct ModFluidsData
@@ -58,27 +59,52 @@ public struct ModFluidsData
     public FluidsData ToGame()
     {
         FluidsData _data = new FluidsData();
+
+        _data.Oil = Oil?.ToGame();
         
-        _data.Oil = Oil.ToGame();
         _data.Brake = new Il2CppSystem.Collections.Generic.List<FluidData>();
-        foreach (ModFluidData fluidData in Brake)
+        if (Brake != null)
         {
-            _data.Brake.Add(fluidData.ToGame());
+            foreach (ModFluidData fluidData in Brake)
+            {
+                if (fluidData != null)
+                {
+                    _data.Brake.Add(fluidData.ToGame());
+                }
+            }
         }
         _data.EngineCoolant = new Il2CppSystem.Collections.Generic.List<FluidData>();
-        foreach (ModFluidData fluidData in EngineCoolant)
+        if (EngineCoolant != null)
         {
-            _data.EngineCoolant.Add(fluidData.ToGame());
+            foreach (ModFluidData fluidData in EngineCoolant)
+            {
+                if (fluidData != null)
+                {
+                    _data.EngineCoolant.Add(fluidData.ToGame());
+                }
+            }
         }
         _data.PowerSteering = new Il2CppSystem.Collections.Generic.List<FluidData>();
-        foreach (ModFluidData fluidData in PowerSteering)
+        if (PowerSteering != null)
         {
-            _data.PowerSteering.Add(fluidData.ToGame());
+            foreach (ModFluidData fluidData in PowerSteering)
+            {
+                if (fluidData != null)
+                {
+                    _data.PowerSteering.Add(fluidData.ToGame());
+                }
+            }
         }
         _data.WindscreenWash = new Il2CppSystem.Collections.Generic.List<FluidData>();
-        foreach (ModFluidData fluidData in WindscreenWash)
+        if (WindscreenWash != null)
         {
-            _data.WindscreenWash.Add(fluidData.ToGame());
+            foreach (ModFluidData fluidData in WindscreenWash)
+            {
+                if (fluidData != null)
+                {
+                    _data.WindscreenWash.Add(fluidData.ToGame());
+                }
+            }
         }
 
         return _data;

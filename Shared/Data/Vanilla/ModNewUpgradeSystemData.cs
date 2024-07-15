@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public struct ModNewUpgradeSystemData

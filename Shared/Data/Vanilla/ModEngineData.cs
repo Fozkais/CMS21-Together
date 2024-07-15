@@ -1,8 +1,7 @@
 using System;
 using Il2Cpp;
-using UnityEngine.Serialization;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public struct ModEngineData

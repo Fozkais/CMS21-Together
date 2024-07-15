@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CMS21Together.ClientSide.Data.Player;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using MelonLoader;
@@ -157,5 +158,15 @@ public static class ServerHandle
         int carLoaderID = packet.ReadInt();
 
         ServerSend.LifterPacket(fromClient, state, carLoaderID);
+    }
+    
+    public static void LoadCarPacket(int fromClient, Packet packet)
+    {
+        ModNewCarData carData = packet.Read<ModNewCarData>();
+        int carLoaderID = packet.ReadInt();
+
+        ServerData.Instance.CarData = carData;
+
+        ServerSend.LoadCarPacket(fromClient, carData, carLoaderID);
     }
 }

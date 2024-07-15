@@ -5,6 +5,7 @@ using System.Linq;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using Il2Cpp;
 using MelonLoader;

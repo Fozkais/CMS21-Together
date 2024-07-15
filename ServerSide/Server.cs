@@ -175,6 +175,7 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.stat, ServerHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
+            { (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
         };
     }
 }

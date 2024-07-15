@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Il2Cpp;
 using MelonLoader;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public class ModGroupItem

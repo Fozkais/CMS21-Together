@@ -1,7 +1,7 @@
 using System;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public class ModPartData
@@ -11,13 +11,13 @@ namespace CMS21Together.Shared.Data
         public float Dust;
         public bool Examined;
         public bool IsPainted;
-        public ModMountObject MountObjectData;
+        public ModMountObjectData MountObjectData;
         public ModPaintData PaintData;
         public ModPaintType PaintType;
         public string Path;
         public int Quality;
         public string TunedID;
-       // public ModTuningData TuningData;
+        public ModTuningData TuningData;
         public bool Unmounted;
 
         public ModPartData(PartData data)
@@ -27,12 +27,13 @@ namespace CMS21Together.Shared.Data
             Dust = data.Dust;
             Examined = data.Examined;
             IsPainted = data.IsPainted;
-            //MountObjectData = new ModMountObject(data.MountObjectData);
+            MountObjectData = new ModMountObjectData(data.MountObjectData);
             PaintData = new ModPaintData(data.PaintData);
             PaintType = (ModPaintType)data.PaintType;
             Path = data.Path;
             Quality = data.Quality;
             TunedID = data.TunedID;
+            TuningData = new ModTuningData(data.TuningData);
             Unmounted = data.Unmounted;
         }
         
@@ -48,7 +49,7 @@ namespace CMS21Together.Shared.Data
             data.Dust = Dust;
             data.Examined = Examined;
             data.IsPainted = IsPainted;
-            // Nous ne définissons pas MountObjectData car il semble ne pas être utilisé dans votre code
+            data.MountObjectData = MountObjectData.ToGame();
             data.PaintData = PaintData.ToGame(PaintData);
             data.PaintType = (PaintType)PaintType;
             data.Path = Path;

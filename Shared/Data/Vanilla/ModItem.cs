@@ -2,7 +2,7 @@ using System;
 using Il2Cpp;
 using MelonLoader;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
     public class ModItem
@@ -119,10 +119,8 @@ namespace CMS21Together.Shared.Data
             original.NormalID = this.NormalID;
             original.OutsideRustEnabled = this.OutsideRustEnabled;
 
-            if (this.PaintData != null)
-            {
-                original.PaintData = new ModPaintData().ToGame(this.PaintData);
-            }
+
+            original.PaintData = new ModPaintData().ToGame(this.PaintData);
     
             original.PaintType = this.PaintType;
             original.Quality = this.Quality;

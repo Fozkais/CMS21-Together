@@ -43,6 +43,9 @@
     <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs" />
     <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\Garage\Car\CarSpawnManager.cs" />
+    <Compile Include="ClientSide\Data\Garage\Car\CarSpawnHooks.cs" />
+    <Compile Include="ClientSide\Data\Garage\Car\PartUpdateHooks.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
@@ -75,6 +78,7 @@
     <Compile Include="Shared\Data\ModColor.cs" />
     <Compile Include="Shared\Data\ModSaveData.cs" />
     <Compile Include="Shared\Data\NetworkType.cs" />
+    <Compile Include="Shared\Data\QuaternionSerializable.cs" />
     <Compile Include="Shared\Data\Vanilla\ModBodyPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModBonusPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModCarFluid.cs" />
@@ -89,11 +93,14 @@
     <Compile Include="Shared\Data\Vanilla\ModFluidsData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModGearboxData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModGroupItem.cs" />
+    <Compile Include="Shared\Data\Vanilla\ModHeadLampAlignmentData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModIOSpecialType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModItem.cs" />
+    <Compile Include="Shared\Data\Vanilla\ModLicencePlatesData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModLifterState.cs" />
     <Compile Include="Shared\Data\Vanilla\ModLPData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModMountObject.cs" />
+    <Compile Include="Shared\Data\Vanilla\ModMountObjectData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModNewCarData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModNewCarLifterData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModNewCarLoaderData.cs" />
@@ -113,12 +120,12 @@
     <Compile Include="Shared\Data\Vanilla\ModPartType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModProfileData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModStats.cs" />
+    <Compile Include="Shared\Data\Vanilla\ModToolsData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModTuningData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelBalancerActionType.cs" />
     <Compile Include="Shared\Data\Vanilla\ModWheelData.cs" />
-    <Compile Include="Shared\Data\Vanilla\ModWheelsAlignment.cs" />
-    <Compile Include="Shared\Data\Vanilla\QuaternionSerializable.cs" />
-    <Compile Include="Shared\Data\Vanilla\Vector3Serializable.cs" />
+    <Compile Include="Shared\Data\Vanilla\ModWheelsAlignmentData.cs" />
+    <Compile Include="Shared\Data\Vector3Serializable.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />
     <Compile Include="Shared\SavesManager.cs" />
@@ -240,9 +247,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
     <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ClientSide\Data\Garage\Car\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared;
+using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,12 +51,23 @@ namespace CMS21Together
         {
             if(!isModInitialized) {return;}
             CustomUIManager.OnSceneChange(sceneName);
+
+            if (sceneName == "Menu")
+            {
+                if (Server.Instance.isRunning)
+                    Server.Instance.CloseServer();
+                if(Client.Instance.isConnected)
+                    Client.Instance.Disconnect();
+                
+                Application.runInBackground = false;
+            }
             
         }
 
         public override void OnUpdate()
         {
             if(!isModInitialized) {return;}
+            if(!Client.Instance.isConnected) {return;}
 
             if (SceneManager.GetActiveScene().name == "garage")
             {
@@ -62,6 +75,12 @@ namespace CMS21Together
             }
             
             ThreadManager.UpdateThread();
+        }
+
+
+        public static void StartCoroutine(Il2CppSystem.Collections.IEnumerator routine)
+        {
+            GameManager.Instance.StartCoroutine(routine);
         }
 
         public override void OnLateUpdate()

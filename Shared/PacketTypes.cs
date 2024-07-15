@@ -13,5 +13,6 @@ public enum PacketTypes
     groupItem,
     stat,
     lifter,
-    start
+    start,
+    loadCar
 }

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CMS21Together.Shared.Data.Vanilla;
+namespace CMS21Together.Shared.Data;
 
 [Serializable]
 public class QuaternionSerializable

@@ -11,9 +11,11 @@ public class SteamConnection
 {
     public readonly int id;
     public Connection connection;
+    public bool isConnected;
 
     public SteamConnection(int _id)
     {
+        isConnected = false;
         id = _id;
     }
     public void Send(Packet packet, bool reliable=true)
@@ -30,7 +32,14 @@ public class SteamConnection
         SteamworksUtils.FreeIntPtr(_data);
     }
 
-    public void Disconnect() { connection.Close(); }
+    public void Disconnect() 
+    {
+        if (isConnected)
+        {
+            isConnected = false;
+            connection.Close();
+        } 
+    }
 
     public void HandleData(byte[] data)
     {

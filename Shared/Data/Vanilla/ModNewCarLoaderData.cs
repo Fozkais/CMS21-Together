@@ -2,7 +2,7 @@ using System;
 using Il2Cpp;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     
     [Serializable]

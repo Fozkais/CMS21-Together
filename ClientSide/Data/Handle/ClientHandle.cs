@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -132,6 +133,16 @@ public static class ClientHandle
         else
             lifter.Action(1);
 
-        ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state;
+        // ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state; TODO: fix this?
+    }
+    
+    public static void LoadCarPacket(Packet packet)
+    {
+        ModNewCarData carData = packet.Read<ModNewCarData>();
+        int carLoaderID = packet.ReadInt();
+        
+        MelonLogger.Msg("[ClientHandle->LoadCarPacket] Received new car info.");
+
+        MelonCoroutines.Start(CarSpawnManager.LoadCarFromServer(carData, carLoaderID));
     }
 }

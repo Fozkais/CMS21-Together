@@ -1,17 +1,17 @@
 using System;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
-    public struct ModWheelsAlignment
+    public struct ModWheelsAlignmentData
     {
         public float FL;
         public float FR;
         public float RL;
         public float RR;
 
-        public ModWheelsAlignment(WheelsAlignmentData data)
+        public ModWheelsAlignmentData(WheelsAlignmentData data)
         {
             FL = data.FL;
             FR = data.FR;
@@ -19,7 +19,7 @@ namespace CMS21Together.Shared.Data
             RR = data.RR;
         }
         
-        public WheelsAlignmentData ToGame(ModWheelsAlignment _data)
+        public WheelsAlignmentData ToGame(ModWheelsAlignmentData _data)
         {
             WheelsAlignmentData data = new WheelsAlignmentData();
             data.FL = _data.FL;

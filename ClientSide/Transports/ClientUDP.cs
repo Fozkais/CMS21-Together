@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 

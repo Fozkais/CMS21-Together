@@ -1,10 +1,10 @@
 using System;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data.Vanilla
 {
     [Serializable]
-    public class ModPaintData
+    public struct ModPaintData
     {
         public float metal;
         public float roughness;

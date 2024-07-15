@@ -1,86 +1,40 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Il2Cpp;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data;
+
+[Serializable]
+public class ModCar
 {
-    [Serializable]
-    public class ModCar
+    public int carLoaderID;
+    public string carID;
+    public int configVersion;
+    public int carPosition;
+
+    [NonSerialized]public ModPartInfo partInfo;
+    
+    public bool isReady;
+    public bool isFromServer;
+    
+    public ModCar(int _carLoaderID, string _carID, int _configVersion,int _carPosition=-1)
     {
-        public int carLoaderID;
-        public string carID;
-        public ModPartInfo partInfo;
-        public ModCarInfoData carInfo;
-        public ModFluidsData fluidsData;
-        
-        public int carVersion;
-        public int carPosition;
-        
-        public int CarLifterState; // TODO: Implement for AutoResync
-        
-        public bool isReferenced;
-        public bool isHandled;
-        
-        public bool isFromServer;
-        public bool receivedOtherParts = true;
-        public bool receivedEngineParts = true;
-        public bool receivedDriveshaftParts = true;
-        public bool receivedSuspensionParts = true;
-        public bool receivedBodyParts = true;
-        
-        public bool CarFullyReceived 
-        { 
-            get => receivedDriveshaftParts && receivedOtherParts && 
-                   receivedSuspensionParts && receivedEngineParts && receivedBodyParts;
-        }
-        
+        this.carLoaderID = _carLoaderID;
+        this.carID = _carID;
+        this.partInfo = new ModPartInfo();
+        this.carPosition = _carPosition;
+        this.configVersion = _configVersion;
 
-
-        public ModCar() {}
-        public ModCar(int _carLoaderID, string _carID, int _carVersion,int _carPosition=-1)
-        {
-            this.carLoaderID = _carLoaderID;
-            this.carID = _carID;
-            this.partInfo = new ModPartInfo();
-            this.carPosition = _carPosition;
-            this.carVersion = _carVersion;
-
-            this.isFromServer = false;
-        }
-
-        public ModCar(ModCar _car)
-        {
-            this.carLoaderID = _car.carLoaderID;
-            this.carID = _car.carID;
-            this.partInfo = new ModPartInfo();
-            this.carPosition = _car.carPosition;
-            this.carVersion = _car.carVersion;
-            
-            this.isFromServer = true;
-            this.isHandled = false;
-            this.isReferenced = false;
-            this.receivedOtherParts = false;
-            this.receivedEngineParts = false;
-            this.receivedDriveshaftParts = false;
-            this.receivedSuspensionParts = false;
-            this.receivedBodyParts = false;
-        }
+        this.isFromServer = false;
     }
+}
 
-    [Serializable]
-    public class ModPartInfo
-    {
-        public Dictionary<int, List<ModPartScript>> OtherParts = new Dictionary<int, List<ModPartScript>>();
-        public Dictionary<int, List<ModPartScript>> SuspensionParts = new Dictionary<int, List<ModPartScript>>();
-        public Dictionary<int, ModPartScript> EngineParts = new Dictionary<int, ModPartScript>();
-        public Dictionary<int, ModPartScript> DriveshaftParts = new Dictionary<int, ModPartScript>();
-        public Dictionary<int, ModCarPart> BodyParts = new Dictionary<int, ModCarPart>();
+public class ModPartInfo
+{
+    public Dictionary<int, List<PartScript>> OtherPartsReferences = new Dictionary<int, List<PartScript>>();
+    public Dictionary<int, List<PartScript>> SuspensionPartsReferences  = new Dictionary<int, List<PartScript>>();
+    public Dictionary<int, PartScript> EnginePartsReferences  = new Dictionary<int, PartScript>();
+    public Dictionary<int, PartScript> DriveshaftPartsReferences  = new Dictionary<int, PartScript>();
+    public Dictionary<int, CarPart> BodyPartsReferences  = new Dictionary<int, CarPart>();
         
-        public Dictionary<int, List<PartScript>> OtherPartsReferences = new Dictionary<int, List<PartScript>>();
-        public Dictionary<int, List<PartScript>> SuspensionPartsReferences  = new Dictionary<int, List<PartScript>>();
-        public Dictionary<int, PartScript> EnginePartsReferences  = new Dictionary<int, PartScript>();
-        public Dictionary<int, PartScript> DriveshaftPartsReferences  = new Dictionary<int, PartScript>();
-        public Dictionary<int, CarPart> BodyPartsReferences  = new Dictionary<int, CarPart>();
-        
-    }
 }

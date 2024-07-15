@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace CMS21Together.Shared.Data;
+namespace CMS21Together.Shared;
 
 
 [Serializable]

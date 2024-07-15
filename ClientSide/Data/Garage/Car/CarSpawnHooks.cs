@@ -1,0 +1,36 @@
+﻿using System;
+using HarmonyLib;
+using Il2Cpp;
+using MelonLoader;
+using UnityEngine.SceneManagement;
+
+namespace CMS21Together.ClientSide.Data.Garage.Car;
+
+[HarmonyPatch]
+public static class CarSpawnHooks
+{
+    public static bool listenToLoad = true;
+    
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCarFromFile), new Type[] { typeof(NewCarData) })]
+    [HarmonyPrefix]
+    public static void LoadCarFromFileHook(NewCarData carDataCheck, CarLoader __instance)
+    {
+        if(String.IsNullOrEmpty(carDataCheck.carToLoad)) return;
+        if (!listenToLoad) { listenToLoad = true; return;}
+            
+        MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{carDataCheck.carToLoad}");
+        
+        int carLoaderID = __instance.gameObject.name[10] - '0';
+        MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
+
+    }
+    
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
+    [HarmonyPrefix]
+    public static void DeleteCarHook(CarLoader __instance)
+    {
+        if(string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
+        
+        MelonLogger.Msg($"[CarSpawnHooks->DeleteCarHook] Triggered.");
+    }
+}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -18,6 +19,7 @@ public class ClientData
         LoadPlayerPrefab();
         
         Inventory.Reset();
+        CarSpawnManager.Reset();
     }
     
     public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
@@ -29,9 +31,7 @@ public class ClientData
     public void UpdateClient()
     {
         if (GameData.Instance == null)
-        {
             GameData.Instance = new GameData();
-        }
         
         Movement.SendPosition();
         Rotation.SendRotation();
