@@ -12,7 +12,7 @@ public static class CarSpawnHooks
     public static bool listenToLoad = true;
     
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCarFromFile), new Type[] { typeof(NewCarData) })]
-    [HarmonyPrefix]
+    [HarmonyPostfix]
     public static void LoadCarFromFileHook(NewCarData carDataCheck, CarLoader __instance)
     {
         if(String.IsNullOrEmpty(carDataCheck.carToLoad)) return;
@@ -20,10 +20,17 @@ public static class CarSpawnHooks
             
         MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{carDataCheck.carToLoad}");
         
-        int carLoaderID = __instance.gameObject.name[10] - '0';
+        int carLoaderID = (__instance.gameObject.name[10] - '0') - 1;
         MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
 
     }
+    
+    /*[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.PreparePartScriptCuller))]
+    [HarmonyPostfix]
+    public static void PreparePartScriptCullerHook(CarLoader __instance)
+    {
+        MelonLogger.Msg($"[CarSpawnHooks->PreparePartScriptCullerHook] Triggered.");
+    }*/
     
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
     [HarmonyPrefix]

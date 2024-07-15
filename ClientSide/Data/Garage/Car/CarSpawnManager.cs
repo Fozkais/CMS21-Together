@@ -26,8 +26,11 @@ public static class CarSpawnManager
 
         ModCar car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo);
         ClientSend.LoadCarPacket(new ModNewCarData(carData), carLoaderID);
+
+        yield return new WaitForEndOfFrame();
         
         ClientData.Instance.loadedCars.Add(carLoaderID, car);
+        MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
     }
     public static IEnumerator LoadCarFromServer(ModNewCarData data, int carLoaderID)
     {
@@ -66,13 +69,15 @@ public static class CarSpawnManager
         LoadCarParts(carLoader, carData);
         yield return YieldInstructions.WaitForEndOfFrame;
         LoadCarAdditionalInfo(carLoader, carData);
-        yield return YieldInstructions.WaitForEndOfFrame;
         
+        yield return YieldInstructions.WaitForEndOfFrame;
         if (ScreenFader.m_instance.IsRunning() || ScreenFader.m_instance.IsFadedIn())
 	        ScreenFader.m_instance.ShortFadeOut();
         
         ModCar car = new ModCar(carLoaderID, data.carToLoad, data.configVersion);
         ClientData.Instance.loadedCars.Add(carLoaderID, car);
+        MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+        
         MelonLogger.Msg($"[CarManager->LoadCarFromServer] Loading {data.carToLoad} from server...");
     }
     private static void LoadCarConfig(CarLoader carLoader, NewCarData carData)
