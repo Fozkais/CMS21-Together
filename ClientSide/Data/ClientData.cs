@@ -19,8 +19,6 @@ public class ClientData
     {
         GameReady = false;
         GameData.Instance = null;
-        UserData = TogetherModManager.LoadUserData();
-        LoadPlayerPrefab();
         
         Inventory.Reset();
         CarSpawnManager.Reset();
@@ -32,9 +30,6 @@ public class ClientData
     public Dictionary<int, ModCar> loadedCars = new Dictionary<int, ModCar>();
     public GameObject playerPrefab;
     public int scrap, money;
-
-  
-
 
     public void UpdateClient()
     {
@@ -56,7 +51,7 @@ public class ClientData
         GameReady = true;
     }
     
-    private void LoadPlayerPrefab()
+    public void LoadPlayerPrefab()
     {
         var playerBundle = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.player.assets")));
 

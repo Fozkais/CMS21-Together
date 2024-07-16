@@ -13,12 +13,16 @@ public class ClientUDP
     public UdpClient socket;
     public IPEndPoint endPoint;
 
-    public void Connect()
+    public void Connect(string ip="")
     {
         socket = new UdpClient();
         try
         {
-            endPoint = new IPEndPoint(IPAddress.Parse(ClientData.UserData.ip), MainMod.PORT);
+            if(string.IsNullOrEmpty(ip))
+                endPoint = new IPEndPoint(IPAddress.Parse(ClientData.UserData.ip), MainMod.PORT);
+            else
+                endPoint = new IPEndPoint(IPAddress.Parse(ip), MainMod.PORT);
+            
             socket.Connect(endPoint);
 
             socket.BeginReceive(ReceiveCallback, null);

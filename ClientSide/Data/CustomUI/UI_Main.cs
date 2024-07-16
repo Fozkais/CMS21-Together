@@ -67,11 +67,11 @@ public class UI_Main
             ButtonInfo b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Join a game", 1);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b2_info, false); 
             
-            Vector2 b3_pos = new Vector2(20, -167);
+            Vector2 b3_pos = new Vector2(20, -92);
             Vector2 b3_size = new Vector2(336, 65);
-            Action b3_action = delegate {  };
-            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Network type", 2);
-            CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b3_info, true);
+            Action b3_action = delegate { ChangeNetworkType();  };
+            ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, $"Network type: {ClientData.UserData.selectedNetworkType}", 2);
+            CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b3_info, false);
             
             Vector2 b4_pos = new Vector2(20, -242);
             Vector2 b4_size = new Vector2(336, 65);
@@ -111,6 +111,22 @@ public class UI_Main
             CustomUIManager.DisableUI(CustomUISection.MP_Main);
             CustomUIManager.EnableUI(CustomUISection.MP_Lobby);
         }
+        
+        private static void ChangeNetworkType()
+        {
+            switch (ClientData.UserData.selectedNetworkType)
+            {
+                case NetworkType.Steam:
+                    ClientData.UserData.selectedNetworkType = NetworkType.TCP;
+                    break;
+                case NetworkType.TCP:
+                    ClientData.UserData.selectedNetworkType = NetworkType.Steam;
+                    break;
+            }
+
+            CustomUIManager.MP_Main_Buttons[2].button.text.text = $"Network type: {ClientData.UserData.selectedNetworkType}";
+            CustomUIManager.MP_Main_Buttons[2].button.text.OnEnable();
+        }
 
         private static void JoinWindow()
         { 
@@ -137,11 +153,11 @@ public class UI_Main
                 
                 ClientData.UserData.username = username;
                 ClientData.UserData.ip = address;
-              //  PreferencesManager.SavePreferences();
+                TogetherModManager.SavePreferences(); 
 
                 if (!string.IsNullOrEmpty(ClientData.UserData.username))
                 {
-                    Client.Instance.ConnectToServer(NetworkType.tcp); // TODO: Implement network type switch
+                    Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType);
                     Application.runInBackground = true;
 
                     OpenLobby();

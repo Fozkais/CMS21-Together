@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
@@ -41,21 +42,21 @@ public class Server : MonoBehaviour
 
     private void StartServer()
     {
-        if (networkType == NetworkType.steam)
+        if (networkType == NetworkType.Steam)
         {
+            steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
+            steam.serverID = SteamworksUtils.ConvertServerID(SteamManager.Instance.clientData.PlayerSteamId);
+            
             tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
             tcp.Start();
             tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
 
-            udp = new UdpClient();
+            udp = new UdpClient(MainMod.PORT);
             udp.BeginReceive(UDPReceiveCallback, null);
-
-            steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
-
-            ClientData.UserData.ip = "127.0.0.1";
-            Client.Instance.ConnectToServer(NetworkType.tcp);
+            
+            Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
         }
-        else if (networkType == NetworkType.tcp)
+        else if (networkType == NetworkType.TCP)
         {
             tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
             tcp.Start();
@@ -64,8 +65,7 @@ public class Server : MonoBehaviour
             udp = new UdpClient(MainMod.PORT);
             udp.BeginReceive(UDPReceiveCallback, null);
             
-            ClientData.UserData.ip = "127.0.0.1";
-            Client.Instance.ConnectToServer(NetworkType.tcp);
+            Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
         }
         
         Application.runInBackground = true;
@@ -88,6 +88,8 @@ public class Server : MonoBehaviour
             udp.Close();
         if(tcp != null)
             tcp.Stop();
+        if (steam != null)
+            steam.Close();
             
         if(clients != null)
             clients.Clear();

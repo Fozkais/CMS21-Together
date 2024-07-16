@@ -113,6 +113,12 @@ public static class CustomUIManager
              EnableUIList(MP_Host_Buttons);
          else if (section == CustomUISection.MP_Lobby)
          {
+             foreach (var elt in MP_Lobby_Addition)
+             {
+                 Object.Destroy(elt.Item2);
+             }
+             MP_Lobby_Addition.Clear();
+             CustomUIBuilder.BuildLobbyHeader();
              switch (Server.Instance.isRunning)
              {
                  case false:
@@ -120,6 +126,7 @@ public static class CustomUIManager
                      MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
                         
                      MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Disabled, true);
+                     MP_Lobby_Buttons[0].button.isDisabled = true;
                      MP_Lobby_Buttons[0].button.SetDisabled(true, true);
                      break;
                  case true:

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
@@ -29,30 +30,30 @@ public class Client : MonoBehaviour
     public ClientTCP tcp;
     public ClientUDP udp;
 
-    public void ConnectToServer(NetworkType type)
+    public void ConnectToServer(NetworkType type, string ip="")
     {
         networkType = type;
         ClientData.Instance = new ClientData();
-        ConnectToServer();
+        ConnectToServer(ip);
     }
 
-    private void ConnectToServer()
+    private void ConnectToServer(string ip="")
     {
         InitializeClientData();
 
-        if (networkType == NetworkType.steam)
+        if (networkType == NetworkType.Steam)
         {
             SteamId lobbyID = SteamworksUtils.ConvertLobbyID(ClientData.UserData.lobbyID);
             steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
         }
-        else if (networkType == NetworkType.tcp)
+        else if (networkType == NetworkType.TCP)
         {
             tcp = new ClientTCP();
             udp = new ClientUDP();
 
             tcp.Connect();
         }
-
+        
         isConnected = true;
     }
 
@@ -60,11 +61,11 @@ public class Client : MonoBehaviour
     {
         switch (networkType)
         {
-            case NetworkType.tcp:
+            case NetworkType.TCP:
                 if(reliable) tcp.Send(packet);
                 else udp.Send(packet);
                 break;
-            case NetworkType.steam:
+            case NetworkType.Steam:
                 steam.Send(packet, reliable);
                 break;
         }

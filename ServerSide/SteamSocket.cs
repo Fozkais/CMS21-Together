@@ -9,6 +9,8 @@ namespace CMS21Together.ServerSide;
 
 public class SteamSocket : SocketManager
 {
+    public string serverID = "";
+    
     public override void OnConnectionChanged(Connection connection, ConnectionInfo info)
     {
         ulong clientSteamID = info.Identity.SteamId;

@@ -47,7 +47,7 @@ public static class UI_Saves
             
             Vector2 b3_pos = new Vector2(20, -317);
             Vector2 b3_size = new Vector2(336, 65);
-            Action b3_action = delegate { OpenHostMenu(); };
+            Action b3_action = delegate { OpenHostMenu();  };
             ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Back to menu", 2);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Saves, b3_info, false);
             
@@ -88,7 +88,8 @@ public static class UI_Saves
         }
 
         private static void OpenHostMenu()
-        {
+        {  
+            lastPressed = -1;
             for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
                 Object.Destroy(CustomUIBuilder.tmpWindow[i]);
                     
@@ -175,17 +176,18 @@ public static class UI_Saves
                 }
             }
             else
-            { 
+            {
+                lastPressed = -1;
                 Vector2 position = new Vector2(600, 0);
                 Vector2 size = new Vector2(600, 300);
                 Action a1 = delegate
                 {
-                    for (int i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)
-                       Object.Destroy(CustomUIBuilder.tmpWindow[i]);
+                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
+                       Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
 
 
 
-                    CustomUIBuilder.tmpWindow.Clear();
+                    CustomUIBuilder.tmpWindow2.Clear();
                     CustomUIManager.UnlockUI(CustomUIManager.currentSection);
                };
                Action a2 = delegate
@@ -195,21 +197,20 @@ public static class UI_Saves
                    string username = inputField.text;
                    
                    ClientData.UserData.username = username;
-                   //PreferencesManager.SavePreferences(); TODO:Fix on reimplement
+                   TogetherModManager.SavePreferences(); 
 
                    for (int i = 0; i < CustomUIBuilder.tmpWindow2.Count; i++)
                        Object.Destroy(CustomUIBuilder.tmpWindow2[i]);
                    
                    CustomUIBuilder.tmpWindow2.Clear();
                    CustomUIManager.UnlockUI(CustomUIManager.currentSection);
-                   
 
                    if (!Server.Instance.isRunning)
-                       Server.Instance.StartServer(NetworkType.tcp);
+                       Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
                    else
                    {
                        Server.Instance.CloseServer();
-                       Server.Instance.StartServer(NetworkType.tcp);
+                       Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
                    }
                    UI_Lobby.saveIndex = index+4;
                    SavesManager.LoadSave(SavesManager.ModSaves[index+4]);

@@ -42,6 +42,16 @@ public static class SteamworksUtils
         ulong lobbyID = ulong.Parse(lobbyCode, System.Globalization.NumberStyles.Integer);
         return lobbyID;
     }
+    
+    public static string ConvertServerID(SteamId lobbyID)
+    {
+        string code = lobbyID.Value.ToBase36();
+            
+        code = code.PadLeft(5, '0');
+        code = code.PadRight(6, '0');
+            
+        return code;
+    }
 
     public static ServerConnection GetClientFromConnection(Connection connection)
     {

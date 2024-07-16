@@ -71,9 +71,6 @@ public static class UI_Lobby
             Action b3_action = delegate { OpenMainMenu(); };
             ButtonInfo b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Disconnect", 2);
             CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b3_info, false); // Need to be last
-
-            CustomUIBuilder.BuildLobbyHeader();
-            
             
             CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
         }
@@ -109,11 +106,11 @@ public static class UI_Lobby
             Vector2 t1_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t1_pos, t1_size, username, 16, lobbyPlayerObject.transform);
             
-            Vector2 t2_pos = new Vector2(800, 0);
+            Vector2 t2_pos = new Vector2(800, -2);
             Vector2 t2_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t2_pos, t2_size, "Not ready", 16, lobbyPlayerObject.transform);
             
-            Vector2 t3_pos = new Vector2(1060, 0);
+            Vector2 t3_pos = new Vector2(1060, -2);
             Vector2 t3_size = new Vector2(400, 100);
             CustomUIBuilder.CreateText(t3_pos, t3_size, "?ms", 16, lobbyPlayerObject.transform);
             

@@ -10,6 +10,7 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+using SteamManager = CMS21Together.Shared.SteamManager;
 
 // ReSharper disable All
 
@@ -36,6 +37,7 @@ namespace CMS21Together
 
             Client.Instance = modObject.AddComponent<Client>();
             Server.Instance = modObject.AddComponent<Server>();
+            SteamManager.Instance = modObject.AddComponent<SteamManager>();
            
             ClientData.UserData = TogetherModManager.LoadUserData();
             isModInitialized = true;
@@ -60,6 +62,13 @@ namespace CMS21Together
                     Client.Instance.Disconnect();
                 
                 Application.runInBackground = false;
+            }
+
+            if (Client.Instance.isConnected)
+            {
+                if(sceneName == "garage" && ClientData.Instance.playerPrefab == null)
+                    ClientData.Instance.LoadPlayerPrefab();
+                
             }
             
         }
@@ -90,7 +99,7 @@ namespace CMS21Together
         
         public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
         {
-           
+           TogetherModManager.SavePreferences();
         }
     }
 }

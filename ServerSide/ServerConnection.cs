@@ -30,7 +30,7 @@ public class ServerConnection
     public void Connect(TcpClient connection)
     {
         tcp.Connect(connection);
-        connectionType = NetworkType.tcp;
+        connectionType = NetworkType.TCP;
         isConnected = true;
         
         ServerSend.ConnectPacket(id, "Connected to the server.");
@@ -38,7 +38,7 @@ public class ServerConnection
     
     public void Connect()
     {
-        connectionType = NetworkType.steam;
+        connectionType = NetworkType.Steam;
         isConnected = true;
         
         ServerSend.ConnectPacket(id, "Connected to the server.");
@@ -52,9 +52,9 @@ public class ServerConnection
     
     public void SendData(Packet packet, bool reliable)
     {
-        if(connectionType == NetworkType.steam)
+        if(connectionType == NetworkType.Steam)
             steam.Send(packet, reliable);
-        else if (connectionType == NetworkType.tcp)
+        else if (connectionType == NetworkType.TCP)
         {
             if(reliable) 
                 tcp.Send(packet);

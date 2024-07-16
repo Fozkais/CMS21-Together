@@ -22,7 +22,7 @@ public static class ClientHandle
         MelonLogger.Msg($"[ClientHandle->ConnectPacket] {message}");
         ClientData.UserData.playerID = newID;
 
-        if(Client.Instance.networkType == NetworkType.tcp)
+        if(Client.Instance.networkType == NetworkType.TCP)
             Client.Instance.udp.Connect();
         
         ClientSend.ConnectValidationPacket();

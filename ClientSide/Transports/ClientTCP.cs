@@ -16,7 +16,7 @@ public class ClientTCP
     
     private byte[] receiveBuffer;
     private Packet receivedData;
-    public void Connect()
+    public void Connect(string ip="")
     {
         try
         {
@@ -26,8 +26,11 @@ public class ClientTCP
                 SendBufferSize = dataBufferSize
             };
             receiveBuffer = new byte[dataBufferSize];
-
-            socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
+            
+            if(string.IsNullOrEmpty(ip))
+                socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
+            else
+                socket.BeginConnect(ip, MainMod.PORT, ConnectCallback, socket);
         }
         catch (Exception e)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
@@ -178,22 +179,70 @@ public static class CustomUIBuilder
             img.rectTransform.parentInternal = GetParentFromSection(CustomUISection.MP_Lobby);
             
             img.color = new Color(  .031f, .027f, .033f  , 0.85f);
-            img.rectTransform.sizeDelta = new Vector2(500, 75);
-            img.rectTransform.anchoredPosition = new Vector2(600, 175);
             
             CustomUIManager.MP_Lobby_Addition.Add((0, lobbyHeaderObject));
+
+            if (Server.Instance.isRunning)
+            {
+                img.rectTransform.sizeDelta = new Vector2(600, 125);
+                img.rectTransform.anchoredPosition = new Vector2(500, 186);
+                
+                Vector2 t1_pos = new Vector2(620, -30);
+                Vector2 t1_size = new Vector2(400, 100);
+                CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
             
-            Vector2 t1_pos = new Vector2(620, 0);
-            Vector2 t1_size = new Vector2(400, 100);
-            CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
+                Vector2 t2_pos = new Vector2(800, -30);
+                Vector2 t2_size = new Vector2(400, 100);
+                CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
             
-            Vector2 t2_pos = new Vector2(800, 0);
-            Vector2 t2_size = new Vector2(400, 100);
-            CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
+                Vector2 t3_pos = new Vector2(1060, -30);
+                Vector2 t3_size = new Vector2(400, 100);
+                CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
+                
+                var splitter2 = new GameObject("splitter");
+                var splitter2Img = splitter2.AddComponent<Image>();
+                splitter2Img.rectTransform.parent = lobbyHeaderObject.transform;
+                splitter2Img.rectTransform.parentInternal = lobbyHeaderObject.transform;
+                splitter2Img.color = new Color(  1f, 1f, 1f  , 0.5f);
+                splitter2Img.rectTransform.sizeDelta =  new Vector2(580, 2);
+                splitter2Img.rectTransform.anchoredPosition =  new Vector2(0, 0);
+                
+                Vector2 t4_pos = new Vector2(798, 30);
+                Vector2 t4_size = new Vector2(600, 100);
+                CreateText(t4_pos, t4_size, $"Save Name: {SavesManager.currentSave.Name}", 14, lobbyHeaderObject.transform);
+
+                if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
+                {
+                    Vector2 t5_pos = new Vector2(905, 30);
+                    Vector2 t5_size = new Vector2(400, 100);
+                    CreateText(t5_pos, t5_size, $"Server ID: {Server.Instance.steam.serverID}", 14, lobbyHeaderObject.transform);
+                }
+            }
+            else
+            {
+                img.rectTransform.sizeDelta = new Vector2(600, 75);
+                img.rectTransform.anchoredPosition = new Vector2(500, 186);
+                
+                Vector2 t1_pos = new Vector2(620, 0);
+                Vector2 t1_size = new Vector2(400, 100);
+                CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
             
-            Vector2 t3_pos = new Vector2(1060, 0);
-            Vector2 t3_size = new Vector2(400, 100);
-            CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
+                Vector2 t2_pos = new Vector2(800, 0);
+                Vector2 t2_size = new Vector2(400, 100);
+                CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
+            
+                Vector2 t3_pos = new Vector2(1060, 0);
+                Vector2 t3_size = new Vector2(400, 100);
+                CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
+            }
+            
+            var splitter1 = new GameObject("splitter");
+            var splitter1Img = splitter1.AddComponent<Image>();
+            splitter1Img.rectTransform.parent = lobbyHeaderObject.transform;
+            splitter1Img.rectTransform.parentInternal = lobbyHeaderObject.transform;
+            splitter1Img.color = new Color(  1f, 1f, 1f  , 0.5f);
+            splitter1Img.rectTransform.sizeDelta =  new Vector2(580, 2);
+            splitter1Img.rectTransform.anchoredPosition =  new Vector2(0, -62);
             
             CustomUIManager.MP_Lobby_Addition[0].Item2.SetActive(true);
 
@@ -277,7 +326,7 @@ public static class CustomUIBuilder
                 tmpWindow2.Add(CreateText(t1_pos, t1_size, "Enter username :", 16, inputFieldObject.transform));
                 Vector2 i1_pos = new Vector2(0, 175);
                 Vector2 i1_size = new Vector2(400, 100);
-                tmpWindow2.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+                tmpWindow2.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform, ClientData.UserData.username)); // need to be the last added
             }
             else if (type == InputFieldType.deleteSave)
             {
@@ -315,45 +364,48 @@ public static class CustomUIBuilder
             ButtonInfo buttonInfo = new ButtonInfo(b2_pos, b2_size, b2_action, texts[1], -1,inputFieldObject.transform);
             tmpWindow.Add(CreateNewButton(CustomUIManager.currentSection, buttonInfo, false,null,false).button.gameObject);
             
-            Vector2 t1_pos = new Vector2(530, 140);
+            Vector2 t1_pos = new Vector2(635, 130);
             Vector2 t1_size = new Vector2(400, 100);
-            tmpWindow.Add(CreateText(t1_pos, t1_size, "Enter server address :", 16, inputFieldObject.transform));
+            if(ClientData.UserData.selectedNetworkType != NetworkType.Steam)
+                tmpWindow.Add(CreateText(t1_pos, t1_size, "Enter server address :", 16, inputFieldObject.transform));
+            else
+                tmpWindow.Add(CreateText(t1_pos, t1_size, "Enter server ID :", 16, inputFieldObject.transform));
             
-            Vector2 t2_pos = new Vector2(530, 20);
+            Vector2 t2_pos = new Vector2(635, 0);
             Vector2 t2_size = new Vector2(400, 100);
             tmpWindow.Add(CreateText(t2_pos, t2_size, "Enter username :", 16, inputFieldObject.transform));
             
             Vector2 i1_pos = new Vector2(0, 250);
             Vector2 i1_size = new Vector2(400, 100);
-            tmpWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform)); // need to be the last added
+            if(ClientData.UserData.selectedNetworkType != NetworkType.Steam)
+                tmpWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform, ClientData.UserData.ip)); // need to be the last added
+            else
+                tmpWindow.Add(CreateNewInputField(i1_pos, i1_size, inputFieldObject.transform, ClientData.UserData.lobbyID));
             
             Vector2 i2_pos = new Vector2(0, 130);
             Vector2 i2_size = new Vector2(400, 100);
-            tmpWindow.Add(CreateNewInputField(i2_pos, i2_size, inputFieldObject.transform));
+            tmpWindow.Add(CreateNewInputField(i2_pos, i2_size, inputFieldObject.transform, ClientData.UserData.username));
             
             tmpWindow[1].SetActive(true);
             tmpWindow[2].SetActive(true);
         }
 
-        public static GameObject CreateNewInputField(Vector2 position, Vector2 size,Transform parent)
+        public static GameObject CreateNewInputField(Vector2 position, Vector2 size,Transform parent, string defaultText="")
         {
             var inputFieldObject = Object.Instantiate(CustomUIManager.templateInputField, parent, true);
-            GameObject inputField = null;
             
             for (int i = 0; i < inputFieldObject.transform.childCount; i++)
             {
                 GameObject obj = inputFieldObject.transform.GetChild(i).gameObject;
                 if (obj.name != "InputField")
                     Object.Destroy(obj);
-                else
-                    inputField = obj;
             }
 
             inputFieldObject.GetComponent<Image>().enabled = false;
             
             inputFieldObject.GetComponent<RectTransform>().anchoredPosition = position;
             inputFieldObject.GetComponent<RectTransform>().sizeDelta = size;
-
+            inputFieldObject.GetComponentInChildren<InputField>().text = defaultText;
 
             /*MelonLogger.Msg($"ChildrenCount = {inputFieldObject.transform.childCount}");
             if (inputField != null)
@@ -373,13 +425,14 @@ public static class CustomUIBuilder
             return inputFieldObject;
         }
 
-        public static GameObject CreateText(Vector2 position, Vector2 size, string text, int fontSize, Transform parent)
+        public static GameObject CreateText(Vector2 position, Vector2 size, string text, int fontSize, Transform parent, TextAnchor anchor=TextAnchor.MiddleLeft)
         {
             GameObject textObject = Object.Instantiate(CustomUIManager.templateText, parent, true);
             RectTransform textRect = textObject.GetComponent<RectTransform>();
             textRect.sizeDelta = size;
             textRect.localPosition = position;
 
+            textObject.GetComponent<Text>().alignment = anchor;
             textObject.GetComponent<Text>().text = text;
             textObject.GetComponent<Text>().fontSize = fontSize;
 
