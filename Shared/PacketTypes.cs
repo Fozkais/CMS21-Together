@@ -18,5 +18,6 @@ public enum PacketTypes
     bodyPart,
     partScript,
     deleteCar,
-    carPosition
+    carPosition,
+    garageUpgrade
 }

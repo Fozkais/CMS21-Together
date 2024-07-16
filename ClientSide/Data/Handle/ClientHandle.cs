@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
@@ -180,6 +181,12 @@ public static class ClientHandle
         MelonLogger.Msg($"[ClientHandle->CarPositionPacket] Move {carLoaderID} to {placeNo}.");
         MelonCoroutines.Start(CarSyncManager.ChangePosition(carLoaderID, placeNo));
     }
-
-
+    
+    public static void GarageUpgradePacket(Packet packet)
+    {
+        GarageUpgrade upgrade = packet.Read<GarageUpgrade>();
+        
+        MelonLogger.Msg($"[ClientHandle->GarageUpgradePacket] Received upgrade for {upgrade.upgradeID}.");
+        MelonCoroutines.Start(GarageUpgradeManager.SetUpgrade(upgrade));
+    }
 }

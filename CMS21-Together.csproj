@@ -43,6 +43,8 @@
     <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs" />
     <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs" />
     <Compile Include="ClientSide\Data\GameData.cs" />
+    <Compile Include="ClientSide\Data\Garage\Campaign\GarageUpgradeHooks.cs" />
+    <Compile Include="ClientSide\Data\Garage\Campaign\GarageUpgradeManager.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\CarSpawnManager.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\CarSpawnHooks.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\CarSyncHooks.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="Shared\Data\CustomUISection.cs" />
     <Compile Include="Shared\Data\Gamemode.cs" />
     <Compile Include="Shared\Data\GameScene.cs" />
+    <Compile Include="Shared\Data\GarageUpgrade.cs" />
     <Compile Include="Shared\Data\ModCar.cs" />
     <Compile Include="Shared\Data\ModColor.cs" />
     <Compile Include="Shared\Data\ModSaveData.cs" />

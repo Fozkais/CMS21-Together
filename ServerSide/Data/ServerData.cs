@@ -18,6 +18,14 @@ public class ServerData
     public Dictionary<int, ModNewCarData> CarSpawnDatas = new Dictionary<int, ModNewCarData>();
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
 
+    public Dictionary<string, GarageUpgrade> garageUpgrades = new Dictionary<string, GarageUpgrade>();
+
+
+    public void SetGarageUpgrade(GarageUpgrade upgrade)
+    {
+        garageUpgrades[upgrade.upgradeID] = upgrade;
+    }
+
     public void DeleteCar(int carLoaderID)
     {
         if (CarSpawnDatas.ContainsKey(carLoaderID))

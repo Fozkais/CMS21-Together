@@ -184,6 +184,8 @@ public class Server : MonoBehaviour
             
             { (int)PacketTypes.deleteCar, ServerHandle.DeleteCarPacket },
             { (int)PacketTypes.carPosition, ServerHandle.CarPositionPacket },
+            
+            { (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket},
         };
     }
 }

@@ -206,4 +206,12 @@ public static class ServerHandle
         ServerData.Instance.ChangePosition(carLoaderID, placeNo);
         ServerSend.CarPositionPacket(fromClient, carLoaderID, placeNo);
     }
+    
+    public static void GarageUpgradePacket(int fromClient, Packet packet)
+    {
+        GarageUpgrade upgrade = packet.Read<GarageUpgrade>();
+        
+        ServerData.Instance.SetGarageUpgrade(upgrade);
+        ServerSend.GarageUpgradePacket(fromClient, upgrade);
+    }
 }

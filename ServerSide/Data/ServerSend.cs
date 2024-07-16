@@ -218,4 +218,14 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+
+    public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.garageUpgrade))
+        {
+            packet.Write(upgrade);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
 }

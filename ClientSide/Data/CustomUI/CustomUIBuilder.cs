@@ -209,7 +209,7 @@ public static class CustomUIBuilder
                 
                 Vector2 t4_pos = new Vector2(798, 30);
                 Vector2 t4_size = new Vector2(600, 100);
-                CreateText(t4_pos, t4_size, $"Save Name: {SavesManager.currentSave.Name}", 14, lobbyHeaderObject.transform);
+                CreateText(t4_pos, t4_size, $"Save Name: {SavesManager.currentSave.Name}", 12, lobbyHeaderObject.transform);
 
                 if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
                 {

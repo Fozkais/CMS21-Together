@@ -158,4 +158,14 @@ public class ClientSend
             SendData(packet);
         }
     }
+
+    public static void GarageUpgradePacket(GarageUpgrade upgrade)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.garageUpgrade))
+        {
+            packet.Write(upgrade);
+            
+            SendData(packet);
+        }
+    }
 }

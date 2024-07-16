@@ -11,8 +11,7 @@ public static class Stats
 {
     public static void SyncStats()
     {
-        Gamemode gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
-        if (gamemode == Gamemode.Campaign)
+        if (ClientData.Instance.gamemode == Gamemode.Campaign)
         {
             SyncMoney();
             SyncScrap();

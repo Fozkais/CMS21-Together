@@ -28,7 +28,9 @@ public class ClientData
     
     public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();
     public Dictionary<int, ModCar> loadedCars = new Dictionary<int, ModCar>();
+    public Dictionary<string, GarageUpgrade> garageUpgrades = new  Dictionary<string, GarageUpgrade>();
     public GameObject playerPrefab;
+    public Gamemode gamemode;
     public int scrap, money;
 
     public void UpdateClient()
@@ -48,7 +50,9 @@ public class ClientData
         yield return new WaitForSeconds(2);
         yield return new WaitForEndOfFrame();
 
+        gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
         GameReady = true;
+        MelonLogger.Msg("Game is ready.");
     }
     
     public void LoadPlayerPrefab()
