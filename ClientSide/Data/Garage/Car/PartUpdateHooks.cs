@@ -19,6 +19,8 @@ public static class PartUpdateHooks
     [HarmonyPostfix]
     public static void DoMountHook(PartScript __instance)
     {
+        if(!Client.Instance.isConnected) { return;}
+        
         MelonCoroutines.Start(HandleDoMount(__instance));
     }
     private static bool AreBoltsMounted(PartScript partScript)
@@ -61,21 +63,21 @@ public static class PartUpdateHooks
     [HarmonyPostfix]
     public static void HideHook(PartScript __instance) // best way i've found to detect when a partScript is unmounted
     {
-        MelonLogger.Msg("[PartUpdateHooks->HideHook] Triggered."); // yes
+        if(!Client.Instance.isConnected) { return;}
+        
         int carLoaderID = (__instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0') - 1;
         ModCar car = ClientData.Instance.loadedCars[carLoaderID];
 
         if (FindPartInDictionaries(car, __instance, out ModPartType partType, out int key, out int? index))
            MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
-        else
-            MelonLogger.Msg("[PartUpdateHooks->HideHook] PartScript not found in any dictionary.");
+            
     }
     
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), new Type[] { typeof(string), typeof(bool) })]
     [HarmonyPostfix]
     public static void TakeOffCarPartHook(string name, bool off, CarLoader __instance) // handle both Mount/Unmount with the boolean
     {
-        MelonLogger.Msg($"[PartUpdateHooks->TakeOffCarPart] Triggered:{off}");
+        if(!Client.Instance.isConnected) { return;}
         
         int carLoaderID = (__instance.gameObject.name[10] - '0') - 1;
         ModCar car = ClientData.Instance.loadedCars[carLoaderID];
@@ -85,8 +87,6 @@ public static class PartUpdateHooks
             CarPart part = car.partInfo.BodyPartsReferences[key];
             MelonCoroutines.Start(SendBodyPart(part, key, carLoaderID));
         }
-        else
-            MelonLogger.Msg("[PartUpdateHooks->TakeOffCarPartHook] BodyPart not found in dictionary.");
     }
     
     private static bool FindPartInDictionaries(ModCar car, PartScript partScript, out ModPartType partType, out int key, out int? index)
@@ -139,6 +139,7 @@ public static class PartUpdateHooks
 
         partType = default;
         key = 0;
+        MelonLogger.Msg("[PartUpdateHooks->FindPartInDictionaries] PartScript not found in any dictionary.");
         return false;
     }
     public static bool FindBodyPartInDictionary(ModCar car, string carPartName, out int key)
@@ -153,6 +154,7 @@ public static class PartUpdateHooks
         }
         
         key = 0;
+        MelonLogger.Msg("[PartUpdateHooks->FindBodyPartInDictionary] BodyPart not found in dictionary.");
         return false;
     }
     
@@ -186,7 +188,7 @@ public static class PartUpdateHooks
         else
             ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
     }
-    private static IEnumerator SendBodyPart(CarPart part, int key, int carLoaderID)
+    public static IEnumerator SendBodyPart(CarPart part, int key, int carLoaderID)
     {
         yield return new WaitForEndOfFrame();
         yield return new WaitForEndOfFrame();

@@ -93,7 +93,7 @@ public static class CarSpawnManager
 	    carLoader.SetLicensePlateNumber();*/
 	    carLoader.customerCar = carData.customerCar;
 	    carLoader.orderConnection = carData.orderConnection;
-	    carLoader.FluidsData = carData.FluidsData;
+	    carLoader.FluidsData.Copy(carData.FluidsData);
 	    carLoader.HeadlampLeftAlignment = new HeadlampAlignment(carData.HeadlampLeftAlignmentData);
 	    carLoader.HeadlampRightAlignment = new HeadlampAlignment(carData.HeadlampRightAlignmentData);
 	    carLoader.WheelsAlignment = new WheelsAlignment(carData.WheelsAlignment);

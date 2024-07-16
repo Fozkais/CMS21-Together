@@ -24,8 +24,8 @@ public static class CarSpawnHooks
     [HarmonyPostfix]
     public static void LoadCarFromFileHook(NewCarData carDataCheck, CarLoader __instance)
     {
+        if(!Client.Instance.isConnected || !listenToLoad) { listenToLoad = true; return;}
         if(String.IsNullOrEmpty(carDataCheck.carToLoad)) return;
-        if (!listenToLoad) { listenToLoad = true; return;}
             
         MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{carDataCheck.carToLoad}");
         
@@ -34,17 +34,11 @@ public static class CarSpawnHooks
 
     }
     
-    /*[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.PreparePartScriptCuller))]
-    [HarmonyPostfix]
-    public static void PreparePartScriptCullerHook(CarLoader __instance)
-    {
-        MelonLogger.Msg($"[CarSpawnHooks->PreparePartScriptCullerHook] Triggered.");
-    }*/
-    
     [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
     [HarmonyPrefix]
     public static void DeleteCarHook(CarLoader __instance)
     {
+        if(!Client.Instance.isConnected) { return;}
         if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
         
         MelonLogger.Msg($"[CarSpawnHooks->DeleteCarHook] Triggered.");

@@ -45,6 +45,7 @@
     <Compile Include="ClientSide\Data\GameData.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\CarSpawnManager.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\CarSpawnHooks.cs" />
+    <Compile Include="ClientSide\Data\Garage\Car\CarSyncHooks.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\PartsReferencer.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\PartsUpdater.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\PartUpdateHooks.cs" />
