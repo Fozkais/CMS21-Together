@@ -198,4 +198,24 @@ public static class ServerSend
         MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
     }
 
+    public static void DeleteCarPacket(int fromClient, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.deleteCar))
+        {
+            packet.Write(carLoaderID);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void CarPositionPacket(int fromClient, int carLoaderID, int placeNo)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.carPosition))
+        {
+            packet.Write(placeNo);
+            packet.Write(carLoaderID);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
 }

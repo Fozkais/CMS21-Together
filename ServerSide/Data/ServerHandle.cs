@@ -189,4 +189,21 @@ public static class ServerHandle
         ServerData.Instance.UpdatePartScripts(partScript, carLoaderID);
         ServerSend.PartScriptPacket(fromClient, partScript, carLoaderID);
     }
+    
+    public static void DeleteCarPacket(int fromClient, Packet packet)
+    {
+        int carLoaderID = packet.ReadInt();
+        
+        ServerData.Instance.DeleteCar(carLoaderID);
+        ServerSend.DeleteCarPacket(fromClient, carLoaderID);
+    }
+    
+    public static void CarPositionPacket(int fromClient, Packet packet)
+    {
+        int placeNo = packet.ReadInt();
+        int carLoaderID = packet.ReadInt();
+        
+        ServerData.Instance.ChangePosition(carLoaderID, placeNo);
+        ServerSend.CarPositionPacket(fromClient, carLoaderID, placeNo);
+    }
 }

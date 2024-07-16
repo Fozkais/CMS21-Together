@@ -16,59 +16,77 @@ public class ServerData
     public int money, scrap;
 
     public Dictionary<int, ModNewCarData> CarSpawnDatas = new Dictionary<int, ModNewCarData>();
-    public Dictionary<int, ModCarPartInfo> CarPartInfos = new Dictionary<int, ModCarPartInfo>();
+    public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
+
+    public void DeleteCar(int carLoaderID)
+    {
+        if (CarSpawnDatas.ContainsKey(carLoaderID))
+            CarSpawnDatas.Remove(carLoaderID);
+        if (CarPartInfo.ContainsKey(carLoaderID))
+            CarPartInfo.Remove(carLoaderID);
+    }
     
     public void UpdatePartScripts(ModPartScript partScript, int carLoaderID)
     {
-        if(!ServerData.Instance.CarPartInfos.ContainsKey(carLoaderID))
-            ServerData.Instance.CarPartInfos.Add(carLoaderID, new ModCarPartInfo());
+        if(!ServerData.Instance.CarPartInfo.ContainsKey(carLoaderID))
+            ServerData.Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
 
-        ModCarPartInfo carPartInfos = ServerData.Instance.CarPartInfos[carLoaderID];
+        ModCarInfo carInfos = ServerData.Instance.CarPartInfo[carLoaderID];
         int key = partScript.partID;
         int index = partScript.partIdNumber;
         
         switch (partScript.type)
         {
             case ModPartType.engine:
-                carPartInfos.EnginePartsReferences[key] = partScript;
+                carInfos.EnginePartsReferences[key] = partScript;
                 break;
             case ModPartType.suspension:
-                if(!carPartInfos.SuspensionPartsReferences.ContainsKey(key))
-                    carPartInfos.SuspensionPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
+                if(!carInfos.SuspensionPartsReferences.ContainsKey(key))
+                    carInfos.SuspensionPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
 
-                if (!carPartInfos.SuspensionPartsReferences[key].ContainsKey(index))
-                    carPartInfos.SuspensionPartsReferences[key].Add(index, partScript);
+                if (!carInfos.SuspensionPartsReferences[key].ContainsKey(index))
+                    carInfos.SuspensionPartsReferences[key].Add(index, partScript);
                 else
-                    carPartInfos.SuspensionPartsReferences[key][index] = partScript;
+                    carInfos.SuspensionPartsReferences[key][index] = partScript;
                
                 break;
             case ModPartType.other:
-                if(!carPartInfos.OtherPartsReferences.ContainsKey(key))
-                    carPartInfos.OtherPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
+                if(!carInfos.OtherPartsReferences.ContainsKey(key))
+                    carInfos.OtherPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
 
-                if (!carPartInfos.OtherPartsReferences[key].ContainsKey(index))
-                    carPartInfos.OtherPartsReferences[key].Add(index, partScript);
+                if (!carInfos.OtherPartsReferences[key].ContainsKey(index))
+                    carInfos.OtherPartsReferences[key].Add(index, partScript);
                 else
-                    carPartInfos.OtherPartsReferences[key][index] = partScript;
+                    carInfos.OtherPartsReferences[key][index] = partScript;
                 break;
             case ModPartType.driveshaft:
-                carPartInfos.DriveshaftPartsReferences[key] = partScript;
+                carInfos.DriveshaftPartsReferences[key] = partScript;
                 break;
         }
     }
 
     public void UpdateBodyParts(ModCarPart carPart, int carLoaderID)
     {
-        if(!ServerData.Instance.CarPartInfos.ContainsKey(carLoaderID))
-            ServerData.Instance.CarPartInfos.Add(carLoaderID, new ModCarPartInfo());
+        if(!ServerData.Instance.CarPartInfo.ContainsKey(carLoaderID))
+            ServerData.Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
 
-        ModCarPartInfo carPartInfos = ServerData.Instance.CarPartInfos[carLoaderID];
-        carPartInfos.BodyPartsReferences[carPart.carPartID] = carPart;
+        ModCarInfo carInfos = ServerData.Instance.CarPartInfo[carLoaderID];
+        carInfos.BodyPartsReferences[carPart.carPartID] = carPart;
+    }
+
+    public void ChangePosition(int carLoaderID, int placeNo)
+    {
+        if(ServerData.Instance.CarPartInfo.TryGetValue(carLoaderID, out ModCarInfo info))
+        {
+            info.placeNo = placeNo;
+        }
     }
 }
 
-public class ModCarPartInfo
+public class ModCarInfo
 {
+    public int placeNo;
+    
     public Dictionary<int, Dictionary<int,ModPartScript>> OtherPartsReferences = new Dictionary<int,  Dictionary<int,ModPartScript>>();
     public Dictionary<int, Dictionary<int,ModPartScript>> SuspensionPartsReferences  = new Dictionary<int,  Dictionary<int,ModPartScript>>();
     public Dictionary<int, ModPartScript> EnginePartsReferences  = new Dictionary<int, ModPartScript>();

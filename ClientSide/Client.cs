@@ -93,6 +93,9 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
             { (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
             { (int)PacketTypes.partScript, ClientHandle.PartScriptPacket},
+            
+            { (int)PacketTypes.deleteCar, ClientHandle.DeleteCarPacket},
+            { (int)PacketTypes.carPosition, ClientHandle.CarPositionPacket},
         };
     }
 

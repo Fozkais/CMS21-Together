@@ -179,6 +179,9 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
             { (int)PacketTypes.bodyPart, ServerHandle.BodyPartPacket },
             { (int)PacketTypes.partScript, ServerHandle.PartScriptPacket },
+            
+            { (int)PacketTypes.deleteCar, ServerHandle.DeleteCarPacket },
+            { (int)PacketTypes.carPosition, ServerHandle.CarPositionPacket },
         };
     }
 }

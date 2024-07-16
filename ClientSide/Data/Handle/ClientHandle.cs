@@ -163,6 +163,23 @@ public static class ClientHandle
         MelonLogger.Msg("[ClientHandle->PartScriptPacket] Receive PartScript.");
         MelonCoroutines.Start(PartsUpdater.UpdatePartScripts(partScript, carLoaderID));
     }
+    
+    public static void DeleteCarPacket(Packet packet)
+    {
+        int carLoaderID = packet.ReadInt();
+        
+        MelonLogger.Msg($"[ClientHandle->DeleteCarPacket] Delete Car {carLoaderID}.");
+        MelonCoroutines.Start(CarSyncManager.DeleteCar(carLoaderID));
+    }
+    
+    public static void CarPositionPacket(Packet packet)
+    {
+        int placeNo = packet.ReadInt();
+        int carLoaderID = packet.ReadInt();
+        
+        MelonLogger.Msg($"[ClientHandle->CarPositionPacket] Move {carLoaderID} to {placeNo}.");
+        MelonCoroutines.Start(CarSyncManager.ChangePosition(carLoaderID, placeNo));
+    }
 
 
 }

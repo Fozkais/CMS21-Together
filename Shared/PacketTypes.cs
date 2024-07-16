@@ -16,5 +16,7 @@ public enum PacketTypes
     start,
     loadCar,
     bodyPart,
-    partScript
+    partScript,
+    deleteCar,
+    carPosition
 }

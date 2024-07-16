@@ -1,5 +1,7 @@
 ﻿using System;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
+using CMS21Together.Shared.Data;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppSystem.Collections;
@@ -14,6 +16,7 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 public static class CarSpawnHooks
 {
     public static bool listenToLoad = true;
+    public static bool listenToDelete = true;
 
     public static void Reset()
     {
@@ -38,9 +41,16 @@ public static class CarSpawnHooks
     [HarmonyPrefix]
     public static void DeleteCarHook(CarLoader __instance)
     {
-        if(!Client.Instance.isConnected) { return;}
+        if(!Client.Instance.isConnected || !listenToDelete) { listenToDelete = true; return;}
         if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
         
         MelonLogger.Msg($"[CarSpawnHooks->DeleteCarHook] Triggered.");
+        
+        int carLoaderID = (__instance.gameObject.name[10] - '0') - 1;
+        if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out ModCar car))
+        {
+            ClientSend.DeleteCarPacket(carLoaderID);
+            ClientData.Instance.loadedCars.Remove(carLoaderID);
+        }
     }
 }
