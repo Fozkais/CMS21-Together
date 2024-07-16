@@ -3,6 +3,7 @@ using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data;
@@ -13,6 +14,8 @@ public class UserData
     public string username;
     public string ip;
     public string lobbyID;
+
+    public NetworkType selectedNetworkType = NetworkType.TCP;
     
     [JsonIgnore] public int playerID;
     [JsonIgnore] public bool isReady;
