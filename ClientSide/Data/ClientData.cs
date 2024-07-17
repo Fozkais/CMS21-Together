@@ -40,7 +40,6 @@ public class ClientData
         
         Movement.SendPosition();
         Rotation.SendRotation();
-        Stats.SyncStats();
     }
 
     private IEnumerator InitializeGameData()

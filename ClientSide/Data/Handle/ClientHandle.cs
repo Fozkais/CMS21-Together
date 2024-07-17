@@ -110,11 +110,13 @@ public static class ClientHandle
         {
             case ModStats.money:
                 ClientData.Instance.money = value;
-                GlobalData.PlayerMoney = value;
+                Stats.listentoAddMoney = false;
+                GlobalData.AddPlayerMoney(value);
                 break;
             case ModStats.scrap:
                 ClientData.Instance.scrap = value;
-                GlobalData.PlayerScraps = value;
+                Stats.listentoAddScrap = false;
+                GlobalData.AddPlayerScraps(value);
                 break;
         }
     }
