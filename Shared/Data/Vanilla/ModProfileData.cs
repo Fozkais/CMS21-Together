@@ -1,4 +1,7 @@
 using System;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 
 namespace CMS21Together.Shared.Data.Vanilla

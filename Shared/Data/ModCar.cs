@@ -11,21 +11,24 @@ public class ModCar
     public string carID;
     public int configVersion;
     public int carPosition;
+    public bool customerCar;
 
     [NonSerialized]public ModPartInfo partInfo;
     
     public bool isReady;
     public bool isFromServer;
     
-    public ModCar(int _carLoaderID, string _carID, int _configVersion,int _carPosition=-1)
+    public ModCar(int _carLoaderID, string _carID, int _configVersion,int _carPosition=-1, bool _customerCar=false)
     {
         this.carLoaderID = _carLoaderID;
         this.carID = _carID;
         this.partInfo = new ModPartInfo();
         this.carPosition = _carPosition;
         this.configVersion = _configVersion;
+        this.customerCar = _customerCar;
 
         this.isFromServer = false;
+        this.isReady = false;
     }
 }
 

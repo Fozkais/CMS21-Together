@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using Il2Cpp;
 using Il2CppCMS;
 using Il2CppCMS.Extensions;
@@ -32,6 +34,35 @@ public static class CarSpawnManager
         ClientData.Instance.loadedCars.Add(carLoaderID, car);
         MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
     }
+    
+    public static IEnumerator LoadJobCar(string name, int carLoaderID, CarLoader carLoader)
+    {
+	    while (!ClientData.GameReady)
+		    yield return new WaitForSeconds(0.25f);
+
+	    yield return new WaitForEndOfFrame();
+	    
+	    if(ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
+	    
+	    yield return YieldInstructions.WaitForEndOfFrame;
+	    
+	    while (!carLoader.IsCarLoaded())
+	    {
+		    yield return YieldInstructions.WaitForEndOfFrame;
+	    }
+	    
+	    yield return YieldInstructions.WaitForEndOfFrame;
+	    yield return YieldInstructions.WaitForEndOfFrame;
+	    
+
+	    ModCar car = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo, carLoader.customerCar);
+	    ClientSend.LoadJobCarPacket(car);
+	    
+	    yield return new WaitForEndOfFrame();
+        
+	    ClientData.Instance.loadedCars.Add(carLoaderID, car);
+	    MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+    }
     public static IEnumerator LoadCarFromServer(ModNewCarData data, int carLoaderID)
     {
         while (!ClientData.GameReady)
@@ -46,7 +77,8 @@ public static class CarSpawnManager
 	        ScreenFader.m_instance.ShortFadeIn();
         
         yield return YieldInstructions.WaitForEndOfFrame;
-        
+
+        CarSpawnHooks.listenToSimpleLoad = false;
         carLoader.ConfigVersion = carData.configVersion;
         carLoader.StartCoroutine(carLoader.LoadCar(carData.carToLoad));
         while (!carLoader.IsCarLoaded())

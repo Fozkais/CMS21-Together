@@ -6,6 +6,7 @@ public enum PacketTypes
     disconnect,
     userData,
     readyState,
+    start,
     
     position,
     rotation,
@@ -13,11 +14,13 @@ public enum PacketTypes
     groupItem,
     stat,
     lifter,
-    start,
+    loadJobCar,
     loadCar,
     bodyPart,
     partScript,
     deleteCar,
     carPosition,
-    garageUpgrade
+    garageUpgrade,
+    newJob,
+    jobAction,
 }

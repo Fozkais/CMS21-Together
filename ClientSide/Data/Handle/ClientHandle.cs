@@ -7,6 +7,8 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using MelonLoader;
 using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
@@ -188,5 +190,21 @@ public static class ClientHandle
         
         MelonLogger.Msg($"[ClientHandle->GarageUpgradePacket] Received upgrade for {upgrade.upgradeID}.");
         MelonCoroutines.Start(GarageUpgradeManager.SetUpgrade(upgrade));
+    }
+    
+    public static void JobPacket(Packet packet)
+    {
+        ModJob job = packet.Read<ModJob>();
+        
+        MelonLogger.Msg($"[ClientHandle->JobPacket] Received a job.");
+        MelonCoroutines.Start(JobManager.AddJob(job));
+    }
+    
+    public static void JobActionPacket(Packet packet)
+    {
+        int jobID = packet.ReadInt();
+        bool takeJob = packet.Read<bool>();
+
+        MelonCoroutines.Start(JobManager.JobAction(jobID, takeJob));
     }
 }

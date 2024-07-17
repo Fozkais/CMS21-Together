@@ -3,6 +3,8 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using MelonLoader;
 
@@ -102,6 +104,16 @@ public class ClientSend
             SendData(packet);
         }
     }
+    
+    public static void LoadJobCarPacket(ModCar car)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.loadJobCar))
+        {
+            packet.Write(car);
+            
+            SendData(packet);
+        }
+    }
 
     public static void LoadCarPacket(ModNewCarData carData, int carLoaderID)
     {
@@ -164,6 +176,27 @@ public class ClientSend
         using (Packet packet = new Packet((int)PacketTypes.garageUpgrade))
         {
             packet.Write(upgrade);
+            
+            SendData(packet);
+        }
+    }
+
+    public static void JobPacket(ModJob job)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.newJob))
+        {
+            packet.Write(job);
+            
+            SendData(packet);
+        }
+    }
+
+    public static void JobActionPacket(int jobID, bool takeJob)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.jobAction))
+        {
+            packet.Write(jobID);
+            packet.Write(takeJob);
             
             SendData(packet);
         }

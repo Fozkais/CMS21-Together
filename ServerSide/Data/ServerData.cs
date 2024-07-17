@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -19,6 +22,7 @@ public class ServerData
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
 
     public Dictionary<string, GarageUpgrade> garageUpgrades = new Dictionary<string, GarageUpgrade>();
+    public List<ModJob> jobs = new List<ModJob>();
 
 
     public void SetGarageUpgrade(GarageUpgrade upgrade)
@@ -89,10 +93,41 @@ public class ServerData
             info.placeNo = placeNo;
         }
     }
+
+    public void AddJob(ModJob job)
+    {
+        jobs.Add(job);
+    }
+
+    public void RemoveJob(int jobID)
+    {
+        ModJob job = jobs.Find(j => j.id == jobID);
+        if(job != null)
+            jobs.Remove(job);
+    }
+
+    public void SetLoadJobCar(ModCar carData)
+    {
+        if( ServerData.Instance.CarPartInfo.ContainsKey(carData.carLoaderID)) return;
+        
+        ServerData.Instance.CarPartInfo[carData.carLoaderID] = new ModCarInfo();
+        var data = ServerData.Instance.CarPartInfo[carData.carLoaderID];
+
+        data.carToLoad = carData.carID;
+        data.carLoaderID = carData.carLoaderID;
+        data.configVersion = carData.configVersion;
+        data.placeNo = carData.carPosition;
+        data.customerCar = carData.customerCar;
+
+    }
 }
 
 public class ModCarInfo
 {
+    public int carLoaderID;
+    public string carToLoad;
+    public int configVersion;
+    public bool customerCar;
     public int placeNo;
     
     public Dictionary<int, Dictionary<int,ModPartScript>> OtherPartsReferences = new Dictionary<int,  Dictionary<int,ModPartScript>>();

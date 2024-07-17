@@ -28,6 +28,11 @@ namespace CMS21Together.Shared.Data
             a = Mathf.Round(color.a * 1000f) / 1000f;
         }
         
+        public Color ToGame()
+        {
+            return new Color(r, g, b, a);
+        }
+        
         public static Color ToColor(ModColor color)
         {
             return new Color(color.r, color.g, color.b, color.a);

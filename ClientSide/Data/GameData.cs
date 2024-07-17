@@ -11,18 +11,20 @@ namespace CMS21Together.ClientSide.Data;
 public class GameData
 {
     public static GameData Instance;
+    public static bool isReady;
     
     public GameObject localPlayer;
     public Inventory localInventory;
     public CarLoader[] carLoaders;
-    public static bool isReady;
     public GarageAndToolsTab upgradeTools;
+    public OrderGenerator orderGenerator;
 
     public GameData()
     {
         localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
         localInventory = GameScript.Get().GetComponent<Inventory>();
         upgradeTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;
+        orderGenerator = Object.FindObjectOfType<OrderGenerator>();
         carLoaders = new[]
         {
             GameScript.Get().carOnScene[0],

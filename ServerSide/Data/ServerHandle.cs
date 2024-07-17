@@ -5,6 +5,8 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
@@ -162,6 +164,13 @@ public static class ServerHandle
         ServerSend.LifterPacket(fromClient, state, carLoaderID);
     }
     
+    public static void LoadJobCarPacket(int fromClient, Packet packet)
+    {
+        ModCar carData = packet.Read<ModCar>();
+        
+        ServerData.Instance.SetLoadJobCar(carData);
+    }
+    
     public static void LoadCarPacket(int fromClient, Packet packet)
     {
         ModNewCarData carData = packet.Read<ModNewCarData>();
@@ -213,5 +222,22 @@ public static class ServerHandle
         
         ServerData.Instance.SetGarageUpgrade(upgrade);
         ServerSend.GarageUpgradePacket(fromClient, upgrade);
+    }
+    
+    public static void JobPacket(int fromClient, Packet packet)
+    {
+        ModJob job = packet.Read<ModJob>();
+        
+        ServerData.Instance.AddJob(job);
+        ServerSend.JobPacket(fromClient, job);
+    }
+    
+    public static void JobActionPacket(int fromClient, Packet packet)
+    {
+        int jobID = packet.ReadInt();
+        bool takeJob = packet.Read<bool>();
+        
+        ServerData.Instance.RemoveJob(jobID);
+        ServerSend.JobActionPacket(fromClient, jobID, takeJob);
     }
 }

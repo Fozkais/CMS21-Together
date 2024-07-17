@@ -16,6 +16,7 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 public static class CarSpawnHooks
 {
     public static bool listenToLoad = true;
+    public static bool listenToSimpleLoad = true;
     public static bool listenToDelete = true;
 
     public static void Reset()
@@ -34,6 +35,20 @@ public static class CarSpawnHooks
         
         int carLoaderID = (__instance.gameObject.name[10] - '0') - 1;
         MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
+
+    }
+    
+    [HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
+    [HarmonyPostfix]
+    public static void LoadCarHook(string name, CarLoader __instance)
+    {
+        if(!Client.Instance.isConnected || ! listenToSimpleLoad) { listenToSimpleLoad = true; return;}
+        if(String.IsNullOrEmpty(name)) return;
+            
+        MelonLogger.Msg($"[CarSpawnHooks->LoadCarHook] Triggered:{name}");
+        
+        int carLoaderID = (__instance.gameObject.name[10] - '0') - 1;
+        MelonCoroutines.Start(CarSpawnManager.LoadJobCar(name, carLoaderID, __instance));
 
     }
     

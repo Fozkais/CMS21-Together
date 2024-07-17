@@ -178,6 +178,7 @@ public class Server : MonoBehaviour
             
             { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
             
+            { (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },
             { (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
             { (int)PacketTypes.bodyPart, ServerHandle.BodyPartPacket },
             { (int)PacketTypes.partScript, ServerHandle.PartScriptPacket },
@@ -186,6 +187,8 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.carPosition, ServerHandle.CarPositionPacket },
             
             { (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket},
+            { (int)PacketTypes.newJob, ServerHandle.JobPacket},
+            { (int)PacketTypes.jobAction, ServerHandle.JobActionPacket},
         };
     }
 }

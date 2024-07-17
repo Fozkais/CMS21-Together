@@ -4,6 +4,8 @@ using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
@@ -224,6 +226,27 @@ public static class ServerSend
         using (Packet packet = new Packet((int)PacketTypes.garageUpgrade))
         {
             packet.Write(upgrade);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void JobPacket(int fromClient, ModJob job)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.newJob))
+        {
+            packet.Write(job);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void JobActionPacket(int fromClient, int jobID, bool takeJob)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.jobAction))
+        {
+            packet.Write(jobID);
+            packet.Write(takeJob);
             
             SendDataToAll(fromClient, packet);
         }

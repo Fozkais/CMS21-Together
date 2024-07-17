@@ -2,6 +2,7 @@
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using HarmonyLib;
 using Il2Cpp;
 using Il2CppSystem;
