@@ -6,7 +6,9 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
 using Il2Cpp;
 using Il2CppCMS;
+using Il2CppCMS.UI.Logic;
 using Il2CppCMS.UI.Logic.Upgrades;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Campaign;
@@ -19,15 +21,20 @@ public static class GarageUpgradeManager
     {
         while (!ClientData.GameReady)
             yield return new WaitForSeconds(0.25f);
+        
         yield return new WaitForEndOfFrame();
 
         ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
         GarageAndToolsTab gt = GameData.Instance.upgradeTools;
 
-        string upgradeID = upgrade.upgradeID;
+        string upgradeID;
+        if (upgrade.upgradeID == "bus")
+	        upgradeID = "lifter";
+        else
+			upgradeID = upgrade.upgradeID;
+        
         bool unlockUpgrade = upgrade.unlocked;
-
-
+        
         UpgradeObjectsData objectsData = default;
         foreach (UpgradeObjectsData objData in gt.upgradeObjectsData._items)
         {
@@ -66,8 +73,30 @@ public static class GarageUpgradeManager
 			}
 		}
 
-		GarageUpgradeHooks.listenToUpgrades = false;
-		gt.SwitchInteractiveObjects(upgradeID, unlockUpgrade);
+		if (unlockUpgrade)
+		{
+			bool breakLoop = false;
+			foreach (UpgradeItem item in gt.upgradeItems)
+			{
+				if (breakLoop) break;
+				
+				if (item.upgradeID == upgradeID)
+				{
+					breakLoop = true;
+					
+					gt.UpdateSkillState(item, UpgradeState.Unlocked);
+					gt.UpdateRelatedSkillState(item);
+					gt.upgradeSystem.UnlockUpgrade(item.UpgradeID, item.UpgradeLevel, UpgradeType.Money);
+					GarageUpgradeHooks.listenToUpgrades = false;
+					gt.StartCoroutine(gt.SwitchObjectsUnlock(item.UpgradeID, unlockUpgrade: true, false));
+					
+					MelonLogger.Msg($"UnlockedItem : {item.UpgradeID} {upgradeID}");
+					
+				}
+			}
+		}
+
+		
 		if (upgradeID == "paintshop" || upgradeID == "path_test")
 		{
 			Il2CppSystem.Collections.Generic.List<GameObject> relatedObjectsToTurnOn = objectsData.relatedObjectsToTurnOn;
