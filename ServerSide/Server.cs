@@ -189,6 +189,7 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket},
             { (int)PacketTypes.newJob, ServerHandle.JobPacket},
             { (int)PacketTypes.jobAction, ServerHandle.JobActionPacket},
+            { (int)PacketTypes.selectedJob, ServerHandle.SelectedJobPacket},
         };
     }
 }

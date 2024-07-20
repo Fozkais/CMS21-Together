@@ -240,4 +240,13 @@ public static class ServerHandle
         ServerData.Instance.RemoveJob(jobID);
         ServerSend.JobActionPacket(fromClient, jobID, takeJob);
     }
+    
+    public static void SelectedJobPacket(int fromClient, Packet packet)
+    {
+        ModJob job = packet.Read<ModJob>();
+        bool action = packet.Read<bool>();
+
+        ServerData.Instance.UpdateSelectedJobs(job, action);
+        ServerSend.SelectedJobPacket(fromClient, job, action);
+    }
 }

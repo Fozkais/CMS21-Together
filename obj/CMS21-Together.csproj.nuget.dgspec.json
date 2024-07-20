@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj": {}
+    "H:\\Rider Project\\CMS21-Together\\CMS21-Together.csproj": {}
   },
   "projects": {
-    "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj": {
+    "H:\\Rider Project\\CMS21-Together\\CMS21-Together.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj",
+        "projectUniqueName": "H:\\Rider Project\\CMS21-Together\\CMS21-Together.csproj",
         "projectName": "CMS21-Together",
-        "projectPath": "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj",
+        "projectPath": "H:\\Rider Project\\CMS21-Together\\CMS21-Together.csproj",
         "packagesPath": "C:\\Users\\brand\\.nuget\\packages\\",
-        "outputPath": "E:\\Rider Project\\CMS21-TogetherMain\\obj\\",
+        "outputPath": "H:\\Rider Project\\CMS21-Together\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "configFilePaths": [
@@ -27,11 +27,6 @@
           "net472": {
             "projectReferences": {}
           }
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {

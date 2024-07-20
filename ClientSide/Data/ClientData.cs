@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -23,7 +24,8 @@ public class ClientData
         Inventory.Reset();
         CarSpawnManager.Reset();
         CarSpawnHooks.Reset();
-        
+        JobManager.Reset();
+
     }
     
     public Dictionary<int, UserData> connectedClients = new Dictionary<int, UserData>();

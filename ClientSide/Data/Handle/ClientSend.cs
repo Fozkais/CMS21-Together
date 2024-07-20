@@ -201,4 +201,15 @@ public class ClientSend
             SendData(packet);
         }
     }
+
+    public static void SelectedJobPacket(ModJob job, bool action)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.selectedJob))
+        {
+            packet.Write(job);
+            packet.Write(action);
+            
+            SendData(packet);
+        }
+    }
 }

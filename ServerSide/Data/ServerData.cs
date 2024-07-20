@@ -22,7 +22,9 @@ public class ServerData
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
 
     public Dictionary<string, GarageUpgrade> garageUpgrades = new Dictionary<string, GarageUpgrade>();
+    
     public List<ModJob> jobs = new List<ModJob>();
+    public List<ModJob> selectedJobs = new List<ModJob>();
 
 
     public void SetGarageUpgrade(GarageUpgrade upgrade)
@@ -119,6 +121,24 @@ public class ServerData
         data.placeNo = carData.carPosition;
         data.customerCar = carData.customerCar;
 
+    }
+
+    public void UpdateSelectedJobs(ModJob job, bool action)
+    {
+        if (action)
+        {
+            if (selectedJobs.All(j => j.id != job.id))
+            {
+                selectedJobs.Add(job);
+            }
+        }
+        else
+        {
+            if (selectedJobs.Any(j => j.id == job.id))
+            {
+                selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
+            }
+        }
     }
 }
 

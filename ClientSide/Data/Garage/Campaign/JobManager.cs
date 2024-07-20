@@ -1,4 +1,7 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using Il2CppCMS.UI.Windows;
@@ -8,6 +11,62 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 
 public static class JobManager
 {
+
+    public static List<ModJob> selectedJobs = new List<ModJob>();
+
+    public static void Reset()
+    {
+        selectedJobs.Clear();
+    }
+    
+    public static void UpdateSelectedJob()
+    {
+        foreach (Job job in GameData.Instance.orderGenerator.selectedJobs)
+        {
+            if (selectedJobs.All(j => job.id != j.id))
+            {
+                ModJob newJob = new ModJob(job);
+                selectedJobs.Add(newJob);
+                ClientSend.SelectedJobPacket(newJob, true);
+            }
+        }
+
+        for (var index = 0; index < selectedJobs.Count; index++)
+        {
+            var job = selectedJobs[index];
+            if (GameData.Instance.orderGenerator.selectedJobs._items.All(j => job.id != j.id))
+            {
+                ClientSend.SelectedJobPacket(job, false);
+                selectedJobs.Remove(job);
+            }
+        }
+    }
+    
+    public static IEnumerator SelectedJob(ModJob modjob, bool action)
+    {
+        while (!ClientData.GameReady)
+            yield return new WaitForSeconds(0.25f);
+        yield return new WaitForEndOfFrame();
+        
+        if (action)
+        {
+            if (selectedJobs.All(j => modjob.id != j.id))
+            {
+                selectedJobs.Add(modjob);
+                GameData.Instance.orderGenerator.selectedJobs.Add(modjob.ToGame());
+            }
+        }
+        else
+        {
+            if (selectedJobs.Any(j => modjob.id == j.id))
+            {
+                var gameJobs = GameData.Instance.orderGenerator.selectedJobs;
+                selectedJobs.Remove(selectedJobs.First(j => j.id == modjob.id));
+                gameJobs.Remove(gameJobs._items.First(j => j.id == modjob.id));
+            }
+        }
+    }
+    
     public static IEnumerator AddJob(ModJob job)
     {
         while (!ClientData.GameReady)
