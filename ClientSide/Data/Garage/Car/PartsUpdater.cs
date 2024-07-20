@@ -95,7 +95,9 @@ public static class PartsUpdater
             if (reference.IsUnmounted)
             {
                 reference.ShowBySaveGame();
-                reference.FastMount();
+                
+                reference.Show();
+                MelonCoroutines.Start(CustomPartScriptMethod.ShowMounted(reference));
                 reference.ShowMountAnimation();
                 
                 reference.SetCondition(part.condition);
@@ -180,7 +182,6 @@ public static class PartsUpdater
            if(carPart.TintColor != null)
                 GameData.Instance.carLoaders[carLoaderID].SetCarPaintType(reference, (PaintType)carPart.paintType);
         }
-        GameData.Instance.carLoaders[carLoaderID].SetCarLivery(reference, carPart.livery, carPart.liveryStrength);
 
         if (!reference.Unmounted && carPart.unmounted)
             GameData.Instance.carLoaders[carLoaderID].TakeOffCarPartFromSave(reference.name);
