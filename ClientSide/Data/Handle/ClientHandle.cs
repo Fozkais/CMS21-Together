@@ -103,22 +103,13 @@ public static class ClientHandle
 
     public static void StatPacket(Packet packet)
     {
+        bool initial = packet.Read<bool>();
         int value = packet.ReadInt();
         ModStats type = packet.Read<ModStats>();
-                
-        switch (type)
-        {
-            case ModStats.money:
-                ClientData.Instance.money = value;
-                Stats.listentoAddMoney = false;
-                GlobalData.AddPlayerMoney(value);
-                break;
-            case ModStats.scrap:
-                ClientData.Instance.scrap = value;
-                Stats.listentoAddScrap = false;
-                GlobalData.AddPlayerScraps(value);
-                break;
-        }
+        
+        MelonLogger.Msg($"Received stat:{value} , {type.ToString()}");
+        MelonCoroutines.Start(Stats.UpdateStats(type, value, initial));
+
     }
 
     public static void LifterPacket(Packet packet)

@@ -101,6 +101,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.garageUpgrade, ClientHandle.GarageUpgradePacket},
             { (int)PacketTypes.newJob, ClientHandle.JobPacket},
             { (int)PacketTypes.jobAction, ClientHandle.JobActionPacket},
+            { (int)PacketTypes.selectedJob, ClientHandle.SelectedJobPacket},
         };
     }
 

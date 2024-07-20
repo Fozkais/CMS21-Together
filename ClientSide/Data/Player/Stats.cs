@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using Il2Cpp;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
 
@@ -14,6 +17,67 @@ public static class Stats
 
     public static bool listentoAddMoney = true;
     public static bool listentoAddScrap = true;
+    private static bool initialStatSent;
+
+    public static void Reset()
+    {
+        initialStatSent = false;
+        listentoAddMoney = true;
+        listentoAddScrap = true;
+    }
+
+
+    public static void SendInitialStats()
+    {
+        if(initialStatSent || !Server.Instance.isRunning) return;
+        
+        initialStatSent = true;
+        ClientSend.StatPacket(GlobalData.PlayerMoney, ModStats.money, true);
+        ClientSend.StatPacket(GlobalData.PlayerScraps, ModStats.scrap, true);
+
+    }
+
+    public static IEnumerator UpdateStats(ModStats type, int value, bool initial)
+    {
+        while (!ClientData.GameReady)
+            yield return new WaitForSeconds(0.25f);
+        yield return new WaitForEndOfFrame();
+        
+        if (initial)
+        {
+            switch (type)
+            {
+                case ModStats.money:
+                    ClientData.Instance.money = value;
+                    Stats.listentoAddMoney = false;
+                    GlobalData.PlayerMoney = value;
+                    UIManager.Get().RefreshStatsUICoroutine(StatType.Money);
+                    break;
+                case ModStats.scrap:
+                    ClientData.Instance.scrap = value;
+                    GlobalData.PlayerScraps = value;
+                    UIManager.Get().RefreshStatsUICoroutine(StatType.Scraps);
+                    break;
+            }
+        }
+        else
+        {
+            switch (type)
+            {
+                case ModStats.money:
+                    ClientData.Instance.money += value;
+                    Stats.listentoAddMoney = false;
+                    GlobalData.AddPlayerMoney(value);
+                    break;
+                case ModStats.scrap:
+                    ClientData.Instance.scrap += value;
+                    Stats.listentoAddScrap = false;
+                    GlobalData.AddPlayerScraps(value);
+                    break;
+            }
+        }
+    }
+    
     
     [HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]
     [HarmonyPostfix]
@@ -26,7 +90,6 @@ public static class Stats
         
         if(!listentoAddMoney)  { listentoAddMoney = true; return;}
         ClientSend.StatPacket(money, ModStats.money);
-
     }
     
     [HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerScraps))]

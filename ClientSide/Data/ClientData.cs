@@ -25,6 +25,7 @@ public class ClientData
         CarSpawnManager.Reset();
         CarSpawnHooks.Reset();
         JobManager.Reset();
+        Stats.Reset();
 
     }
     
@@ -40,8 +41,10 @@ public class ClientData
         if (GameData.Instance == null)
             MelonCoroutines.Start(InitializeGameData());
         
+        Stats.SendInitialStats();
         Movement.SendPosition();
         Rotation.SendRotation();
+        JobManager.UpdateSelectedJob();
     }
 
     private IEnumerator InitializeGameData()

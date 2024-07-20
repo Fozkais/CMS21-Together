@@ -83,14 +83,17 @@ public class ClientSend
         }
     }
 
-    public static void StatPacket(int diff, ModStats type)
+    public static void StatPacket(int diff, ModStats type, bool initial=false)
     {
         using (Packet packet = new Packet((int)PacketTypes.stat))
         {
+            packet.Write(initial);
             packet.Write(diff);
             packet.Write(type);
             
             SendData(packet);
+            
+            MelonLogger.Msg($"Sent stat:{diff} , {type.ToString()}");
         }
     }
 

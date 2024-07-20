@@ -143,10 +143,11 @@ public static class ServerSend
         }
     }
 
-    public static void StatPacket(int fromClient, int value, ModStats type)
+    public static void StatPacket(int fromClient, int value, ModStats type, bool initial)
     {
         using (Packet packet = new Packet((int)PacketTypes.stat))
         {
+            packet.Write(initial);
             packet.Write(value);
             packet.Write(type);
                     
