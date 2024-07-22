@@ -10,6 +10,7 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 using SteamManager = CMS21Together.Shared.SteamManager;
 
 // ReSharper disable All
@@ -69,6 +70,7 @@ namespace CMS21Together
                 if(sceneName == "garage" && ClientData.Instance.playerPrefab == null)
                     ClientData.Instance.LoadPlayerPrefab();
                 
+                ClientData.UserData.UpdateScene();
             }
             
         }

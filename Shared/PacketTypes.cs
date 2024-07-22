@@ -23,5 +23,6 @@ public enum PacketTypes
     garageUpgrade,
     newJob,
     jobAction,
-    selectedJob
+    selectedJob,
+    sceneChange
 }

@@ -1,4 +1,6 @@
 ﻿using System;
+using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using Newtonsoft.Json;
@@ -43,6 +45,12 @@ public class UserData
         playerID = _playerID;
     }
 
+    public void UpdateScene()
+    {
+        scene = SceneManager.CurrentScene();
+        ClientSend.SceneChangePacket(scene);
+    }
+
     public void SpawnPlayer()
     {
         if (ClientData.Instance.playerPrefab == null) return;
@@ -62,5 +70,6 @@ public class UserData
     {
         if(userObject == null) return;
         Object.Destroy(userObject);
+        userObject = null;
     }
 }

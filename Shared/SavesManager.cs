@@ -22,7 +22,7 @@ public class SavesManager
         private const string MOD_FOLDER_PATH = @"Mods\togetherMod\";
         private const string SAVE_FOLDER_PATH = MOD_FOLDER_PATH + "saves";
 
-        private const string GAME_SAVE_FOLDER = "%USERPROFILE%/AppData/LocalLow/Red Dot Games/Car Mechanic Simulator 2021/Save/";
+        private const string GAME_SAVE_FOLDER = "%USERPROFILE%/AppData/LocalLow/Red Dot Games/Car Mechanic Simulator 2021/Save";
 
         public static void Initialize()
         {

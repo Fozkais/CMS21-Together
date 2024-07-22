@@ -276,20 +276,25 @@ public static class CarSpawnManager
 			    component2.Clone(partData);
 		    }
 	    }
-	    /*for (int j = 0; j < carData.PartData.Count; j++) make crash and not sure what it is needed for ?
+	    for (int j = 0; j < carData.PartData.Count; j++) 
 	    {
-		    MountObjectData mountObjectData = carData.PartData._items[j].MountObjectData;
-		    if (mountObjectData == null || mountObjectData.Condition == null || mountObjectData.IsStuck == null)
+		    if (carData.PartData._items[j].MountObjectData != null)
 		    {
-			    continue;
+			    MountObjectData mountObjectData = carData.PartData._items[j].MountObjectData;
+			    if (mountObjectData.Condition == null || mountObjectData.IsStuck == null)
+			    {
+				    continue;
+			    }
+			    Transform val2 = carLoader.transform.Find(mountObjectData.ParentPath);
+			    if(val2 == null) continue;
+			    
+			    PartScript component3 = val2.GetComponent<PartScript>();
+			    if (component3 && !component3.IsUnmounted)
+			    {
+				    component3.SetMountObjectData(mountObjectData);
+			    }
 		    }
-		    Transform val2 = carLoader.transform.Find(mountObjectData.ParentPath);
-		    PartScript component3 = val2.GetComponent<PartScript>();
-		    if (component3 && !component3.IsUnmounted)
-		    {
-			    component3.SetMountObjectData(mountObjectData);
-		    }
-	    }*/
+	    }
     }
     private static void LoadCarAdditionalInfo(CarLoader carLoader, NewCarData carData)
     {

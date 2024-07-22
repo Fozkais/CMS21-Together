@@ -12,6 +12,7 @@ using Steamworks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace CMS21Together.ClientSide;
 
@@ -83,6 +84,7 @@ public class Client : MonoBehaviour
             
             { (int)PacketTypes.position, ClientHandle.PositionPacket },
             { (int)PacketTypes.rotation, ClientHandle.RotationPacket },
+            { (int)PacketTypes.sceneChange, ClientHandle.SceneChangePacket },
             
             { (int)PacketTypes.item, ClientHandle.ItemPacket },
             { (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },

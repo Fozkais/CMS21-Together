@@ -215,4 +215,14 @@ public class ClientSend
             SendData(packet);
         }
     }
+
+    public static void SceneChangePacket(GameScene scene)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.sceneChange))
+        {
+            packet.Write(scene);
+            
+            SendData(packet);
+        }
+    }
 }

@@ -140,6 +140,7 @@
     <Compile Include="Shared\Data\Vanilla\ModProfileData.cs" />
     <Compile Include="Shared\Data\Vanilla\ModStats.cs" />
     <Compile Include="Shared\Data\Vector3Serializable.cs" />
+    <Compile Include="Shared\SceneManager.cs" />
     <Compile Include="Shared\SteamManager.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />

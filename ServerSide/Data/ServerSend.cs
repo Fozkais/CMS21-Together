@@ -263,4 +263,15 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+
+    public static void SceneChangePacket(int fromClient, GameScene scene)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.sceneChange))
+        {
+            packet.Write(scene);
+            packet.Write(fromClient);
+            
+            SendDataToAll(fromClient, packet);
+        }
+    }
 }

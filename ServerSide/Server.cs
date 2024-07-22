@@ -170,6 +170,7 @@ public class Server : MonoBehaviour
             
             { (int)PacketTypes.position, ServerHandle.PositionPacket },
             { (int)PacketTypes.rotation, ServerHandle.RotationPacket },
+            { (int)PacketTypes.sceneChange, ServerHandle.SceneChangePacket },
             
             { (int)PacketTypes.item, ServerHandle.ItemPacket },
             { (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },

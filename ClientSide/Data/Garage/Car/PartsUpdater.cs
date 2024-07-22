@@ -70,6 +70,10 @@ public static class PartsUpdater
         }
 
         reference.IsExamined = part.isExamined;
+        reference.Quality = part.quality;
+        reference.SetCondition(part.condition);
+        reference.UpdateDust(part.dust, true);
+        reference.SetConditionNormal(part.condition);
 
         if (!part.unmounted)
         {
@@ -88,10 +92,6 @@ public static class PartsUpdater
                     PaintHelper.SetPaintType(reference.gameObject, (PaintType)part.paintType, false);
                 }
             }
-            reference.Quality = part.quality;
-            reference.SetCondition(part.condition);
-            reference.UpdateDust(part.dust, true);
-            reference.SetConditionNormal(part.condition);
             if (reference.IsUnmounted)
             {
                 reference.ShowBySaveGame();
@@ -119,11 +119,6 @@ public static class PartsUpdater
         }
         else
         {
-            
-            reference.Quality = part.quality;
-            reference.SetCondition(part.condition, true);
-            reference.UpdateDust(part.dust, true);
-            reference.SetConditionNormal(part.condition);
             if (reference.IsUnmounted == false)
             {
                 if(carLoaderID != -1)
@@ -132,6 +127,12 @@ public static class PartsUpdater
                     reference.HideBySavegame(false);
                 
             }
+        }
+
+        for (var index = 0; index < part.unmountWith.Count; index++)
+        {
+            var partScript = part.unmountWith[index];
+            UpdatePartScript(partScript, reference.unmountWith._items[index], carLoaderID); 
         }
     }
     public static IEnumerator UpdateBodyParts(ModCarPart carPart, int carLoaderID)

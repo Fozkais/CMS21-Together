@@ -27,6 +27,11 @@ public class ServerData
     public List<ModJob> selectedJobs = new List<ModJob>();
 
 
+    public void sendCar(int id, int carLoader)
+    {
+        ServerSend.LoadCarPacket(-1, CarSpawnDatas[id], carLoader);
+    }
+
     public void SetGarageUpgrade(GarageUpgrade upgrade)
     {
         garageUpgrades[upgrade.upgradeID] = upgrade;

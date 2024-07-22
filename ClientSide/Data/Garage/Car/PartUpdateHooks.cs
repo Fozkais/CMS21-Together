@@ -90,7 +90,7 @@ public static class PartUpdateHooks
         }
     }
     
-    private static bool FindPartInDictionaries(ModCar car, PartScript partScript, out ModPartType partType, out int key, out int? index)
+    public static bool FindPartInDictionaries(ModCar car, PartScript partScript, out ModPartType partType, out int key, out int? index)
     {
         index = null;
 

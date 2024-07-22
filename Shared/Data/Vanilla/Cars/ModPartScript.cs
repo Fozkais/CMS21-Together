@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Garage.Car;
 using Il2Cpp;
+using UnityEngine.Serialization;
 
 namespace CMS21Together.Shared.Data.Vanilla.Cars
 {
@@ -19,12 +22,12 @@ namespace CMS21Together.Shared.Data.Vanilla.Cars
         public float dust;
         public List<String> bolts;
         public bool unmounted;
+        public List<ModPartScript> unmountWith;
 
         public int partID;
         public int partIdNumber;
         public ModPartType type;
-
-        public Guid GUID;
+        
 
         public ModPartScript(PartScript data, int _partID, int _partIdNumber, ModPartType _type)
         {
@@ -39,12 +42,23 @@ namespace CMS21Together.Shared.Data.Vanilla.Cars
             this.condition = data.Condition;
             this.dust = data.Dust;
             this.unmounted = data.IsUnmounted;
+
+            int carLoaderID = data.gameObject.GetComponentsInParent<CarLoaderOnCar>(true)[0].CarLoader.name[10] - '0' - 1;
+            ModCar car = ClientData.Instance.loadedCars[carLoaderID];
+            this.unmountWith = new List<ModPartScript>();
+            foreach (PartScript part in data.unmountWith)
+            {
+                PartUpdateHooks.FindPartInDictionaries(car, part, out ModPartType partType, out int key, out int? index);
+
+                if(index == null)
+                    unmountWith.Add(new ModPartScript(part, key, -1, partType));
+                else
+                    unmountWith.Add(new ModPartScript(part, key, index.Value, partType));
+            }
             
             this.partID = _partID;
             this.partIdNumber = _partIdNumber;
             this.type = _type;
-
-            this.GUID = new Guid();
         }
 
         public PartScript ToGame()

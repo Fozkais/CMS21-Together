@@ -266,4 +266,12 @@ public static class ServerHandle
         ServerData.Instance.UpdateSelectedJobs(job, action);
         ServerSend.SelectedJobPacket(fromClient, job, action);
     }
+    
+    public static void SceneChangePacket(int fromClient, Packet packet)
+    {
+        GameScene scene = packet.Read<GameScene>();
+
+        ServerData.Instance.connectedClients[fromClient].scene = scene;
+        ServerSend.SceneChangePacket(fromClient, scene);
+    }
 }

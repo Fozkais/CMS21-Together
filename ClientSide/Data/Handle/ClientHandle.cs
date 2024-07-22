@@ -208,4 +208,20 @@ public static class ClientHandle
 
         MelonCoroutines.Start(JobManager.SelectedJob(job, action));
     }
+    
+    public static void SceneChangePacket(Packet packet)
+    {
+        GameScene scene = packet.Read<GameScene>();
+        int id = packet.ReadInt();
+
+        ClientData.Instance.connectedClients[id].scene = scene;
+        if (scene != SceneManager.CurrentScene())
+        {
+            ClientData.Instance.connectedClients[id].DestroyPlayer();
+        }
+        else if (ClientData.Instance.connectedClients[id].userObject == null)
+        {
+            ClientData.Instance.connectedClients[id].SpawnPlayer();
+        }
+    }
 }
