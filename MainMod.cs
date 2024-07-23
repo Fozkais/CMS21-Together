@@ -38,6 +38,7 @@ namespace CMS21Together
 
             Client.Instance = modObject.AddComponent<Client>();
             Server.Instance = modObject.AddComponent<Server>();
+            ContentManager.Instance = modObject.AddComponent<ContentManager>();
             SteamManager.Instance = modObject.AddComponent<SteamManager>();
            
             ClientData.UserData = TogetherModManager.LoadUserData();
@@ -57,6 +58,7 @@ namespace CMS21Together
 
             if (sceneName == "Menu")
             {
+                ContentManager.Instance.Initialize();
                 if (Server.Instance.isRunning)
                     Server.Instance.CloseServer();
                 if(Client.Instance.isConnected)

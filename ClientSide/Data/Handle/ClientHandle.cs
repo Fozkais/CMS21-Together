@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Collections.ObjectModel;
+using System.Net;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
@@ -8,10 +9,12 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using MelonLoader;
 using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
+using ToolsMoveManager = CMS21Together.ClientSide.Data.Garage.Tools.ToolsMoveManager;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -46,6 +49,12 @@ public static class ClientHandle
         ClientData.Instance.connectedClients[data.playerID] = data;
         UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
         MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
+    }
+    
+    public static void ContentsInfoPacket(Packet _packet)
+    {
+        ReadOnlyDictionary<string, bool> infos = _packet.Read<ReadOnlyDictionary<string, bool>>();
+        ApiCalls.API_M2(infos);
     }
 
     public static void ReadyPacket(Packet packet)
@@ -130,6 +139,19 @@ public static class ClientHandle
             lifter.Action(1);
 
         // ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state; TODO: fix this?
+    }
+    
+    public static void ToolsMovePacket(Packet _packet)
+    {
+        ModIOSpecialType tool = _packet.Read<ModIOSpecialType>();
+        ModCarPlace place = _packet.Read<ModCarPlace>();
+        bool playSound = _packet.Read<bool>();
+
+        ToolsMoveManager.listenToMove = false;
+        if(place == ModCarPlace.none)
+            Il2Cpp.ToolsMoveManager.m_instance.SetOnDefaultPosition((IOSpecialType)tool);
+        else
+            Il2Cpp.ToolsMoveManager.m_instance.MoveTo((IOSpecialType)tool,(CarPlace)place, playSound);
     }
     
     public static void LoadCarPacket(Packet packet)

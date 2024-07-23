@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="ClientSide\Client.cs" />
     <Compile Include="ClientSide\Data\ClientData.cs" />
+    <Compile Include="ClientSide\Data\ContentManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs" />
     <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs" />
     <Compile Include="ClientSide\Data\CustomUI\UI_Host.cs" />
@@ -56,13 +57,13 @@
     <Compile Include="ClientSide\Data\Garage\Car\PartsUpdater.cs" />
     <Compile Include="ClientSide\Data\Garage\Car\PartUpdateHooks.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs" />
+    <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\Player\Inventory.cs" />
     <Compile Include="ClientSide\Data\Player\Movement.cs" />
     <Compile Include="ClientSide\Data\Player\Rotation.cs" />
     <Compile Include="ClientSide\Data\Player\Stats.cs" />
-    <Compile Include="ClientSide\Data\UserData.cs" />
     <Compile Include="ClientSide\Transports\ClientSteam.cs" />
     <Compile Include="ClientSide\Transports\ClientTCP.cs" />
     <Compile Include="ClientSide\Transports\ClientUDP.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Shared\Data\ModSaveData.cs" />
     <Compile Include="Shared\Data\NetworkType.cs" />
     <Compile Include="Shared\Data\QuaternionSerializable.cs" />
+    <Compile Include="Shared\Data\UserData.cs" />
     <Compile Include="Shared\Data\Vanilla\Cars\ModBodyPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\Cars\ModBonusPartData.cs" />
     <Compile Include="Shared\Data\Vanilla\Cars\ModCarFluid.cs" />

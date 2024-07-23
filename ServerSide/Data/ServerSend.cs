@@ -5,6 +5,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 
@@ -272,6 +273,28 @@ public static class ServerSend
             packet.Write(fromClient);
             
             SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void ContentInfoPacket(Dictionary<string, bool> dictionary)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.contentInfo))
+        {
+            packet.Write(dictionary);
+            
+            SendDataToAll(packet);
+        }
+    }
+
+    public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
+    {
+        using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+        {
+            _packet.Write(tool);
+            _packet.Write(place);
+            _packet.Write(playSound);
+                        
+            SendDataToAll(fromClient, _packet);
         }
     }
 }

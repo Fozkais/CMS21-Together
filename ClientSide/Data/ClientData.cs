@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -45,6 +46,7 @@ public class ClientData
         Movement.SendPosition();
         Rotation.SendRotation();
         JobManager.UpdateSelectedJob();
+        ToolsMoveManager.Reset();
     }
 
     private IEnumerator InitializeGameData()

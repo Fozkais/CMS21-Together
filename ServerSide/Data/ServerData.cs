@@ -5,6 +5,7 @@ using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 
 namespace CMS21Together.ServerSide.Data;
@@ -22,6 +23,7 @@ public class ServerData
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
 
     public Dictionary<string, GarageUpgrade> garageUpgrades = new Dictionary<string, GarageUpgrade>();
+    public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new Dictionary<ModIOSpecialType, ModCarPlace>();
     
     public List<ModJob> jobs = new List<ModJob>();
     public List<ModJob> selectedJobs = new List<ModJob>();
@@ -144,6 +146,11 @@ public class ServerData
                 selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
             }
         }
+    }
+
+    public static void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
+    {
+        toolsPosition[tool] = place;
     }
 }
 

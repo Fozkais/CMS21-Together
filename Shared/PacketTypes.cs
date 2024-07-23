@@ -24,5 +24,7 @@ public enum PacketTypes
     newJob,
     jobAction,
     selectedJob,
-    sceneChange
+    sceneChange,
+    contentInfo,
+    toolMove
 }

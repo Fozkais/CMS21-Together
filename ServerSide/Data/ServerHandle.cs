@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 
@@ -17,17 +20,26 @@ public static class ServerHandle
     {
         int clientIdCheck = packet.ReadInt();
         string username = packet.Read<string>();
-       // ReadOnlyDictionary<string, bool> content = _packet.Read<ReadOnlyDictionary<string, bool>>();
-       // string gameVersion = packet.Read<string>();TODO: reimplement those
-       string modVersion = packet.Read<string>(); 
+        ReadOnlyDictionary<string, bool> content = packet.Read<ReadOnlyDictionary<string, bool>>();
+        string gameVersion = packet.Read<string>();
+        string modVersion = packet.Read<string>(); 
         
         MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
 
         if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
         {
-            ServerSend.DisconnectPacket(fromClient, $"Server is on {MainMod.ASSEMBLY_MOD_VERSION} .");
+            ServerSend.DisconnectPacket(fromClient, $"Server mod version is on {MainMod.ASSEMBLY_MOD_VERSION}.");
             return;
         }
+        
+        if (gameVersion != ContentManager.Instance.gameVersion)
+        {
+            ServerSend.DisconnectPacket(fromClient, $"Server is on game version : {ContentManager.Instance.gameVersion}.");
+            return;
+        }
+        
+        var a = ApiCalls.API_M1(content, ContentManager.Instance.ownedContents);
+        ServerSend.ContentInfoPacket(a);
 
         if (fromClient != clientIdCheck)
         {
@@ -273,5 +285,16 @@ public static class ServerHandle
 
         ServerData.Instance.connectedClients[fromClient].scene = scene;
         ServerSend.SceneChangePacket(fromClient, scene);
+    }
+    
+    public static void ToolsMovePacket(int _fromClient, Packet _packet)
+    {
+        ModIOSpecialType tool = _packet.Read<ModIOSpecialType>();
+        ModCarPlace place = _packet.Read<ModCarPlace>();
+        bool playSound = _packet.Read<bool>();
+
+        ServerData.ChangeToolPosition(tool, place);
+        
+        ServerSend.ToolsMovePacket(_fromClient, tool, place, playSound);
     }
 }

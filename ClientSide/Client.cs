@@ -81,6 +81,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.userData, ClientHandle.UserDataPacket },
             { (int)PacketTypes.readyState, ClientHandle.ReadyPacket },
             { (int)PacketTypes.start, ClientHandle.StartPacket },
+            { (int)PacketTypes.contentInfo, ClientHandle.ContentsInfoPacket },
             
             { (int)PacketTypes.position, ClientHandle.PositionPacket },
             { (int)PacketTypes.rotation, ClientHandle.RotationPacket },
@@ -92,6 +93,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.stat, ClientHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ClientHandle.LifterPacket },
+            { (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
             
             { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
             { (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
@@ -124,7 +126,7 @@ public class Client : MonoBehaviour
         }
         
         MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
-        // ApiCalls.API_M2(ContentManager.Instance.OwnedContents); TODO: Fix
+        ApiCalls.API_M2(ContentManager.Instance.ownedContents);
 
     }
 }

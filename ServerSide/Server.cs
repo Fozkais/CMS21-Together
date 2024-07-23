@@ -178,6 +178,7 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.stat, ServerHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
+            { (int)PacketTypes.toolMove, ServerHandle.ToolsMovePacket },
             
             { (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },
             { (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },

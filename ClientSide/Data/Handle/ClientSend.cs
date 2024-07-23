@@ -4,6 +4,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using MelonLoader;
@@ -92,8 +93,6 @@ public class ClientSend
             packet.Write(type);
             
             SendData(packet);
-            
-            MelonLogger.Msg($"Sent stat:{diff} , {type.ToString()}");
         }
     }
 
@@ -138,7 +137,6 @@ public class ClientSend
             
             SendData(packet);
         }
-        MelonLogger.Msg("[ClientSend->BodyPartPacket] Sent BodyPart.");
     }
 
     public static void PartScriptPacket(ModPartScript partScript, int carLoaderID)
@@ -150,7 +148,6 @@ public class ClientSend
             
             SendData(packet);
         }
-        MelonLogger.Msg("[ClientSend->PartScriptPacket] Sent PartScript.");
     }
 
     public static void DeleteCarPacket(int carLoaderID)
@@ -223,6 +220,18 @@ public class ClientSend
             packet.Write(scene);
             
             SendData(packet);
+        }
+    }
+
+    public static void ToolPositionPacket(IOSpecialType tool, ModCarPlace place, bool playSound = false)
+    {
+        using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+        {
+            _packet.Write((ModIOSpecialType)tool);
+            _packet.Write(place);
+            _packet.Write(playSound);
+
+            SendData(_packet);
         }
     }
 }

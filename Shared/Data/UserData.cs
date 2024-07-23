@@ -1,14 +1,11 @@
 ﻿using System;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
 using Newtonsoft.Json;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Object = UnityEngine.Object;
 
-namespace CMS21Together.ClientSide.Data;
+namespace CMS21Together.Shared.Data;
 
 [Serializable]
 public class UserData
