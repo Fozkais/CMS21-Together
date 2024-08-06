@@ -38,7 +38,7 @@ public static class ServerHandle
             return;
         }
         
-        var a = ApiCalls.API_M1(content, ContentManager.Instance.ownedContents);
+        var a = ApiCalls.API_M1(content, ContentManager.Instance.ownedContents); 
         ServerSend.ContentInfoPacket(a);
 
         if (fromClient != clientIdCheck)

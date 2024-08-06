@@ -25,8 +25,8 @@ public class ClientSend
         {
             packet.Write(ClientData.UserData.playerID);
             packet.Write(ClientData.UserData.username);
-           /* packet.Write(ContentManager.Instance.OwnedContents); TODO: Reimplement those.
-            packet.Write(ContentManager.Instance.gameVersion);*/
+            packet.Write(ContentManager.Instance.ownedContents);
+            packet.Write(ContentManager.Instance.gameVersion);
             packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
                     
             SendData(packet);

@@ -128,9 +128,9 @@ public static class ClientHandle
         ModLifterState state = packet.Read<ModLifterState>();
         int carLoaderID = packet.ReadInt();
         
-        if(!ClientData.Instance.loadedCars.ContainsKey(carLoaderID-1)) return;
+        if(!ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) return;
 
-        var lifter = GameData.Instance.carLoaders[carLoaderID - 1].lifter;
+        var lifter = GameData.Instance.carLoaders[carLoaderID].lifter;
         LifterLogic.listen = false;
 
         if ((int)state > (int)lifter.currentState)
