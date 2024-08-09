@@ -18,6 +18,8 @@ public class GameData
     public CarLoader[] carLoaders;
     public GarageAndToolsTab upgradeTools;
     public OrderGenerator orderGenerator;
+    public SpringClampLogic springClampLogic;
+    public TireChangerLogic tireChanger;
 
     public GameData()
     {
@@ -25,6 +27,8 @@ public class GameData
         localInventory = GameScript.Get().GetComponent<Inventory>();
         upgradeTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;
         orderGenerator = Object.FindObjectOfType<OrderGenerator>();
+        springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
+        tireChanger = Object.FindObjectOfType<TireChangerLogic>();
         carLoaders = new[]
         {
             GameScript.Get().carOnScene[0],

@@ -19,6 +19,9 @@ public class ServerData
     public List<ModGroupItem> groupItems = new List<ModGroupItem>();
     public int money, scrap;
 
+    public GarageTool springClamp = new GarageTool();
+    public GarageTool tireChanger = new GarageTool();
+
     public Dictionary<int, ModNewCarData> CarSpawnDatas = new Dictionary<int, ModNewCarData>();
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
 
@@ -152,6 +155,38 @@ public class ServerData
     {
         toolsPosition[tool] = place;
     }
+
+    public void SetSpringClampState(bool remove, ModGroupItem item)
+    {
+        if (remove)
+        {
+            springClamp.isMounted = true;
+            springClamp.groupItem = null;
+            return;
+        }
+        
+        springClamp.isMounted = false;
+        springClamp.groupItem = item;
+    }
+    
+    public void SetTireChangerState(bool remove, ModGroupItem item)
+    {
+        if (remove)
+        {
+            tireChanger.isMounted = true;
+            tireChanger.groupItem = null;
+            return;
+        }
+        
+        tireChanger.isMounted = false;
+        tireChanger.groupItem = item;
+    }
+}
+
+public class GarageTool
+{
+    public bool isMounted;
+    public ModGroupItem groupItem;
 }
 
 public class ModCarInfo

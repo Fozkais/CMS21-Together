@@ -14,6 +14,8 @@ using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using MelonLoader;
 using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
+using SpringClampLogic = CMS21Together.ClientSide.Data.Garage.Tools.SpringClampLogic;
+using TireChangerLogic = CMS21Together.ClientSide.Data.Garage.Tools.TireChangerLogic;
 using ToolsMoveManager = CMS21Together.ClientSide.Data.Garage.Tools.ToolsMoveManager;
 
 namespace CMS21Together.ClientSide.Data.Handle;
@@ -139,6 +141,42 @@ public static class ClientHandle
             lifter.Action(1);
 
         // ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state; TODO: fix this?
+    }
+    
+    public static void SetTireChangerPacket(Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        bool instant = packet.Read<bool>();
+        bool connect = packet.Read<bool>();
+
+        TireChangerLogic.listen = false;
+        GameData.Instance.tireChanger.SetGroupOnTireChanger(item.ToGame(), instant, connect);
+    }
+    public static void ClearTireChangerPacket(Packet packet)
+    {
+        GameData.Instance.tireChanger.ResetActions();
+    }
+    
+    public static void SetSpringClampPacket(Packet packet)
+    {
+        ModGroupItem item  = packet.Read<ModGroupItem>();
+        bool instant = packet.Read<bool>();
+        bool mount = packet.Read<bool>();
+
+        MelonCoroutines.Start(SpringClampLogic.Action(item, instant, mount));
+    }
+    
+    public static void SpringClampClearPacket(Packet packet)
+    {
+        if (GameData.Instance.springClampLogic.GroupOnSpringClamp != null)
+        {
+            if (GameData.Instance.springClampLogic.GroupOnSpringClamp.ItemList != null)
+            {
+                GameData.Instance.springClampLogic.GroupOnSpringClamp.ItemList.Clear();
+                SpringClampLogic.listen = false;
+                GameData.Instance.springClampLogic.ClearSpringClamp();
+            }
+        }
     }
     
     public static void ToolsMovePacket(Packet _packet)

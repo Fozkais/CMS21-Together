@@ -178,6 +178,10 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.stat, ServerHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ServerHandle.LifterPacket },
+            { (int)PacketTypes.setSpringClamp, ServerHandle.SetSpringClampPacket },
+            { (int)PacketTypes.clearSpringClamp, ServerHandle.SpringClampClearPacket },
+            { (int)PacketTypes.setTireChanger, ServerHandle.SetTireChangerPacket },
+            { (int)PacketTypes.clearTireChanger, ServerHandle.ClearTireChangerPacket },
             { (int)PacketTypes.toolMove, ServerHandle.ToolsMovePacket },
             
             { (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },

@@ -93,6 +93,10 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.stat, ClientHandle.StatPacket },
             
             { (int)PacketTypes.lifter, ClientHandle.LifterPacket },
+            { (int)PacketTypes.setSpringClamp, ClientHandle.SetSpringClampPacket },
+            { (int)PacketTypes.clearSpringClamp, ClientHandle.SpringClampClearPacket },
+            { (int)PacketTypes.setTireChanger, ClientHandle.SetTireChangerPacket },
+            { (int)PacketTypes.clearTireChanger, ClientHandle.ClearTireChangerPacket },
             { (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
             
             { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },

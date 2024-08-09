@@ -225,13 +225,54 @@ public class ClientSend
 
     public static void ToolPositionPacket(IOSpecialType tool, ModCarPlace place, bool playSound = false)
     {
-        using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+        using (Packet packet = new Packet((int)PacketTypes.toolMove))
         {
-            _packet.Write((ModIOSpecialType)tool);
-            _packet.Write(place);
-            _packet.Write(playSound);
+            packet.Write((ModIOSpecialType)tool);
+            packet.Write(place);
+            packet.Write(playSound);
 
-            SendData(_packet);
+            SendData(packet);
+        }
+    }
+
+    public static void SetSpringClampPacket(ModGroupItem item, bool instant, bool mount)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setSpringClamp))
+        {
+            packet.Write(item);
+            packet.Write(instant);
+            packet.Write(mount);
+                        
+            SendData(packet);
+        }
+    }
+
+    public static void ClearSpringClampPacket()
+    {
+        using (Packet packet = new Packet((int)PacketTypes.clearSpringClamp))
+        {
+            SendData(packet);
+        }
+    }
+
+
+    public static void SetTireChangerPacket(ModGroupItem modGroupItem, bool instant, bool connect)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setTireChanger))
+        {
+            packet.Write(modGroupItem);
+            packet.Write(instant);
+            packet.Write(connect);
+                        
+            SendData(packet);
+        }
+    }
+
+    public static void ClearTireChangerPacket()
+    {
+        using (Packet packet = new Packet((int)PacketTypes.clearTireChanger))
+        {
+            SendData(packet);
         }
     }
 }

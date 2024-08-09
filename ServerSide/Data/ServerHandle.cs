@@ -297,4 +297,35 @@ public static class ServerHandle
         
         ServerSend.ToolsMovePacket(_fromClient, tool, place, playSound);
     }
+    
+    public static void SetSpringClampPacket(int fromClient, Packet packet)
+    {
+        ModGroupItem item  = packet.Read<ModGroupItem>();
+        bool instant = packet.Read<bool>();
+        bool mount = packet.Read<bool>();
+
+        ServerData.Instance.SetSpringClampState(false, item);
+        ServerSend.SetSpringClampPacket(fromClient, item, instant, mount);
+    }
+    public static void SpringClampClearPacket(int fromClient, Packet packet)
+    {
+        ServerData.Instance.SetSpringClampState(true, null);
+        ServerSend.SpringClampClearPacket(fromClient);
+    }
+    
+    public static void SetTireChangerPacket(int fromClient, Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        bool instant = packet.Read<bool>();
+        bool connect = packet.Read<bool>();
+
+        ServerData.Instance.SetTireChangerState(false, item);
+        ServerSend.SetTireChangerPacket(fromClient, item, instant, connect);
+    }
+    public static void ClearTireChangerPacket(int fromClient, Packet packet)
+    {
+        ServerData.Instance.SetTireChangerState(true, null);
+        ServerSend.ClearTireChangerPacket(fromClient);
+    }
+    
 }

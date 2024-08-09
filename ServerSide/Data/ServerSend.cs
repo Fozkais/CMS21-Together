@@ -288,13 +288,53 @@ public static class ServerSend
 
     public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
     {
-        using (Packet _packet = new Packet((int)PacketTypes.toolMove))
+        using (Packet packet = new Packet((int)PacketTypes.toolMove))
         {
-            _packet.Write(tool);
-            _packet.Write(place);
-            _packet.Write(playSound);
+            packet.Write(tool);
+            packet.Write(place);
+            packet.Write(playSound);
                         
-            SendDataToAll(fromClient, _packet);
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void SetSpringClampPacket(int fromClient, ModGroupItem item, bool instant, bool mount)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setSpringClamp))
+        {
+            packet.Write(item);
+            packet.Write(instant);
+            packet.Write(mount);
+                        
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void SpringClampClearPacket(int fromClient)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.clearSpringClamp))
+        {
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void SetTireChangerPacket(int fromClient, ModGroupItem item, bool instant, bool connect)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setTireChanger))
+        {
+            packet.Write(item);
+            packet.Write(instant);
+            packet.Write(connect);
+
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void ClearTireChangerPacket(int fromClient)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.clearTireChanger))
+        {
+            SendDataToAll(fromClient, packet);
         }
     }
 }
