@@ -140,7 +140,7 @@ namespace CMS21Together.Shared
                     gameManager.ProfileManager.selectedProfile = index;
                     gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
                     gameManager.ProfileManager.Load();
-                    
+                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
                     MelonLogger.Msg("-------------------Save Info---------------------");
                     MelonLogger.Msg("Selected Profile Name : " +  gameManager.ProfileManager.GetSelectedProfileName()); 
                     MelonLogger.Msg("Selected Profile Difficulty : " +  gameManager.ProfileManager.GetSelectedProfileDifficulty()); 
@@ -190,7 +190,7 @@ namespace CMS21Together.Shared
                 MelonLogger.Msg("Selected Profile : " +  gameManager.ProfileManager.selectedProfile);
                 MelonLogger.Msg("-------------------------------------------------");
             }
-            
+            Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
             currentSave = gameManager.ProfileManager.GetSelectedProfileData();
                 
             if (!clientSave){ SaveModSave(index); }
@@ -234,8 +234,9 @@ namespace CMS21Together.Shared
         {
             Application.runInBackground = true;
             Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
-
+            Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
             Singleton<GameManager>.Instance.GameDataManager.LoadProfile();
+            Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(DifficultyLevel.Sandbox);
             Singleton<GameManager>.Instance.StartCoroutine(Singleton<GameManager>.Instance.GameDataManager.Load(true));
             
             NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("garage", SceneType.Garage, true, true));
