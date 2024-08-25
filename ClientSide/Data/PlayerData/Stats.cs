@@ -13,8 +13,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             if (playerMoney > ClientData.Instance.playerMoney || playerMoney < ClientData.Instance.playerMoney)
             {
                 int diff = playerMoney - ClientData.Instance.playerMoney;
-                ClientData.Instance.playerMoney += diff;
-                ClientSend.Stats(diff, ModStats.money);
+               // ClientData.Instance.playerMoney += diff;
+               // ClientSend.Stats(diff, ModStats.money);
             }
         }
         
@@ -24,8 +24,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             if (playerScraps > ClientData.Instance.playerScrap || playerScraps < ClientData.Instance.playerScrap)
             {
                 int diff = playerScraps - ClientData.Instance.playerScrap;
-                ClientData.Instance.playerScrap += diff;
-                ClientSend.Stats(diff, ModStats.scrap);
+                //ClientData.Instance.playerScrap += diff;
+                //ClientSend.Stats(diff, ModStats.scrap);
                 //MelonLogger.Msg($"Sending scraps!! +{diff}");
             }
         }
@@ -36,8 +36,8 @@ namespace CMS21Together.ClientSide.Data.PlayerData
             if (playerExp > ClientData.Instance.playerExp || playerExp <  ClientData.Instance.playerExp)
             {
                 int diff = playerExp -  ClientData.Instance.playerExp;
-                ClientData.Instance.playerExp += diff;
-                ClientSend.Stats(diff, ModStats.exp);
+               // ClientData.Instance.playerExp += diff;
+               // ClientSend.Stats(diff, ModStats.exp);
             }
         }
     }

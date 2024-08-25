@@ -74,9 +74,9 @@ namespace CMS21Together.ClientSide.Data
             Movement.SendPosition();
             Rotation.SendRotation();
             
-            Stats.HandleExp();
+            /*Stats.HandleExp();
             Stats.HandleMoney();
-            Stats.HandleScrap();
+            Stats.HandleScrap();*/
             
             foreach (var player in PlayersGameObjects)
             {
@@ -87,7 +87,7 @@ namespace CMS21Together.ClientSide.Data
             }
 
         }
-        public IEnumerator keepClientAlive()
+        public IEnumerator KeepClientAlive()
         {
             isKeepingAlive = true;
             ClientSend.KeepAlive();
