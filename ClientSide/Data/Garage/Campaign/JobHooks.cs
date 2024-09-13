@@ -13,6 +13,16 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 public static class JobHooks
 {
     [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
+    [HarmonyPrefix]
+    public static bool GenerateMissionPreHook(int id, bool forTutorial, OrderGenerator __instance) 
+    {
+        if (!Client.Instance.isConnected) return true;
+        if (!Server.Instance.isRunning) return false; // Disable for clients
+        
+        return true;
+    }
+    
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
     [HarmonyPostfix]
     public static void GenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance) 
     {
@@ -25,6 +35,16 @@ public static class JobHooks
     }
          
     [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
+    [HarmonyPrefix]
+    public static bool GenerateNewJobPreHook() 
+    {
+        if (!Client.Instance.isConnected) return true;
+        if (!Server.Instance.isRunning)  return false;// Disable for clients
+        
+        return true;
+    }
+    
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
     [HarmonyPostfix]
     public static void GenerateNewJobHook() 
     {
@@ -32,13 +52,9 @@ public static class JobHooks
         
         MelonLogger.Msg($"[Hook->GenerateNewJobHook] Generated new job");
         OrderGenerator generator = GameData.Instance.orderGenerator;
-        MelonLogger.Msg($"pass1");
         Job newJob = generator.jobs._items[generator.jobs.Count - 1];
-        MelonLogger.Msg($"pass2");
         ModJob job = new ModJob(newJob);
-        MelonLogger.Msg($"pass3");
         ClientSend.JobPacket(job);
-        MelonLogger.Msg($"pass4");
     }
     
     [HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.AcceptOrderAction))]
