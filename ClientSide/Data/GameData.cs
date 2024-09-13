@@ -20,6 +20,7 @@ public class GameData
     public OrderGenerator orderGenerator;
     public SpringClampLogic springClampLogic;
     public TireChangerLogic tireChanger;
+    public WheelBalancerLogic wheelBalancer;
 
     public GameData()
     {
@@ -29,6 +30,7 @@ public class GameData
         orderGenerator = Object.FindObjectOfType<OrderGenerator>();
         springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
         tireChanger = Object.FindObjectOfType<TireChangerLogic>();
+        wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
         carLoaders = new[]
         {
             GameScript.Get().carOnScene[0],

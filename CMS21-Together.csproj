@@ -60,6 +60,7 @@
     <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\TireChangerLogic.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs" />
+    <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancerLogic.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\Player\Inventory.cs" />
@@ -163,9 +164,6 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Facepunch.Steamworks.Win64">
-      <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
-    </Reference>
     <Reference Include="Il2Cppcom.rlabrecque.steamworks.net">
       <HintPath>Libs\Il2Cppcom.rlabrecque.steamworks.net.dll</HintPath>
     </Reference>
@@ -180,6 +178,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Steamworks.NET">
+      <HintPath>Libs\Steamworks.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEditor">

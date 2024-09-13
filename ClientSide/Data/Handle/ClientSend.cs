@@ -186,7 +186,7 @@ public class ClientSend
         using (Packet packet = new Packet((int)PacketTypes.newJob))
         {
             packet.Write(job);
-            
+            MelonLogger.Msg("newJob packet");
             SendData(packet);
         }
     }
@@ -195,6 +195,7 @@ public class ClientSend
     {
         using (Packet packet = new Packet((int)PacketTypes.jobAction))
         {
+            MelonLogger.Msg("Mission Job packet");
             packet.Write(jobID);
             packet.Write(takeJob);
             
@@ -206,6 +207,7 @@ public class ClientSend
     {
         using (Packet packet = new Packet((int)PacketTypes.selectedJob))
         {
+            MelonLogger.Msg("SelectedJob packet");
             packet.Write(job);
             packet.Write(action);
             
@@ -271,6 +273,34 @@ public class ClientSend
     public static void ClearTireChangerPacket()
     {
         using (Packet packet = new Packet((int)PacketTypes.clearTireChanger))
+        {
+            SendData(packet);
+        }
+    }
+
+    public static void SetWheelBalancerPacket(GroupItem groupItem)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setWheelBalancer))
+        {
+            packet.Write(new ModGroupItem(groupItem));
+            
+            SendData(packet);
+        }
+    }
+
+    public static void WheelBalancePacket(GroupItem wheel)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.balanceWheel))
+        {
+            packet.Write(new ModGroupItem(wheel));
+            
+            SendData(packet);
+        }
+    }
+
+    public static void WheelRemovePacket()
+    {
+        using (Packet packet = new Packet((int)PacketTypes.removeTireWB))
         {
             SendData(packet);
         }

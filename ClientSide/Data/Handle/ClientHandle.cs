@@ -17,6 +17,7 @@ using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
 using SpringClampLogic = CMS21Together.ClientSide.Data.Garage.Tools.SpringClampLogic;
 using TireChangerLogic = CMS21Together.ClientSide.Data.Garage.Tools.TireChangerLogic;
 using ToolsMoveManager = CMS21Together.ClientSide.Data.Garage.Tools.ToolsMoveManager;
+using WheelBalancerLogic = CMS21Together.ClientSide.Data.Garage.Tools.WheelBalancerLogic;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -155,6 +156,30 @@ public static class ClientHandle
     public static void ClearTireChangerPacket(Packet packet)
     {
         GameData.Instance.tireChanger.ResetActions();
+    }
+    
+    public static void SetWheelBalancerPacket(Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        
+        WheelBalancerLogic.listen = false;
+        GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(item.ToGame(), true);
+    }
+
+    public static void WheelBalancePacket(Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        
+        WheelBalancerLogic.listen = false;
+        GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(item.ToGame(), true);
+    }
+
+    public static void WheelRemovePacket(Packet packet)
+    {
+        GameData.Instance.wheelBalancer.ResetActions();
+
+        WheelBalancerLogic.listen = false;
+        GameData.Instance.wheelBalancer.Clear();
     }
     
     public static void SetSpringClampPacket(Packet packet)

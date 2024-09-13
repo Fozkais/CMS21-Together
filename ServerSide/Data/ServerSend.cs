@@ -337,4 +337,30 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+
+    public static void SetWheelBalancerPacket(int fromClient, ModGroupItem item)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.setWheelBalancer))
+        {
+            packet.Write(item);
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void WheelBalancePacket(int fromClient, ModGroupItem item)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.balanceWheel))
+        {
+            packet.Write(item);
+            SendDataToAll(fromClient, packet);
+        }
+    }
+
+    public static void WheelRemovePacket(int fromClient)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.removeTireWB))
+        {
+            SendDataToAll(fromClient, packet);
+        }
+    }
 }

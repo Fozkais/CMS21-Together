@@ -327,5 +327,26 @@ public static class ServerHandle
         ServerData.Instance.SetTireChangerState(true, null);
         ServerSend.ClearTireChangerPacket(fromClient);
     }
+    public static void SetWheelBalancerPacket(int fromClient, Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        
+        ServerData.Instance.SetWheelBalancerState(item);
+        ServerSend.SetWheelBalancerPacket(fromClient, item);
+    }
+
+    public static void WheelBalancePacket(int fromClient, Packet packet)
+    {
+        ModGroupItem item = packet.Read<ModGroupItem>();
+        
+        ServerData.Instance.SetWheelBalancerState(item);
+        ServerSend.WheelBalancePacket(fromClient, item);
+    }
+
+    public static void WheelRemovePacket(int fromClient, Packet packet)
+    {
+        ServerData.Instance.SetWheelBalancerState(null);
+        ServerSend.WheelRemovePacket(fromClient);
+    }
     
 }
