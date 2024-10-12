@@ -34,6 +34,7 @@ public class UserData
         ip = "127.0.0.1";
         lobbyID = "";
         playerID = 1;
+        selectedNetworkType = NetworkType.TCP;
     }
     
     public UserData(string _username, int _playerID)

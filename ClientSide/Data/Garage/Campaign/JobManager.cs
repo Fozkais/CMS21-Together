@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using Il2Cpp;
 using Il2CppCMS.UI.Windows;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Campaign;
@@ -21,9 +23,13 @@ public static class JobManager
     
     public static void UpdateSelectedJob()
     {
-        foreach (Job job in GameData.Instance.orderGenerator.selectedJobs)
+        if (GameData.Instance == null || GameData.Instance.orderGenerator == null) return;
+        if (GameData.Instance.orderGenerator.selectedJobs == null) return;
+
+        for (int i = 0; i < GameData.Instance.orderGenerator.selectedJobs.Count; i++)
         {
-            if (selectedJobs.All(j => job.id != j.id))
+            Job job = GameData.Instance.orderGenerator.selectedJobs._items[i];
+            if (job != null && selectedJobs.All(j => j != null && job.id != j.id))
             {
                 ModJob newJob = new ModJob(job);
                 selectedJobs.Add(newJob);
@@ -34,7 +40,8 @@ public static class JobManager
         for (var index = 0; index < selectedJobs.Count; index++)
         {
             var job = selectedJobs[index];
-            if (GameData.Instance.orderGenerator.selectedJobs._items.All(j => job.id != j.id))
+            if (GameData.Instance.orderGenerator.selectedJobs == null || 
+                GameData.Instance.orderGenerator.selectedJobs._items.All(j => j != null && job.id != j.id))
             {
                 ClientSend.SelectedJobPacket(job, false);
                 selectedJobs.Remove(job);

@@ -12,8 +12,18 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 [HarmonyPatch]
 public static class JobHooks
 {
-    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
-    [HarmonyPostfix]
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))] [HarmonyPrefix]
+    public static bool PreGenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance)
+    {
+        if (!Client.Instance.isConnected) return true;
+
+        if (!Server.Instance.isRunning)
+            return false;
+        
+        return true;
+    }
+
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))] [HarmonyPostfix]
     public static void GenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance) 
     {
         if (!Client.Instance.isConnected) return;
@@ -23,26 +33,30 @@ public static class JobHooks
         ModJob job = new ModJob(newJob);
         ClientSend.JobPacket(job);
     }
-         
-    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
-    [HarmonyPostfix]
+
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))] [HarmonyPrefix]
+    public static bool PreGenerateNewJobHook()
+    {
+        if (!Client.Instance.isConnected) return true;
+        
+        if (!Server.Instance.isRunning)
+            return false;
+        return true;
+    }
+
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))] [HarmonyPostfix]
     public static void GenerateNewJobHook() 
     {
         if (!Client.Instance.isConnected) return;
         
         MelonLogger.Msg($"[Hook->GenerateNewJobHook] Generated new job");
         OrderGenerator generator = GameData.Instance.orderGenerator;
-        MelonLogger.Msg($"pass1");
         Job newJob = generator.jobs._items[generator.jobs.Count - 1];
-        MelonLogger.Msg($"pass2");
         ModJob job = new ModJob(newJob);
-        MelonLogger.Msg($"pass3");
         ClientSend.JobPacket(job);
-        MelonLogger.Msg($"pass4");
     }
     
-    [HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.AcceptOrderAction))]
-    [HarmonyPrefix]
+    [HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.AcceptOrderAction))] [HarmonyPrefix]
     public static void AcceptOrderActionHook(OrdersWindow __instance)
     {
         if (!Client.Instance.isConnected) return;
@@ -52,8 +66,7 @@ public static class JobHooks
 
     }
     
-    [HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.DeclineOrderAction))]
-    [HarmonyPrefix]
+    [HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.DeclineOrderAction))] [HarmonyPrefix]
     public static void DeclineOrderActionHook(OrdersWindow __instance)
     {
         if (!Client.Instance.isConnected) return;
@@ -62,17 +75,21 @@ public static class JobHooks
         ClientSend.JobActionPacket(__instance.currentJob.id, false);
     }
     
-    
-    
-    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))]
-    [HarmonyPrefix]
-    public static bool UpdateHook(OrderGenerator __instance) // Disable JobSystem for clients
+    [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))] [HarmonyPrefix]
+    public static bool UpdateHook(OrderGenerator __instance)
     {
-        if (!Client.Instance.isConnected) return true;
+        if (!Client.Instance.isConnected || Server.Instance.isRunning) return true;
 
-        if (!Server.Instance.isRunning)
+        if (!NotificationCenter.IsGameReady || !GameSettings.CanGenerateOrders)
+        {
             return false;
-
-        return true;
+        }
+        int maxOrdersAmount = GlobalData.GetMaxOrdersAmount();
+        if (GlobalData.Jobs < maxOrdersAmount)
+        {
+            __instance.orderTimer += Time.deltaTime; // enable timer advance and disable job generation for clients
+        }
+        
+        return false;
     }
 }

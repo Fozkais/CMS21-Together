@@ -25,8 +25,8 @@ public static class CarSpawnManager
     public static IEnumerator LoadCar(NewCarData carData, int carLoaderID, int placeNo)
     {
         if(ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
-
-        ModCar car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo);
+        
+        ModCar car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo, carData.customerCar);
         ClientSend.LoadCarPacket(new ModNewCarData(carData), carLoaderID);
 
         yield return new WaitForEndOfFrame();

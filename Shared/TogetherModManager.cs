@@ -25,6 +25,8 @@ public static class TogetherModManager
                 currentUserData = JsonConvert.DeserializeObject<UserData>(serializedUserData);
                 if (currentUserData != null)
                     return currentUserData;
+                else
+                    return new UserData();
             }
         }
         else

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using Il2Cpp;
@@ -13,7 +14,8 @@ using UnityEngine;
 
 namespace CMS21Together.Shared;
 
-public class SavesManager
+[HarmonyPatch]
+public static class SavesManager
 {
      public static Dictionary<int, ModSaveData> ModSaves = new Dictionary<int, ModSaveData> ();
         public static Il2CppReferenceArray<ProfileData> profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
@@ -275,15 +277,17 @@ public class SavesManager
             SaveModSave( __instance.selectedProfile);
         }
         
-        [HarmonyPatch(typeof(GameDataManager), "Save")]
+        [HarmonyPatch(typeof(GarageLoader), nameof(GarageLoader.Save))]
         [HarmonyPrefix]
-        public static void SavePatch2(int profileID)
+        public static bool SaveHook(bool showInfoIfSaveInProgress=false)
         {
-            if(!Client.Instance.isConnected) return;
+            if(!Client.Instance.isConnected) return true;
             
-            MelonLogger.Msg("Save GameData");
+            MelonLogger.Msg("Save Game");
             MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            GameData.Instance.orderGenerator.Save();
             SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+            return true;
         }
         
         public static void SaveAllModSaves()
