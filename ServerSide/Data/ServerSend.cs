@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -276,7 +277,7 @@ public static class ServerSend
         }
     }
 
-    public static void ContentInfoPacket(Dictionary<string, bool> dictionary)
+    public static void ContentInfoPacket(ReadOnlyDictionary<string, bool> dictionary)
     {
         using (Packet packet = new Packet((int)PacketTypes.contentInfo))
         {

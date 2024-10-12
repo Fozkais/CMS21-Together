@@ -39,7 +39,7 @@ public static class ServerHandle
         }
         
         var a = ApiCalls.API_M1(content, ContentManager.Instance.ownedContents); 
-        ServerSend.ContentInfoPacket(a);
+        ServerSend.ContentInfoPacket(new ReadOnlyDictionary<string, bool>(a));
 
         if (fromClient != clientIdCheck)
         {

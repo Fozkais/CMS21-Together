@@ -13,7 +13,7 @@ public class ContentManager : MonoBehaviour
     public static ContentManager Instance;
     
     public string gameVersion { get; private set; }
-    public IReadOnlyDictionary<string, bool> ownedContents { get; private set; }
+    public ReadOnlyDictionary<string, bool> ownedContents { get; private set; }
     
     public void Initialize()
     {
