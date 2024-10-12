@@ -279,6 +279,15 @@ public static class ServerHandle
         ServerSend.SelectedJobPacket(fromClient, job, action);
     }
     
+    public static void EndJobPacket(int fromClient, Packet packet)
+    {
+        ModJob job = packet.Read<ModJob>();
+        int carLoaderID = packet.Read<int>();
+
+        ServerData.Instance.EndJob(job);
+        ServerSend.EndJobPacket(fromClient, job, carLoaderID);
+    }
+    
     public static void SceneChangePacket(int fromClient, Packet packet)
     {
         GameScene scene = packet.Read<GameScene>();

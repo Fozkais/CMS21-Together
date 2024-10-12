@@ -24,7 +24,7 @@ public class ServerConnection
         id = i;
         tcp = new TCPConnection(id);
         udp = new UDPConnection(id);
-        steam = new SteamConnection(id);
+       // steam = new SteamConnection(id);
     }
 
     public void Connect(TcpClient connection)
@@ -52,9 +52,9 @@ public class ServerConnection
     
     public void SendData(Packet packet, bool reliable)
     {
-        if(connectionType == NetworkType.Steam)
+        /*if(connectionType == NetworkType.Steam)
             steam.Send(packet, reliable);
-        else if (connectionType == NetworkType.TCP)
+        else*/ if (connectionType == NetworkType.TCP)
         {
             if(reliable) 
                 tcp.Send(packet);
@@ -67,7 +67,7 @@ public class ServerConnection
     {
         tcp.Disconnect();
         udp.Disconnect();
-        steam.Disconnect();
+        //steam.Disconnect();
             
         isConnected = false;
     }

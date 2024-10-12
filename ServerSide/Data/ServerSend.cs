@@ -265,6 +265,16 @@ public static class ServerSend
             SendDataToAll(fromClient, packet);
         }
     }
+    
+    public static void EndJobPacket(int fromClient, ModJob job, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.endJob))
+        {
+            packet.Write(job);
+            packet.Write(carLoaderID);
+            SendDataToAll(fromClient, packet);
+        }
+    }
 
     public static void SceneChangePacket(int fromClient, GameScene scene)
     {

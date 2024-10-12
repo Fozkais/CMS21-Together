@@ -34,4 +34,5 @@ public enum PacketTypes
     setWheelBalancer,
     balanceWheel,
     removeTireWB,
+    endJob
 }

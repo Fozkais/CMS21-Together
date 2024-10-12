@@ -215,7 +215,7 @@ public static class CustomUIBuilder
                 {
                     Vector2 t5_pos = new Vector2(905, 30);
                     Vector2 t5_size = new Vector2(400, 100);
-                    CreateText(t5_pos, t5_size, $"Server ID: {Server.Instance.steam.serverID}", 14, lobbyHeaderObject.transform);
+                    CreateText(t5_pos, t5_size, $"Server ID: {SteamLobby.lobbyID}", 14, lobbyHeaderObject.transform);
                 }
             }
             else

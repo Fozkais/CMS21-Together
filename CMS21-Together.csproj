@@ -60,7 +60,6 @@
     <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\TireChangerLogic.cs" />
     <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs" />
-    <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancerLogic.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientHandle.cs" />
     <Compile Include="ClientSide\Data\Handle\ClientSend.cs" />
     <Compile Include="ClientSide\Data\Player\Inventory.cs" />
@@ -146,6 +145,7 @@
     <Compile Include="Shared\Data\Vanilla\ModStats.cs" />
     <Compile Include="Shared\Data\Vector3Serializable.cs" />
     <Compile Include="Shared\SceneManager.cs" />
+    <Compile Include="Shared\SteamLobby.cs" />
     <Compile Include="Shared\SteamManager.cs" />
     <Compile Include="Shared\Packet.cs" />
     <Compile Include="Shared\PacketTypes.cs" />

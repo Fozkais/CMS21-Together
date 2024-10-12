@@ -19,7 +19,7 @@ namespace CMS21Together.Shared.Data.Vanilla
         public string Livery;
         public float LiveryStrength;
         public ModLPData LPData;
-        public ModMountObject MountObjectData;
+        //public ModMountObjectData MountObjectData;
         public string NormalID;
         public bool OutsideRustEnabled;
         public ModPaintData PaintData;
@@ -51,7 +51,7 @@ namespace CMS21Together.Shared.Data.Vanilla
                 this.Livery = item.Livery;
                 this.LiveryStrength = item.LiveryStrength;
                 //this.LPData = item.LPData; // TODO: Handle class
-                //this.MountObjectData = item.MountObjectData; // TODO: Handle class
+               // this.MountObjectData = new ModMountObjectData(item.MountObjectData);
                 this.NormalID = item.NormalID;
                 this.OutsideRustEnabled = item.OutsideRustEnabled;
                 this.PaintData = new ModPaintData(item.PaintData);
@@ -59,7 +59,7 @@ namespace CMS21Together.Shared.Data.Vanilla
                 this.Quality = item.Quality;
                 this.RepairAmount = item.RepairAmount;
                 this.TintColor = new ModColor(item.TintColor.GetColor());
-                //this.TuningData = item.TuningData; // TODO: Handle class
+               // this.TuningData = new ModTuningData(item.tuningData);
                 this.WashFactor = item.WashFactor;
                 this.WheelData = new ModWheelData(item.WheelData);
                 this.ID = item.ID;
@@ -85,7 +85,7 @@ namespace CMS21Together.Shared.Data.Vanilla
             original.Livery = item.Livery;
             original.LiveryStrength = item.LiveryStrength;
             //this.LPData = item.LPData; TODO: Handle class
-            //original.MountObjectData = item.MountObjectData; TODO: Handle class
+            //original.MountObjectData = item.MountObjectData.ToGame(); 
             original.NormalID = item.NormalID;
             original.OutsideRustEnabled = item.OutsideRustEnabled;
             original.PaintData = new ModPaintData().ToGame(item.PaintData);
@@ -93,7 +93,7 @@ namespace CMS21Together.Shared.Data.Vanilla
             original.Quality = item.Quality;
             original.RepairAmount = item.RepairAmount;
             original.TintColor = new CustomColor( ModColor.ToColor(item.Color));
-            //this.TuningData = item.TuningData; TODO: Handle class
+            //original.tuningData = item.TuningData.ToGame();
             original.WashFactor = item.WashFactor;
             original.WheelData = new ModWheelData().ToGame(item.WheelData);
             original.ID = item.ID;

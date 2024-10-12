@@ -42,12 +42,12 @@ public class Client : MonoBehaviour
     {
         InitializeClientData();
 
-        if (networkType == NetworkType.Steam)
+        /*if (networkType == NetworkType.Steam)
         {
             SteamId lobbyID = SteamworksUtils.DecodeSteamID(ClientData.UserData.lobbyID);
             steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
         }
-        else if (networkType == NetworkType.TCP)
+        else*/ if (networkType == NetworkType.TCP)
         {
             tcp = new ClientTCP();
             udp = new ClientUDP();
@@ -66,9 +66,9 @@ public class Client : MonoBehaviour
                 if(reliable) tcp.Send(packet);
                 else udp.Send(packet);
                 break;
-            case NetworkType.Steam:
+            /*case NetworkType.Steam:
                 steam.Send(packet, reliable);
-                break;
+                break;*/
         }
     }
 
@@ -113,6 +113,7 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.newJob, ClientHandle.JobPacket},
             { (int)PacketTypes.jobAction, ClientHandle.JobActionPacket},
             { (int)PacketTypes.selectedJob, ClientHandle.SelectedJobPacket},
+            { (int)PacketTypes.endJob, ClientHandle.EndJobPacket},
         };
     }
 

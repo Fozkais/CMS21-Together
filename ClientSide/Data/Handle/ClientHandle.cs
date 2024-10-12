@@ -293,6 +293,14 @@ public static class ClientHandle
         MelonCoroutines.Start(JobManager.SelectedJob(job, action));
     }
     
+    public static void EndJobPacket(Packet packet)
+    {
+        ModJob job = packet.Read<ModJob>();
+        int carLoaderID = packet.Read<int>();
+
+        MelonCoroutines.Start(JobManager.OnJobComplete(job, carLoaderID));
+    }
+    
     public static void SceneChangePacket(Packet packet)
     {
         GameScene scene = packet.Read<GameScene>();

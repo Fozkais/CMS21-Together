@@ -37,12 +37,10 @@ public class ServerData
     {
         ServerSend.LoadCarPacket(-1, CarSpawnDatas[id], carLoader);
     }
-
     public void SetGarageUpgrade(GarageUpgrade upgrade)
     {
         garageUpgrades[upgrade.upgradeID] = upgrade;
     }
-
     public void DeleteCar(int carLoaderID)
     {
         if (CarSpawnDatas.ContainsKey(carLoaderID))
@@ -50,7 +48,6 @@ public class ServerData
         if (CarPartInfo.ContainsKey(carLoaderID))
             CarPartInfo.Remove(carLoaderID);
     }
-    
     public void UpdatePartScripts(ModPartScript partScript, int carLoaderID)
     {
         if(!ServerData.Instance.CarPartInfo.ContainsKey(carLoaderID))
@@ -89,7 +86,6 @@ public class ServerData
                 break;
         }
     }
-
     public void UpdateBodyParts(ModCarPart carPart, int carLoaderID)
     {
         if(!ServerData.Instance.CarPartInfo.ContainsKey(carLoaderID))
@@ -98,7 +94,6 @@ public class ServerData
         ModCarInfo carInfos = ServerData.Instance.CarPartInfo[carLoaderID];
         carInfos.BodyPartsReferences[carPart.carPartID] = carPart;
     }
-
     public void ChangePosition(int carLoaderID, int placeNo)
     {
         if(ServerData.Instance.CarPartInfo.TryGetValue(carLoaderID, out ModCarInfo info))
@@ -106,19 +101,16 @@ public class ServerData
             info.placeNo = placeNo;
         }
     }
-
     public void AddJob(ModJob job)
     {
         jobs.Add(job);
     }
-
     public void RemoveJob(int jobID)
     {
         ModJob job = jobs.Find(j => j.id == jobID);
         if(job != null)
             jobs.Remove(job);
     }
-
     public void SetLoadJobCar(ModCar carData)
     {
         if( ServerData.Instance.CarPartInfo.ContainsKey(carData.carLoaderID)) return;
@@ -133,7 +125,6 @@ public class ServerData
         data.customerCar = carData.customerCar;
 
     }
-
     public void UpdateSelectedJobs(ModJob job, bool action)
     {
         if (action)
@@ -151,12 +142,10 @@ public class ServerData
             }
         }
     }
-
     public static void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
     {
         toolsPosition[tool] = place;
     }
-
     public void SetSpringClampState(bool remove, ModGroupItem item)
     {
         if (remove)
@@ -169,7 +158,6 @@ public class ServerData
         springClamp.isMounted = false;
         springClamp.groupItem = item;
     }
-    
     public void SetTireChangerState(bool remove, ModGroupItem item)
     {
         if (remove)
@@ -182,7 +170,6 @@ public class ServerData
         tireChanger.isMounted = false;
         tireChanger.groupItem = item;
     }
-
     public void SetWheelBalancerState(ModGroupItem item)
     {
         if (item == null)
@@ -204,6 +191,14 @@ public class ServerData
         wheelBalancer.groupItem = item;
         wheelBalancer.additionalState = true;
         wheelBalancer.isMounted = true;
+    }
+
+    public void EndJob(ModJob job)
+    {
+        if (selectedJobs.Any(j => j.id == job.id))
+        {
+            selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
+        }
     }
 }
 

@@ -12,16 +12,16 @@ namespace CMS21Together.Shared
         
         public SteamManager()
         {
-            SteamClient.Init(1190000);
-            SteamNetworkingUtils.InitRelayNetworkAccess();
+            //SteamClient.Init(1190000);
+            //SteamNetworkingUtils.InitRelayNetworkAccess();
 
-            clientData = new SteamClientData();
+           // clientData = new SteamClientData();
         }
     }
 
     public struct SteamClientData
     {
-        public string PlayerName { get; set; }
+      /*  public string PlayerName { get; set; }
         public SteamId PlayerSteamId { get; set; }
         public string playerSteamIdString;
 
@@ -30,6 +30,6 @@ namespace CMS21Together.Shared
             PlayerName = SteamClient.Name;
             PlayerSteamId = SteamClient.SteamId;
             playerSteamIdString = PlayerSteamId.ToString();
-        }
+        }*/
     }
 }

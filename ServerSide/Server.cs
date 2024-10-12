@@ -44,8 +44,8 @@ public class Server : MonoBehaviour
     {
         if (networkType == NetworkType.Steam)
         {
-            steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
-            steam.serverID = SteamworksUtils.EncodeSteamID(SteamManager.Instance.clientData.PlayerSteamId);
+          //  steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
+          //  steam.serverID = SteamworksUtils.EncodeSteamID(SteamManager.Instance.clientData.PlayerSteamId);
             
             tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
             tcp.Start();
@@ -88,8 +88,8 @@ public class Server : MonoBehaviour
             udp.Close();
         if(tcp != null)
             tcp.Stop();
-        if (steam != null)
-            steam.Close();
+        //if (steam != null)
+          //  steam.Close();
             
         if(clients != null)
             clients.Clear();
@@ -199,6 +199,7 @@ public class Server : MonoBehaviour
             { (int)PacketTypes.newJob, ServerHandle.JobPacket},
             { (int)PacketTypes.jobAction, ServerHandle.JobActionPacket},
             { (int)PacketTypes.selectedJob, ServerHandle.SelectedJobPacket},
+            { (int)PacketTypes.endJob, ServerHandle.EndJobPacket},
         };
     }
 }

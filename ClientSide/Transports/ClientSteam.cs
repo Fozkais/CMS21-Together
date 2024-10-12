@@ -3,13 +3,12 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 using Steamworks;
-using Steamworks.Data;
 
 namespace CMS21Together.ClientSide.Transports;
 
-public class ClientSteam : ConnectionManager
+public class ClientSteam 
 {
-    public override void OnConnectionChanged(ConnectionInfo info)
+   /* public override void OnConnectionChanged(ConnectionInfo info)
     {
         base.OnConnectionChanged(info);
         if (info.State == ConnectionState.Connected)
@@ -91,5 +90,5 @@ public class ClientSteam : ConnectionManager
         Result res = Connection.SendMessage(SteamworksUtils.ConvertByteArrayToIntPtr(_packet.ToArray()), _packet.Length(), sendType);
         if(res != Result.OK)
             MelonLogger.Error($"[ClientSteam->SendData] Issue while sending data:{res}");
-    }
+    }*/
 }

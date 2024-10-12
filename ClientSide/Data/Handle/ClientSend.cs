@@ -214,6 +214,18 @@ public class ClientSend
             SendData(packet);
         }
     }
+    
+    public static void EndJobPacket(ModJob modJob, int carLoaderID)
+    {
+        using (Packet packet = new Packet((int)PacketTypes.endJob))
+        {
+            MelonLogger.Msg("EndJobPacket");
+            packet.Write(modJob);
+            packet.Write(carLoaderID);
+            
+            SendData(packet);
+        }
+    }
 
     public static void SceneChangePacket(GameScene scene)
     {
@@ -224,7 +236,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void ToolPositionPacket(IOSpecialType tool, ModCarPlace place, bool playSound = false)
     {
         using (Packet packet = new Packet((int)PacketTypes.toolMove))
@@ -236,7 +247,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void SetSpringClampPacket(ModGroupItem item, bool instant, bool mount)
     {
         using (Packet packet = new Packet((int)PacketTypes.setSpringClamp))
@@ -248,7 +258,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void ClearSpringClampPacket()
     {
         using (Packet packet = new Packet((int)PacketTypes.clearSpringClamp))
@@ -256,8 +265,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
-
     public static void SetTireChangerPacket(ModGroupItem modGroupItem, bool instant, bool connect)
     {
         using (Packet packet = new Packet((int)PacketTypes.setTireChanger))
@@ -269,7 +276,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void ClearTireChangerPacket()
     {
         using (Packet packet = new Packet((int)PacketTypes.clearTireChanger))
@@ -277,7 +283,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void SetWheelBalancerPacket(GroupItem groupItem)
     {
         using (Packet packet = new Packet((int)PacketTypes.setWheelBalancer))
@@ -287,7 +292,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void WheelBalancePacket(GroupItem wheel)
     {
         using (Packet packet = new Packet((int)PacketTypes.balanceWheel))
@@ -297,7 +301,6 @@ public class ClientSend
             SendData(packet);
         }
     }
-
     public static void WheelRemovePacket()
     {
         using (Packet packet = new Packet((int)PacketTypes.removeTireWB))

@@ -1,8 +1,11 @@
-﻿using CMS21Together.ClientSide.Data.Handle;
+﻿using System.Linq;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using HarmonyLib;
 using Il2Cpp;
+using Il2CppCMS.Extensions;
+using Il2CppCMS.UI;
 using Il2CppCMS.UI.Windows;
 using MelonLoader;
 using UnityEngine;
@@ -89,6 +92,58 @@ public static class JobHooks
         {
             __instance.orderTimer += Time.deltaTime; // enable timer advance and disable job generation for clients
         }
+        
+        return false;
+    }
+    
+    [HarmonyPatch(typeof(GameScript), nameof(GameScript.EndJob))] [HarmonyPrefix]
+    public static bool EndJobHook(Job job, CarLoader carLoader) // TODO:Handle exp gain for everyone
+    {
+        if (!Client.Instance.isConnected || Server.Instance.isRunning) return true;
+
+        if (!carLoader.CheckCarPartsBolts())
+        {
+            UIManager.Get().ShowInfoWindow<string>("GUI_SamochodNiezlozony", ("!" + carLoader.GetMissingPartID()).Localize());
+            return false;
+        }
+        if (!carLoader.CheckIfHaveBody())
+        {
+            UIManager.Get().ShowInfoWindow<string>("GUI_SamochodNiezlozony", carLoader.CheckCarBodyMissingPartID.Localize());
+            return false;
+        }
+        if (!carLoader.EngineData.isElectric && ((job.HaveSubtype("Oil") && carLoader.FluidsData.GetLevel(CarFluidType.EngineOil, 0, false) < job.oilLevel) || (!job.HaveSubtype("Oil") && !carLoader.CheckCarHaveOil())))
+        {
+            UIManager.Get().ShowInfoWindow("GUI_SamochodOlejBrak");
+            return false;
+        }
+        CarFluidType carFluidType;
+        if (!carLoader.CheckCarHaveFluids(out carFluidType, job))
+        {
+            UIManager.Get().ShowInfoWindow<string>("GUI_SamochodPlynBrak", carFluidType.Localize());
+            return false;
+        }
+        if (carLoader.CheckScam(job))
+        {
+            UIManager.Get().ShowInfoWindow("GUI_SamochodGorszyStan");
+            return false;
+        }
+        if (!carLoader.FrontWheelsHaveThisSameSize())
+        {
+            UIManager.Get().ShowInfoWindow("GUI_FrontWheelsDiffSize");
+            return false;
+        }
+        if (!carLoader.RearWheelsHaveThisSameSize())
+        {
+            UIManager.Get().ShowInfoWindow("GUI_RearWheelsDiffSize");
+            return false;
+        }
+        WindowManager.Instance.Hide(WindowID.CarInfo, true); // hide info panel
+        
+        // Only accept job end if is valid
+        ModJob modJob = JobManager.selectedJobs.First(j => j.id == job.id);
+        int carLoaderID = (carLoader.gameObject.name[10] - '0') - 1;
+
+        ClientSend.EndJobPacket(modJob, carLoaderID);
         
         return false;
     }

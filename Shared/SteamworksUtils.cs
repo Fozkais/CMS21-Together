@@ -1,12 +1,9 @@
-﻿
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using CMS21Together.ServerSide;
 using MelonLoader;
 using Steamworks;
-using Steamworks.Data;
 
 namespace CMS21Together.Shared;
 
@@ -43,7 +40,7 @@ public static class SteamworksUtils
         return lobbyID;
     }
     
-    public static string ConvertServerID(SteamId lobbyID)
+   /* public static string ConvertServerID(SteamId lobbyID)
     {
         string code = lobbyID.Value.ToBase36();
             
@@ -59,5 +56,5 @@ public static class SteamworksUtils
         if(SV_client == null)
             MelonLogger.Warning($"[SteamworksUtils->GetClientFromConnection] Did not found a valid client.");
         return SV_client;
-    }
+    }*/
 }

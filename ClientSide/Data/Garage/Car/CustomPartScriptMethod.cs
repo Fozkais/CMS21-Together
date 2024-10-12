@@ -6,7 +6,7 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 
 public static class CustomPartScriptMethod
 {
-    public static IEnumerator ShowMounted(PartScript partScript)
+    public static IEnumerator ShowMounted(PartScript partScript) // avoid gamemode change when mounting piece
     {
         partScript.IsUnmounted = false;
         if ( partScript.ShouldUnmountWith())
