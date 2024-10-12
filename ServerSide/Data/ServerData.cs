@@ -21,6 +21,7 @@ public class ServerData
 
     public GarageTool springClamp = new GarageTool();
     public GarageTool tireChanger = new GarageTool();
+    public GarageTool wheelBalancer = new GarageTool();
 
     public Dictionary<int, ModNewCarData> CarSpawnDatas = new Dictionary<int, ModNewCarData>();
     public Dictionary<int, ModCarInfo> CarPartInfo = new Dictionary<int, ModCarInfo>();
@@ -181,11 +182,35 @@ public class ServerData
         tireChanger.isMounted = false;
         tireChanger.groupItem = item;
     }
+
+    public void SetWheelBalancerState(ModGroupItem item)
+    {
+        if (item == null)
+        {
+            wheelBalancer.isMounted = false;
+            wheelBalancer.additionalState = false;
+            wheelBalancer.groupItem = null;
+            return;
+        }
+
+        if (!wheelBalancer.additionalState)
+        {
+            wheelBalancer.groupItem = item;
+            wheelBalancer.additionalState = true;
+            wheelBalancer.isMounted = true;
+            return;
+        }
+
+        wheelBalancer.groupItem = item;
+        wheelBalancer.additionalState = true;
+        wheelBalancer.isMounted = true;
+    }
 }
 
 public class GarageTool
 {
     public bool isMounted;
+    public bool additionalState;
     public ModGroupItem groupItem;
 }
 

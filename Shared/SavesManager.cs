@@ -24,7 +24,7 @@ public static class SavesManager
         private const string MOD_FOLDER_PATH = @"Mods\togetherMod\";
         private const string SAVE_FOLDER_PATH = MOD_FOLDER_PATH + "saves";
 
-        private const string GAME_SAVE_FOLDER = "%USERPROFILE%/AppData/LocalLow/Red Dot Games/Car Mechanic Simulator 2021/Save";
+        private const string GAME_SAVE_FOLDER = @"%USERPROFILE%\AppData\LocalLow\Red Dot Games\Car Mechanic Simulator 2021\Save";
 
         public static void Initialize()
         {
@@ -156,23 +156,21 @@ public static class SavesManager
                     SaveModSave(index);
                     return;
                 }
-                else
-                {
-                    Il2CppSystem.IO.BinaryWriter writer = new Il2CppSystem.IO.BinaryWriter();
-                    ProfileData save = new ProfileData();
-            
-                    save.Init();
-                    save.WriteSaveHeader(writer);
-                    save.WriteSaveVersion(writer);
 
-                    profileData[index] = save;
-                    Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-                    Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
-                    Singleton<GameManager>.Instance.ProfileManager.Load();
+                Il2CppSystem.IO.BinaryWriter writer = new Il2CppSystem.IO.BinaryWriter();
+                ProfileData save = new ProfileData();
+            
+                save.Init();
+                save.WriteSaveHeader(writer);
+                save.WriteSaveVersion(writer);
+
+                profileData[index] = save;
+                Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
+                Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
+                Singleton<GameManager>.Instance.ProfileManager.Load();
                 
-                    ModSaves[index].Name =  name;
-                    ModSaves[index].saveIndex = index;
-                }
+                ModSaves[index].Name =  name;
+                ModSaves[index].saveIndex = index;
             }
             else
             {
@@ -233,7 +231,7 @@ public static class SavesManager
             ModSaves[index] = new ModSaveData("EmptySave", index, false);
             string modSaveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{index}.cms21mp");
             string saveFilePath = Path.Combine(GAME_SAVE_FOLDER, $"profile{index}.cms21b");
-
+            MelonLogger.Msg($"SavePath:{saveFilePath}");
             if (File.Exists(modSaveFilePath)) 
             {
                 File.Delete(modSaveFilePath);
@@ -246,6 +244,10 @@ public static class SavesManager
             
             if (File.Exists(saveFilePath)) 
             {
+                string name = Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name;
+                Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Init();
+                Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name = name;
+                Singleton<GameManager>.Instance.GameDataManager.ClearData();
                 File.Delete(saveFilePath);
                 MelonLogger.Msg($"Save file {saveFilePath} deleted");
             }

@@ -44,7 +44,7 @@ public class Client : MonoBehaviour
 
         if (networkType == NetworkType.Steam)
         {
-            SteamId lobbyID = SteamworksUtils.ConvertLobbyID(ClientData.UserData.lobbyID);
+            SteamId lobbyID = SteamworksUtils.DecodeSteamID(ClientData.UserData.lobbyID);
             steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
         }
         else if (networkType == NetworkType.TCP)
@@ -97,6 +97,9 @@ public class Client : MonoBehaviour
             { (int)PacketTypes.clearSpringClamp, ClientHandle.SpringClampClearPacket },
             { (int)PacketTypes.setTireChanger, ClientHandle.SetTireChangerPacket },
             { (int)PacketTypes.clearTireChanger, ClientHandle.ClearTireChangerPacket },
+            { (int)PacketTypes.setWheelBalancer, ClientHandle.SetWheelBalancerPacket },
+            { (int)PacketTypes.balanceWheel, ClientHandle.WheelBalancePacket },
+            { (int)PacketTypes.removeTireWB, ClientHandle.WheelRemovePacket },
             { (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
             
             { (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
