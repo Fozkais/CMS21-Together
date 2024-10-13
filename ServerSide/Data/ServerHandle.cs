@@ -153,36 +153,20 @@ public static class ServerHandle
     
     public static void StatPacket(int fromClient, Packet packet)
     {
-        bool initial = packet.Read<bool>();
         int value = packet.ReadInt();
         ModStats type = packet.Read<ModStats>();
-
-        if (initial)
+        
+        switch (type)
         {
-            switch (type)
-            {
-                case ModStats.money:
-                    ServerData.Instance.money = value;
-                    break;
-                case ModStats.scrap:
-                    ServerData.Instance.scrap = value;
-                    break;
-            }
-        }
-        else
-        {
-            switch (type)
-            {
-                case ModStats.money:
-                    ServerData.Instance.money += value;
-                    break;
-                case ModStats.scrap:
-                    ServerData.Instance.scrap += value;
-                    break;
-            }
+            case ModStats.money:
+                ServerData.Instance.money = value;
+                break;
+            case ModStats.scrap:
+                ServerData.Instance.scrap = value;
+                break;
         }
        
-        ServerSend.StatPacket(fromClient, value, type, initial);
+        ServerSend.StatPacket(fromClient, value, type);
     }
     
     public static void LifterPacket(int fromClient, Packet packet)

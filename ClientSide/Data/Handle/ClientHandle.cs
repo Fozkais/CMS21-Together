@@ -114,12 +114,11 @@ public static class ClientHandle
 
     public static void StatPacket(Packet packet)
     {
-        bool initial = packet.Read<bool>();
         int value = packet.ReadInt();
         ModStats type = packet.Read<ModStats>();
         
         MelonLogger.Msg($"Received stat:{value} , {type.ToString()}");
-        MelonCoroutines.Start(Stats.UpdateStats(type, value, initial));
+        MelonCoroutines.Start(Stats.UpdateStats(type, value));
 
     }
 

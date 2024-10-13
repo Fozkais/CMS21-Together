@@ -84,11 +84,10 @@ public class ClientSend
         }
     }
 
-    public static void StatPacket(int diff, ModStats type, bool initial=false)
+    public static void StatPacket(int diff, ModStats type)
     {
         using (Packet packet = new Packet((int)PacketTypes.stat))
         {
-            packet.Write(initial);
             packet.Write(diff);
             packet.Write(type);
             
