@@ -282,8 +282,9 @@ public static class ServerHandle
     public static void EndJobPacket(int fromClient, Packet packet)
     {
         ModJob job = packet.Read<ModJob>();
-        int carLoaderID = packet.Read<int>();
+        int carLoaderID = packet.ReadInt();
 
+        MelonLogger.Msg("SV : endjob !");
         ServerData.Instance.EndJob(job);
         ServerSend.EndJobPacket(fromClient, job, carLoaderID);
     }

@@ -139,22 +139,28 @@ public static class JobManager
             yield return new WaitForSeconds(0.25f);
         yield return new WaitForEndOfFrame();
         
+        MelonLogger.Msg("[JobManager] -> OnJobComplete");
+        
         GameScript script = GameScript.Get();
+        Job _job = Singleton<GameManager>.Instance.OrderGenerator.selectedJobs._items.First(j => j.id == job.id);
+        
         bool flag = script.CurrentSceneType == SceneType.Tutorial;
-        if (!flag && job.IsCompleted)
+        if (!flag && _job.IsCompleted)
         {
-            Singleton<GameManager>.Instance.Inventory.TryAddSpecialCase(job.IsMission);
+            Singleton<GameManager>.Instance.Inventory.TryAddSpecialCase(_job.IsMission);
         }
         if (!flag)
         {
-            GlobalData.AddPlayerMoney(job.TotalPayout);
+            GlobalData.AddPlayerMoney(_job.TotalPayout);
+            MelonLogger.Msg($"[JobManager] -> AddPlayerMoney() {_job.TotalPayout}");
         }
-        if (!flag && job.IsCompleted)
+        if (!flag && _job.IsCompleted)
         {
-            GlobalData.AddPlayerExp(job.XP, false);
+            MelonLogger.Msg("[JobManager] -> AddPlayerExp()");
+            GlobalData.AddPlayerExp(_job.XP, false);
         }
-        Singleton<GameManager>.Instance.OrderGenerator.CancelJob(job.id);
-        if (!flag && job.IsMission)
+        Singleton<GameManager>.Instance.OrderGenerator.CancelJob(_job.id);
+        if (!flag && _job.IsMission)
         {
             MelonLogger.Msg("[JobManager] -> OnJobComplete() Finish mission");
             GlobalData.IsStoryMissionInProgress = false;
@@ -173,17 +179,18 @@ public static class JobManager
             GarageLoader.Get().Save(false);
         }
         GameScript.Get().raycast.enabled = true;
-        if (job.IsCompleted)
+        if (_job.IsCompleted)
         {
             Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_order", 1);
         }
-        if (job.IsCompleted && job.BonusToExp)
+        if (_job.IsCompleted && _job.BonusToExp)
         {
             Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_exp", 1);
         }
-        if (job.IsCompleted && job.BonusToMoney)
+        if (_job.IsCompleted && _job.BonusToMoney)
         {
             Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_money", 1);
         }
+        MelonLogger.Msg("[JobManager] -> OnJobComplete() Finished !");
     }
 }
