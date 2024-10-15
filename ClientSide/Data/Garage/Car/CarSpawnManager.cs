@@ -27,7 +27,7 @@ public static class CarSpawnManager
         if(ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
         
         ModCar car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo, carData.customerCar);
-        ClientSend.LoadCarPacket(new ModNewCarData(carData), carLoaderID);
+        ClientSend.LoadCarPacket(new ModNewCarData(carData, placeNo), carLoaderID);
 
         yield return new WaitForEndOfFrame();
         
@@ -80,6 +80,7 @@ public static class CarSpawnManager
 
         CarSpawnHooks.listenToSimpleLoad = false;
         carLoader.ConfigVersion = carData.configVersion;
+        carLoader.placeNo = data.carPosition;
         carLoader.StartCoroutine(carLoader.LoadCar(carData.carToLoad));
         while (!carLoader.IsCarLoaded())
         {

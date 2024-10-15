@@ -44,8 +44,12 @@ namespace CMS21Together.Shared.Data.Vanilla.Cars
         public ModWheelsAlignmentData wheelsAlignmentData;
         public List<int> wheelsWidth;
 
-        public ModNewCarData(NewCarData newCarData)
+        public int carPosition;
+
+        public ModNewCarData(NewCarData newCarData, int placeNo=0)
         {
+            carPosition = placeNo;
+            
             if (newCarData != null)
             {
                 AdditionalCarRot = newCarData.AdditionalCarRot;
@@ -144,8 +148,6 @@ namespace CMS21Together.Shared.Data.Vanilla.Cars
                 MelonLogger.Msg("Error: NewCarData is null in ModNewCarData constructor.");
             }
         }
-
-
         public NewCarData ToGame()
         {
             NewCarData newData = new NewCarData();
