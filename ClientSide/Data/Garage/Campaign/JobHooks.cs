@@ -16,7 +16,7 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 public static class JobHooks
 {
     [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))] [HarmonyPrefix]
-    public static bool PreGenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance)
+    public static bool PreGenerateMissionHook(int id, bool forTutorial)
     {
         if (!Client.Instance.isConnected) return true;
 
@@ -30,11 +30,14 @@ public static class JobHooks
     public static void GenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance) 
     {
         if (!Client.Instance.isConnected) return;
-        
-        MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
-        Job newJob = __instance.jobs._items[__instance.jobs.Count - 1];
-        ModJob job = new ModJob(newJob);
-        ClientSend.JobPacket(job);
+
+        if (Server.Instance.isRunning)
+        {
+            MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
+            Job newJob = __instance.jobs._items[__instance.jobs.Count - 1];
+            ModJob job = new ModJob(newJob);
+            ClientSend.JobPacket(job);
+        }
     }
 
     [HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))] [HarmonyPrefix]
