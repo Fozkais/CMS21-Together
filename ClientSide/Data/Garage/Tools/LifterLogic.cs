@@ -16,13 +16,12 @@ public static class LifterLogic
     public static void LifterActionHook(int actionType, CarLifter __instance)
     {
         if(!Client.Instance.isConnected || !listen) { listen = true; return;}
-
         int action = 0;
         if (actionType == 0) action = 1;
         else if (actionType == 1) action = -1;
 
         int currentState = (int)__instance.currentState + action;
-        int carLoaderID = __instance.connectedCarLoader.gameObject.name[10] - '0';
+        int carLoaderID = (__instance.connectedCarLoader.gameObject.name[10] - '0') - 1;
 
         ModLifterState state = GetState(currentState);
         ClientSend.LifterPacket(state, carLoaderID);

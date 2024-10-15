@@ -124,13 +124,11 @@ public static class ClientHandle
 
     public static void LifterPacket(Packet packet)
     {
-        if(ClientData.UserData.scene != GameScene.garage) return;
+        if (ClientData.UserData.scene != GameScene.garage) return;
         
         ModLifterState state = packet.Read<ModLifterState>();
         int carLoaderID = packet.ReadInt();
-        
         if(!ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) return;
-
         var lifter = GameData.Instance.carLoaders[carLoaderID].lifter;
         LifterLogic.listen = false;
 
