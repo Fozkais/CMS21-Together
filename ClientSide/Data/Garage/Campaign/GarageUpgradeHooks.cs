@@ -2,8 +2,10 @@
 using System.Linq;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
+using Il2Cpp;
 using Il2CppCMS.UI.Logic;
 using Il2CppCMS.UI.Logic.Upgrades;
 using MelonLoader;
@@ -22,7 +24,8 @@ public static class GarageUpgradeHooks
     {
         if (!Client.Instance.isConnected || !listenToUpgrades) { listenToUpgrades = true; return;}
         
-        if(!ClientData.GameReady && !Server.Instance.isRunning) return;
+        if (!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
+        if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
         
         MelonLogger.Msg($"[GarageUpgradeHooks-> SwitchInteractiveObjectsHook] Triggered: {upgradeID}, {on}");
         ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
@@ -36,7 +39,8 @@ public static class GarageUpgradeHooks
     {
         if (!Client.Instance.isConnected || !listenToUpgrades) { listenToUpgrades = true; return;}
         
-        if(!ClientData.GameReady && !Server.Instance.isRunning) return;
+        if(!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
+        if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
         
         MelonLogger.Msg($"[GarageUpgradeHooks-> Pre-UpdateSkillStateHook] Triggered: {upgradeItem.upgradeID}, {state}");
         /*ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
@@ -50,7 +54,8 @@ public static class GarageUpgradeHooks
     {
         if (!Client.Instance.isConnected || !listenToUpgrades) { listenToUpgrades = true; return;}
         
-        if(!ClientData.GameReady && !Server.Instance.isRunning) return;
+        if(!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
+        if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
         
         MelonLogger.Msg($"[GarageUpgradeHooks-> Pre-UnlockCurrentSelectedSkillActionHook] Triggered");
         /*ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
