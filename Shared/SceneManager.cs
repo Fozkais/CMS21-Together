@@ -8,6 +8,22 @@ namespace CMS21Together.Shared
     public class SceneManager
     {
 
+        public static GameScene UpdateScene(string scene)
+        {
+            if (scene == "Barn")
+                return GameScene.barn;
+            else if (scene == "garage")
+                return GameScene.garage;
+            else if (scene == "Junkyard")
+                return GameScene.junkyard;
+            else if (scene == "Auto_salon")
+                return GameScene.auto_salon;
+            else if (scene == "Menu")
+                return GameScene.menu;
+            
+            return GameScene.unknow;
+        }
+        
         public static GameScene CurrentScene(UserData user=null)
         {
             if (IsInBarn(user))

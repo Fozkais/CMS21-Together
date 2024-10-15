@@ -72,7 +72,7 @@ namespace CMS21Together
                 if(sceneName == "garage" && ClientData.Instance.playerPrefab == null)
                     ClientData.Instance.LoadPlayerPrefab();
                 
-                ClientData.UserData.UpdateScene();
+                ClientData.UserData.UpdateScene(sceneName);
             }
             
         }

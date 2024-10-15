@@ -43,9 +43,9 @@ public class UserData
         playerID = _playerID;
     }
 
-    public void UpdateScene()
+    public void UpdateScene(string sceneName)
     {
-        scene = SceneManager.CurrentScene();
+        scene = SceneManager.UpdateScene(sceneName);
         ClientSend.SceneChangePacket(scene);
     }
 
