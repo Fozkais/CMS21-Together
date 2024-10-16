@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -14,364 +13,364 @@ namespace CMS21Together.ServerSide.Data;
 
 public static class ServerSend
 {
-    #region Functions
+	public static void PositionPacket(int fromClient, Vector3Serializable position)
+	{
+		using (var packet = new Packet((int)PacketTypes.position))
+		{
+			packet.Write(fromClient);
+			packet.Write(position);
 
-        private static void SendData(int _toClient,  Packet _packet, bool reliable = true)
-        {
-            _packet.WriteLength();
-            //MelonLogger.Msg($"SendData[{_toClient}]");
-            Server.Instance.clients[_toClient].SendData(_packet, reliable);
-        }
-        private static void SendDataToAll(Packet _packet, bool reliable = true)
-        {
-            _packet.WriteLength();
-            foreach (KeyValuePair<int,ServerConnection> serverClient in Server.Instance.clients)
-            {
-                serverClient.Value.SendData(_packet, reliable);
-            }
-                
-        }
-        private static void SendDataToAll(int _exceptClient,Packet _packet, bool reliable = true)
-        {
-            _packet.WriteLength();
-            foreach (KeyValuePair<int,ServerConnection> serverClient in Server.Instance.clients)
-            {
-                if(serverClient.Key != _exceptClient)
-                    serverClient.Value.SendData(_packet, reliable);
-            }
-        }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    #endregion
+	public static void RotationPacket(int fromClient, QuaternionSerializable rotation)
+	{
+		using (var packet = new Packet((int)PacketTypes.rotation))
+		{
+			packet.Write(fromClient);
+			packet.Write(rotation);
 
-    #region User
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-        public static void ConnectPacket(int clientId, string message)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.connect))
-            {
-                packet.Write(message);
-                packet.Write(clientId);
-                
-                SendData(clientId, packet);
-            }
-        }
-        public static void DisconnectPacket(int fromClient, string message)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.disconnect))
-            {
-                packet.Write(message);
-                    
-                SendData(fromClient, packet);
-            }
-        }
-        
-        public static void UserDataPacket(UserData userData, int id=-1)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.userData))
-            {
-                packet.Write(userData);
-                    
-                    
-                if(id == -1)
-                    SendDataToAll(packet);
-                else
-                    SendData(id, packet);
-            }
-        }
-        public static void ReadyPacket(int fromClient, bool ready, int id)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.readyState))
-            {
-                packet.Write(id);
-                packet.Write(ready);
-                    
-                SendDataToAll(fromClient, packet);
-            }
-        }
-        
-        public static void StartPacket(Gamemode gamemode)
-        {
-            using (Packet packet = new Packet((int)PacketTypes.start))
-            {
-                packet.Write(gamemode);
-                
-                SendDataToAll(ClientData.UserData.playerID, packet);
-            }
-        }
+	public static void ItemPacket(int fromClient, ModItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.item))
+		{
+			packet.Write(action);
+			packet.Write(item);
 
-    #endregion
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void PositionPacket(int fromClient, Vector3Serializable position)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.position))
-        {
-            packet.Write(fromClient);
-            packet.Write(position);
-                    
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void GroupItemPacket(int fromClient, ModGroupItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.groupItem))
+		{
+			packet.Write(action);
+			packet.Write(item);
 
-    public static void RotationPacket(int fromClient, QuaternionSerializable rotation)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.rotation))
-        {
-            packet.Write(fromClient);
-            packet.Write(rotation);
-                    
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void ItemPacket(int fromClient, ModItem item, InventoryAction action)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.item))
-        {
-            packet.Write(action);
-            packet.Write(item);
-                    
-            SendDataToAll(fromClient, packet);
-        }
-    }
-    
-    public static void GroupItemPacket(int fromClient, ModGroupItem item, InventoryAction action)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.groupItem))
-        {
-            packet.Write(action);
-            packet.Write(item);
-                    
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void StatPacket(int fromClient, int value, ModStats type, bool initial)
+	{
+		using (var packet = new Packet((int)PacketTypes.stat))
+		{
+			packet.Write(value);
+			packet.Write(type);
+			packet.Write(initial);
 
-    public static void StatPacket(int fromClient, int value, ModStats type, bool initial)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.stat))
-        {
-            packet.Write(value);
-            packet.Write(type);
-            packet.Write(initial);
-                    
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void LifterPacket(int fromClient, ModLifterState state, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.lifter))
-        {
-            packet.Write(state);
-            packet.Write(carLoaderID);
+	public static void LifterPacket(int fromClient, ModLifterState state, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.lifter))
+		{
+			packet.Write(state);
+			packet.Write(carLoaderID);
 
-            SendDataToAll(fromClient, packet);
-        }
-    }
-    
-    public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.loadCar))
-        {
-            packet.Write(carData);
-            packet.Write(carLoaderID);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.bodyPart))
-        {
-            packet.Write(carPart);
-            packet.Write(carLoaderID);
-            
-            SendDataToAll(fromClient, packet);
-        }
-        MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
-    }
-    
-    public static void PartScriptPacket(int fromClient,ModPartScript partScript, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.partScript))
-        {
-            packet.Write(partScript);
-            packet.Write(carLoaderID);
-            
-            SendDataToAll(fromClient, packet);
-        }
-        MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
-    }
+	public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.loadCar))
+		{
+			packet.Write(carData);
+			packet.Write(carLoaderID);
 
-    public static void DeleteCarPacket(int fromClient, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.deleteCar))
-        {
-            packet.Write(carLoaderID);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void CarPositionPacket(int fromClient, int carLoaderID, int placeNo)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.carPosition))
-        {
-            packet.Write(placeNo);
-            packet.Write(carLoaderID);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.bodyPart))
+		{
+			packet.Write(carPart);
+			packet.Write(carLoaderID);
 
-    public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.garageUpgrade))
-        {
-            packet.Write(upgrade);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
 
-    public static void JobPacket(int fromClient, ModJob job)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.newJob))
-        {
-            packet.Write(job);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
+	}
 
-    public static void JobActionPacket(int fromClient, int jobID, bool takeJob)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.jobAction))
-        {
-            packet.Write(jobID);
-            packet.Write(takeJob);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.partScript))
+		{
+			packet.Write(partScript);
+			packet.Write(carLoaderID);
 
-    public static void SelectedJobPacket(int fromClient, ModJob job, bool action)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.selectedJob))
-        {
-            packet.Write(job);
-            packet.Write(action);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
-    
-    public static void EndJobPacket(int fromClient, ModJob job, int carLoaderID)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.endJob))
-        {
-            packet.Write(job);
-            packet.Write(carLoaderID);
-            SendData(1, packet); // Sent it to Host
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
 
-    public static void SceneChangePacket(int fromClient, GameScene scene)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.sceneChange))
-        {
-            packet.Write(scene);
-            packet.Write(fromClient);
-            
-            SendDataToAll(fromClient, packet);
-        }
-    }
+		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
+	}
 
-    public static void ContentInfoPacket(ReadOnlyDictionary<string, bool> dictionary)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.contentInfo))
-        {
-            packet.Write(dictionary);
-            
-            SendDataToAll(packet);
-        }
-    }
+	public static void DeleteCarPacket(int fromClient, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.deleteCar))
+		{
+			packet.Write(carLoaderID);
 
-    public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.toolMove))
-        {
-            packet.Write(tool);
-            packet.Write(place);
-            packet.Write(playSound);
-                        
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void SetSpringClampPacket(int fromClient, ModGroupItem item, bool instant, bool mount)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.setSpringClamp))
-        {
-            packet.Write(item);
-            packet.Write(instant);
-            packet.Write(mount);
-                        
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void CarPositionPacket(int fromClient, int carLoaderID, int placeNo)
+	{
+		using (var packet = new Packet((int)PacketTypes.carPosition))
+		{
+			packet.Write(placeNo);
+			packet.Write(carLoaderID);
 
-    public static void SpringClampClearPacket(int fromClient)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.clearSpringClamp))
-        {
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void SetTireChangerPacket(int fromClient, ModGroupItem item, bool instant, bool connect)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.setTireChanger))
-        {
-            packet.Write(item);
-            packet.Write(instant);
-            packet.Write(connect);
+	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade)
+	{
+		using (var packet = new Packet((int)PacketTypes.garageUpgrade))
+		{
+			packet.Write(upgrade);
 
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void ClearTireChangerPacket(int fromClient)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.clearTireChanger))
-        {
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void JobPacket(int fromClient, ModJob job)
+	{
+		using (var packet = new Packet((int)PacketTypes.newJob))
+		{
+			packet.Write(job);
 
-    public static void SetWheelBalancerPacket(int fromClient, ModGroupItem item)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.setWheelBalancer))
-        {
-            packet.Write(item);
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
 
-    public static void WheelBalancePacket(int fromClient, ModGroupItem item)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.balanceWheel))
-        {
-            packet.Write(item);
-            SendDataToAll(fromClient, packet);
-        }
-    }
+	public static void JobActionPacket(int fromClient, int jobID, bool takeJob)
+	{
+		using (var packet = new Packet((int)PacketTypes.jobAction))
+		{
+			packet.Write(jobID);
+			packet.Write(takeJob);
 
-    public static void WheelRemovePacket(int fromClient)
-    {
-        using (Packet packet = new Packet((int)PacketTypes.removeTireWB))
-        {
-            SendDataToAll(fromClient, packet);
-        }
-    }
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void SelectedJobPacket(int fromClient, ModJob job, bool action)
+	{
+		using (var packet = new Packet((int)PacketTypes.selectedJob))
+		{
+			packet.Write(job);
+			packet.Write(action);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void EndJobPacket(int fromClient, ModJob job, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.endJob))
+		{
+			packet.Write(job);
+			packet.Write(carLoaderID);
+			SendData(1, packet); // Sent it to Host
+		}
+	}
+
+	public static void SceneChangePacket(int fromClient, GameScene scene)
+	{
+		using (var packet = new Packet((int)PacketTypes.sceneChange))
+		{
+			packet.Write(scene);
+			packet.Write(fromClient);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void ContentInfoPacket(ReadOnlyDictionary<string, bool> dictionary)
+	{
+		using (var packet = new Packet((int)PacketTypes.contentInfo))
+		{
+			packet.Write(dictionary);
+
+			SendDataToAll(packet);
+		}
+	}
+
+	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
+	{
+		using (var packet = new Packet((int)PacketTypes.toolMove))
+		{
+			packet.Write(tool);
+			packet.Write(place);
+			packet.Write(playSound);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void SetSpringClampPacket(int fromClient, ModGroupItem item, bool instant, bool mount)
+	{
+		using (var packet = new Packet((int)PacketTypes.setSpringClamp))
+		{
+			packet.Write(item);
+			packet.Write(instant);
+			packet.Write(mount);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void SpringClampClearPacket(int fromClient)
+	{
+		using (var packet = new Packet((int)PacketTypes.clearSpringClamp))
+		{
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void SetTireChangerPacket(int fromClient, ModGroupItem item, bool instant, bool connect)
+	{
+		using (var packet = new Packet((int)PacketTypes.setTireChanger))
+		{
+			packet.Write(item);
+			packet.Write(instant);
+			packet.Write(connect);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void ClearTireChangerPacket(int fromClient)
+	{
+		using (var packet = new Packet((int)PacketTypes.clearTireChanger))
+		{
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void SetWheelBalancerPacket(int fromClient, ModGroupItem item)
+	{
+		using (var packet = new Packet((int)PacketTypes.setWheelBalancer))
+		{
+			packet.Write(item);
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void WheelBalancePacket(int fromClient, ModGroupItem item)
+	{
+		using (var packet = new Packet((int)PacketTypes.balanceWheel))
+		{
+			packet.Write(item);
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void WheelRemovePacket(int fromClient)
+	{
+		using (var packet = new Packet((int)PacketTypes.removeTireWB))
+		{
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	#region Functions
+
+	private static void SendData(int _toClient, Packet _packet, bool reliable = true)
+	{
+		_packet.WriteLength();
+		//MelonLogger.Msg($"SendData[{_toClient}]");
+		Server.Instance.clients[_toClient].SendData(_packet, reliable);
+	}
+
+	private static void SendDataToAll(Packet _packet, bool reliable = true)
+	{
+		_packet.WriteLength();
+		foreach (var serverClient in Server.Instance.clients) serverClient.Value.SendData(_packet, reliable);
+	}
+
+	private static void SendDataToAll(int _exceptClient, Packet _packet, bool reliable = true)
+	{
+		_packet.WriteLength();
+		foreach (var serverClient in Server.Instance.clients)
+			if (serverClient.Key != _exceptClient)
+				serverClient.Value.SendData(_packet, reliable);
+	}
+
+	#endregion
+
+	#region User
+
+	public static void ConnectPacket(int clientId, string message)
+	{
+		using (var packet = new Packet((int)PacketTypes.connect))
+		{
+			packet.Write(message);
+			packet.Write(clientId);
+
+			SendData(clientId, packet);
+		}
+	}
+
+	public static void DisconnectPacket(int fromClient, string message)
+	{
+		using (var packet = new Packet((int)PacketTypes.disconnect))
+		{
+			packet.Write(message);
+
+			SendData(fromClient, packet);
+		}
+	}
+
+	public static void UserDataPacket(UserData userData, int id = -1)
+	{
+		using (var packet = new Packet((int)PacketTypes.userData))
+		{
+			packet.Write(userData);
+
+
+			if (id == -1)
+				SendDataToAll(packet);
+			else
+				SendData(id, packet);
+		}
+	}
+
+	public static void ReadyPacket(int fromClient, bool ready, int id)
+	{
+		using (var packet = new Packet((int)PacketTypes.readyState))
+		{
+			packet.Write(id);
+			packet.Write(ready);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void StartPacket(Gamemode gamemode)
+	{
+		using (var packet = new Packet((int)PacketTypes.start))
+		{
+			packet.Write(gamemode);
+
+			SendDataToAll(ClientData.UserData.playerID, packet);
+		}
+	}
+
+	#endregion
 }

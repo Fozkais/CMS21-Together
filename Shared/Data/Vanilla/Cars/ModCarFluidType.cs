@@ -5,11 +5,11 @@ namespace CMS21Together.Shared.Data.Vanilla.Cars;
 [Serializable]
 public enum ModCarFluidType
 {
-    None,
-    All,
-    Brake,
-    EngineOil,
-    EngineCoolant,
-    WindscreenWash,
-    PowerSteering
+	None,
+	All,
+	Brake,
+	EngineOil,
+	EngineCoolant,
+	WindscreenWash,
+	PowerSteering
 }

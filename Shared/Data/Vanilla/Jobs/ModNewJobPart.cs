@@ -1,29 +1,27 @@
 using System;
-using Il2Cpp;
 
-namespace CMS21Together.Shared.Data.Vanilla.Jobs
+namespace CMS21Together.Shared.Data.Vanilla.Jobs;
+
+[Serializable]
+public class ModNewJobPart
 {
-    [Serializable]
-    public class ModNewJobPart
-    {
-        public string ID;
-        public bool Done;
-        public bool Found;
+	public string ID;
+	public bool Done;
+	public bool Found;
 
-        public ModNewJobPart(NewJobPart part)
-        {
-            ID = part.ID;
-            Done = part.Done;
-            Found = part.Found;
-        }
+	public ModNewJobPart(NewJobPart part)
+	{
+		ID = part.ID;
+		Done = part.Done;
+		Found = part.Found;
+	}
 
-        public NewJobPart ToGame()
-        {
-            NewJobPart a = new NewJobPart();
-            a.ID = this.ID;
-            a.Done = this.Done;
-            a.Found = this.Found;
-            return a;
-        }
-    }
+	public NewJobPart ToGame()
+	{
+		var a = new NewJobPart();
+		a.ID = ID;
+		a.Done = Done;
+		a.Found = Found;
+		return a;
+	}
 }

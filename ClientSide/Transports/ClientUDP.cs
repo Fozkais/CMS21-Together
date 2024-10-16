@@ -3,107 +3,107 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Transports;
 
 public class ClientUDP
 {
-    public UdpClient socket;
-    public IPEndPoint endPoint;
+	public IPEndPoint endPoint;
+	public UdpClient socket;
 
-    public void Connect(string ip="")
-    {
-        socket = new UdpClient();
-        try
-        {
-            if(string.IsNullOrEmpty(ip))
-                endPoint = new IPEndPoint(IPAddress.Parse(ClientData.UserData.ip), MainMod.PORT);
-            else
-                endPoint = new IPEndPoint(IPAddress.Parse(ip), MainMod.PORT);
-            
-            socket.Connect(endPoint);
+	public void Connect(string ip = "")
+	{
+		socket = new UdpClient();
+		try
+		{
+			if (string.IsNullOrEmpty(ip))
+				endPoint = new IPEndPoint(IPAddress.Parse(ClientData.UserData.ip), MainMod.PORT);
+			else
+				endPoint = new IPEndPoint(IPAddress.Parse(ip), MainMod.PORT);
 
-            socket.BeginReceive(ReceiveCallback, null);
+			socket.Connect(endPoint);
 
-            using Packet packet = new Packet();
-            Send(packet);
-        }
-        catch (Exception e)
-        {
-            MelonLogger.Error($"[ClientUDP->Connect] Error on connection:{e}");
-        }
-    }
+			socket.BeginReceive(ReceiveCallback, null);
 
-    public void Send(Packet packet)
-    {
-        try
-        {
-            packet.InsertInt(ClientData.UserData.playerID);
-            if (socket != null)
-                socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
-        }
-        catch (SocketException ex)
-        {
-            MelonLogger.Error($"[ClientUDP->SendData] Error sending data to server: {ex}");
-        }
-    }
+			using var packet = new Packet();
+			Send(packet);
+		}
+		catch (Exception e)
+		{
+			MelonLogger.Error($"[ClientUDP->Connect] Error on connection:{e}");
+		}
+	}
 
-    private void ReceiveCallback(IAsyncResult result)
-    {
-        if (socket == null) return;
-        
-        try
-        {
-            IPEndPoint receivedIP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] _data = socket.EndReceive(result, ref receivedIP);
+	public void Send(Packet packet)
+	{
+		try
+		{
+			packet.InsertInt(ClientData.UserData.playerID);
+			if (socket != null)
+				socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
+		}
+		catch (SocketException ex)
+		{
+			MelonLogger.Error($"[ClientUDP->SendData] Error sending data to server: {ex}");
+		}
+	}
 
-            if (_data.Length < 4)
-            {
-                MelonLogger.Error("[ClientUDP->ReceiveCallback] Data invalid");
-                Disconnect();
-                return;
-            }
-                
-            HandleData(_data);
-            socket.BeginReceive(ReceiveCallback, null);
-        }
-        catch (SocketException ex)
-        {
-            MelonLogger.Error("[ClientUDP->ReceiveCallback] Error while receiving data from server via UDP: " + ex);
-        }
-    }
+	private void ReceiveCallback(IAsyncResult result)
+	{
+		if (socket == null) return;
 
-    private void HandleData(byte[] data)
-    {
-        using (Packet _packet = new Packet(data))
-        {
-            int packetLength = _packet.ReadInt();
-            data = _packet.ReadBytes(packetLength);
-        }
+		try
+		{
+			var receivedIP = new IPEndPoint(IPAddress.Any, 0);
+			var _data = socket.EndReceive(result, ref receivedIP);
 
-        ThreadManager.ExecuteOnMainThread<Exception>(ex =>
-        {
-            using (Packet _packet = new Packet(data))
-            {
-                int _packetId = _packet.ReadInt();
+			if (_data.Length < 4)
+			{
+				MelonLogger.Error("[ClientUDP->ReceiveCallback] Data invalid");
+				Disconnect();
+				return;
+			}
 
-                if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
-                    handler(_packet);
-                else
-                    MelonLogger.Error($"[ClientUDP->HandleData] packet with id:{_packetId} is not valid.");
-            }
-        }, null);
-    }
+			HandleData(_data);
+			socket.BeginReceive(ReceiveCallback, null);
+		}
+		catch (SocketException ex)
+		{
+			MelonLogger.Error("[ClientUDP->ReceiveCallback] Error while receiving data from server via UDP: " + ex);
+		}
+	}
 
-    public void Disconnect()
-    {
-        if (socket != null)
-        {
-            socket.Close();
-            socket = null;
-        }
-        endPoint = null;
-    }
+	private void HandleData(byte[] data)
+	{
+		using (var _packet = new Packet(data))
+		{
+			var packetLength = _packet.ReadInt();
+			data = _packet.ReadBytes(packetLength);
+		}
+
+		ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+		{
+			using (var _packet = new Packet(data))
+			{
+				var _packetId = _packet.ReadInt();
+
+				if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
+					handler(_packet);
+				else
+					MelonLogger.Error($"[ClientUDP->HandleData] packet with id:{_packetId} is not valid.");
+			}
+		}, null);
+	}
+
+	public void Disconnect()
+	{
+		if (socket != null)
+		{
+			socket.Close();
+			socket = null;
+		}
+
+		endPoint = null;
+	}
 }

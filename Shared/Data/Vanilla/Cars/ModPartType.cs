@@ -1,10 +1,9 @@
-namespace CMS21Together.Shared.Data.Vanilla.Cars
+namespace CMS21Together.Shared.Data.Vanilla.Cars;
+
+public enum ModPartType
 {
-    public enum ModPartType
-    {
-        engine,
-        suspension,
-        other,
-        driveshaft
-    }
+	engine,
+	suspension,
+	other,
+	driveshaft
 }

@@ -1,12 +1,11 @@
 using System;
 
-namespace CMS21Together.Shared.Data.Vanilla
+namespace CMS21Together.Shared.Data.Vanilla;
+
+[Serializable]
+public enum ModLifterState
 {
-    [Serializable]
-    public enum ModLifterState
-    {
-        ground=0, 
-        low=1,
-        high=2
-    }
+	ground = 0,
+	low = 1,
+	high = 2
 }

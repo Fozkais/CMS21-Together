@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.Shared.Data;
-using Il2Cpp;
 using MelonLoader;
 using UnityEngine;
 
@@ -10,127 +9,125 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 
 public static class PartsReferencer
 {
-    public static IEnumerator GetPartReferences(ModCar car)
-    {
-        while (!GameData.isReady)
-            yield return new WaitForSeconds(0.25f);
-        
-        yield return new WaitForSeconds(1f);
-        yield return new WaitForEndOfFrame();
+	public static IEnumerator GetPartReferences(ModCar car)
+	{
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.25f);
 
-        car.partInfo = new ModPartInfo();
+		yield return new WaitForSeconds(1f);
+		yield return new WaitForEndOfFrame();
 
-        IEnumerator getBodyPartCoroutine = GetBodyPartCoroutine(car);
-        IEnumerator getOtherPartCoroutine = GetOtherPartCoroutine(car);
-        IEnumerator getEnginePartCoroutine = GetEnginePartCoroutine(car);
-        IEnumerator getDriveshaftPartCoroutine = GetDriveshaftPartCoroutine(car);
-        IEnumerator getSuspensionPartCoroutine = GetSuspensionPartCoroutine(car);
-        
-        yield return getBodyPartCoroutine;
-        yield return getOtherPartCoroutine;
-        yield return getEnginePartCoroutine;
-        yield return getDriveshaftPartCoroutine;
-        yield return getSuspensionPartCoroutine;
-        
-        yield return new WaitForEndOfFrame();
+		car.partInfo = new ModPartInfo();
 
-        car.isReady = true;
-        car.isFromServer = false;
-        MelonLogger.Msg($"[PartsReferencer->GetPartReferences] {car.carID} is ready.");
-    }
+		var getBodyPartCoroutine = GetBodyPartCoroutine(car);
+		var getOtherPartCoroutine = GetOtherPartCoroutine(car);
+		var getEnginePartCoroutine = GetEnginePartCoroutine(car);
+		var getDriveshaftPartCoroutine = GetDriveshaftPartCoroutine(car);
+		var getSuspensionPartCoroutine = GetSuspensionPartCoroutine(car);
 
-    private static IEnumerator GetSuspensionPartCoroutine(ModCar car)
-    {
-        yield return new WaitForEndOfFrame();
-        
-        List<GameObject> suspensions = new List<GameObject>();
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontCenter_h);
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontLeft_h);
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontRight_h);
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearCenter_h);
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearLeft_h);
-        suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearRight_h);
+		yield return getBodyPartCoroutine;
+		yield return getOtherPartCoroutine;
+		yield return getEnginePartCoroutine;
+		yield return getDriveshaftPartCoroutine;
+		yield return getSuspensionPartCoroutine;
 
-        var reference = car.partInfo.SuspensionPartsReferences;
+		yield return new WaitForEndOfFrame();
 
-        for (int i = 0; i < suspensions.Count; i++)
-        {
-            var suspensionParts = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
+		car.isReady = true;
+		car.isFromServer = false;
+		MelonLogger.Msg($"[PartsReferencer->GetPartReferences] {car.carID} is ready.");
+	}
 
-            for (int j = 0; j < suspensionParts.Count; j++)
-            {
-                if (!reference.ContainsKey(i))
-                    reference.Add(i, new List<PartScript>());
-                if (!reference[i].Contains(suspensionParts[j]))
-                    reference[i].Add(suspensionParts[j]);
-            }
-        }
-    }
-    private static IEnumerator GetDriveshaftPartCoroutine(ModCar car)
-    {
-        yield return new WaitForEndOfFrame();
-        
-        var driveshaft = GameData.Instance.carLoaders[car.carLoaderID].ds_h;
-        if (driveshaft != null)
-        {
-            var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
+	private static IEnumerator GetSuspensionPartCoroutine(ModCar car)
+	{
+		yield return new WaitForEndOfFrame();
 
-            var reference = car.partInfo.DriveshaftPartsReferences;
+		var suspensions = new List<GameObject>();
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontCenter_h);
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontLeft_h);
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_frontRight_h);
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearCenter_h);
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearLeft_h);
+		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearRight_h);
 
-            for (int i = 0; i < driveshaftParts.Count; i++) 
-            {
-                if(!reference.ContainsKey(i))
-                    reference.Add(i, driveshaftParts[i]);
-            }
-        }
-    }
-    private static IEnumerator GetEnginePartCoroutine(ModCar car)
-    {
-        yield return new WaitForEndOfFrame();
-        
-        var engine =GameData.Instance.carLoaders[car.carLoaderID].e_engine_h;
-        var engineParts = engine.GetComponentsInChildren<PartScript>().ToList();
+		var reference = car.partInfo.SuspensionPartsReferences;
 
-        var reference = car.partInfo.EnginePartsReferences;
+		for (var i = 0; i < suspensions.Count; i++)
+		{
+			var suspensionParts = suspensions[i].GetComponentsInChildren<PartScript>().ToList();
 
-        for (int i = 0; i < engineParts.Count; i++) 
-        {
-            if(!reference.ContainsKey(i))
-                reference.Add(i,  engineParts[i]);
-        }
-    }
-    private static IEnumerator GetOtherPartCoroutine(ModCar car)
-    {
-        yield return new WaitForEndOfFrame();
+			for (var j = 0; j < suspensionParts.Count; j++)
+			{
+				if (!reference.ContainsKey(i))
+					reference.Add(i, new List<PartScript>());
+				if (!reference[i].Contains(suspensionParts[j]))
+					reference[i].Add(suspensionParts[j]);
+			}
+		}
+	}
 
-        var partList = GameData.Instance.carLoaders[car.carLoaderID].Parts;
-        var reference = car.partInfo.OtherPartsReferences;
+	private static IEnumerator GetDriveshaftPartCoroutine(ModCar car)
+	{
+		yield return new WaitForEndOfFrame();
 
-        for (int i = 0; i < partList.Count; i++)
-        {
-            var partObject = GameData.Instance.carLoaders[car.carLoaderID].Parts._items[i].p_handle;
-            var parts = partObject.GetComponentsInChildren<PartScript>().ToList();
+		var driveshaft = GameData.Instance.carLoaders[car.carLoaderID].ds_h;
+		if (driveshaft != null)
+		{
+			var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
 
-            for (int j = 0; j < parts.Count; j++)
-            {
-                if (!reference.ContainsKey(i))
-                    reference.Add(i, new List< PartScript>());
-                if (!reference[i].Contains(parts[j]))
-                    reference[i].Add(parts[j]);
-            }
-        }
-    }
-    private static IEnumerator GetBodyPartCoroutine(ModCar car)
-    {
-        yield return new WaitForEndOfFrame();
-            
-        var bodyParts = GameData.Instance.carLoaders[car.carLoaderID].carParts._items;
-        var reference = car.partInfo.BodyPartsReferences;
+			var reference = car.partInfo.DriveshaftPartsReferences;
 
-        for (int i = 0; i < bodyParts.Count; i++)
-        {
-            if(!reference.ContainsKey(i))
-                reference.Add(i,  bodyParts[i]);
-        }
-    }
+			for (var i = 0; i < driveshaftParts.Count; i++)
+				if (!reference.ContainsKey(i))
+					reference.Add(i, driveshaftParts[i]);
+		}
+	}
+
+	private static IEnumerator GetEnginePartCoroutine(ModCar car)
+	{
+		yield return new WaitForEndOfFrame();
+
+		var engine = GameData.Instance.carLoaders[car.carLoaderID].e_engine_h;
+		var engineParts = engine.GetComponentsInChildren<PartScript>().ToList();
+
+		var reference = car.partInfo.EnginePartsReferences;
+
+		for (var i = 0; i < engineParts.Count; i++)
+			if (!reference.ContainsKey(i))
+				reference.Add(i, engineParts[i]);
+	}
+
+	private static IEnumerator GetOtherPartCoroutine(ModCar car)
+	{
+		yield return new WaitForEndOfFrame();
+
+		var partList = GameData.Instance.carLoaders[car.carLoaderID].Parts;
+		var reference = car.partInfo.OtherPartsReferences;
+
+		for (var i = 0; i < partList.Count; i++)
+		{
+			var partObject = GameData.Instance.carLoaders[car.carLoaderID].Parts._items[i].p_handle;
+			var parts = partObject.GetComponentsInChildren<PartScript>().ToList();
+
+			for (var j = 0; j < parts.Count; j++)
+			{
+				if (!reference.ContainsKey(i))
+					reference.Add(i, new List<PartScript>());
+				if (!reference[i].Contains(parts[j]))
+					reference[i].Add(parts[j]);
+			}
+		}
+	}
+
+	private static IEnumerator GetBodyPartCoroutine(ModCar car)
+	{
+		yield return new WaitForEndOfFrame();
+
+		var bodyParts = GameData.Instance.carLoaders[car.carLoaderID].carParts._items;
+		var reference = car.partInfo.BodyPartsReferences;
+
+		for (var i = 0; i < bodyParts.Count; i++)
+			if (!reference.ContainsKey(i))
+				reference.Add(i, bodyParts[i]);
+	}
 }

@@ -5,7 +5,7 @@ namespace CMS21Together.Shared.Data;
 [Serializable]
 public enum NetworkType
 {
-    TCP,
-    UDP,
-    Steam
+	TCP,
+	UDP,
+	Steam
 }

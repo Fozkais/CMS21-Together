@@ -1,32 +1,30 @@
 using System;
-using Il2Cpp;
 
-namespace CMS21Together.Shared.Data.Vanilla.Cars
+namespace CMS21Together.Shared.Data.Vanilla.Cars;
+
+[Serializable]
+public struct ModWheelsAlignmentData
 {
-    [Serializable]
-    public struct ModWheelsAlignmentData
-    {
-        public float FL;
-        public float FR;
-        public float RL;
-        public float RR;
+	public float FL;
+	public float FR;
+	public float RL;
+	public float RR;
 
-        public ModWheelsAlignmentData(WheelsAlignmentData data)
-        {
-            FL = data.FL;
-            FR = data.FR;
-            RL = data.RL;
-            RR = data.RR;
-        }
-        
-        public WheelsAlignmentData ToGame(ModWheelsAlignmentData _data)
-        {
-            WheelsAlignmentData data = new WheelsAlignmentData();
-            data.FL = _data.FL;
-            data.FR = _data.FR;
-            data.RL = _data.RL;
-            data.RR = _data.RR;
-            return data;
-        }
-    }
+	public ModWheelsAlignmentData(WheelsAlignmentData data)
+	{
+		FL = data.FL;
+		FR = data.FR;
+		RL = data.RL;
+		RR = data.RR;
+	}
+
+	public WheelsAlignmentData ToGame(ModWheelsAlignmentData _data)
+	{
+		var data = new WheelsAlignmentData();
+		data.FL = _data.FL;
+		data.FR = _data.FR;
+		data.RL = _data.RL;
+		data.RR = _data.RR;
+		return data;
+	}
 }

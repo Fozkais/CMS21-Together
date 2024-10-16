@@ -7,6 +7,7 @@ public static class SteamLobby
 {
 	private static Callback<LobbyCreated_t> c_OnLobbyCreated;
 	public static string lobbyID = "";
+
 	public static void CreateLobby(ELobbyType lobbyType)
 	{
 		SteamMatchmaking.CreateLobby(lobbyType, MainMod.MAX_PLAYER);
@@ -22,6 +23,8 @@ public static class SteamLobby
 			lobbyID = result.m_ulSteamIDLobby.ToString();
 		}
 		else
+		{
 			MelonLogger.Msg($"Lobby Error ! {result.m_eResult}");
+		}
 	}
 }

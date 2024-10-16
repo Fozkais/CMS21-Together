@@ -1,30 +1,30 @@
 using System;
-using Il2Cpp;
 
 namespace CMS21Together.Shared.Data.Vanilla.Cars;
 
 [Serializable]
 public class ModMountObjectData
 {
-    public string ParentPath;
+	public string ParentPath;
 
-    public float[] Condition;
+	public float[] Condition;
 
-    public bool[] IsStuck;
-    public ModMountObjectData(MountObjectData data)
-    {
-        ParentPath = data.ParentPath;
-        Condition = data.Condition;
-        IsStuck = data.IsStuck;
-    }
+	public bool[] IsStuck;
 
-    public MountObjectData ToGame()
-    {
-        MountObjectData data = new MountObjectData();
-        data.Condition = Condition;
-        data.IsStuck = IsStuck;
-        data.ParentPath = ParentPath;
+	public ModMountObjectData(MountObjectData data)
+	{
+		ParentPath = data.ParentPath;
+		Condition = data.Condition;
+		IsStuck = data.IsStuck;
+	}
 
-        return data;
-    }
+	public MountObjectData ToGame()
+	{
+		var data = new MountObjectData();
+		data.Condition = Condition;
+		data.IsStuck = IsStuck;
+		data.ParentPath = ParentPath;
+
+		return data;
+	}
 }
