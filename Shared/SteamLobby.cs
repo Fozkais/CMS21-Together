@@ -1,11 +1,11 @@
 ﻿using MelonLoader;
-using Steamworks;
+//using Steamworks;
 
 namespace CMS21Together.Shared;
 
 public static class SteamLobby
 {
-	private static Callback<LobbyCreated_t> c_OnLobbyCreated;
+	/*private static Callback<LobbyCreated_t> c_OnLobbyCreated;
 	public static string lobbyID = "";
 
 	public static void CreateLobby(ELobbyType lobbyType)
@@ -26,5 +26,5 @@ public static class SteamLobby
 		{
 			MelonLogger.Msg($"Lobby Error ! {result.m_eResult}");
 		}
-	}
+	}*/
 }

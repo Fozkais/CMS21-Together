@@ -198,12 +198,12 @@ public static class CustomUIBuilder
 			var t4_size = new Vector2(600, 100);
 			CreateText(t4_pos, t4_size, $"Save Name: {SavesManager.currentSave.Name}", 12, lobbyHeaderObject.transform);
 
-			if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
+		/*	if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
 			{
 				var t5_pos = new Vector2(905, 30);
 				var t5_size = new Vector2(400, 100);
 				CreateText(t5_pos, t5_size, $"Server ID: {SteamLobby.lobbyID}", 14, lobbyHeaderObject.transform);
-			}
+			}*/
 		}
 		else
 		{
