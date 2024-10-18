@@ -24,11 +24,6 @@ namespace CMS21Together
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
 		public bool isModInitialized;
 
-		public override void OnEarlyInitializeMelon()
-		{
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ApiCalls.CurrentDomain_AssemblyResolve);
-		}
-
 		public override void OnLateInitializeMelon()
 		{
 			GameObject modObject = new GameObject("TogetherMod");

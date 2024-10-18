@@ -2,18 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.Shared;
 
 public static class ApiCalls
 {
+
+	private static Assembly apiAssembly = LoadAssembly();
 	public static Dictionary<string, bool> API_M3()
 	{
-		var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
-			.FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = loadedAssembly.GetType(className);
+		var myClassType = apiAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod3", BindingFlags.Static | BindingFlags.Public);
@@ -25,11 +27,9 @@ public static class ApiCalls
 
 	public static void API_M2(object c)
 	{
-		var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
-			.FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = loadedAssembly.GetType(className);
+		var myClassType = apiAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod2", BindingFlags.Static | BindingFlags.Public);
@@ -44,11 +44,9 @@ public static class ApiCalls
 
 	public static Dictionary<string, bool> API_M1(object c, object h)
 	{
-		var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies()
-			.FirstOrDefault(asm => asm.GetName().Name == "TogetherModAPI");
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = loadedAssembly.GetType(className);
+		var myClassType = apiAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod1", BindingFlags.Static | BindingFlags.Public);
@@ -64,10 +62,15 @@ public static class ApiCalls
 		return null;
 	}
 
-	public static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+	public static Assembly LoadAssembly()
 	{
 		var stream = DataHelper.LoadContent("CMS21Together.Assets.TogetherModAPI.dll");
 
+		if (stream == null)
+		{
+			MelonLogger.Msg("Failed to load resource stream for 'TogetherModAPI.dll'.");
+		}
+		
 		var assemblyData = new byte[stream.Length];
 		stream.Read(assemblyData, 0, assemblyData.Length);
 
