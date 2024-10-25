@@ -18,7 +18,6 @@ public static class PartsReferencer
 		yield return new WaitForEndOfFrame();
 
 		car.partInfo = new ModPartInfo();
-
 		var getBodyPartCoroutine = GetBodyPartCoroutine(car);
 		var getOtherPartCoroutine = GetOtherPartCoroutine(car);
 		var getEnginePartCoroutine = GetEnginePartCoroutine(car);
@@ -32,7 +31,6 @@ public static class PartsReferencer
 		yield return getSuspensionPartCoroutine;
 
 		yield return new WaitForEndOfFrame();
-
 		car.isReady = true;
 		car.isFromServer = false;
 		MelonLogger.Msg($"[PartsReferencer->GetPartReferences] {car.carID} is ready.");
@@ -106,7 +104,7 @@ public static class PartsReferencer
 
 		for (var i = 0; i < partList.Count; i++)
 		{
-			var partObject = GameData.Instance.carLoaders[car.carLoaderID].Parts._items[i].p_handle;
+			var partObject = GameData.Instance.carLoaders[car.carLoaderID].Parts.ToArray()[i].p_handle;
 			var parts = partObject.GetComponentsInChildren<PartScript>().ToList();
 
 			for (var j = 0; j < parts.Count; j++)
@@ -123,7 +121,7 @@ public static class PartsReferencer
 	{
 		yield return new WaitForEndOfFrame();
 
-		var bodyParts = GameData.Instance.carLoaders[car.carLoaderID].carParts._items;
+		var bodyParts = GameData.Instance.carLoaders[car.carLoaderID].carParts.ToArray();
 		var reference = car.partInfo.BodyPartsReferences;
 
 		for (var i = 0; i < bodyParts.Count; i++)
