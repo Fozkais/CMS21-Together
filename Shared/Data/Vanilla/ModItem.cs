@@ -1,6 +1,7 @@
 using System;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.Shared.Data.Vanilla;
 
@@ -76,7 +77,9 @@ public class ModItem
 	{
 		var original = new Item();
 
-		original.Color = new CustomColor(ModColor.ToColor(item.Color));
+		Color convertedColor = ModColor.ToColor(item.Color);
+		original.Color = new CustomColor(convertedColor);
+		original.TintColor = new CustomColor(convertedColor); 
 		original.Condition = item.Condition;
 		original.Dent = item.Dent;
 		//this.GearboxData = item.GearboxData; TODO: Handle class
@@ -93,7 +96,6 @@ public class ModItem
 		original.PaintType = item.PaintType;
 		original.Quality = item.Quality;
 		original.RepairAmount = item.RepairAmount;
-		original.TintColor = new CustomColor(ModColor.ToColor(item.Color));
 		//original.tuningData = item.TuningData.ToGame();
 		original.WashFactor = item.WashFactor;
 		original.WheelData = new ModWheelData().ToGame(item.WheelData);

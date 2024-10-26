@@ -265,7 +265,7 @@ public static class ClientHandle
 	public static void JobPacket(Packet packet)
 	{
 		var job = packet.Read<ModJob>();
-
+		
 		MelonLogger.Msg("[ClientHandle->JobPacket] Received a job.");
 		MelonCoroutines.Start(JobManager.AddJob(job));
 	}
@@ -274,7 +274,7 @@ public static class ClientHandle
 	{
 		var jobID = packet.ReadInt();
 		var takeJob = packet.Read<bool>();
-
+		
 		MelonCoroutines.Start(JobManager.JobAction(jobID, takeJob));
 	}
 

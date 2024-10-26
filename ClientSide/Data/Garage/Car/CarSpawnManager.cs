@@ -35,11 +35,9 @@ public static class CarSpawnManager
 		yield return new WaitForEndOfFrame();
 
 		if (ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
-
 		yield return YieldInstructions.WaitForEndOfFrame;
 
 		while (!carLoader.IsCarLoaded()) yield return YieldInstructions.WaitForEndOfFrame;
-
 		yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
 

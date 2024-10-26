@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using CMS.Extensions;
+using CMS.FileSupport.INI;
 using CMS.UI;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
@@ -14,6 +15,23 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 [HarmonyPatch]
 public static class JobHooks
 {
+	
+	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Load))]
+	[HarmonyPostfix]
+	public static void LoadHook(OrderGenerator __instance)
+	{
+		if (!Client.Instance.isConnected) return;
+		if (__instance.jobs.Count <= 0) return;
+		
+		if (Server.Instance.isRunning)
+		{
+			foreach (Job job in __instance.jobs.ToArray())
+			{
+				MelonLogger.Msg($"[Hook->LoadHook] Sent new job.");
+				ClientSend.JobPacket(new ModJob(job));
+			}
+		}
+	}
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
 	[HarmonyPrefix]
 	public static bool PreGenerateMissionHook(int id, bool forTutorial)
@@ -31,16 +49,19 @@ public static class JobHooks
 	public static void GenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-
+		if (__instance.jobs.Count <= 0) return;
+		
 		if (Server.Instance.isRunning)
 		{
+			
 			MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
-			var newJob = __instance.jobs._items[__instance.jobs.Count - 1];
+			var enumerator = __instance.jobs.ToArray();
+			var newJob = enumerator[__instance.jobs.Count - 1];
 			var job = new ModJob(newJob);
 			ClientSend.JobPacket(job);
 		}
 	}
-
+	
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
 	[HarmonyPrefix]
 	public static bool PreGenerateNewJobHook()
@@ -54,13 +75,14 @@ public static class JobHooks
 
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
 	[HarmonyPostfix]
-	public static void GenerateNewJobHook()
+	public static void GenerateNewJobHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-
+		
+		if (__instance.jobs.Count <= 0) return;
 		MelonLogger.Msg("[Hook->GenerateNewJobHook] Generated new job");
-		var generator = GameData.Instance.orderGenerator;
-		var newJob = generator.jobs._items[generator.jobs.Count - 1];
+		var enumerator = __instance.jobs.ToArray();
+		var newJob = enumerator[__instance.jobs.Count - 1];
 		var job = new ModJob(newJob);
 		ClientSend.JobPacket(job);
 	}
@@ -148,6 +170,18 @@ public static class JobHooks
 		}
 
 		WindowManager.Instance.Hide(WindowID.CarInfo, true); // hide info panel
+		
+		MelonLogger.Msg("- Job Info before sending it to Host -");
+		MelonLogger.Msg($"ID:{job.id}");
+		MelonLogger.Msg($"IsMission:{job.IsMission}");
+		MelonLogger.Msg($"isCompleted:{job.IsCompleted}");
+		MelonLogger.Msg($"Mileage:{job.Mileage}");
+		MelonLogger.Msg($"forXP:{job.forXP}");
+		MelonLogger.Msg($"jobBonus:{job.JobBonus}");
+		MelonLogger.Msg($"moneySpent:{job.MoneySpent}");
+		MelonLogger.Msg($"BonusEXP:{job.BonusToExp}");
+		MelonLogger.Msg($"BonusMoney:{job.BonusToMoney}");
+		MelonLogger.Msg($"taskBonus:{job.TaskBonus}");
 
 		// Only accept job end if is valid
 		var modJob = JobManager.selectedJobs.First(j => j.id == job.id);

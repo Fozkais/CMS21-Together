@@ -125,7 +125,7 @@ public static class PartsUpdater
 		for (var index = 0; index < part.unmountWith.Count; index++)
 		{
 			var partScript = part.unmountWith[index];
-			UpdatePartScript(partScript, reference.unmountWith._items[index], carLoaderID);
+			UpdatePartScript(partScript, reference.unmountWith.ToArray()[index], carLoaderID);
 		}
 	}
 

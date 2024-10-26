@@ -180,7 +180,6 @@ public static class ServerHandle
 	public static void LoadJobCarPacket(int fromClient, Packet packet)
 	{
 		var carData = packet.Read<ModCar>();
-
 		ServerData.Instance.SetLoadJobCar(carData);
 	}
 
@@ -241,6 +240,7 @@ public static class ServerHandle
 	{
 		var job = packet.Read<ModJob>();
 
+		MelonLogger.Msg("SV: Received JobPacket!");
 		ServerData.Instance.AddJob(job);
 		ServerSend.JobPacket(fromClient, job);
 	}
@@ -250,6 +250,7 @@ public static class ServerHandle
 		var jobID = packet.ReadInt();
 		var takeJob = packet.Read<bool>();
 
+		MelonLogger.Msg("SV: Received JobAction!");
 		ServerData.Instance.RemoveJob(jobID);
 		ServerSend.JobActionPacket(fromClient, jobID, takeJob);
 	}
@@ -258,7 +259,8 @@ public static class ServerHandle
 	{
 		var job = packet.Read<ModJob>();
 		var action = packet.Read<bool>();
-
+		
+		MelonLogger.Msg("cl: Received SelectedJobPacket!");
 		ServerData.Instance.UpdateSelectedJobs(job, action);
 		ServerSend.SelectedJobPacket(fromClient, job, action);
 	}

@@ -22,12 +22,12 @@ public static class JobManager
 		if (GameData.Instance == null || GameData.Instance.orderGenerator == null) return;
 		if (GameData.Instance.orderGenerator.selectedJobs == null) return;
 
-		for (var i = 0; i < GameData.Instance.orderGenerator.selectedJobs._items.Count; i++)
+		for (var i = 0; i < GameData.Instance.orderGenerator.selectedJobs.Count; i++)
 		{
-			if (i >= GameData.Instance.orderGenerator.selectedJobs._items.Length)
+			if (i >= GameData.Instance.orderGenerator.selectedJobs.Count)
 				break;
 			
-			var job = GameData.Instance.orderGenerator.selectedJobs._items[i];
+			var job = GameData.Instance.orderGenerator.selectedJobs.ToArray()[i];
 			if (job != null && selectedJobs.All(j => j != null && job.id != j.id))
 			{
 				var newJob = new ModJob(job);
@@ -40,7 +40,7 @@ public static class JobManager
 		{
 			var job = selectedJobs[index];
 			if (GameData.Instance.orderGenerator.selectedJobs == null ||
-			    GameData.Instance.orderGenerator.selectedJobs._items.All(j => j != null && job.id != j.id))
+			    GameData.Instance.orderGenerator.selectedJobs.ToArray().All(j => j != null && job.id != j.id))
 			{
 				ClientSend.SelectedJobPacket(job, false);
 				selectedJobs.Remove(job);
@@ -68,7 +68,7 @@ public static class JobManager
 			{
 				var gameJobs = GameData.Instance.orderGenerator.selectedJobs;
 				selectedJobs.Remove(selectedJobs.First(j => j.id == modjob.id));
-				gameJobs.Remove(gameJobs._items.First(j => j.id == modjob.id));
+				gameJobs.Remove(gameJobs.ToArray().First(j => j.id == modjob.id));
 			}
 		}
 	}
@@ -110,6 +110,8 @@ public static class JobManager
 				MainMod.StartCoroutine(GameData.Instance.orderGenerator.TakeMission(job.id, false));
 			else
 				MainMod.StartCoroutine(GameData.Instance.orderGenerator.TakeJob(job.id, false));
+			
+			MelonLogger.Msg("CL: Took Job!");
 		}
 		else
 		{
@@ -146,9 +148,22 @@ public static class JobManager
 		yield return new WaitForEndOfFrame();
 
 		MelonLogger.Msg("[JobManager] -> OnJobComplete");
+		
 
 		var script = GameScript.Get();
-		var _job = Singleton<GameManager>.Instance.OrderGenerator.selectedJobs._items.First(j => j.id == job.id);
+		var _job = Singleton<GameManager>.Instance.OrderGenerator.selectedJobs.ToArray().First(j => j.id == job.id);
+		
+		MelonLogger.Msg("- Job Info received by Host -");
+		MelonLogger.Msg($"ID:{_job.id}");
+		MelonLogger.Msg($"IsMission:{_job.IsMission}");
+		MelonLogger.Msg($"isCompleted:{_job.IsCompleted}");
+		MelonLogger.Msg($"Mileage:{_job.Mileage}");
+		MelonLogger.Msg($"forXP:{_job.forXP}");
+		MelonLogger.Msg($"jobBonus:{_job.JobBonus}");
+		MelonLogger.Msg($"moneySpent:{_job.MoneySpent}");
+		MelonLogger.Msg($"BonusEXP:{_job.BonusToExp}");
+		MelonLogger.Msg($"BonusMoney:{_job.BonusToMoney}");
+		MelonLogger.Msg($"taskBonus:{_job.TaskBonus}");
 
 		var flag = script.CurrentSceneType == SceneType.Tutorial;
 		if (!flag && _job.IsCompleted) Singleton<GameManager>.Instance.Inventory.TryAddSpecialCase(_job.IsMission);
