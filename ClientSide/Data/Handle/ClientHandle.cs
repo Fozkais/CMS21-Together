@@ -151,31 +151,38 @@ public static class ClientHandle
 	{
 		GameData.Instance.tireChanger.ResetActions();
 	}
-
-	public static void SetWheelBalancerPacket(Packet packet)
-	{
-		var item = packet.Read<ModGroupItem>();
-
-		/// WheelBalancerLogic.listen = false;
-		GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(item.ToGame(), true);
-	}
-
 	public static void WheelBalancePacket(Packet packet)
 	{
-		var item = packet.Read<ModGroupItem>();
+		if(SceneManager.CurrentScene() != GameScene.garage) return;
+                
+		ModWheelBalancerActionType aType = packet.Read<ModWheelBalancerActionType>();
+		ModGroupItem _item = null;
+		if(aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
+			_item = packet.Read<ModGroupItem>();
 
-		//  WheelBalancerLogic.listen = false;
-		GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(item.ToGame(), true);
+		if (aType == ModWheelBalancerActionType.remove)
+		{
+			GameData.Instance.wheelBalancer.ResetActions();
+			GameData.Instance.wheelBalancer.Clear();
+		}
+		else
+		{
+			WheelBalancer.listen = false;
+			MelonLogger.Msg("CL: Received WheelBalance!");
+			GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(_item!.ToGame(_item), true);
+		}
 	}
-
-	public static void WheelRemovePacket(Packet packet)
+	
+	public static void OilBinPacket(Packet _packet)
 	{
-		GameData.Instance.wheelBalancer.ResetActions();
+		int carLoaderID = _packet.ReadInt();
 
-		// WheelBalancerLogic.listen = false;
-		GameData.Instance.wheelBalancer.Clear();
+		if(SceneManager.CurrentScene() != GameScene.garage) return;
+                
+		OilBin.listen = false;
+		GameData.Instance.carLoaders[carLoaderID].UseOilbin();
 	}
-
+	
 	public static void SetSpringClampPacket(Packet packet)
 	{
 		var item = packet.Read<ModGroupItem>();

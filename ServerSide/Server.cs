@@ -170,9 +170,7 @@ public class Server
 			{ (int)PacketTypes.clearSpringClamp, ServerHandle.SpringClampClearPacket },
 			{ (int)PacketTypes.setTireChanger, ServerHandle.SetTireChangerPacket },
 			{ (int)PacketTypes.clearTireChanger, ServerHandle.ClearTireChangerPacket },
-			{ (int)PacketTypes.setWheelBalancer, ServerHandle.SetWheelBalancerPacket },
-			{ (int)PacketTypes.balanceWheel, ServerHandle.WheelBalancePacket },
-			{ (int)PacketTypes.removeTireWB, ServerHandle.WheelRemovePacket },
+			{ (int)PacketTypes.wheelBalance, ServerHandle.WheelBalancePacket },
 			{ (int)PacketTypes.toolMove, ServerHandle.ToolsMovePacket },
 
 			{ (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },

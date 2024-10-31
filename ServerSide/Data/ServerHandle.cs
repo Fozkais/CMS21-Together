@@ -325,26 +325,26 @@ public static class ServerHandle
 		ServerData.Instance.SetTireChangerState(true, null);
 		ServerSend.ClearTireChangerPacket(fromClient);
 	}
-
-	public static void SetWheelBalancerPacket(int fromClient, Packet packet)
+	
+	public static void OilBin(int _fromclient, Packet _packet)
 	{
-		var item = packet.Read<ModGroupItem>();
+		int loaderID = _packet.ReadInt();
 
-		ServerData.Instance.SetWheelBalancerState(item);
-		ServerSend.SetWheelBalancerPacket(fromClient, item);
+		ServerSend.SendOilBin(_fromclient, loaderID);
 	}
 
 	public static void WheelBalancePacket(int fromClient, Packet packet)
 	{
-		var item = packet.Read<ModGroupItem>();
-
-		ServerData.Instance.SetWheelBalancerState(item);
-		ServerSend.WheelBalancePacket(fromClient, item);
+		ModWheelBalancerActionType aType = packet.Read<ModWheelBalancerActionType>();
+		ModGroupItem item;
+                
+		if (aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
+		{
+			item = packet.Read<ModGroupItem>();
+			ServerSend.WheelBalancerPacket(fromClient, aType, item);
+			return;
+		}
+		ServerSend.WheelBalancerPacket(fromClient, aType);
 	}
-
-	public static void WheelRemovePacket(int fromClient, Packet packet)
-	{
-		ServerData.Instance.SetWheelBalancerState(null);
-		ServerSend.WheelRemovePacket(fromClient);
-	}
+	
 }

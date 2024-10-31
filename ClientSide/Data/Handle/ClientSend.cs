@@ -287,30 +287,21 @@ public class ClientSend
 		}
 	}
 
-	public static void SetWheelBalancerPacket(GroupItem groupItem)
+	public static void SendOilBin(int carLoaderID)
 	{
-		using (var packet = new Packet((int)PacketTypes.setWheelBalancer))
+		using (var packet = new Packet((int)PacketTypes.oilBinUse))
 		{
-			packet.Write(new ModGroupItem(groupItem));
-
+			packet.Write(carLoaderID);
 			SendData(packet);
 		}
 	}
 
-	public static void WheelBalancePacket(GroupItem wheel)
+	public static void SendWheelBalancer(int action, GroupItem items)
 	{
-		using (var packet = new Packet((int)PacketTypes.balanceWheel))
+		using (var packet = new Packet((int)PacketTypes.wheelBalance))
 		{
-			packet.Write(new ModGroupItem(wheel));
-
-			SendData(packet);
-		}
-	}
-
-	public static void WheelRemovePacket()
-	{
-		using (var packet = new Packet((int)PacketTypes.removeTireWB))
-		{
+			packet.Write(action);
+			if (items != null) packet.Write(new ModGroupItem(items));
 			SendData(packet);
 		}
 	}

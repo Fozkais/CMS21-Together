@@ -31,8 +31,7 @@ public enum PacketTypes
 	clearSpringClamp,
 	setTireChanger,
 	clearTireChanger,
-	setWheelBalancer,
-	balanceWheel,
-	removeTireWB,
-	endJob
+	wheelBalance,
+	endJob,
+	oilBinUse
 }

@@ -57,9 +57,11 @@
         <Compile Include="ClientSide\Data\Garage\Car\PartsUpdater.cs"/>
         <Compile Include="ClientSide\Data\Garage\Car\PartUpdateHooks.cs"/>
         <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Tools\OilBin.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\TireChangerLogic.cs"/>
         <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
         <Compile Include="ClientSide\Data\Player\Inventory.cs"/>

@@ -92,9 +92,8 @@ public class Client
 			{ (int)PacketTypes.clearSpringClamp, ClientHandle.SpringClampClearPacket },
 			{ (int)PacketTypes.setTireChanger, ClientHandle.SetTireChangerPacket },
 			{ (int)PacketTypes.clearTireChanger, ClientHandle.ClearTireChangerPacket },
-			{ (int)PacketTypes.setWheelBalancer, ClientHandle.SetWheelBalancerPacket },
-			{ (int)PacketTypes.balanceWheel, ClientHandle.WheelBalancePacket },
-			{ (int)PacketTypes.removeTireWB, ClientHandle.WheelRemovePacket },
+			{ (int)PacketTypes.wheelBalance, ClientHandle.WheelBalancePacket },
+			{ (int)PacketTypes.oilBinUse, ClientHandle.OilBinPacket },
 			{ (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
 
 			{ (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },

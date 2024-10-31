@@ -263,31 +263,15 @@ public static class ServerSend
 		}
 	}
 
-	public static void SetWheelBalancerPacket(int fromClient, ModGroupItem item)
-	{
-		using (var packet = new Packet((int)PacketTypes.setWheelBalancer))
-		{
-			packet.Write(item);
-			SendDataToAll(fromClient, packet);
-		}
-	}
-
 	public static void WheelBalancePacket(int fromClient, ModGroupItem item)
 	{
-		using (var packet = new Packet((int)PacketTypes.balanceWheel))
+		using (var packet = new Packet((int)PacketTypes.wheelBalance))
 		{
 			packet.Write(item);
 			SendDataToAll(fromClient, packet);
 		}
 	}
-
-	public static void WheelRemovePacket(int fromClient)
-	{
-		using (var packet = new Packet((int)PacketTypes.removeTireWB))
-		{
-			SendDataToAll(fromClient, packet);
-		}
-	}
+	
 
 	#region Functions
 
@@ -373,4 +357,25 @@ public static class ServerSend
 	}
 
 	#endregion
+
+	public static void WheelBalancerPacket(int fromClient, ModWheelBalancerActionType aType, ModGroupItem item=null)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.wheelBalance))
+		{
+			_packet.Write(aType);
+			if(item != null)   {_packet.Write(item);}
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void SendOilBin(int fromClient, int carLoaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.oilBinUse))
+		{
+			_packet.Write(carLoaderID);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }
