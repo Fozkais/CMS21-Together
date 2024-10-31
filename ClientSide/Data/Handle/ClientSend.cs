@@ -1,4 +1,5 @@
-﻿using CMS21Together.ClientSide.Data.Player;
+﻿using System.Collections.Generic;
+using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
@@ -26,6 +27,7 @@ public class ClientSend
 			packet.Write(ContentManager.Instance.ownedContents);
 			packet.Write(ContentManager.Instance.gameVersion);
 			packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
+			packet.Write(ClientData.UserData.playerGUID);
 
 			SendData(packet);
 		}
@@ -302,6 +304,18 @@ public class ClientSend
 		{
 			packet.Write(action);
 			if (items != null) packet.Write(new ModGroupItem(items));
+			SendData(packet);
+		}
+	}
+
+	public static void SkillChangePacket(string id, List<bool> skill)
+	{
+		using (var packet = new Packet((int)PacketTypes.skillChange))
+		{
+			packet.Write(ClientData.UserData.playerGUID);
+			packet.Write(id);
+			packet.Write(skill);
+			
 			SendData(packet);
 		}
 	}

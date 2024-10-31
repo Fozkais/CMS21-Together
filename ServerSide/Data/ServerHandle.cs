@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
@@ -9,6 +10,7 @@ using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -21,6 +23,7 @@ public static class ServerHandle
 		var content = packet.Read<ReadOnlyDictionary<string, bool>>();
 		var gameVersion = packet.Read<string>();
 		var modVersion = packet.Read<string>();
+		string playerID = packet.Read<string>();
 
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
 
@@ -45,8 +48,16 @@ public static class ServerHandle
 			return;
 		}
 
+		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(s => s.id == playerID))
+			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(s => s.id == playerID));
+		else
+		{
+			SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1));
+			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+		}
+		
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] {username} connected successfully.");
-		Server.Instance.clients[fromClient].SendToLobby(username);
+		Server.Instance.clients[fromClient].SendToLobby(username, playerID);
 	}
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
@@ -63,6 +74,15 @@ public static class ServerHandle
 		ServerData.Instance.connectedClients[id].isReady = ready;
 
 		ServerSend.ReadyPacket(fromClient, ready, id);
+	}
+	
+	public static void SkillChangePacket(int fromClient, Packet packet)
+	{
+		string playerID = packet.Read<string>();
+		string id = packet.Read<string>();
+		List<bool> skill = packet.Read<List<bool>>();
+
+		SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
 	}
 
 	public static void PositionPacket(int fromClient, Packet packet)
@@ -335,16 +355,16 @@ public static class ServerHandle
 
 	public static void WheelBalancePacket(int fromClient, Packet packet)
 	{
-		ModWheelBalancerActionType aType = packet.Read<ModWheelBalancerActionType>();
+		int aType = packet.Read<int>();
 		ModGroupItem item;
                 
-		if (aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
+		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.start ||(ModWheelBalancerActionType)aType == ModWheelBalancerActionType.setGroup)
 		{
 			item = packet.Read<ModGroupItem>();
-			ServerSend.WheelBalancerPacket(fromClient, aType, item);
+			ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType, item);
 			return;
 		}
-		ServerSend.WheelBalancerPacket(fromClient, aType);
+		ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType);
 	}
 	
 }

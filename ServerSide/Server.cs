@@ -164,6 +164,8 @@ public class Server
 			{ (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
 
 			{ (int)PacketTypes.stat, ServerHandle.StatPacket },
+			{ (int)PacketTypes.skillChange, ServerHandle.SkillChangePacket },
+			{ (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket },
 
 			{ (int)PacketTypes.lifter, ServerHandle.LifterPacket },
 			{ (int)PacketTypes.setSpringClamp, ServerHandle.SetSpringClampPacket },
@@ -181,7 +183,6 @@ public class Server
 			{ (int)PacketTypes.deleteCar, ServerHandle.DeleteCarPacket },
 			{ (int)PacketTypes.carPosition, ServerHandle.CarPositionPacket },
 
-			{ (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket },
 			{ (int)PacketTypes.newJob, ServerHandle.JobPacket },
 			{ (int)PacketTypes.jobAction, ServerHandle.JobActionPacket },
 			{ (int)PacketTypes.selectedJob, ServerHandle.SelectedJobPacket },

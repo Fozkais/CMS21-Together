@@ -190,6 +190,9 @@ public static class UI_Saves
 				var inputField = CustomUIBuilder.tmpWindow2[_index].GetComponentInChildren<InputField>();
 				var username = inputField.text;
 
+				if (ClientData.UserData.username != null)
+					inputField.SetText(ClientData.UserData.username);
+				
 				ClientData.UserData.username = username;
 				TogetherModManager.SavePreferences();
 

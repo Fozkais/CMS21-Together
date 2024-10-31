@@ -48,6 +48,7 @@
         <Compile Include="ClientSide\Data\Garage\Campaign\GarageUpgradeManager.cs"/>
         <Compile Include="ClientSide\Data\Garage\Campaign\JobHooks.cs"/>
         <Compile Include="ClientSide\Data\Garage\Campaign\JobManager.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Campaign\SkillUpgradeHook.cs" />
         <Compile Include="ClientSide\Data\Garage\Car\CarSpawnManager.cs"/>
         <Compile Include="ClientSide\Data\Garage\Car\CarSpawnHooks.cs"/>
         <Compile Include="ClientSide\Data\Garage\Car\CarSyncHooks.cs"/>
@@ -94,6 +95,7 @@
         <Compile Include="Shared\Data\ModColor.cs"/>
         <Compile Include="Shared\Data\ModSaveData.cs"/>
         <Compile Include="Shared\Data\NetworkType.cs"/>
+        <Compile Include="Shared\Data\PlayerInfo.cs" />
         <Compile Include="Shared\Data\QuaternionSerializable.cs"/>
         <Compile Include="Shared\Data\UserData.cs"/>
         <Compile Include="Shared\Data\Vanilla\Cars\ModBodyPartData.cs"/>

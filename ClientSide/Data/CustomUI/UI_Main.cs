@@ -146,6 +146,12 @@ public class UI_Main
 			var _index = CustomUIBuilder.tmpWindow.Count - 1;
 			var inputFiel2 = CustomUIBuilder.tmpWindow[_index].GetComponentInChildren<InputField>();
 			var inputFiel1 = CustomUIBuilder.tmpWindow[_index - 1].GetComponentInChildren<InputField>();
+			
+			if (ClientData.UserData.username != null)
+				inputFiel2.SetText(ClientData.UserData.username);
+			if (ClientData.UserData.ip != null)
+				inputFiel1.SetText(ClientData.UserData.ip);
+			
 			var username = inputFiel2.text;
 			var address = inputFiel1.text;
 
@@ -153,7 +159,7 @@ public class UI_Main
 			ClientData.UserData.ip = address;
 			TogetherModManager.SavePreferences();
 
-			if (!string.IsNullOrEmpty(ClientData.UserData.username))
+			if (!string.IsNullOrEmpty(ClientData.UserData.username) && !string.IsNullOrEmpty(ClientData.UserData.ip))
 			{
 				Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType);
 				Application.runInBackground = true;

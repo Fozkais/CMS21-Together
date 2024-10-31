@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 namespace CMS21Together.Shared.Data;
 
@@ -9,6 +11,7 @@ public class ModSaveData
 	public int saveIndex;
 	public Gamemode selectedGamemode = Gamemode.Sandbox;
 	public bool alreadyLoaded;
+	public List<PlayerInfo> PlayerInfos = new List<PlayerInfo>();
 
 	public ModSaveData(string saveName, Gamemode gamemode, int index, bool loaded)
 	{

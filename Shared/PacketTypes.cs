@@ -8,6 +8,7 @@ public enum PacketTypes
 	readyState,
 	start,
 
+	spawn,
 	position,
 	rotation,
 	item,
@@ -33,5 +34,6 @@ public enum PacketTypes
 	clearTireChanger,
 	wheelBalance,
 	endJob,
-	oilBinUse
+	oilBinUse,
+	skillChange
 }

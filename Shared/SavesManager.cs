@@ -24,6 +24,7 @@ public static class SavesManager
 	public static Dictionary<int, ModSaveData> ModSaves = new();
 	public static Il2CppReferenceArray<ProfileData> profileData = new(MainMod.MAX_SAVE_COUNT + 1);
 	public static ProfileData currentSave;
+	public static int currentSaveIndex;
 
 	public static void Initialize()
 	{
@@ -129,6 +130,7 @@ public static class SavesManager
 			name = saveData.Name;
 		}
 
+		currentSaveIndex = index;
 		var level = GetDifficultyFromGamemode(saveData.selectedGamemode);
 
 		gameManager.ProfileManager.selectedProfile = index;

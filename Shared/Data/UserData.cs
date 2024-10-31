@@ -13,6 +13,7 @@ public class UserData
 	public string username;
 	public string ip;
 	public string lobbyID;
+	public string playerGUID;
 
 	public NetworkType selectedNetworkType = NetworkType.TCP;
 
@@ -34,13 +35,15 @@ public class UserData
 		ip = "127.0.0.1";
 		lobbyID = "";
 		playerID = 1;
+		playerGUID = Guid.NewGuid().ToString();
 		selectedNetworkType = NetworkType.TCP;
 	}
 
-	public UserData(string _username, int _playerID)
+	public UserData(string _username, int _playerID, string playerGuid)
 	{
 		username = _username;
 		playerID = _playerID;
+		playerGUID = playerGuid;
 	}
 
 	public void UpdateScene(string sceneName)

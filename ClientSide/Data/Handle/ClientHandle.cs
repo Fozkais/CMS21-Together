@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
@@ -11,6 +12,7 @@ using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
+using UnityEngine;
 using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
 using TireChangerLogic = CMS21Together.ClientSide.Data.Garage.Tools.TireChangerLogic;
 using ToolsMoveManager = CMS21Together.ClientSide.Data.Garage.Tools.ToolsMoveManager;
@@ -73,6 +75,17 @@ public static class ClientHandle
 		data.selectedGamemode = gamemode;
 
 		SavesManager.LoadSave(data, true);
+	}
+	
+	public static void SpawnPacket(Packet packet)
+	{
+		int playerExp = packet.Read<int>();
+		int playerLevel = packet.Read<int>();
+		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
+		Dictionary<string, List<bool>> skills = packet.Read<Dictionary<string, List<bool>>>();
+		
+		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(), rotation.toQuaternion(), skills));
 	}
 
 	public static void PositionPacket(Packet packet)

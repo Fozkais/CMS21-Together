@@ -70,9 +70,9 @@ public class ClientData
 
 			Material material;
 			Texture baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
-			baseTexture.filterMode = FilterMode.Point;
+			baseTexture.filterMode = FilterMode.Bilinear;
 			Texture normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
-			baseTexture.filterMode = FilterMode.Point;
+			baseTexture.filterMode = FilterMode.Bilinear;
 
 			material = new Material(Shader.Find("HDRP/Unlit"));
 			material.mainTexture = baseTexture;
@@ -90,6 +90,36 @@ public class ClientData
 
 			playerBundle.Unload(false);
 			MelonLogger.Msg("[ClientData->LoadPlayerPrefab] Loaded player model Succesfully!");
+		}
+	}
+
+	public IEnumerator SpawnPlayer(int exp, int level, Vector3 pos, Quaternion rot , Dictionary<string, List<bool>> skills)
+	{
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.1f);
+		
+		yield return new WaitForEndOfFrame();
+		
+		GlobalData.PlayerExp = exp;
+		GlobalData.PlayerLevel = level;
+		UIManager.Get().StatsContainer.CurrentLevel = level;
+		UIManager.Get().RefreshAllStats();
+
+		if (pos != Vector3.zero)
+			GameData.Instance.localPlayer.transform.position = pos;
+		GameData.Instance.localPlayer.transform.rotation = rot;
+		
+		GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
+
+		foreach (KeyValuePair<string, List<bool>> skill in skills)
+		{
+			int lvl = 0;
+			foreach (bool unlocked in skill.Value)
+			{
+				if(unlocked)
+					GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
+				lvl++;
+			}
 		}
 	}
 }

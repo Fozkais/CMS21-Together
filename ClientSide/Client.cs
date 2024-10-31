@@ -78,6 +78,7 @@ public class Client
 			{ (int)PacketTypes.start, ClientHandle.StartPacket },
 			{ (int)PacketTypes.contentInfo, ClientHandle.ContentsInfoPacket },
 
+			{ (int)PacketTypes.spawn, ClientHandle.SpawnPacket },
 			{ (int)PacketTypes.position, ClientHandle.PositionPacket },
 			{ (int)PacketTypes.rotation, ClientHandle.RotationPacket },
 			{ (int)PacketTypes.sceneChange, ClientHandle.SceneChangePacket },
