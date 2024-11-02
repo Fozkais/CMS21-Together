@@ -35,5 +35,9 @@ public enum PacketTypes
 	wheelBalance,
 	endJob,
 	oilBinUse,
-	skillChange
+	engineCrane,
+	skillChange,
+	engineStandAngle,
+	engineStandSetGroup,
+	engineStandTakeOff
 }

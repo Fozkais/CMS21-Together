@@ -319,4 +319,43 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void EngineCraneHandlePacket(int action, ModGroupItem modGroupItem=null)
+	{
+		using (var packet = new Packet((int)PacketTypes.engineCrane))
+		{
+			packet.Write(action);
+			if(action != -1) packet.Write(modGroupItem);
+			
+			SendData(packet);
+		}
+	}
+
+	public static void EngineStandAnglePacket(float val)
+	{
+		using (var packet = new Packet((int)PacketTypes.engineStandAngle))
+		{
+			packet.Write(val);
+			
+			SendData(packet);
+		}
+	}
+
+	public static void EngineStandSetGroup(ModGroupItem engineGroupItem)
+	{
+		using (var packet = new Packet((int)PacketTypes.engineStandSetGroup))
+		{
+			packet.Write(engineGroupItem);
+			
+			SendData(packet);
+		}
+	}
+
+	public static void TakeOffEnginePacket()
+	{
+		using (var packet = new Packet((int)PacketTypes.engineStandTakeOff))
+		{
+			SendData(packet);
+		}
+	}
 }
