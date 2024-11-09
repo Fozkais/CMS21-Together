@@ -325,7 +325,7 @@ public class ClientSend
 		using (var packet = new Packet((int)PacketTypes.engineCrane))
 		{
 			packet.Write(action);
-			if(action != -1) packet.Write(modGroupItem);
+			if(action == 1) packet.Write(modGroupItem);
 			
 			SendData(packet);
 		}

@@ -5,18 +5,13 @@ namespace CMS21Together.Shared.Data.Vanilla.GarageTool;
 
 public class ModEngineStand
 {
-	public float angle;
-	public ModItem engine;
+	public ModItem engineItem;
+	public ModGroupItem engineGroupItem;
 
-	public Dictionary<int, ModPartScript> engineStandParts = new();
-	public Dictionary<int, PartScript> engineStandPartsReferences = new();
-	public bool fromServer;
-	public ModGroupItem Groupengine;
-
-
-	public bool isHandled;
-	public bool isReferenced;
-	public bool needToResync;
+	public Dictionary<int, PartScript> partReferences = new();
+	public Dictionary<int, ModPartScript> parts = new();
+	
+	
 	public Vector3Serializable position;
 	public QuaternionSerializable rotation;
 }

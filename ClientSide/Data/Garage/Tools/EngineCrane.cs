@@ -15,17 +15,15 @@ public static class EngineCrane
 	{
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 		
-		ClientSend.EngineCraneHandlePacket(-1,new ModGroupItem(engine));
+		ClientSend.EngineCraneHandlePacket(1,new ModGroupItem(engine));
 	}
         
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.UseEngineCrane))]
-	[HarmonyPrefix]
+	[HarmonyPostfix]
 	public static void UseEngineCraneHook(CarLoader __instance)
 	{
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 		
-		
-		int carLoaderID = __instance.gameObject.gameObject.name[10] - '0' - 1;
-		ClientSend.EngineCraneHandlePacket(carLoaderID);
+		ClientSend.EngineCraneHandlePacket(-1);
 	}
 }

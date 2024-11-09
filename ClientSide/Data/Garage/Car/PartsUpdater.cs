@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
@@ -18,6 +19,13 @@ public static class PartsUpdater
 
 	public static IEnumerator UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
+		if (carLoaderID == -1)
+		{
+			MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] EngineStand, updating..");
+			UpdatePartScript(partScript, ClientData.Instance.engineStand.partReferences[partScript.partID], -1);
+			yield break;
+		}
+		
 		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
 		yield return waitforCar;
 
@@ -62,9 +70,10 @@ public static class PartsUpdater
 			return;
 		}
 
-		if (!string.IsNullOrEmpty(part.tunedID) && !string.IsNullOrEmpty(reference.tunedID))
-			if (reference.tunedID != part.tunedID)
-				GameData.Instance.carLoaders[carLoaderID].TunePart(reference.id, part.tunedID);
+		if(carLoaderID != -1)
+			if (!string.IsNullOrEmpty(part.tunedID) && !string.IsNullOrEmpty(reference.tunedID))
+				if (reference.tunedID != part.tunedID)
+					GameData.Instance.carLoaders[carLoaderID].TunePart(reference.id, part.tunedID);
 
 		reference.IsExamined = part.isExamined;
 		reference.Quality = part.quality;

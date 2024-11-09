@@ -12,9 +12,10 @@ public class ServerData
 {
 	public static ServerData Instance;
 	public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
+	
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
-
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
+	public ModEngineStand engineStand = new();
 
 	public Dictionary<int, UserData> connectedClients = new();
 
@@ -51,6 +52,12 @@ public class ServerData
 
 	public void UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
+		if (carLoaderID == -1)
+		{
+			UpdateEngineCrane(partScript);
+			return;
+		}
+		
 		if (!Instance.CarPartInfo.ContainsKey(carLoaderID))
 			Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
 
@@ -86,6 +93,11 @@ public class ServerData
 				carInfos.DriveshaftPartsReferences[key] = partScript;
 				break;
 		}
+	}
+
+	private void UpdateEngineCrane(ModPartScript partScript)
+	{
+		engineStand.parts[partScript.partID] = partScript;
 	}
 
 	public void UpdateBodyParts(ModCarPart carPart, int carLoaderID)

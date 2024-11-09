@@ -1,5 +1,6 @@
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
+using MelonLoader;
 
 namespace CMS21Together.Shared;
 
@@ -7,6 +8,8 @@ public class SceneManager
 {
 	public static GameScene UpdateScene(string scene)
 	{
+		MelonLogger.Msg($"[SceneManager->UpdateScene] changed scene : {scene}!");
+		
 		if (scene == "Barn")
 			return GameScene.barn;
 		if (scene == "garage")

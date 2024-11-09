@@ -5,6 +5,7 @@ using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ public class ClientData
 	public Gamemode gamemode;
 	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
 	public Dictionary<int, ModCar> loadedCars = new();
+	public ModEngineStand engineStand;
 	public GameObject playerPrefab;
 	public int scrap, money;
 
@@ -29,10 +31,10 @@ public class ClientData
 		GameData.Instance = null;
 
 		Player.Inventory.Reset();
-		CarSpawnManager.Reset();
 		CarSpawnHooks.Reset();
 		JobManager.Reset();
 		Stats.Reset();
+		engineStand = new();
 	}
 
 	public void UpdateClient()
