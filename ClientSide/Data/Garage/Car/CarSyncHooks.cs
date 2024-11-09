@@ -36,6 +36,10 @@ public static class CarSyncHooks
 		}
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+		
+		if (! ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
+			return;
+		
 		var car = ClientData.Instance.loadedCars[carLoaderID];
 		car.carPosition = no;
 

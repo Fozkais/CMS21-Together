@@ -12,8 +12,6 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 
 public static class CarSpawnManager
 {
-	public static List<(int, string)> tempCarList = new();
-
 	public static IEnumerator LoadCar(NewCarData carData, int carLoaderID, int placeNo)
 	{
 		if (ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
@@ -21,6 +19,7 @@ public static class CarSpawnManager
 		var car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo, carData.customerCar);
 		ClientSend.LoadCarPacket(new ModNewCarData(carData, placeNo), carLoaderID);
 
+		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
 		ClientData.Instance.loadedCars.Add(carLoaderID, car);
@@ -306,10 +305,5 @@ public static class CarSpawnManager
 			if (carData.TooolsData.HeadlampAlignmentSystemIsConnected) toolsMoveManager.MoveTo(IOSpecialType.HeadlampAlignmentSystem, place, false);
 			if (carData.TooolsData.WindowTintingToolkitIsConnected) toolsMoveManager.MoveTo(IOSpecialType.WindowTint, place, false);
 		}
-	}
-
-	public static void Reset()
-	{
-		tempCarList.Clear();
 	}
 }
