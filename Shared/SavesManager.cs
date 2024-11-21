@@ -20,7 +20,7 @@ public static class SavesManager
 	private const string MOD_FOLDER_PATH = @"Mods\togetherMod\";
 	private const string SAVE_FOLDER_PATH = MOD_FOLDER_PATH + "saves";
 
-	private const string GAME_SAVE_FOLDER = @"%USERPROFILE%\AppData\LocalLow\Red Dot Games\Car Mechanic Simulator 2021\Save";
+	private static readonly string GAME_SAVE_FOLDER = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\LocalLow\Red Dot Games\Car Mechanic Simulator 2021\Save");
 	public static Dictionary<int, ModSaveData> ModSaves = new();
 	public static Il2CppReferenceArray<ProfileData> profileData = new(MainMod.MAX_SAVE_COUNT + 1);
 	public static ProfileData currentSave;
