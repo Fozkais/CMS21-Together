@@ -34,7 +34,9 @@ public class ModColor
 
 	public static Color ToColor(ModColor color)
 	{
-		return new Color(color.r, color.g, color.b, color.a);
+		if (color != null)
+			return new Color(color.r, color.g, color.b, color.a);
+		return new Color(0, 0, 0,255);
 	}
 
 	public bool IsDifferent(Color color, float tolerance = 0.03f)
