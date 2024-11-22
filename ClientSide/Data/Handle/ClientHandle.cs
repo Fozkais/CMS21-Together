@@ -222,11 +222,7 @@ public static class ClientHandle
 		var place = _packet.Read<ModCarPlace>();
 		var playSound = _packet.Read<bool>();
 
-		Garage.Tools.ToolsMoveManager.listenToMove = false;
-		if (place == ModCarPlace.none)
-			global::ToolsMoveManager.m_instance.SetOnDefaultPosition((IOSpecialType)tool);
-		else
-			global::ToolsMoveManager.m_instance.MoveTo((IOSpecialType)tool, (CarPlace)place, playSound);
+		MelonCoroutines.Start(Garage.Tools.ToolsMoveManager.UpdateToolMove((IOSpecialType)tool, place, playSound));
 	}
 
 	public static void LoadCarPacket(Packet packet)
