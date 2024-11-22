@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared.Data;
 using Newtonsoft.Json;
 
@@ -8,37 +9,36 @@ public static class TogetherModManager
 {
 	private const string ModFolderPath = @"Mods\togetherMod\";
 	private const string userDataPath = ModFolderPath + "userData.ini";
-	private static UserData currentUserData;
 
 	public static UserData LoadUserData()
 	{
-		if (currentUserData != null) return currentUserData;
+		if (ClientData.UserData != null) return ClientData.UserData;
 
-		currentUserData = new UserData();
+		ClientData.UserData = new UserData();
 		if (File.Exists(userDataPath))
 		{
 			var serializedUserData = File.ReadAllText(userDataPath);
 			if (serializedUserData.Length > 0)
 			{
-				currentUserData = JsonConvert.DeserializeObject<UserData>(serializedUserData);
-				if (currentUserData != null)
-					return currentUserData;
+				ClientData.UserData = JsonConvert.DeserializeObject<UserData>(serializedUserData);
+				if (ClientData.UserData != null)
+					return ClientData.UserData;
 				return new UserData();
 			}
 		}
 		else
 		{
-			string serializedData = JsonConvert.SerializeObject(currentUserData);
+			string serializedData = JsonConvert.SerializeObject(ClientData.UserData);
 			if (!Directory.Exists(ModFolderPath)) Directory.CreateDirectory(ModFolderPath);
 			File.WriteAllText(userDataPath, serializedData);
 		}
 
-		return currentUserData;
+		return ClientData.UserData;
 	}
 
 	public static void SavePreferences()
 	{
-		string serializedPreferences = JsonConvert.SerializeObject(currentUserData);
+		string serializedPreferences = JsonConvert.SerializeObject(ClientData.UserData);
 		if (!Directory.Exists(ModFolderPath)) Directory.CreateDirectory(ModFolderPath);
 
 		File.WriteAllText(userDataPath, serializedPreferences);
