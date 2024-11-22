@@ -7,7 +7,10 @@ using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
+
+using SteamManager = CMS21Together.Shared.SteamManager;
 
 namespace CMS21Together.ServerSide;
 
@@ -34,15 +37,18 @@ public class Server
 		InitializeServerData();
 		StartServer();
 	}
-
+	
 	private void StartServer()
 	{
 		if (networkType == NetworkType.Steam)
 		{
-			//  steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
-			//  steam.serverID = SteamworksUtils.EncodeSteamID(SteamManager.Instance.clientData.PlayerSteamId);
-
-			tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
+			steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
+			if (steam != null)
+				MelonLogger.Msg($"[Server] Server is running with SteamID: {steam.GetServerID()}");
+			else
+				MelonLogger.Error("[Server] Failed to create RelaySocket.");
+			
+			tcp = new TcpListener(IPAddress.Any, MainMod.PORT); // launch tcp for host and maybe other client?
 			tcp.Start();
 			tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
 
@@ -80,8 +86,8 @@ public class Server
 			udp.Close();
 		if (tcp != null)
 			tcp.Stop();
-		//if (steam != null)
-		//  steam.Close();
+		if (steam != null)
+		  steam.Close();
 
 		if (clients != null)
 			clients.Clear();

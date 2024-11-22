@@ -1,8 +1,14 @@
+using System;
+using CMS21Together.Shared;
+using MelonLoader;
+using Steamworks;
+using Steamworks.Data;
+
 namespace CMS21Together.ServerSide.Transports;
 
 public class SteamConnection
 {
-	/* public readonly int id;
+	 public readonly int id;
 	 public Connection connection;
 	 public bool isConnected;
 
@@ -62,5 +68,5 @@ public class SteamConnection
 	             }
 	         }, null);
 	     }
-	 }*/
+	 }
 }

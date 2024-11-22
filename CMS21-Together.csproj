@@ -151,7 +151,6 @@
         <Compile Include="Shared\Data\Vanilla\ModStats.cs"/>
         <Compile Include="Shared\Data\Vector3Serializable.cs"/>
         <Compile Include="Shared\SceneManager.cs"/>
-        <Compile Include="Shared\SteamLobby.cs"/>
         <Compile Include="Shared\SteamManager.cs"/>
         <Compile Include="Shared\Packet.cs"/>
         <Compile Include="Shared\PacketTypes.cs"/>
@@ -172,6 +171,9 @@
         </Reference>
         <Reference Include="Assembly-CSharp-firstpass">
             <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="Facepunch.Steamworks.Win64">
+          <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
         </Reference>
         <Reference Include="Il2Cppmscorlib">
             <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
@@ -233,6 +235,7 @@
         <EmbeddedResource Include="Assets\TogetherModAPI.dll"/>
         <Content Include="Libs\0Harmony.dll"/>
         <Content Include="Libs\Assembly-CSharp-firstpass.dll"/>
+        <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
         <Content Include="Libs\Il2Cppmscorlib.dll"/>
         <Content Include="Libs\MelonLoader.dll"/>
         <Content Include="Libs\Newtonsoft.Json.dll"/>

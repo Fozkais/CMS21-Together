@@ -3,6 +3,7 @@ using CMS.MainMenu.Controls;
 using CMS.MainMenu.Sections;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -147,29 +148,29 @@ public class UI_Main
 			var inputFiel2 = CustomUIBuilder.tmpWindow[_index].GetComponentInChildren<InputField>();
 			var inputFiel1 = CustomUIBuilder.tmpWindow[_index - 1].GetComponentInChildren<InputField>();
 			
-			if (ClientData.UserData.username != null)
-				inputFiel2.SetText(ClientData.UserData.username);
-			if (ClientData.UserData.ip != null)
-				inputFiel1.SetText(ClientData.UserData.ip);
 			
 			var username = inputFiel2.text;
 			var address = inputFiel1.text;
 
 			ClientData.UserData.username = username;
-			ClientData.UserData.ip = address;
+			if (ClientData.UserData.selectedNetworkType != NetworkType.Steam)
+				ClientData.UserData.ip = address;
+			else
+				ClientData.UserData.lobbyID = address;
 			TogetherModManager.SavePreferences();
-
-			if (!string.IsNullOrEmpty(ClientData.UserData.username) && !string.IsNullOrEmpty(ClientData.UserData.ip))
+			
+			MelonLogger.Msg($"PressedJoin! : {address} , ");
+			
+			if (!string.IsNullOrEmpty(ClientData.UserData.username) && !string.IsNullOrEmpty(address))
 			{
-				Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType);
+				Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType, address);
 				Application.runInBackground = true;
 
 				OpenLobby();
 			}
 			else
-			{
 				return;
-			}
+
 
 
 			for (var i = 0; i < CustomUIBuilder.tmpWindow.Count; i++)

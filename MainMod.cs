@@ -26,15 +26,13 @@ namespace CMS21Together
 
 		public override void OnLateInitializeMelon()
 		{
-			GameObject modObject = new GameObject("TogetherMod");
-			Object.DontDestroyOnLoad(modObject);
 
-			Client.Instance = new Client();//modObject.AddComponent<Client>();
-			Server.Instance = new Server();//modObject.AddComponent<Server>();
-			ContentManager.Instance = new ContentManager();//modObject.AddComponent<ContentManager>();
-			Shared.SteamManager.Instance = new Shared.SteamManager();//modObject.AddComponent<Shared.SteamManager>();
+			Client.Instance = new Client();
+			Server.Instance = new Server();
+			ContentManager.Instance = new ContentManager();
 
 			ClientData.UserData = TogetherModManager.LoadUserData();
+			Shared.SteamManager.Instance = new Shared.SteamManager();
 			isModInitialized = true;
 			LoggerInstance.Msg("Together Mod Initialized!");
 		}

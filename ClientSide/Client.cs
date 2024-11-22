@@ -5,6 +5,7 @@ using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
@@ -36,18 +37,19 @@ public class Client
 	{
 		InitializeClientData();
 
-		/*if (networkType == NetworkType.Steam)
+		if (networkType == NetworkType.Steam)
 		{
-		    SteamId lobbyID = SteamworksUtils.DecodeSteamID(ClientData.UserData.lobbyID);
+			MelonLogger.Msg($"LobbyID:{ip}\n");
+			SteamId lobbyID = SteamworksUtils.StringToUInt64(ip);
 		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
 		}
-		else*/
+		else
 		if (networkType == NetworkType.TCP)
 		{
 			tcp = new ClientTCP();
 			udp = new ClientUDP();
 
-			tcp.Connect();
+			tcp.Connect(ip);
 		}
 
 		isConnected = true;
@@ -61,9 +63,9 @@ public class Client
 				if (reliable) tcp.Send(packet);
 				else udp.Send(packet);
 				break;
-			/*case NetworkType.Steam:
+			case NetworkType.Steam:
 			    steam.Send(packet, reliable);
-			    break;*/
+			    break;
 		}
 	}
 
