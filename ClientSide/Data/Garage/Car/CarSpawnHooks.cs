@@ -67,7 +67,7 @@ public static class CarSpawnHooks
 		MelonCoroutines.Start(CarSpawnManager.LoadJobCar(name, carLoaderID, __instance));
 	}
 
-	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
+	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar))]
 	[HarmonyPostfix]
 	public static void DeleteCarHook(CarLoader __instance)
 	{

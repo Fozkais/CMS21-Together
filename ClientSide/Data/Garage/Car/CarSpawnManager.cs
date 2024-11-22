@@ -23,8 +23,11 @@ public static class CarSpawnManager
 		yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
 		
-		ClientData.Instance.loadedCars.Add(carLoaderID, car);
-		MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+		if (!ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
+		{
+			ClientData.Instance.loadedCars.Add(carLoaderID, car);
+			MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+		}
 	}
 
 	public static IEnumerator LoadJobCar(string name, int carLoaderID, CarLoader carLoader)
@@ -47,9 +50,11 @@ public static class CarSpawnManager
 		ClientSend.LoadJobCarPacket(car);
 
 		yield return new WaitForEndOfFrame();
-
-		ClientData.Instance.loadedCars.Add(carLoaderID, car);
-		MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+		if (!ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
+		{
+			ClientData.Instance.loadedCars.Add(carLoaderID, car);
+			MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+		}
 	}
 
 	public static IEnumerator LoadCarFromServer(ModNewCarData data, int carLoaderID)
@@ -128,7 +133,7 @@ public static class CarSpawnManager
 		if (idFromConfig == null || idFromConfig.Length == 0)
 		{
 			if (iDs != null)
-				for (var j = 0; j < carLoader.bonusParts.Count && j < iDs.Length && j < carLoader.bonusParts.Count; j++)
+				for (var j = 0; j < carLoader.bonusParts.Count && j < iDs.Length; j++)
 				{
 					var bonusPart = carLoader.bonusParts._items[j];
 					var text = iDs[j];
