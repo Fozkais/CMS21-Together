@@ -1,6 +1,7 @@
 using System;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
+using UnhollowerBaseLib;
 using UnityEngine;
 
 namespace CMS21Together.Shared.Data.Vanilla;
@@ -76,10 +77,27 @@ public class ModItem
 	public Item ToGame(ModItem item)
 	{
 		var original = new Item();
-
-		Color convertedColor = ModColor.ToColor(item.Color);
-		original.Color = new CustomColor(convertedColor);
-		original.TintColor = new CustomColor(convertedColor); 
+		
+		/*if (item.Color != null)
+		{ 
+			original.Color = new CustomColor();
+			original.Color.Color = new Il2CppStructArray<float>(4);
+			original.Color.Color[0] = item.Color.r;
+			original.Color.Color[1] = item.Color.g;
+			original.Color.Color[2] = item.Color.b;
+			original.Color.Color[3] = item.Color.a;
+		}
+		MelonLogger.Msg("pass1");
+		if (item.TintColor != null)
+		{ 
+			original.TintColor = new CustomColor();
+			original.TintColor.Color = new Il2CppStructArray<float>(4);
+			original.TintColor.Color[0] = item.TintColor.r;
+			original.TintColor.Color[1] = item.TintColor.g;
+			original.TintColor.Color[2] = item.TintColor.b;
+			original.TintColor.Color[3] = item.TintColor.a;
+		}*/
+		MelonLogger.Msg("pass2");
 		original.Condition = item.Condition;
 		original.Dent = item.Dent;
 		//this.GearboxData = item.GearboxData; TODO: Handle class
@@ -98,7 +116,7 @@ public class ModItem
 		original.RepairAmount = item.RepairAmount;
 		//original.tuningData = item.TuningData.ToGame();
 		original.WashFactor = item.WashFactor;
-		original.WheelData = new ModWheelData().ToGame(item.WheelData);
+		if (WheelData != null) original.WheelData = new ModWheelData().ToGame(item.WheelData);
 		original.ID = item.ID;
 		original.UID = item.UID;
 
@@ -109,8 +127,15 @@ public class ModItem
 	{
 		var original = new Item();
 
-		if (Color != null) original.Color = new CustomColor(ModColor.ToColor(Color));
-
+		/*if (Color != null)
+		{
+			original.Color = new CustomColor();
+			original.Color.Color = new Il2CppStructArray<float>(4);
+			original.Color.Color[0] = Color.r;
+			original.Color.Color[1] = Color.g;
+			original.Color.Color[2] = Color.b;
+			original.Color.Color[3] = Color.a;
+		}*/
 		original.Condition = Condition;
 		original.Dent = Dent;
 		original.IsExamined = IsExamined;
@@ -120,23 +145,24 @@ public class ModItem
 		original.LiveryStrength = LiveryStrength;
 		original.NormalID = NormalID;
 		original.OutsideRustEnabled = OutsideRustEnabled;
-
-
 		original.PaintData = new ModPaintData().ToGame(PaintData);
 
 		original.PaintType = PaintType;
 		original.Quality = Quality;
 		original.RepairAmount = RepairAmount;
-
-		if (Color != null) original.TintColor = new CustomColor(ModColor.ToColor(Color));
-
+	/*	if (TintColor != null)
+		{ 
+			original.TintColor = new CustomColor();
+			original.TintColor.Color = new Il2CppStructArray<float>(4);
+			original.TintColor.Color[0] = TintColor.r;
+			original.TintColor.Color[1] = TintColor.g;
+			original.TintColor.Color[2] = TintColor.b;
+			original.TintColor.Color[3] = TintColor.a;
+		}*/
 		original.WashFactor = WashFactor;
-
 		if (WheelData != null) original.WheelData = new ModWheelData().ToGame(WheelData);
-
 		original.ID = ID;
 		original.UID = UID;
-
 		return original;
 	}
 }
