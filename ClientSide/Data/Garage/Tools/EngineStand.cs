@@ -18,8 +18,6 @@ namespace CMS21Together.ClientSide.Data.Garage.Tools;
 public static class EngineStand
 {
 	public static bool listen = true;
-	private static bool isStopping = false;
-	private static Coroutine handleRoutine;
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.IncreaseEngineStandAngle))] 
 	[HarmonyPrefix]
@@ -37,7 +35,7 @@ public static class EngineStand
 	{
 		if(!Client.Instance.isConnected) {return;}
 
-		if (handleRoutine == null) MelonCoroutines.Start(HandleEngineStand());
+		MelonCoroutines.Start(HandleEngineStand());
 		if (listen)
 			ClientSend.EngineStandSetGroupPacket(new ModGroupItem(groupItem));
 		else
@@ -51,8 +49,6 @@ public static class EngineStand
 	{
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 		
-		if (handleRoutine != null) MelonCoroutines.Stop(handleRoutine);
-		isStopping = true;
 		ClientSend.TakeOffEnginePacket();
 		MelonLogger.Msg("[EngineStand->TakeOffEngine] Hook!");
 	}
@@ -64,7 +60,7 @@ public static class EngineStand
 		yield return new WaitForEndOfFrame();
 
 		listen = false;
-		MainMod.StartCoroutine(GameData.Instance.engineStandLogic.SetGroupOnEngineStand(engineGroup.ToGame()));
+		MainMod.StartCoroutine(GameData.Instance.engineStandLogic.SetGroupOnEngineStand(engineGroup.ToGame(), false));
 	}
 	private static IEnumerator HandleEngineStand()
 	{
@@ -77,27 +73,6 @@ public static class EngineStand
 		yield return routine;
 		yield return new WaitForEndOfFrame();
 		
-		MelonCoroutines.Start(UpdateEngineStand(es.partReferences, es.parts));
-	}
-	
-	private static IEnumerator UpdateEngineStand(Dictionary<int, PartScript> refs, Dictionary<int, ModPartScript> handles)
-	{
-		if (isStopping) yield break;
-
-		/*for (int i = 0; i < refs.Count; i++)
-		{
-			if (isStopping) yield break;
-			
-			if (handles[i].unmounted != refs[i].IsUnmounted)
-			{
-				MelonLogger.Msg("Found Difference on EngineStand");
-				handles[i] = new ModPartScript(refs[i], i, -1, ModPartType.engine);
-				ClientSend.PartScriptPacket(handles[i], -1);
-			}
-		}
-
-		yield return new WaitForEndOfFrame();
-		MelonCoroutines.Start(UpdateEngineStand(refs, handles));*/
 	}
 
 	private static IEnumerator GetReferencesAndHandle(Dictionary<int, PartScript> refs, Dictionary<int, ModPartScript> handle)
@@ -122,7 +97,6 @@ public static class EngineStand
 		}
 		
 		yield return new WaitForEndOfFrame();
-		isStopping = false;
 		ClientData.Instance.engineStand.isHandled  = true;
 		MelonLogger.Msg("[EngineStand->GetReferences] Finished without error.");
 	}

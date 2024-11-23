@@ -79,7 +79,6 @@ public static class CarSpawnManager
 		ClientData.Instance.loadedCars.Add(carLoaderID, car);
 		MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
 		
-		
 		/*CarSpawnHooks.listenToSimpleLoad = false;
 		carLoader.ConfigVersion = carData.configVersion;
 		carLoader.placeNo = data.carPosition;
