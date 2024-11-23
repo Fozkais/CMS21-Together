@@ -13,11 +13,12 @@ public static class PartUpdateHooks
 {
 	[HarmonyPatch(typeof(CarFluid), nameof(CarFluid.SetLevel))]
 	[HarmonyPostfix]
-	public static void SetLevel2Hook(float level, CarFluid __instance)
+	public static void SetLevelHook(float level, CarFluid __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-
-		MelonLogger.Msg($" SetLevel2 | {__instance.ID} , {__instance.FluidType.ToString()} , lvl:{level}");
+		
+		int carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+		ClientSend.CarFluid(carLoaderID, new ModCarFluid(__instance));
 	}
 
 	[HarmonyPatch(typeof(PartScript), nameof(PartScript.DoMount))]
@@ -25,7 +26,6 @@ public static class PartUpdateHooks
 	public static void DoMountHook(PartScript __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-
 		MelonCoroutines.Start(HandleDoMount(__instance));
 	}
 
@@ -55,14 +55,27 @@ public static class PartUpdateHooks
 		}
 
 		MelonLogger.Msg("[PartUpdateHooks->DoMountHook] Triggered.");
+		if (partScript.GetComponentInParent<CarLoaderOnCar>())
+		{
+			var carLoaderID = partScript.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			var car = ClientData.Instance.loadedCars[carLoaderID];
 
-		var carLoaderID = partScript.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
-		var car = ClientData.Instance.loadedCars[carLoaderID];
-
-		if (FindPartInDictionaries(car, partScript, out var partType, out var key, out var index))
-			MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
+			if (FindPartInDictionaries(car, partScript, out var partType, out var key, out var index))
+				MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
+			else
+				MelonLogger.Warning("[PartUpdateHooks->DoMountHook] PartScript not found in any dictionary.");
+		}
 		else
-			MelonLogger.Msg("[PartUpdateHooks->DoMountHook] PartScript not found in any dictionary.");
+		{
+			foreach (var kvp in ClientData.Instance.engineStand.partReferences)
+			{
+				if (kvp.Value == partScript)
+				{
+					MelonCoroutines.Start(SendPartUpdate(null, -1, kvp.Key, null, ModPartType.engineStand));
+					break;
+				}
+			}
+		}
 	}
 
 	[HarmonyPatch(typeof(PartScript), nameof(PartScript.Hide))]
@@ -70,12 +83,27 @@ public static class PartUpdateHooks
 	public static void HideHook(PartScript __instance) // best way i've found to detect when a partScript is unmounted
 	{
 		if (!Client.Instance.isConnected) return;
+		
+		if (__instance.GetComponentInParent<CarLoaderOnCar>())
+		{
+			var carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			var car = ClientData.Instance.loadedCars[carLoaderID];
 
-		var carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
-		var car = ClientData.Instance.loadedCars[carLoaderID];
+			if (FindPartInDictionaries(car, __instance, out var partType, out var key, out var index))
+				MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
+		}
+		else // engine stand
+		{
+			foreach (var kvp in ClientData.Instance.engineStand.partReferences)
+			{
+				if (kvp.Value == __instance)
+				{
+					MelonCoroutines.Start(SendPartUpdate(null, -1, kvp.Key, null, ModPartType.engineStand));
+					break;
+				}
+			}
 
-		if (FindPartInDictionaries(car, __instance, out var partType, out var key, out var index))
-			MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
+		}
 	}
 
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TakeOffCarPart), typeof(string), typeof(bool))]
@@ -140,7 +168,7 @@ public static class PartUpdateHooks
 
 		partType = default;
 		key = 0;
-		MelonLogger.Msg("[PartUpdateHooks->FindPartInDictionaries] PartScript not found in any dictionary.");
+		MelonLogger.Warning("[PartUpdateHooks->FindPartInDictionaries] PartScript not found in any dictionary.");
 		return false;
 	}
 
@@ -154,7 +182,7 @@ public static class PartUpdateHooks
 			}
 
 		key = 0;
-		MelonLogger.Msg("[PartUpdateHooks->FindBodyPartInDictionary] BodyPart not found in dictionary.");
+		MelonLogger.Warning("[PartUpdateHooks->FindBodyPartInDictionary] BodyPart not found in dictionary.");
 		return false;
 	}
 
@@ -167,6 +195,9 @@ public static class PartUpdateHooks
 		{
 			case ModPartType.engine:
 				part = car.partInfo.EnginePartsReferences[key];
+				break;
+			case ModPartType.engineStand:
+				part = ClientData.Instance.engineStand.partReferences[key];
 				break;
 			case ModPartType.suspension:
 				part = car.partInfo.SuspensionPartsReferences[key][index.Value];
@@ -183,10 +214,12 @@ public static class PartUpdateHooks
 
 		yield return new WaitForEndOfFrame();
 
-		if (index.HasValue)
+		if (index.HasValue && partType != ModPartType.engineStand)
 			ClientSend.PartScriptPacket(new ModPartScript(part, key, index.Value, partType), carLoaderID);
-		else
+		else if (partType != ModPartType.engineStand)
 			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
+		else
+			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), -1);
 	}
 
 	public static IEnumerator SendBodyPart(CarPart part, int key, int carLoaderID)

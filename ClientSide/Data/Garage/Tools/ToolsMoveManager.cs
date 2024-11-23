@@ -25,9 +25,9 @@ public static class ToolsMoveManager
 		
 		listenToMove = false;
 		if (place == ModCarPlace.none)
-			global::ToolsMoveManager.m_instance.SetOnDefaultPosition(tool);
+			GameData.Instance.toolsMoveManager.SetOnDefaultPosition(tool);
 		else
-			global::ToolsMoveManager.m_instance.MoveTo(tool, (CarPlace)place, playSound);
+			GameData.Instance.toolsMoveManager.MoveTo(tool, (CarPlace)place, playSound);
 	}
 
 	[HarmonyPatch(typeof(TM), nameof(TM.MoveTo))]

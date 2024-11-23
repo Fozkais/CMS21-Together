@@ -17,6 +17,7 @@ public class GameData
 	public EngineStandLogic engineStandLogic;
 	public TireChangerLogic tireChanger;
 	public GarageAndToolsTab upgradeTools;
+	public ToolsMoveManager toolsMoveManager;
 	public WheelBalancerLogic wheelBalancer;
 
 	public GameData()
@@ -24,6 +25,7 @@ public class GameData
 		localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
 		localInventory = GameScript.Get().GetComponent<Inventory>();
 		upgradeTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;
+		toolsMoveManager = Object.FindObjectOfType<ToolsMoveManager>();
 		orderGenerator = Object.FindObjectOfType<OrderGenerator>();
 		engineStandLogic = Object.FindObjectOfType<EngineStandLogic>();
 		springClampLogic = Object.FindObjectOfType<SpringClampLogic>();

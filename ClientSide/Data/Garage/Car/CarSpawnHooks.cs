@@ -27,25 +27,23 @@ public static class CarSpawnHooks
 		if (!Client.Instance.isConnected || !listenToLoad)
 		{
 			listenToLoad = true;
-			return;
 		}
-
-		MelonCoroutines.Start(LoadCarFromFile(file, __instance)); 
+		
+		int indexFromCarLoaderName = Helper.GetIndexFromCarLoaderName(file);
+		NewCarData newCarData = Singleton<GameManager>.Instance.GameDataManager.LoadCar(indexFromCarLoaderName, false);
+		MainMod.StartCoroutine(__instance.LoadCarFromFile(newCarData));
+		MelonCoroutines.Start(LoadCarFromFile(newCarData, __instance));
 	}
 
-	private static IEnumerator LoadCarFromFile(string file, CarLoader __instance)
+	private static IEnumerator LoadCarFromFile(NewCarData carDataCheck, CarLoader __instance)
 	{
 		yield return new WaitForEndOfFrame();
 		if (string.IsNullOrEmpty(__instance.carToLoad)) yield break;
 		if (!Shared.SceneManager.IsInGarage()) yield break;
 		
-		MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{__instance.carToLoad}");
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		
-		int indexFromCarLoaderName = Helper.GetIndexFromCarLoaderName(file);
-		NewCarData data = Singleton<GameManager>.Instance.GameDataManager.LoadCar(indexFromCarLoaderName, false);
-		
-		MelonCoroutines.Start(CarSpawnManager.LoadCar(data, carLoaderID, __instance.placeNo));
+		MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{__instance.carToLoad} , {carLoaderID}");
+		MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
 	}
 
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.LoadCar))]
@@ -67,7 +65,7 @@ public static class CarSpawnHooks
 		MelonCoroutines.Start(CarSpawnManager.LoadJobCar(name, carLoaderID, __instance));
 	}
 
-	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar))]
+	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
 	[HarmonyPostfix]
 	public static void DeleteCarHook(CarLoader __instance)
 	{

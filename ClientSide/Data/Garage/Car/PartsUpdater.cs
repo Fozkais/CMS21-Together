@@ -21,6 +21,10 @@ public static class PartsUpdater
 	{
 		if (carLoaderID == -1)
 		{
+			while (!ClientData.Instance.engineStand.isHandled)
+				yield return new WaitForSeconds(.15f);
+			yield return new WaitForEndOfFrame();
+			
 			MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] EngineStand, updating..");
 			UpdatePartScript(partScript, ClientData.Instance.engineStand.partReferences[partScript.partID], -1);
 			yield break;
@@ -88,7 +92,7 @@ public static class PartsUpdater
 			{
 				reference.CurrentPaintType = (PaintType)part.paintType;
 				reference.CurrentPaintData = new ModPaintData().ToGame(part.paintData);
-				reference.SetColor(ModColor.ToColor(part.color));
+				reference.SetColor(part.color.ToGame());
 				if ((PaintType)part.paintType == PaintType.Custom)
 					PaintHelper.SetCustomPaintType(reference.gameObject, part.paintData.ToGame(part.paintData), false);
 				else
@@ -163,8 +167,8 @@ public static class PartsUpdater
 			return;
 		}
 
-		var color = ModColor.ToColor(carPart.colors);
-		var tintColor = ModColor.ToColor(carPart.TintColor);
+		var color = carPart.colors.ToGame();
+		var tintColor = carPart.TintColor.ToGame();
 
 		if (reference.TunedID != carPart.tunedID)
 			GameData.Instance.carLoaders[carLoaderID].TunePart(reference.name, carPart.tunedID);
