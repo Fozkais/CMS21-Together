@@ -32,13 +32,6 @@ public class ModColor
 		return new Color(r, g, b, a);
 	}
 
-	public static Color ToColor(ModColor color)
-	{
-		if (color != null)
-			return new Color(color.r, color.g, color.b, color.a);
-		return new Color(0, 0, 0,255);
-	}
-
 	public bool IsDifferent(Color color, float tolerance = 0.03f)
 	{
 		return Mathf.Abs(r - color.r) > tolerance ||
