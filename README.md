@@ -70,7 +70,8 @@ CASE 1 - 0.4.0 and later<br/>
 1- Download Latest build on release page<br/>
 2- Download and Install MelonLoader on version 0.5.7<br/>
 3- extract mod folder inside game directory<br/>
-4- Launch the game !
+4- Launch the game !<br/>
+<br/>
 CASE 2 - 0.2.8 to 0.3.5<br/>
 1- Go to the github page on the branch "MainMod"<br/>
 2- Download the source code as ZIP and extract it<br/>
