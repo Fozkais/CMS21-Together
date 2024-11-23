@@ -341,7 +341,7 @@ public class ClientSend
 		}
 	}
 
-	public static void EngineStandSetGroup(ModGroupItem engineGroupItem)
+	public static void EngineStandSetGroupPacket(ModGroupItem engineGroupItem)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
@@ -355,6 +355,16 @@ public class ClientSend
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
+			SendData(packet);
+		}
+	}
+
+	public static void CarFluid(int carLoaderID, ModCarFluid carFluid)
+	{
+		using (var packet = new Packet((int)PacketTypes.carFluid))
+		{
+			packet.Write(carLoaderID);
+			packet.Write(carFluid);
 			SendData(packet);
 		}
 	}

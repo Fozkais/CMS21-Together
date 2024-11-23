@@ -56,7 +56,7 @@ public class ModNewCarData
 			if (newCarData.BodyPartsData != null)
 			{
 				BodyPartsData = new List<ModBodyPartData>();
-				foreach (var bodyPartData in newCarData.BodyPartsData._items)
+				foreach (var bodyPartData in newCarData.BodyPartsData.ToArray())
 					if (bodyPartData != null)
 						BodyPartsData.Add(new ModBodyPartData(bodyPartData));
 			}
@@ -107,7 +107,7 @@ public class ModNewCarData
 			if (newCarData.PartData != null)
 			{
 				PartData = new List<ModPartData>();
-				foreach (var partData in newCarData.PartData._items)
+				foreach (var partData in newCarData.PartData.ToArray())
 					if (partData != null)
 						PartData.Add(new ModPartData(partData));
 			}

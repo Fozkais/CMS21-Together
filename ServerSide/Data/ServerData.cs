@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
@@ -32,9 +34,27 @@ public class ServerData
 	public GarageTool wheelBalancer = new();
 
 
-	public void sendCar(int id, int carLoader)
+	public void SendCar(int id, int carLoader)
 	{
+		ClientData.Instance.loadedCars.Remove(carLoader);
+		GameData.Instance.carLoaders[carLoader].DeleteCar();
 		ServerSend.LoadCarPacket(-1, CarSpawnDatas[id], carLoader);
+	}
+	public void ResendInventory()
+	{
+		ClientSide.Data.Player.Inventory.items.Clear();
+		ClientSide.Data.Player.Inventory.groupItems.Clear();
+		GameData.Instance.localInventory.items.Clear();
+		GameData.Instance.localInventory.groups.Clear();
+		
+		foreach (ModItem item in items)
+		{
+			ServerSend.ItemPacket(-1, item, InventoryAction.add);
+		}
+		foreach (ModGroupItem item in groupItems)
+		{
+			ServerSend.GroupItemPacket(-1, item, InventoryAction.add);
+		}
 	}
 
 	public void SetGarageUpgrade(GarageUpgrade upgrade)
@@ -210,6 +230,17 @@ public class ServerData
 	{
 		if (selectedJobs.Any(j => j.id == job.id)) selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
 	}
+
+	public void UpdateFluid(ModCarFluid fluid, int carLoaderID)
+	{
+		throw new System.NotImplementedException();
+	}
+
+	public void SetEngineOnStand(ModGroupItem engineGroup)
+	{
+		engineStand = new ModEngineStand();
+		engineStand.engineGroupItem = engineGroup;
+	}
 }
 
 public class GarageTool
@@ -221,15 +252,14 @@ public class GarageTool
 
 public class ModCarInfo
 {
-	public Dictionary<int, ModCarPart> BodyPartsReferences = new();
 	public int carLoaderID;
 	public string carToLoad;
 	public int configVersion;
 	public bool customerCar;
+	public int placeNo;
+	public Dictionary<int, ModCarPart> BodyPartsReferences = new();
 	public Dictionary<int, ModPartScript> DriveshaftPartsReferences = new();
 	public Dictionary<int, ModPartScript> EnginePartsReferences = new();
-
 	public Dictionary<int, Dictionary<int, ModPartScript>> OtherPartsReferences = new();
-	public int placeNo;
 	public Dictionary<int, Dictionary<int, ModPartScript>> SuspensionPartsReferences = new();
 }

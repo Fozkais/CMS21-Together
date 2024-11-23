@@ -3,6 +3,7 @@ using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using Il2CppSystem.Collections;
 using MelonLoader;
@@ -90,6 +91,11 @@ namespace CMS21Together
 			if (SceneManager.GetActiveScene().name == "garage")
 			{
 				ClientData.Instance.UpdateClient();
+			}
+			
+			if (Input.GetKeyDown(KeyCode.RightShift))
+			{
+				//ServerData.Instance.SendCar(0,0);
 			}
 
 			ThreadManager.UpdateThread();

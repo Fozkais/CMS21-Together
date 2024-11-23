@@ -230,6 +230,15 @@ public static class ServerHandle
 		ServerData.Instance.UpdatePartScripts(partScript, carLoaderID);
 		ServerSend.PartScriptPacket(fromClient, partScript, carLoaderID);
 	}
+	
+	public static void CarFluidPacket(int fromClient, Packet packet)
+	{
+		var carLoaderID = packet.ReadInt();
+		ModCarFluid fluid = packet.Read<ModCarFluid>();
+
+		MelonLogger.Msg("SV: Received CarFluid!");
+		ServerData.Instance.UpdateFluid(fluid, carLoaderID);
+	}
 
 	public static void DeleteCarPacket(int fromClient, Packet packet)
 	{
@@ -367,4 +376,11 @@ public static class ServerHandle
 		ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType);
 	}
 	
+	public static void EngineStandSetGroupPacket(int fromClient, Packet packet)
+	{
+		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
+
+		ServerData.Instance.SetEngineOnStand(engineGroup);
+		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup);
+	}
 }

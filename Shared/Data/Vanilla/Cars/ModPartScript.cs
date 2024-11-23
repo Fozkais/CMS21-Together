@@ -41,17 +41,20 @@ public class ModPartScript
 		dust = data.Dust;
 		unmounted = data.IsUnmounted;
 
-		var carLoaderID = data.gameObject.GetComponentsInParent<CarLoaderOnCar>(true)[0].CarLoader.name[10] - '0' - 1;
-		var car = ClientData.Instance.loadedCars[carLoaderID];
-		unmountWith = new List<ModPartScript>();
-		foreach (var part in data.unmountWith)
+		if (_type != ModPartType.engineStand)
 		{
-			PartUpdateHooks.FindPartInDictionaries(car, part, out var partType, out var key, out var index);
+			var carLoaderID = data.gameObject.GetComponentsInParent<CarLoaderOnCar>(true)[0].CarLoader.name[10] - '0' - 1;
+			var car = ClientData.Instance.loadedCars[carLoaderID];
+			unmountWith = new List<ModPartScript>();
+			foreach (var part in data.unmountWith)
+			{
+				PartUpdateHooks.FindPartInDictionaries(car, part, out var partType, out var key, out var index);
 
-			if (index == null)
-				unmountWith.Add(new ModPartScript(part, key, -1, partType));
-			else
-				unmountWith.Add(new ModPartScript(part, key, index.Value, partType));
+				if (index == null)
+					unmountWith.Add(new ModPartScript(part, key, -1, partType));
+				else
+					unmountWith.Add(new ModPartScript(part, key, index.Value, partType));
+			}
 		}
 
 		partID = _partID;
@@ -69,7 +72,7 @@ public class ModPartScript
 		data.IsPainted = isPainted;
 		data.CurrentPaintData = paintData.ToGame(paintData);
 		data.CurrentPaintType = (PaintType)paintType;
-		data.currentColor = ModColor.ToColor(color);
+		data.currentColor = color.ToGame();
 		data.Quality = quality;
 		data.Condition = condition;
 		data.Dust = dust;

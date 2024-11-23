@@ -180,6 +180,7 @@ public class Server
 			{ (int)PacketTypes.clearTireChanger, ServerHandle.ClearTireChangerPacket },
 			{ (int)PacketTypes.wheelBalance, ServerHandle.WheelBalancePacket },
 			{ (int)PacketTypes.toolMove, ServerHandle.ToolsMovePacket },
+			{ (int)PacketTypes.engineStandSetGroup, ServerHandle.EngineStandSetGroupPacket },
 
 			{ (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },
 			{ (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },

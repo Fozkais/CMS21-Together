@@ -35,10 +35,13 @@ public static class EngineStand
 	[HarmonyPostfix]
 	public static void SetGroupOnEngineStand(GroupItem groupItem, bool withFade = true)
 	{
-		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
+		if(!Client.Instance.isConnected) {return;}
 
 		if (handleRoutine == null) MelonCoroutines.Start(HandleEngineStand());
-		ClientSend.EngineStandSetGroup(new ModGroupItem(groupItem));
+		if (listen)
+			ClientSend.EngineStandSetGroupPacket(new ModGroupItem(groupItem));
+		else
+			listen = true;
 		MelonLogger.Msg("[EngineStand->SetGroupOnEngineStand] Hook!");
 	}
 	
@@ -54,6 +57,15 @@ public static class EngineStand
 		MelonLogger.Msg("[EngineStand->TakeOffEngine] Hook!");
 	}
 
+	public static IEnumerator TakeOnEngineFromStand(ModGroupItem engineGroup)
+	{
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+
+		listen = false;
+		MainMod.StartCoroutine(GameData.Instance.engineStandLogic.SetGroupOnEngineStand(engineGroup.ToGame()));
+	}
 	private static IEnumerator HandleEngineStand()
 	{
 		for (int i = 0; i < 5; i++)
@@ -105,12 +117,13 @@ public static class EngineStand
 			if (!refs.ContainsKey(i))
 			{
 				refs.Add(i, parts[i]);
-				handle.Add(i, new ModPartScript(parts[i], i, -1, ModPartType.engine));
+				handle.Add(i, new ModPartScript(parts[i], i, -1, ModPartType.engineStand));
 			}
 		}
 		
 		yield return new WaitForEndOfFrame();
 		isStopping = false;
+		ClientData.Instance.engineStand.isHandled  = true;
 		MelonLogger.Msg("[EngineStand->GetReferences] Finished without error.");
 	}
 }

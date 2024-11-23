@@ -98,6 +98,7 @@ public class Client
 			{ (int)PacketTypes.wheelBalance, ClientHandle.WheelBalancePacket },
 			{ (int)PacketTypes.oilBinUse, ClientHandle.OilBinPacket },
 			{ (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
+			{ (int)PacketTypes.engineStandSetGroup, ClientHandle.EngineSetGroupPacket },
 
 			{ (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
 			{ (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },

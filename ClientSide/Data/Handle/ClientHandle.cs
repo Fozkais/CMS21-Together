@@ -309,6 +309,14 @@ public static class ClientHandle
 
 		MelonCoroutines.Start(JobManager.OnJobComplete(job, carLoaderID));
 	}
+	
+	public static void EngineSetGroupPacket(Packet packet)
+	{
+		var engineGroup = packet.Read<ModGroupItem>();
+
+		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup));
+
+	}
 
 	public static void SceneChangePacket(Packet packet)
 	{

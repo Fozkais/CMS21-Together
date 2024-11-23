@@ -97,7 +97,6 @@ public class ModItem
 			original.TintColor.Color[2] = item.TintColor.b;
 			original.TintColor.Color[3] = item.TintColor.a;
 		}*/
-		MelonLogger.Msg("pass2");
 		original.Condition = item.Condition;
 		original.Dent = item.Dent;
 		//this.GearboxData = item.GearboxData; TODO: Handle class

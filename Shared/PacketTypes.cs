@@ -39,5 +39,6 @@ public enum PacketTypes
 	skillChange,
 	engineStandAngle,
 	engineStandSetGroup,
-	engineStandTakeOff
+	engineStandTakeOff,
+	carFluid
 }

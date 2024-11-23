@@ -395,4 +395,14 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.engineStandSetGroup))
+		{
+			_packet.Write(engineGroup);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }

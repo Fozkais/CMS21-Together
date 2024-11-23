@@ -5,5 +5,6 @@ public enum ModPartType
 	engine,
 	suspension,
 	other,
-	driveshaft
+	driveshaft,
+	engineStand
 }

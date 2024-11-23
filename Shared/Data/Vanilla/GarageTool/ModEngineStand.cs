@@ -7,6 +7,7 @@ public class ModEngineStand
 {
 	public ModItem engineItem;
 	public ModGroupItem engineGroupItem;
+	public bool isHandled;
 
 	public Dictionary<int, PartScript> partReferences = new();
 	public Dictionary<int, ModPartScript> parts = new();
