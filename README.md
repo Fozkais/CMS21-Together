@@ -32,7 +32,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 *Here's every planned feature state :*
 
 * Implement Networking System (TCP/UDP) : ✅
-* Implement Steam API Networking : ✅
+* Implement Steam API Networking : ❌
 * Create a Lobby system : ✅
 * Add a Custom Save System : ✅
 * Sync players Position and Rotation : ✅
@@ -42,8 +42,8 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash,Power bench and wheel alignment are missing)
 * Sync Cars "mechanic" : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
-* Sync Quest : 🚧
-* Sync garage upgrade : 🚧
+* Sync Quest : ❌
+* Sync garage upgrade : ❌
 * Sync garage Customization : ❌
 * Add Mod Support : ❌
 * Add Animation to players : ✅
