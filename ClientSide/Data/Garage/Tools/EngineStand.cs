@@ -43,7 +43,7 @@ public static class EngineStand
 		MelonLogger.Msg("[EngineStand->SetGroupOnEngineStand] Hook!");
 	}
 	
-	[HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
+	[HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.TakeOffEngineFromStand))]
 	[HarmonyPrefix]
 	public static void TakeOffEngineFromStandHook()
 	{
@@ -62,6 +62,26 @@ public static class EngineStand
 		listen = false;
 		MainMod.StartCoroutine(GameData.Instance.engineStandLogic.SetGroupOnEngineStand(engineGroup.ToGame(), false));
 	}
+	public static IEnumerator TakeOffEngineFromStand()
+	{
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+
+		listen = false;
+		MainMod.StartCoroutine(NotificationCenter.Get().TakeOffEngineFromStand());
+	}
+	
+	public static IEnumerator IncreaseEngineStandAngle(int angle)
+	{
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+		
+		listen = false;
+		GameData.Instance.engineStandLogic.IncreaseEngineStandAngle(angle);
+	}
+	
 	private static IEnumerator HandleEngineStand()
 	{
 		for (int i = 0; i < 5; i++)

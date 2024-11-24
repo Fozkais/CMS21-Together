@@ -320,11 +320,12 @@ public class ClientSend
 		}
 	}
 
-	public static void EngineCraneHandlePacket(int action, ModGroupItem modGroupItem=null)
+	public static void EngineCraneHandlePacket(int action, int carLoaderID, ModGroupItem modGroupItem = null)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineCrane))
 		{
 			packet.Write(action);
+			packet.Write(carLoaderID);
 			if(action == 1) packet.Write(modGroupItem);
 			
 			SendData(packet);

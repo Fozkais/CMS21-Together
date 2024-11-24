@@ -79,8 +79,8 @@ public static class ClientHandle
 	
 	public static void SpawnPacket(Packet packet)
 	{
-		int playerExp = packet.Read<int>();
-		int playerLevel = packet.Read<int>();
+		int playerExp = packet.ReadInt();
+		int playerLevel = packet.ReadInt();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
 		QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
 		Dictionary<string, List<bool>> skills = packet.Read<Dictionary<string, List<bool>>>();
@@ -310,12 +310,35 @@ public static class ClientHandle
 		MelonCoroutines.Start(JobManager.OnJobComplete(job, carLoaderID));
 	}
 	
+	public static void EngineCraneHandlePacket(Packet packet)
+	{
+		int action = packet.ReadInt();
+		int carLoaderID = packet.ReadInt();
+
+		if (action == 1)
+		{
+			ModGroupItem item = packet.Read<ModGroupItem>();
+			MelonCoroutines.Start(EngineCrane.InsertEngineIntoCar(item));
+			return;
+		}
+		MelonCoroutines.Start(EngineCrane.UseEngineCrane(carLoaderID));
+	}
+	
 	public static void EngineSetGroupPacket(Packet packet)
 	{
 		var engineGroup = packet.Read<ModGroupItem>();
 
 		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup));
-
+	}
+	public static void EngineTakeOffPacket(Packet packet)
+	{
+		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand());
+	}
+	public static void EngineStandAnglePacket(Packet packet)
+	{
+		int angle = packet.ReadInt();
+		
+		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle));
 	}
 
 	public static void SceneChangePacket(Packet packet)

@@ -14,7 +14,7 @@ namespace CMS21Together.ServerSide.Data;
 public static class ServerSend
 {
 	
-	public static void PlayerSpawnPacket(int id,PlayerInfo info)
+	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
 		if (id == 1) return; // dont send if it's host (1 = host)
 		
@@ -402,6 +402,36 @@ public static class ServerSend
 		{
 			_packet.Write(engineGroup);
 
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void EngineStandTakeOffPacket(int fromClient)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.engineStandTakeOff))
+		{
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void IncreaseStandAnglePacket(int fromClient, int val)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
+		{
+			_packet.Write(val);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void EngineCraneHandlePacket(int fromClient, int action, int carLoaderID, ModGroupItem item = null)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.engineCrane))
+		{
+			_packet.Write(action);
+			_packet.Write(carLoaderID);
+			if (action == 1) _packet.Write(item);
+			
 			SendDataToAll(fromClient, _packet);
 		}
 	}

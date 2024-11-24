@@ -376,11 +376,38 @@ public static class ServerHandle
 		ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType);
 	}
 	
+
+	public static void EngineCraneHandlePacket(int fromClient, Packet packet)
+	{
+		int action = packet.ReadInt();
+		int carLoaderID = packet.ReadInt();
+		ModGroupItem item;
+		if (action == 1)
+		{
+			item = packet.Read<ModGroupItem>();
+			
+			ServerSend.EngineCraneHandlePacket(fromClient, action, carLoaderID, item);			
+			return;
+		}
+		ServerSend.EngineCraneHandlePacket(fromClient, action, carLoaderID);
+	}
 	public static void EngineStandSetGroupPacket(int fromClient, Packet packet)
 	{
 		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
 
 		ServerData.Instance.SetEngineOnStand(engineGroup);
 		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup);
+	}
+	public static void EngineStandTakeOffPacket(int fromClient, Packet packet)
+	{
+		ServerData.Instance.ClearEngineFromStand();
+		ServerSend.EngineStandTakeOffPacket(fromClient);
+	}	
+	public static void EngineStandAnglePacket(int fromClient, Packet packet)
+	{
+		int val = packet.ReadInt();
+		
+		ServerData.Instance.IncreaseStandAngle(val);
+		ServerSend.IncreaseStandAnglePacket(fromClient, val);
 	}
 }
