@@ -41,8 +41,7 @@ public class ClientData
 	{
 		if (GameData.Instance == null)
 			MelonCoroutines.Start(InitializeGameData());
-
-		Stats.SendInitialStats();
+		
 		Movement.SendPosition();
 		Rotation.SendRotation();
 		JobManager.UpdateSelectedJob();
@@ -52,10 +51,10 @@ public class ClientData
 	private IEnumerator InitializeGameData()
 	{
 		GameData.Instance = new GameData();
+		Stats.SendInitialStats();
 
 		yield return new WaitForSeconds(2);
 		yield return new WaitForEndOfFrame();
-
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		GameReady = true;
 		MelonLogger.Msg("Game is ready.");

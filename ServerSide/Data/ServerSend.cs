@@ -396,11 +396,12 @@ public static class ServerSend
 		}
 	}
 
-	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup)
+	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
 			_packet.Write(engineGroup);
+			_packet.Write(position);
 
 			SendDataToAll(fromClient, _packet);
 		}

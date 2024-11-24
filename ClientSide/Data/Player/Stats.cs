@@ -13,11 +13,9 @@ public static class Stats
 {
 	public static bool listentoAddMoney = true;
 	public static bool listentoAddScrap = true;
-	private static bool initialStatSent;
 
 	public static void Reset()
 	{
-		initialStatSent = false;
 		listentoAddMoney = true;
 		listentoAddScrap = true;
 	}
@@ -25,9 +23,8 @@ public static class Stats
 
 	public static void SendInitialStats()
 	{
-		if (initialStatSent || !Server.Instance.isRunning) return;
-
-		initialStatSent = true;
+		if (!Server.Instance.isRunning) return;
+		
 		ClientSend.StatPacket(GlobalData.PlayerMoney, ModStats.money, true);
 		ClientSend.StatPacket(GlobalData.PlayerScraps, ModStats.scrap, true);
 	}

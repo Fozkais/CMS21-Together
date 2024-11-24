@@ -237,9 +237,10 @@ public class ServerData
 		throw new System.NotImplementedException();
 	}
 
-	public void SetEngineOnStand(ModGroupItem engineGroup)
+	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position)
 	{
 		engineStand = new ModEngineStand();
+		engineStand.position = position;
 		engineStand.engineGroupItem = engineGroup;
 	}
 

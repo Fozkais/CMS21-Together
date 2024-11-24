@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
@@ -35,15 +36,11 @@ public static class EngineStand
 	{
 		if(!Client.Instance.isConnected) {return;}
 
-		MelonCoroutines.Start(HandleEngineStand());
-		if (listen)
-			ClientSend.EngineStandSetGroupPacket(new ModGroupItem(groupItem));
-		else
-			listen = true;
+		MelonCoroutines.Start(HandleEngineStand(groupItem));
 		MelonLogger.Msg("[EngineStand->SetGroupOnEngineStand] Hook!");
 	}
 	
-	[HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.TakeOffEngineFromStand))]
+	[HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
 	[HarmonyPrefix]
 	public static void TakeOffEngineFromStandHook()
 	{
@@ -53,7 +50,7 @@ public static class EngineStand
 		MelonLogger.Msg("[EngineStand->TakeOffEngine] Hook!");
 	}
 
-	public static IEnumerator TakeOnEngineFromStand(ModGroupItem engineGroup)
+	public static IEnumerator TakeOnEngineFromStand(ModGroupItem engineGroup, Vector3Serializable position)
 	{
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.25f);
@@ -61,6 +58,11 @@ public static class EngineStand
 
 		listen = false;
 		MainMod.StartCoroutine(GameData.Instance.engineStandLogic.SetGroupOnEngineStand(engineGroup.ToGame(), false));
+		
+		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForEndOfFrame();
+
+		GameData.Instance.engineStandLogic.engineGameObject.transform.position = position.toVector3();
 	}
 	public static IEnumerator TakeOffEngineFromStand()
 	{
@@ -82,10 +84,22 @@ public static class EngineStand
 		GameData.Instance.engineStandLogic.IncreaseEngineStandAngle(angle);
 	}
 	
-	private static IEnumerator HandleEngineStand()
+	private static IEnumerator HandleEngineStand(GroupItem groupItem)
 	{
 		for (int i = 0; i < 5; i++)
 			yield return new WaitForEndOfFrame();
+		
+		if (listen)
+		{
+			yield return new WaitForSeconds(0.1f);
+			if (GameData.Instance.engineStandLogic.engineGameObject != null)
+			{
+				Vector3Serializable position = new Vector3Serializable(GameData.Instance.engineStandLogic.engineGameObject.transform.position);
+				ClientSend.EngineStandSetGroupPacket(new ModGroupItem(groupItem), position);
+			}
+		}
+		else
+			listen = true;
 
 		var es = ClientData.Instance.engineStand = new ModEngineStand();
 		

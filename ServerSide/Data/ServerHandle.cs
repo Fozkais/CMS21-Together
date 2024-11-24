@@ -394,9 +394,10 @@ public static class ServerHandle
 	public static void EngineStandSetGroupPacket(int fromClient, Packet packet)
 	{
 		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
+		Vector3Serializable position = packet.Read<Vector3Serializable>();
 
-		ServerData.Instance.SetEngineOnStand(engineGroup);
-		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup);
+		ServerData.Instance.SetEngineOnStand(engineGroup, position);
+		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position);
 	}
 	public static void EngineStandTakeOffPacket(int fromClient, Packet packet)
 	{

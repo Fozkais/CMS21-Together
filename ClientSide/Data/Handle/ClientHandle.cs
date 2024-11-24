@@ -327,8 +327,9 @@ public static class ClientHandle
 	public static void EngineSetGroupPacket(Packet packet)
 	{
 		var engineGroup = packet.Read<ModGroupItem>();
-
-		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup));
+		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		
+		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position));
 	}
 	public static void EngineTakeOffPacket(Packet packet)
 	{
