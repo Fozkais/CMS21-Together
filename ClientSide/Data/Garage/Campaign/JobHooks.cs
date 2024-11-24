@@ -112,8 +112,8 @@ public static class JobHooks
 	public static bool UpdateHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected || Server.Instance.isRunning) return true;
-
 		if (!NotificationCenter.IsGameReady || !GameSettings.CanGenerateOrders) return false;
+		
 		var maxOrdersAmount = GlobalData.GetMaxOrdersAmount();
 		if (GlobalData.Jobs < maxOrdersAmount) __instance.orderTimer += Time.deltaTime; // enable timer advance and disable job generation for clients
 

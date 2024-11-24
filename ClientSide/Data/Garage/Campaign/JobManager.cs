@@ -78,12 +78,15 @@ public static class JobManager
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
-
+		
 		var newJob = job.ToGame();
-
+		newJob.timeToEnd -= 3;
 		GameData.Instance.orderGenerator.jobs.Add(newJob);
+		if (!newJob.IsMission)
+			GameData.Instance.orderGenerator.jobs.ToArray()[GameData.Instance.orderGenerator.jobs.Count-1].StartTimer();
 		GlobalData.AddJob(1);
 		UIManager.Get().UpdateJobs(GameData.Instance.orderGenerator.jobs, newJob);
+		MelonLogger.Msg($"Should have added a Mision! {newJob.id} , {newJob.IsMission}");
 	}
 
 	public static IEnumerator JobAction(int jobID, bool takeJob)
