@@ -18,6 +18,7 @@ public class ServerData
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
 	public ModEngineStand engineStand = new();
+	public int engineStandAngle  = 0;
 
 	public Dictionary<int, UserData> connectedClients = new();
 
@@ -240,6 +241,16 @@ public class ServerData
 	{
 		engineStand = new ModEngineStand();
 		engineStand.engineGroupItem = engineGroup;
+	}
+
+	public void ClearEngineFromStand()
+	{
+		engineStand = new ModEngineStand();
+	}
+
+	public void IncreaseStandAngle(int val)
+	{
+		engineStandAngle = val;
 	}
 }
 
