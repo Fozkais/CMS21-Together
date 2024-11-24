@@ -135,10 +135,13 @@ public static class PartsUpdater
 			}
 		}
 
-		for (var index = 0; index < part.unmountWith.Count; index++)
+		if (part.unmountWith != null)
 		{
-			var partScript = part.unmountWith[index];
-			UpdatePartScript(partScript, reference.unmountWith.ToArray()[index], carLoaderID);
+			for (var index = 0; index < part.unmountWith.Count; index++)
+			{
+				var partScript = part.unmountWith[index];
+				UpdatePartScript(partScript, reference.unmountWith.ToArray()[index], carLoaderID);
+			}
 		}
 	}
 

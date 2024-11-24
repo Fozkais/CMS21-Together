@@ -69,7 +69,7 @@ public class ModGroupItem
 	public Il2CppSystem.Collections.Generic.List<Item> Convert(List<ModItem> items)
 	{
 		var FinalItem = new Il2CppSystem.Collections.Generic.List<Item>();
-		foreach (var item in items) FinalItem.Add(item.ToGame(item));
+		foreach (var item in items) FinalItem.Add(item.ToGame());
 
 		return FinalItem;
 	}
