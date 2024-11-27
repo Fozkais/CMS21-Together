@@ -102,6 +102,7 @@ public class Client
 			{ (int)PacketTypes.engineStandSetGroup, ClientHandle.EngineSetGroupPacket },
 			{ (int)PacketTypes.engineStandTakeOff, ClientHandle.EngineTakeOffPacket },
 			{ (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAnglePacket },
+			{ (int)PacketTypes.carFluid, ClientHandle.CarFluidPacket },
 
 			{ (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
 			{ (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
@@ -122,6 +123,8 @@ public class Client
 	{
 		if (!isConnected) return;
 
+
+		ClientSend.DisconnectPacket();
 		Application.runInBackground = false;
 		isConnected = false;
 

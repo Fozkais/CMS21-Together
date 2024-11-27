@@ -1,11 +1,32 @@
+using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
+using HarmonyLib;
 using MelonLoader;
 
 namespace CMS21Together.Shared;
 
-public class SceneManager
+[HarmonyPatch]
+public static class SceneManager
 {
+	[HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.SelectSceneToLoad),
+		new []{typeof(string), typeof(SceneType), typeof(bool), typeof(bool)})]
+	[HarmonyPrefix]
+	public static void SelectSceneToLoadHook(string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
+	{
+		if (!Client.Instance.isConnected) return;
+
+		if (newSceneName == "Menu")
+		{
+			MelonLogger.Msg("Going to menu! disconnect..");
+			if (Server.Instance.isRunning)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
+			if (Client.Instance.isConnected)
+				Client.Instance.Disconnect();
+		}
+	}
+
 	public static GameScene UpdateScene(string scene)
 	{
 		MelonLogger.Msg($"[SceneManager->UpdateScene] changed scene : {scene}!");
@@ -20,6 +41,8 @@ public class SceneManager
 			return GameScene.auto_salon;
 		if (scene == "Menu")
 			return GameScene.menu;
+		
+		
 
 		return GameScene.unknow;
 	}

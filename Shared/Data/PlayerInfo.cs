@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Shared.Data;
@@ -25,7 +26,16 @@ public class PlayerInfo
 		playerExp = _exp;
 		playerLevel = _lvl;
 	}
-
+	
+	public void UpdateStats(Vector3 _position, Quaternion _rotation, int _exp, int _lvl)
+	{
+		MelonLogger.Msg($"Received new stat : {_position.ToString()} , {rotation.ToString()} , {_exp} , {_lvl}");
+		playerExp = _exp;
+		playerLevel = _lvl;
+		position = new Vector3Serializable(_position);
+		rotation = new QuaternionSerializable(_rotation);
+		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+	}
 	public void UpdateSkill(string skill_ID, List<bool> skill)
 	{
 		skillsInfo[skill_ID] = skill;

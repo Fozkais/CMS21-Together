@@ -11,14 +11,18 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 [HarmonyPatch]
 public static class PartUpdateHooks
 {
-	[HarmonyPatch(typeof(CarFluid), nameof(CarFluid.SetLevel))]
+	[HarmonyPatch(typeof(FluidData), nameof(FluidData.SetLevel))]
 	[HarmonyPostfix]
-	public static void SetLevelHook(float level, CarFluid __instance)
+	public static void SetLevelHook(float level, FluidData __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		
-		int carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
-		ClientSend.CarFluid(carLoaderID, new ModCarFluid(__instance));
+
+		if (__instance != null && __instance.CarFluid != null)
+		{
+			int carLoaderID = __instance.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance));
+		}
+
 	}
 
 	[HarmonyPatch(typeof(PartScript), nameof(PartScript.DoMount))]

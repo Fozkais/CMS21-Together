@@ -40,6 +40,8 @@ public static class ClientHandle
 		var message = packet.Read<string>();
 
 		MelonLogger.Msg($"[ClientHandle->DisconnectPacket] You've been disconnected from server: {message}");
+		ClientSend.DisconnectPacket();
+		
 		Client.Instance.Disconnect();
 	}
 
@@ -340,6 +342,15 @@ public static class ClientHandle
 		int angle = packet.ReadInt();
 		
 		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle));
+	}
+	
+	public static void CarFluidPacket(Packet packet)
+	{
+		var carLoaderID = packet.ReadInt();
+		ModFluidData fluid = packet.Read<ModFluidData>();
+
+		MelonLogger.Msg("CL: Received CarFluid!");
+		MelonCoroutines.Start(PartsUpdater.UpdateFluid(fluid, carLoaderID));
 	}
 
 	public static void SceneChangePacket(Packet packet)

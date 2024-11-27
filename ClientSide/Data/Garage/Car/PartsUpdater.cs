@@ -222,4 +222,14 @@ public static class PartsUpdater
 		GameData.Instance.carLoaders[carLoaderID].SetCondition(reference, carPart.condition);
 		GameData.Instance.carLoaders[carLoaderID].UpdateCarBodyPart(reference);
 	}
+
+	public static IEnumerator UpdateFluid(ModFluidData fluid, int carLoaderID)
+	{
+		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
+		yield return waitforCar;
+		yield return new WaitForEndOfFrame();
+		
+		GameData.Instance.carLoaders[carLoaderID].FluidsData
+			.SetLevelAndCondition(fluid.Level, fluid.Condition, (CarFluidType)fluid.CarFluid.FluidType);
+	}
 }

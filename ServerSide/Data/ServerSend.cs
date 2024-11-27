@@ -436,4 +436,15 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void CarFluidPacket(int fromClient, int carLoaderID, ModFluidData fluid)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carFluid))
+		{
+			_packet.Write(carLoaderID);
+			_packet.Write(fluid);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }

@@ -63,6 +63,17 @@ public static class ServerHandle
 	public static void DisconnectPacket(int fromclient, Packet packet)
 	{
 		MelonLogger.Msg("[ServerHandle->DisconnectPacket] as disconnected from server.");
+		
+		string playerID = packet.Read<string>();
+		Vector3Serializable pos = packet.Read<Vector3Serializable>();
+		QuaternionSerializable rot = packet.Read<QuaternionSerializable>();
+		int exp = packet.ReadInt();
+		int lvl = packet.ReadInt();
+		
+		
+		SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos
+			.First(p => playerID == p.id).UpdateStats(pos.toVector3(), rot.toQuaternion(), exp, lvl);
+		
 		Server.Instance.clients[fromclient].Disconnect();
 	}
 
@@ -234,10 +245,10 @@ public static class ServerHandle
 	public static void CarFluidPacket(int fromClient, Packet packet)
 	{
 		var carLoaderID = packet.ReadInt();
-		ModCarFluid fluid = packet.Read<ModCarFluid>();
-
-		MelonLogger.Msg("SV: Received CarFluid!");
+		ModFluidData fluid = packet.Read<ModFluidData>();
+		
 		ServerData.Instance.UpdateFluid(fluid, carLoaderID);
+		ServerSend.CarFluidPacket(fromClient, carLoaderID, fluid);
 	}
 
 	public static void DeleteCarPacket(int fromClient, Packet packet)

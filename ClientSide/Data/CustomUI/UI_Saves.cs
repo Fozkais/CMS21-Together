@@ -208,7 +208,7 @@ public static class UI_Saves
 				}
 				else
 				{
-					Server.Instance.CloseServer();
+					MelonCoroutines.Start(Server.Instance.CloseServer());
 					Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
 				}
 

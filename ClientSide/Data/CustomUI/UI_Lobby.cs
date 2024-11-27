@@ -126,7 +126,7 @@ public static class UI_Lobby
 		CustomUIManager.EnableUI(CustomUISection.MP_Main);
 
 		if (Server.Instance.isRunning)
-			Server.Instance.CloseServer();
+			MelonCoroutines.Start(Server.Instance.CloseServer());
 		else
 			Client.Instance.Disconnect();
 

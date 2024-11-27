@@ -7,6 +7,7 @@ using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
+using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -232,9 +233,9 @@ public class ServerData
 		if (selectedJobs.Any(j => j.id == job.id)) selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
 	}
 
-	public void UpdateFluid(ModCarFluid fluid, int carLoaderID)
+	public void UpdateFluid(ModFluidData fluid, int carLoaderID)
 	{
-		throw new System.NotImplementedException();
+		//MelonLogger.Msg("Not implemented...");
 	}
 
 	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position)

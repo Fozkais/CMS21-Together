@@ -59,10 +59,6 @@ namespace CMS21Together
 			if (sceneName == "Menu")
 			{
 				ContentManager.Instance.Initialize();
-				if (Server.Instance.isRunning)
-					Server.Instance.CloseServer();
-				if (Client.Instance.isConnected)
-					Client.Instance.Disconnect();
 
 				Application.runInBackground = false;
 			}

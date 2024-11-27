@@ -100,6 +100,7 @@ public class ClientData
 			yield return new WaitForSeconds(0.1f);
 		
 		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
 		
 		GlobalData.PlayerExp = exp;
 		GlobalData.PlayerLevel = level;
@@ -108,18 +109,21 @@ public class ClientData
 
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;
-		GameData.Instance.localPlayer.transform.rotation = rot;
+		if (rot != Quaternion.identity)
+			GameData.Instance.localPlayer.transform.rotation = rot;
 		
-		GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
-
-		foreach (KeyValuePair<string, List<bool>> skill in skills)
+		if (skills != null)
 		{
-			int lvl = 0;
-			foreach (bool unlocked in skill.Value)
+			GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
+			foreach (KeyValuePair<string, List<bool>> skill in skills)
 			{
-				if(unlocked)
-					GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
-				lvl++;
+				int lvl = 0;
+				foreach (bool unlocked in skill.Value)
+				{
+					if(unlocked)
+						GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
+					lvl++;
+				}
 			}
 		}
 	}

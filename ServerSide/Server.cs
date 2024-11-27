@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -74,14 +75,17 @@ public class Server
 		MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
 	}
 
-	public void CloseServer()
+	public IEnumerator CloseServer()
 	{
-		if (!isRunning) return;
-
+		if (!isRunning) yield break;
+		
 		foreach (var id in clients.Keys) ServerSend.DisconnectPacket(id, "Server is shutting down.");
+		
+		for (int i = 0; i < 3; i++)
+			yield return new WaitForSeconds(1);
+		
 		isRunning = false;
 		Application.runInBackground = false;
-
 		if (udp != null)
 			udp.Close();
 		if (tcp != null)
@@ -189,6 +193,7 @@ public class Server
 			{ (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
 			{ (int)PacketTypes.bodyPart, ServerHandle.BodyPartPacket },
 			{ (int)PacketTypes.partScript, ServerHandle.PartScriptPacket },
+			{ (int)PacketTypes.carFluid, ServerHandle.CarFluidPacket },
 
 			{ (int)PacketTypes.deleteCar, ServerHandle.DeleteCarPacket },
 			{ (int)PacketTypes.carPosition, ServerHandle.CarPositionPacket },
