@@ -12,11 +12,13 @@ namespace CMS21Together.ClientSide.Data.Player;
 public static class Stats
 {
 	public static bool listentoAddMoney = true;
+	public static bool listentoAddExp = true;
 	public static bool listentoAddScrap = true;
 
 	public static void Reset()
 	{
 		listentoAddMoney = true;
+		listentoAddExp = true;
 		listentoAddScrap = true;
 	}
 
@@ -67,7 +69,24 @@ public static class Stats
 		}
 	}
 
+	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerExp))]
+	[HarmonyPostfix]
+	public static void AddPlayerExpHook(int exp, bool instant = false)
+	{
+		if (!Client.Instance.isConnected) return;
+		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
 
+		ClientData.Instance.exp = GlobalData.PlayerExp;
+
+		if (!listentoAddExp)
+		{
+			listentoAddExp = true;
+			return;
+		}
+
+		ClientSend.ExpPacket(exp, GlobalData.PlayerLevel);
+	}
+	
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]
 	[HarmonyPostfix]
 	public static void AddPlayerMoneyHook(int money)

@@ -62,18 +62,7 @@ public static class ServerHandle
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
 	{
-		MelonLogger.Msg("[ServerHandle->DisconnectPacket] as disconnected from server.");
-		
-		string playerID = packet.Read<string>();
-		Vector3Serializable pos = packet.Read<Vector3Serializable>();
-		QuaternionSerializable rot = packet.Read<QuaternionSerializable>();
-		int exp = packet.ReadInt();
-		int lvl = packet.ReadInt();
-		
-		
-		SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos
-			.First(p => playerID == p.id).UpdateStats(pos.toVector3(), rot.toQuaternion(), exp, lvl);
-		
+		MelonLogger.Msg($"[ServerHandle->DisconnectPacket] {ServerData.Instance.connectedClients[fromclient].username} as disconnected from server.");
 		Server.Instance.clients[fromclient].Disconnect();
 	}
 
@@ -198,6 +187,15 @@ public static class ServerHandle
 			}
 
 		ServerSend.StatPacket(fromClient, value, type, initial);
+	}
+	
+	public static void ExpPacket(int fromClient, Packet packet)
+	{
+		int exp = packet.ReadInt();
+		int lvl = packet.ReadInt();
+		
+		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
+		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
 	}
 
 	public static void LifterPacket(int fromClient, Packet packet)

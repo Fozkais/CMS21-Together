@@ -23,6 +23,8 @@ public class UserData
 	[JsonIgnore] public GameScene scene;
 	[JsonIgnore] public Vector3Serializable position = new(Vector3.zero);
 	[JsonIgnore] public QuaternionSerializable rotation = new(Quaternion.identity);
+	[JsonIgnore] public int playerLevel;
+	[JsonIgnore] public int playerExp;
 	[JsonIgnore] [NonSerialized] public Vector3Serializable lastPosition;
 	[JsonIgnore] [NonSerialized] public Animator userAnimator;
 

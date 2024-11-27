@@ -114,6 +114,8 @@ namespace CMS21Together
 		public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
 		{
 			TogetherModManager.SavePreferences();
+			if (Server.Instance.isRunning)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
 		}
 	}
 }

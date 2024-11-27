@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide;
@@ -78,11 +79,26 @@ public class Server
 	public IEnumerator CloseServer()
 	{
 		if (!isRunning) yield break;
-		
-		foreach (var id in clients.Keys) ServerSend.DisconnectPacket(id, "Server is shutting down.");
-		
-		for (int i = 0; i < 3; i++)
-			yield return new WaitForSeconds(1);
+
+		MelonLogger.Msg("[Server->CloseServer] Saving players infos...");
+		foreach (var id in clients.Keys)
+		{
+			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
+			
+			string playerGUID = ServerData.Instance.connectedClients[id].playerGUID;
+			PlayerInfo info = SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerGUID == p.id);
+			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
+			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
+			int lvl = ServerData.Instance.connectedClients[id].playerExp;
+			int exp = ServerData.Instance.connectedClients[id].playerLevel;
+
+			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
+				info.UpdateStats(pos, rot, exp , lvl);
+			
+			ServerSend.DisconnectPacket(id, "Server is shutting down.");
+		}
+		yield return new WaitForSeconds(1);
+		MelonLogger.Msg("[Server->CloseServer] Successfully Saved players infos!");
 		
 		isRunning = false;
 		Application.runInBackground = false;
@@ -174,6 +190,7 @@ public class Server
 			{ (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
 
 			{ (int)PacketTypes.stat, ServerHandle.StatPacket },
+			{ (int)PacketTypes.exp, ServerHandle.ExpPacket },
 			{ (int)PacketTypes.skillChange, ServerHandle.SkillChangePacket },
 			{ (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket },
 

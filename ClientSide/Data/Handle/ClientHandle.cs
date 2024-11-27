@@ -40,8 +40,6 @@ public static class ClientHandle
 		var message = packet.Read<string>();
 
 		MelonLogger.Msg($"[ClientHandle->DisconnectPacket] You've been disconnected from server: {message}");
-		ClientSend.DisconnectPacket();
-		
 		Client.Instance.Disconnect();
 	}
 

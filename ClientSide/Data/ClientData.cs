@@ -23,7 +23,7 @@ public class ClientData
 	public Dictionary<int, ModCar> loadedCars = new();
 	public ModEngineStand engineStand;
 	public GameObject playerPrefab;
-	public int scrap, money;
+	public int scrap, money ,exp, level;
 
 	public ClientData()
 	{

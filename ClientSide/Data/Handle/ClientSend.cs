@@ -95,6 +95,17 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+	
+	public static void ExpPacket(int exp, int level)
+	{
+		using (var packet = new Packet((int)PacketTypes.exp))
+		{
+			packet.Write(exp);
+			packet.Write(level);
+
+			SendData(packet);
+		}
+	}
 
 	public static void LifterPacket(ModLifterState state, int carLoaderID)
 	{
@@ -375,18 +386,6 @@ public class ClientSend
 	{
 		using (var packet = new Packet((int)PacketTypes.disconnect))
 		{
-			MelonLogger.Msg("Sending disconnect packet!");
-			MelonLogger.Msg($"Sending new stat : " +
-			                $"{GameData.Instance.localPlayer.transform.position.ToString()} " +
-			                $", {GameData.Instance.localPlayer.transform.rotation.ToString()} , {
-				                GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
-			
-			packet.Write(ClientData.UserData.playerGUID);
-			packet.Write(new Vector3Serializable(GameData.Instance.localPlayer.transform.position));
-			packet.Write(new QuaternionSerializable(GameData.Instance.localPlayer.transform.rotation));
-			packet.Write(GlobalData.PlayerExp);
-			packet.Write(GlobalData.PlayerLevel);
-			
 			SendData(packet);
 		}
 	}
