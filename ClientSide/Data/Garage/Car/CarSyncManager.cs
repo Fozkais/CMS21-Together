@@ -13,9 +13,12 @@ public static class CarSyncManager
 
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
-			car.carPosition = placeNo;
-			CarSyncHooks.listenToChangePosition = false;
-			GameData.Instance.carLoaders[carLoaderID].ChangePosition(placeNo);
+			if (placeNo != car.carPosition)
+			{
+				car.carPosition = placeNo;
+				CarSyncHooks.listenToChangePosition = false;
+				GameData.Instance.carLoaders[carLoaderID].ChangePosition(placeNo);
+			}
 		}
 	}
 

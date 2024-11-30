@@ -201,6 +201,7 @@ public class Server
 			{ (int)PacketTypes.clearTireChanger, ServerHandle.ClearTireChangerPacket },
 			{ (int)PacketTypes.wheelBalance, ServerHandle.WheelBalancePacket },
 			{ (int)PacketTypes.toolMove, ServerHandle.ToolsMovePacket },
+			{ (int)PacketTypes.oilBinUse, ServerHandle.OilBin },
 			{ (int)PacketTypes.engineCrane, ServerHandle.EngineCraneHandlePacket },
 			{ (int)PacketTypes.engineStandSetGroup, ServerHandle.EngineStandSetGroupPacket },
 			{ (int)PacketTypes.engineStandTakeOff, ServerHandle.EngineStandTakeOffPacket },
