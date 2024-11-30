@@ -11,11 +11,13 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 [HarmonyPatch]
 public static class PartUpdateHooks
 {
+	public static bool listen = true;
+	
 	[HarmonyPatch(typeof(FluidData), nameof(FluidData.SetLevel))]
 	[HarmonyPostfix]
 	public static void SetLevelHook(float level, FluidData __instance)
 	{
-		if (!Client.Instance.isConnected) return;
+		if (!Client.Instance.isConnected || !listen) {listen = true; return;}
 
 		if (__instance != null && __instance.CarFluid != null)
 		{

@@ -228,7 +228,8 @@ public static class PartsUpdater
 		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
 		yield return waitforCar;
 		yield return new WaitForEndOfFrame();
-		
+
+		PartUpdateHooks.listen = false;
 		GameData.Instance.carLoaders[carLoaderID].FluidsData
 			.SetLevelAndCondition(fluid.Level, fluid.Condition, (CarFluidType)fluid.CarFluid.FluidType);
 	}
