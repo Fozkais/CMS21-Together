@@ -13,12 +13,16 @@ public static class SkillUpgradeHook
 	
 	[HarmonyPatch(typeof(UpgradeSystem), nameof(UpgradeSystem.UnlockUpgrade))]
 	[HarmonyPostfix]
-	public static void UnlockUpgradeHook( string id, int lvl, UpgradeType upgradeType = UpgradeType.Points, UpgradeSystem __instance = null)
+	public static void UnlockUpgradeHook( string id, int lvl, UpgradeType upgradeType, UpgradeSystem __instance)
 	{
 		if (!Client.Instance.isConnected || !listen) { listen = true; return; }
 		
-		MelonLogger.Msg($"UnlockedState: ");
+		
+		if (__instance == null) return;
 		var items = __instance.GetUnlocked(id);
+		if (items == null) return;
+		
+		MelonLogger.Msg($"UnlockedState: ");
 		List<bool> skillInfo = new List<bool>();
 		for (int i = 0; i < items.Length; i++)
 		{

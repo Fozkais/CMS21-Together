@@ -30,6 +30,12 @@ public static class JobHooks
 				MelonLogger.Msg($"[Hook->LoadHook] Sent new job.");
 				ClientSend.JobPacket(new ModJob(job));
 			}
+			
+			foreach (Job job in __instance.selectedJobs.ToArray())
+			{
+				MelonLogger.Msg($"[Hook->LoadHook] Sent new selected job.");
+				ClientSend.SelectedJobPacket(new ModJob(job), true);
+			}
 		}
 	}
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
@@ -49,7 +55,7 @@ public static class JobHooks
 	public static void GenerateMissionHook(int id, bool forTutorial, OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (__instance.jobs.Count <= 0) return;
+		if (__instance.jobs.Count <= 0 || id == -1) return;
 		
 		if (Server.Instance.isRunning)
 		{
@@ -115,7 +121,7 @@ public static class JobHooks
 		if (!NotificationCenter.IsGameReady || !GameSettings.CanGenerateOrders) return false;
 		
 		var maxOrdersAmount = GlobalData.GetMaxOrdersAmount();
-		if (GlobalData.Jobs < maxOrdersAmount) __instance.orderTimer += Time.deltaTime; // enable timer advance and disable job generation for clients
+		if (GlobalData.Jobs < maxOrdersAmount) __instance.orderTimer += Time.deltaTime; // enable timer and disable job generation for clients
 
 		return false;
 	}
@@ -124,7 +130,7 @@ public static class JobHooks
 	[HarmonyPrefix]
 	public static bool EndJobHook(Job job, CarLoader carLoader) // TODO:Handle exp gain for everyone
 	{
-		if (!Client.Instance.isConnected || Server.Instance.isRunning) return true;
+		if (!Client.Instance.isConnected /*|| Server.Instance.isRunning*/) return true;
 
 		if (!carLoader.CheckCarPartsBolts())
 		{
@@ -175,20 +181,45 @@ public static class JobHooks
 		MelonLogger.Msg($"ID:{job.id}");
 		MelonLogger.Msg($"IsMission:{job.IsMission}");
 		MelonLogger.Msg($"isCompleted:{job.IsCompleted}");
-		MelonLogger.Msg($"Mileage:{job.Mileage}");
-		MelonLogger.Msg($"forXP:{job.forXP}");
-		MelonLogger.Msg($"jobBonus:{job.JobBonus}");
-		MelonLogger.Msg($"moneySpent:{job.MoneySpent}");
-		MelonLogger.Msg($"BonusEXP:{job.BonusToExp}");
-		MelonLogger.Msg($"BonusMoney:{job.BonusToMoney}");
-		MelonLogger.Msg($"taskBonus:{job.TaskBonus}");
+		MelonLogger.Msg($"Payout:{job.TotalPayout}");
+		MelonLogger.Msg($"XP:{job.XP}");
+		MelonLogger.Msg($"MoneySpent:{job.MoneySpent}");
 
+		Singleton<GameManager>.Instance.Inventory.TryAddSpecialCase(job.IsMission);
+		GlobalData.AddPlayerMoney(job.TotalPayout);
+		GlobalData.AddPlayerExp(job.XP);
+		
+		Singleton<GameManager>.Instance.OrderGenerator.CancelJob(job.id);
+		if (job.IsMission)
+		{
+			GlobalData.IsStoryMissionInProgress = false;
+			GlobalData.MissionsFinished++;
+			GlobalData.CurrentMissionDone = true;
+			if (GlobalData.MissionsFinished >= GlobalData.MissionsAmount)
+			{
+				Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_allmissions", 1);
+			}
+			
+		}
+		
+		carLoader.DeleteCar(true);
+		GameScript.Get().SetCarLoaderOverNull();
+		GameScript.Get().GarageOnFootWithoutFader();
+		
+		GarageLoader.Get().Save();
+		if (job.IsCompleted) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_order", 1);
+		if (job.IsCompleted && job.BonusToExp) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_exp", 1);
+		if (job.IsCompleted && job.BonusToMoney) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_money", 1);
+		
 		// Only accept job end if is valid
-		var modJob = JobManager.selectedJobs.First(j => j.id == job.id);
-		var carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
+		if (JobManager.selectedJobs.Any(j => j.id == job.id))
+		{
+			var modJob = JobManager.selectedJobs.First(j => j.id == job.id);
+			JobManager.selectedJobs.Remove(modJob);
+			var carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
 
-		ClientSend.EndJobPacket(modJob, carLoaderID);
-
+			ClientSend.EndJobPacket(modJob, carLoaderID);
+		}
 		return false;
 	}
 }
