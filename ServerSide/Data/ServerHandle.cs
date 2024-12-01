@@ -194,6 +194,7 @@ public static class ServerHandle
 		int exp = packet.ReadInt();
 		int lvl = packet.ReadInt();
 		
+		MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
 		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
 	}

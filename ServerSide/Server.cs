@@ -97,6 +97,7 @@ public class Server
 			
 			ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
+		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);
 		MelonLogger.Msg("[Server->CloseServer] Successfully Saved players infos!");
 		

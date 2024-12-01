@@ -33,7 +33,6 @@ public class PlayerInfo
 		playerLevel = _lvl;
 		position = _position;
 		rotation = _rotation;
-		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 	}
 	public void UpdateSkill(string skill_ID, List<bool> skill)
 	{

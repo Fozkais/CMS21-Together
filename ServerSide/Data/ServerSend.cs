@@ -16,7 +16,7 @@ public static class ServerSend
 	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		if (id == 1) return; // dont send if it's host (1 = host)
+		//if (id == 1) return; // dont send if it's host (1 = host)
 		
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
@@ -203,7 +203,7 @@ public static class ServerSend
 		{
 			packet.Write(job);
 			packet.Write(carLoaderID);
-			SendData(1, packet); // Sent it to Host
+			SendDataToAll(fromClient, packet);
 		}
 	}
 

@@ -4,6 +4,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
@@ -84,7 +85,8 @@ public static class Stats
 			return;
 		}
 
-		ClientSend.ExpPacket(exp, GlobalData.PlayerLevel);
+		MelonLogger.Msg($"Send XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
+		ClientSend.ExpPacket(GlobalData.PlayerExp, GlobalData.PlayerLevel);
 	}
 	
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]

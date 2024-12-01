@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CMS.ContainersSave;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
@@ -215,6 +218,22 @@ public static class SavesManager
 	public static void SaveModSave(int saveIndex)
 	{
 		var modSaveData = ModSaves[saveIndex];
+		
+		foreach (var id in Server.Instance.clients.Keys)
+		{
+			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
+			
+			string playerGUID = ServerData.Instance.connectedClients[id].playerGUID;
+			PlayerInfo info = SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerGUID == p.id);
+			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
+			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
+			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
+			int exp = ServerData.Instance.connectedClients[id].playerExp;
+
+			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
+				info.UpdateStats(pos, rot, exp , lvl);
+		}
+		
 		var saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveIndex}.cms21mp");
 
 		if (!Directory.Exists(SAVE_FOLDER_PATH)) Directory.CreateDirectory(SAVE_FOLDER_PATH);
