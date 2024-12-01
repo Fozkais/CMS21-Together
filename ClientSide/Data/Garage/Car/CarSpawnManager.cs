@@ -46,8 +46,7 @@ public static class CarSpawnManager
 		while (!carLoader.IsCarLoaded()) yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
-
-
+		
 		var car = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo, carLoader.customerCar);
 		ClientSend.LoadJobCarPacket(car);
 

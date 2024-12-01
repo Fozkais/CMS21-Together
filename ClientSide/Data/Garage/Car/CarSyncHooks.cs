@@ -42,7 +42,7 @@ public static class CarSyncHooks
 		
 		var car = ClientData.Instance.loadedCars[carLoaderID];
 		car.carPosition = no;
-
+		
 		ClientSend.CarPositionPacket(carLoaderID, no);
 	}
 }

@@ -66,7 +66,7 @@ public static class CarSpawnHooks
 	}
 
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.DeleteCar), new Type[] { })]
-	[HarmonyPostfix]
+	[HarmonyPrefix]
 	public static void DeleteCarHook(CarLoader __instance)
 	{
 		if (!Client.Instance.isConnected || !listenToDelete)
@@ -74,14 +74,13 @@ public static class CarSpawnHooks
 			listenToDelete = true;
 			return;
 		}
-
-
-		MelonLogger.Msg("[CarSpawnHooks->DeleteCarHook] Triggered.");
+		
 		if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
+			MelonLogger.Msg("Sent Delete car packet.");
 			ClientSend.DeleteCarPacket(carLoaderID);
 			ClientData.Instance.loadedCars.Remove(carLoaderID);
 		}
