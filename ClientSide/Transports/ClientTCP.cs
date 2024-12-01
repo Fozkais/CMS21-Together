@@ -126,7 +126,19 @@ public class ClientTCP
 	public void Send(Packet packet)
 	{
 		if (socket != null)
-			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+		{
+			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), (ar) =>
+			{
+				try
+				{
+					stream.EndWrite(ar);
+				}
+				catch (Exception ex)
+				{
+					MelonLogger.Error($"Error while writing data : {ex.Message}");
+				}
+			}, null);
+		}
 	}
 
 	public void Disconnect()
