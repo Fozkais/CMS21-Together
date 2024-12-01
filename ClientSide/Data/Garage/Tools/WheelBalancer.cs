@@ -49,9 +49,11 @@ public static class WheelBalancer
                     Size = item.WheelData.Size,
                     IsBalanced = true
                 };
+                __instance.CancelAction();
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForSeconds(0.1f);
+                GameData.Instance.wheelBalancer.balanceCanceled = false;
             }
             ClientSend.SendWheelBalancer(1, GameData.Instance.wheelBalancer.groupOnWheelBalancer);
         }
