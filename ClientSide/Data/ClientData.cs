@@ -93,7 +93,7 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot , Dictionary<string, List<bool>> skills)
+	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills)
 	{
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.1f);
@@ -107,6 +107,8 @@ public class ClientData
 		UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
 		GlobalData.PlayerExp = _exp;
 		UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
+
+		Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 		
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;

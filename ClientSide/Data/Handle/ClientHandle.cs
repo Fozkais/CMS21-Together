@@ -81,11 +81,12 @@ public static class ClientHandle
 	{
 		int playerExp = packet.ReadInt();
 		int playerLevel = packet.ReadInt();
+		int skillPoints = packet.ReadInt();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
 		QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
 		Dictionary<string, List<bool>> skills = packet.Read<Dictionary<string, List<bool>>>();
 		
-		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(), rotation.toQuaternion(), skills));
+		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(), rotation.toQuaternion(), skillPoints, skills));
 	}
 
 	public static void PositionPacket(Packet packet)

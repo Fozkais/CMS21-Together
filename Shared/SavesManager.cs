@@ -229,9 +229,10 @@ public static class SavesManager
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
 			int exp = ServerData.Instance.connectedClients[id].playerExp;
+			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
 			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
-				info.UpdateStats(pos, rot, exp , lvl);
+				info.UpdateStats(pos, rot, exp , lvl, points);
 		}
 		
 		var saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveIndex}.cms21mp");

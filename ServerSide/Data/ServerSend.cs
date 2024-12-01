@@ -22,6 +22,7 @@ public static class ServerSend
 		{
 			packet.Write(info.playerExp);
 			packet.Write(info.playerLevel);
+			packet.Write(info.skillPoints);
 			packet.Write(info.position);
 			packet.Write(info.rotation);
 			packet.Write(info.skillsInfo);

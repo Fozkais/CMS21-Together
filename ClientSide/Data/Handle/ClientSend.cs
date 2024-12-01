@@ -106,6 +106,16 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+	
+	public static void PointPacket(int availablePoints)
+	{
+		using (var packet = new Packet((int)PacketTypes.point))
+		{
+			packet.Write(availablePoints);
+
+			SendData(packet);
+		}
+	}
 
 	public static void LifterPacket(ModLifterState state, int carLoaderID)
 	{

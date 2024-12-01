@@ -41,5 +41,6 @@ public enum PacketTypes
 	engineStandSetGroup,
 	engineStandTakeOff,
 	carFluid,
-	exp
+	exp,
+	point
 }

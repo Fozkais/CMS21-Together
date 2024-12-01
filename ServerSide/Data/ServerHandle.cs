@@ -52,7 +52,7 @@ public static class ServerHandle
 			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(s => s.id == playerID));
 		else
 		{
-			SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1));
+			SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
 			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		}
 		
@@ -197,6 +197,14 @@ public static class ServerHandle
 		MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
 		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
+	}
+	
+	public static void PointPacket(int fromClient, Packet packet)
+	{
+		int points = packet.ReadInt();
+		
+		MelonLogger.Msg($"Received PointPacket Packet : {points}");
+		ServerData.Instance.connectedClients[fromClient].playerSkillPoints = points;
 	}
 
 	public static void LifterPacket(int fromClient, Packet packet)

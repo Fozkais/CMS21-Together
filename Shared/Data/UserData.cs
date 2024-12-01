@@ -25,6 +25,7 @@ public class UserData
 	[JsonIgnore] public QuaternionSerializable rotation = new(Quaternion.identity);
 	[JsonIgnore] public int playerLevel;
 	[JsonIgnore] public int playerExp;
+	[JsonIgnore] public int playerSkillPoints;
 	[JsonIgnore] [NonSerialized] public Vector3Serializable lastPosition;
 	[JsonIgnore] [NonSerialized] public Animator userAnimator;
 

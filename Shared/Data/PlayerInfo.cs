@@ -14,10 +14,11 @@ public class PlayerInfo
 
 	public int playerExp = 0;
 	public int playerLevel = 0;
+	public int skillPoints = 0;
 
 	public Dictionary<string, List<bool>> skillsInfo = new Dictionary<string, List<bool>>();
 
-	public PlayerInfo(string _id, Vector3 _position, Quaternion _rotation, int _exp, int _lvl)
+	public PlayerInfo(string _id, Vector3 _position, Quaternion _rotation, int _exp, int _lvl, int points)
 	{
 		id = _id;
 		position = new Vector3Serializable(_position);
@@ -25,12 +26,14 @@ public class PlayerInfo
 
 		playerExp = _exp;
 		playerLevel = _lvl;
+		skillPoints = points;
 	}
 	
-	public void UpdateStats(Vector3Serializable _position, QuaternionSerializable _rotation, int _exp, int _lvl)
+	public void UpdateStats(Vector3Serializable _position, QuaternionSerializable _rotation, int _exp, int _lvl, int points)
 	{
 		playerExp = _exp;
 		playerLevel = _lvl;
+		skillPoints = points;
 		position = _position;
 		rotation = _rotation;
 	}

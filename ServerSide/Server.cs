@@ -91,9 +91,10 @@ public class Server
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerExp;
 			int exp = ServerData.Instance.connectedClients[id].playerLevel;
+			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
 			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
-				info.UpdateStats(pos, rot, exp , lvl);
+				info.UpdateStats(pos, rot, exp , lvl, points);
 			
 			ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
@@ -192,6 +193,7 @@ public class Server
 
 			{ (int)PacketTypes.stat, ServerHandle.StatPacket },
 			{ (int)PacketTypes.exp, ServerHandle.ExpPacket },
+			{ (int)PacketTypes.point, ServerHandle.PointPacket },
 			{ (int)PacketTypes.skillChange, ServerHandle.SkillChangePacket },
 			{ (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket },
 
