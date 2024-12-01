@@ -347,8 +347,7 @@ public static class ClientHandle
 	{
 		var carLoaderID = packet.ReadInt();
 		ModFluidData fluid = packet.Read<ModFluidData>();
-
-		MelonLogger.Msg("CL: Received CarFluid!");
+		
 		MelonCoroutines.Start(PartsUpdater.UpdateFluid(fluid, carLoaderID));
 	}
 
