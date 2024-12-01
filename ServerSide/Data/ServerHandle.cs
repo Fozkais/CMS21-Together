@@ -383,7 +383,7 @@ public static class ServerHandle
 
 	public static void WheelBalancePacket(int fromClient, Packet packet)
 	{
-		int aType = packet.Read<int>();
+		int aType = packet.ReadInt();
 		ModGroupItem item;
                 
 		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.start ||(ModWheelBalancerActionType)aType == ModWheelBalancerActionType.setGroup)
