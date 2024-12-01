@@ -25,17 +25,17 @@ public static class WheelBalancer
             }
         }
         
-        [HarmonyPatch(typeof(WheelBalanceWindow), "StartMiniGame")]
+        [HarmonyPatch(typeof(WheelBalanceWindow), nameof(WheelBalanceWindow.StartMiniGame))]
         [HarmonyPrefix]
-        public static void WheelBalancer2Fix(WheelBalanceWindow __instance)
+        public static bool WheelBalancer2Fix(WheelBalanceWindow __instance)
         {
-            if(!Client.Instance.isConnected) return;
+            if(!Client.Instance.isConnected) return true;
             
             MelonCoroutines.Start(BalanceWheel(__instance));
+            return false;
         }
         public static IEnumerator BalanceWheel(WheelBalanceWindow __instance)
         {
-            
             yield return new WaitForFixedUpdate();
             yield return new WaitForEndOfFrame();
             yield return new WaitForSeconds(0.1f);
@@ -49,21 +49,19 @@ public static class WheelBalancer
                     Size = item.WheelData.Size,
                     IsBalanced = true
                 };
-                __instance.CancelAction();
                 yield return new WaitForFixedUpdate();
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForSeconds(0.1f);
-                GameData.Instance.wheelBalancer.balanceCanceled = false;
             }
             ClientSend.SendWheelBalancer(1, GameData.Instance.wheelBalancer.groupOnWheelBalancer);
         }
         
         [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_64")]
         [HarmonyPostfix]
-        public static void WB_TireRemoveActionFix(global::TireChangerLogic __instance)
+        public static void WB_TireRemoveActionFix()
         {
             if(!Client.Instance.isConnected) return;
             
-            ClientSend.SendWheelBalancer(2, null);
+            ClientSend.SendWheelBalancer(2);
         }
 }

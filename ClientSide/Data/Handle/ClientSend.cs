@@ -309,7 +309,7 @@ public class ClientSend
 		}
 	}
 
-	public static void SendWheelBalancer(int action, GroupItem items)
+	public static void SendWheelBalancer(int action, GroupItem items=null)
 	{
 		using (var packet = new Packet((int)PacketTypes.wheelBalance))
 		{
