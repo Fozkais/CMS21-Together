@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using CMS.UI.Logic.Upgrades;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
@@ -90,6 +91,17 @@ public static class Stats
 		
 		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
 		ClientSend.PointPacket(__instance.availablePoints);
+	}
+	
+	[HarmonyPatch(typeof(SkillsTab), nameof(SkillsTab.UnlockSkillAction))]
+	[HarmonyPostfix]
+	public static void UnlockSkillActionHook(SkillsTab __instance)
+	{
+		if (!Client.Instance.isConnected) return;
+		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		
+		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
+		ClientSend.PointPacket(__instance.upgradeSystem.availablePoints);
 	}
 	
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]
