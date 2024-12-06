@@ -93,14 +93,15 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills)
+	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills, long startItemUid)
 	{
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.1f);
 		
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		
+
+		UIDManager.LastUID = startItemUid;
 		
 		GlobalData.PlayerLevel = _level;
 		UIManager.Get().StatsContainer.CurrentLevel = _level;

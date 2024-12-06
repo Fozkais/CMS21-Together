@@ -112,7 +112,11 @@ public static class ServerHandle
 
 			if (action == InventoryAction.add)
 			{
-				if (!ServerData.Instance.items.Any(s => s.UID == item.UID)) ServerData.Instance.items.Add(item);
+				if (!ServerData.Instance.items.Any(s => s.UID == item.UID))
+				{
+					SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[fromClient - 1]++;
+					ServerData.Instance.items.Add(item);
+				}
 			}
 			else
 			{
@@ -429,5 +433,10 @@ public static class ServerHandle
 		
 		ServerData.Instance.IncreaseStandAngle(val);
 		ServerSend.IncreaseStandAnglePacket(fromClient, val);
+	}
+	
+	public static void ResyncPacket(int fromClient, Packet packet)
+	{
+		PacketTypes resyncType = packet.Read<PacketTypes>();
 	}
 }

@@ -26,6 +26,7 @@ public static class ServerSend
 			packet.Write(info.position);
 			packet.Write(info.rotation);
 			packet.Write(info.skillsInfo);
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[id - 1]);
 
 			SendData(id, packet);
 		}
