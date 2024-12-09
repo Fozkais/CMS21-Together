@@ -1,5 +1,8 @@
-﻿namespace CMS21Together.Shared;
+﻿using System;
 
+namespace CMS21Together.Shared;
+
+[Serializable]
 public enum PacketTypes
 {
 	connect,
@@ -42,5 +45,6 @@ public enum PacketTypes
 	engineStandTakeOff,
 	carFluid,
 	exp,
-	point
+	point,
+	resync
 }

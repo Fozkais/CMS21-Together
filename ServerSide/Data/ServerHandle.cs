@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
@@ -438,5 +439,12 @@ public static class ServerHandle
 	public static void ResyncPacket(int fromClient, Packet packet)
 	{
 		PacketTypes resyncType = packet.Read<PacketTypes>();
+
+		switch (resyncType)
+		{
+			case PacketTypes.loadCar:
+				ServerResyncs.ResyncCars(fromClient);
+				break;
+		}
 	}
 }

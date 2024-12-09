@@ -196,6 +196,7 @@ public class Server
 			{ (int)PacketTypes.point, ServerHandle.PointPacket },
 			{ (int)PacketTypes.skillChange, ServerHandle.SkillChangePacket },
 			{ (int)PacketTypes.garageUpgrade, ServerHandle.GarageUpgradePacket },
+			{ (int)PacketTypes.resync, ServerHandle.ResyncPacket },
 
 			{ (int)PacketTypes.lifter, ServerHandle.LifterPacket },
 			{ (int)PacketTypes.setSpringClamp, ServerHandle.SetSpringClampPacket },

@@ -57,6 +57,7 @@
         <Compile Include="ClientSide\Data\Garage\Car\PartsReferencer.cs"/>
         <Compile Include="ClientSide\Data\Garage\Car\PartsUpdater.cs"/>
         <Compile Include="ClientSide\Data\Garage\Car\PartUpdateHooks.cs"/>
+        <Compile Include="ClientSide\Data\Garage\GarageResync.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\EngineCrane.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs"/>
@@ -78,6 +79,7 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="ServerSide\Data\ServerData.cs"/>
         <Compile Include="ServerSide\Data\ServerHandle.cs"/>
+        <Compile Include="ServerSide\Data\ServerResyncs.cs" />
         <Compile Include="ServerSide\Data\ServerSend.cs"/>
         <Compile Include="ServerSide\Server.cs"/>
         <Compile Include="ServerSide\ServerConnection.cs"/>

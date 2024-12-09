@@ -13,6 +13,7 @@ public class ModCar
 	public bool customerCar;
 
 	public bool isReady;
+	public bool needResync;
 	public bool isFromServer;
 
 	[NonSerialized] public ModPartInfo partInfo;

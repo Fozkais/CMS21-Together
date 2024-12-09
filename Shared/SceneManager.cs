@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Garage;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
@@ -24,6 +27,18 @@ public static class SceneManager
 				MelonCoroutines.Start(Server.Instance.CloseServer());
 			if (Client.Instance.isConnected)
 				Client.Instance.Disconnect();
+		}
+		else if (newSceneName == "garage" && ClientData.GameReady)
+		{
+			GameData.isReady = false;
+			MelonCoroutines.Start(GarageResync.ResyncCars());
+		}
+		else
+		{
+			foreach (KeyValuePair<int,ModCar> loadedCar in ClientData.Instance.loadedCars)
+			{
+				loadedCar.Value.needResync = true;
+			}
 		}
 	}
 

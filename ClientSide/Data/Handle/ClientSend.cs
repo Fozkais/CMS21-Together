@@ -399,4 +399,13 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void AskResync(PacketTypes resyncType)
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(resyncType);
+			SendData(packet);
+		}
+	}
 }

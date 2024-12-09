@@ -99,38 +99,47 @@ public static class ServerSend
 		}
 	}
 
-	public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID)
+	public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.loadCar))
 		{
 			packet.Write(carData);
 			packet.Write(carLoaderID);
 
-			SendDataToAll(fromClient, packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 	}
 
-	public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID)
+	public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.bodyPart))
 		{
 			packet.Write(carPart);
 			packet.Write(carLoaderID);
 
-			SendDataToAll(fromClient, packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 
 		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
 	}
 
-	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID)
+	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.partScript))
 		{
 			packet.Write(partScript);
 			packet.Write(carLoaderID);
 
-			SendDataToAll(fromClient, packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 
 		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
