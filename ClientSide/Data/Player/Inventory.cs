@@ -17,11 +17,22 @@ public static class Inventory
 	public static List<ModGroupItem> groupItems = new();
 	private static bool loadSkip;
 
+	public static bool listenToAddItem = true;
+	public static bool listenToAddGroupItem = true;
+	
+	public static bool listenToRemoveItem = true;
+	public static bool listenToRemoveGroupItem = true;
+
 	public static void Reset()
 	{
 		items.Clear();
 		groupItems.Clear();
 		loadSkip = false;
+		
+		listenToAddItem = true;
+		listenToAddGroupItem = true;
+		listenToRemoveItem = true;
+		listenToRemoveGroupItem = true;
 	}
 
 
@@ -29,35 +40,31 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
-		if (!Client.Instance.isConnected) return;
-
+		if (!Client.Instance.isConnected || !listenToAddItem) {listenToAddItem = true; return;}
+		
+		MelonLogger.Msg($"Add new item with UID: {item.UID}.");
 		var newItem = new ModItem(item);
-		if (!items.Any(s => s.UID == newItem.UID))
-		{
-			items.Add(newItem);
-			ClientSend.ItemPacket(newItem, InventoryAction.add);
-		}
+		items.Add(newItem);
+		ClientSend.ItemPacket(newItem, InventoryAction.add);
 	}
 
 	[HarmonyPatch(typeof(global::Inventory), "AddGroup")]
 	[HarmonyPrefix]
 	public static void AddGroupItemHook(GroupItem group)
 	{
-		if (!Client.Instance.isConnected) return;
+		if (!Client.Instance.isConnected || !listenToAddGroupItem) {listenToAddGroupItem = true; return;}
 
+		MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
 		var newItem = new ModGroupItem(group);
-		if (!groupItems.Any(s => s.UID == newItem.UID))
-		{
-			groupItems.Add(newItem);
-			ClientSend.GroupItemPacket(newItem, InventoryAction.add);
-		}
+		groupItems.Add(newItem);
+		ClientSend.GroupItemPacket(newItem, InventoryAction.add);
 	}
 
 	[HarmonyPatch(typeof(global::Inventory), "Delete")]
 	[HarmonyPrefix]
-	public static void RemoveItemHook(Item item,global::Inventory __instance)
+	public static void RemoveItemHook(Item item, global::Inventory __instance)
 	{
-		if (!Client.Instance.isConnected) return;
+		if (!Client.Instance.isConnected || !listenToRemoveItem) {listenToRemoveItem = true; return;}
 
 		if (item == null) return;
 
@@ -73,7 +80,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void RemoveGroupItemHook(long UId)
 	{
-		if (!Client.Instance.isConnected) return;
+		if (!Client.Instance.isConnected || !listenToRemoveGroupItem) {listenToRemoveGroupItem = true; return;}
 
 		if (groupItems.Any(s => s.UID == UId))
 		{
@@ -133,20 +140,15 @@ public static class Inventory
 		switch (action)
 		{
 			case InventoryAction.add:
-				if (!items.Any(i => i.UID == item.UID))
-				{
-					items.Add(item);
-					GameData.Instance.localInventory.Add(item.ToGame());
-				}
-
+				items.Add(item);
+				listenToAddItem = false;
+				GameData.Instance.localInventory.Add(item.ToGame());
 				break;
 			case InventoryAction.remove:
 				if (items.Any(i => i.UID == item.UID))
-				{
 					items.Remove(item);
-					GameData.Instance.localInventory.Delete(item.ToGame());
-				}
-
+				listenToRemoveItem = false;
+				GameData.Instance.localInventory.Delete(item.ToGame());
 				break;
 		}
 	}
@@ -157,20 +159,15 @@ public static class Inventory
 		switch (action)
 		{
 			case InventoryAction.add:
-				if (!groupItems.Any(i => i.UID == item.UID))
-				{
-					groupItems.Add(item);
-					GameData.Instance.localInventory.AddGroup(item.ToGame());
-				}
-
+				groupItems.Add(item);
+				listenToAddGroupItem = false;
+				GameData.Instance.localInventory.AddGroup(item.ToGame());
 				break;
 			case InventoryAction.remove:
 				if (groupItems.Any(i => i.UID == item.UID))
-				{
 					groupItems.Remove(item);
-					GameData.Instance.localInventory.DeleteGroup(item.UID);
-				}
-
+				listenToRemoveGroupItem = false;
+				GameData.Instance.localInventory.DeleteGroup(item.UID);
 				break;
 		}
 	}
