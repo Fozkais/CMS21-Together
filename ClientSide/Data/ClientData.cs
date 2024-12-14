@@ -105,14 +105,17 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 
 		UIDManager.LastUID = startItemUid;
-		
-		GlobalData.PlayerLevel = _level;
-		UIManager.Get().StatsContainer.CurrentLevel = _level;
-		UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
-		GlobalData.PlayerExp = _exp;
-		UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
 
-		Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
+		if (SavesManager.currentSave.Difficulty != DifficultyLevel.Sandbox)
+		{
+			GlobalData.PlayerLevel = _level;
+			UIManager.Get().StatsContainer.CurrentLevel = _level;
+			UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
+			GlobalData.PlayerExp = _exp;
+			UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
+			
+			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
+		}
 		
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;
