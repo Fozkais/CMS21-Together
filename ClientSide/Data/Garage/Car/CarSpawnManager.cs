@@ -75,7 +75,7 @@ public static class CarSpawnManager
 		CarSpawnHooks.listenToSimpleLoad = false;
 		MainMod.StartCoroutine(carLoader.LoadCarFromFile(carData));
 		var car = new ModCar(carLoaderID, data.carToLoad, data.configVersion);
-		ClientData.Instance.loadedCars.Add(carLoaderID, car);
+		ClientData.Instance.loadedCars[carLoaderID] = car;
 		MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
 		
 		/*CarSpawnHooks.listenToSimpleLoad = false;

@@ -11,6 +11,8 @@ public static class PartsReferencer
 {
 	public static IEnumerator GetPartReferences(ModCar car)
 	{
+		if (car.needResync) yield break;
+		
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.25f);
 

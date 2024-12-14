@@ -16,20 +16,22 @@ public static class GarageResync
 	{
 		while (SceneManager.GetActiveScene().name != "garage")
 			yield return new WaitForSeconds(0.5f);
+		while (!NotificationCenter.IsGameReady)
+			yield return new WaitForSeconds(0.25f);
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.5f);
 		
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		
-		MelonLogger.Msg("Game should be ready ! resyncing..");
-		
-		for (int i = 0; i < ClientData.Instance.loadedCars.Count; i++)
+
+		foreach (int carLoaderID in ClientData.Instance.loadedCars.Keys)
 		{
+			if (!ClientData.Instance.loadedCars[carLoaderID].needResync) continue;
+			
 			CarSpawnHooks.listenToDelete = false;
-			GameData.Instance.carLoaders[ClientData.Instance.loadedCars[i].carLoaderID].DeleteCar();
-			ClientData.Instance.loadedCars.Remove(ClientData.Instance.loadedCars[i].carLoaderID);
+			GameData.Instance.carLoaders[carLoaderID].DeleteCar();
 		}
+
 		yield return new WaitForEndOfFrame();
 		ClientSend.AskResync(PacketTypes.loadCar);
 		MelonLogger.Msg("Delete all car and resend them!");

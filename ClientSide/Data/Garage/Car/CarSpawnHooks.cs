@@ -74,15 +74,18 @@ public static class CarSpawnHooks
 			listenToDelete = true;
 			return;
 		}
-		
+		if (!NotificationCenter.IsGameReady) return;
 		if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
-			MelonLogger.Msg("Sent Delete car packet.");
-			ClientSend.DeleteCarPacket(carLoaderID);
-			ClientData.Instance.loadedCars.Remove(carLoaderID);
+			if (!ClientData.Instance.loadedCars[carLoaderID].needResync)
+			{
+				MelonLogger.Msg("Sent Delete car packet.");
+				ClientSend.DeleteCarPacket(carLoaderID);
+				ClientData.Instance.loadedCars.Remove(carLoaderID);
+			}
 		}
 	}
 }

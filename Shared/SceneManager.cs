@@ -35,9 +35,10 @@ public static class SceneManager
 		}
 		else
 		{
-			foreach (KeyValuePair<int,ModCar> loadedCar in ClientData.Instance.loadedCars)
+			MelonLogger.Msg("Set all car for resync!");
+			foreach (ModCar loadedCar in ClientData.Instance.loadedCars.Values)
 			{
-				loadedCar.Value.needResync = true;
+				loadedCar.needResync = true;
 			}
 		}
 	}
