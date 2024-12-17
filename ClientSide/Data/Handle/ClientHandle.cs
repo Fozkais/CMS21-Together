@@ -308,9 +308,8 @@ public static class ClientHandle
 	public static void EndJobPacket(Packet packet)
 	{
 		var job = packet.Read<ModJob>();
-		var carLoaderID = packet.ReadInt();
 
-		MelonCoroutines.Start(JobManager.OnJobComplete(job, carLoaderID));
+		MelonCoroutines.Start(JobManager.OnJobComplete(job));
 	}
 	
 	public static void EngineCraneHandlePacket(Packet packet)

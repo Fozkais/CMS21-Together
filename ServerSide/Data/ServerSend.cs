@@ -208,12 +208,11 @@ public static class ServerSend
 		}
 	}
 
-	public static void EndJobPacket(int fromClient, ModJob job, int carLoaderID)
+	public static void EndJobPacket(int fromClient, ModJob job)
 	{
 		using (var packet = new Packet((int)PacketTypes.endJob))
 		{
 			packet.Write(job);
-			packet.Write(carLoaderID);
 			SendDataToAll(fromClient, packet);
 		}
 	}

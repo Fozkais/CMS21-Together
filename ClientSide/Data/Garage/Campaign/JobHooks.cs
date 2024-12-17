@@ -1,12 +1,17 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Linq;
+using CMS.Containers;
 using CMS.Extensions;
 using CMS.FileSupport.INI;
+using CMS.PartModules;
 using CMS.UI;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using HarmonyLib;
+using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 
@@ -95,7 +100,7 @@ public static class JobHooks
 
 	[HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.AcceptOrderAction))]
 	[HarmonyPrefix]
-	public static void AcceptOrderActionHook(OrdersWindow __instance)
+	public static void AcceptOrderActionHook(OrdersWindow __instance) // TODO: if job is not a mission then send modJob and spawn car from carSync and not JobManager
 	{
 		if (!Client.Instance.isConnected) return;
 
@@ -113,6 +118,21 @@ public static class JobHooks
 		ClientSend.JobActionPacket(__instance.currentJob.id, false);
 	}
 
+	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.CancelJob))]
+	[HarmonyPostfix]
+	public static void CancelJobHook(int id, OrderGenerator __instance)
+	{
+		if (!Client.Instance.isConnected) return;
+
+		if (__instance.selectedJobs.ToArray().Any(j => j.id == id))
+		{
+			Job job = __instance.selectedJobs.ToArray().First(j => j.id == id);
+			int carLoaderID = job.carLoaderID;
+			CarLoader carLoader = GameData.Instance.carLoaders[carLoaderID];
+			MelonCoroutines.Start(GetCarFile(carLoader, carLoaderID, job.id));
+		}
+	}
+	
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))]
 	[HarmonyPrefix]
 	public static bool UpdateHook(OrderGenerator __instance)
@@ -128,7 +148,7 @@ public static class JobHooks
 
 	[HarmonyPatch(typeof(GameScript), nameof(GameScript.EndJob))]
 	[HarmonyPrefix]
-	public static bool EndJobHook(Job job, CarLoader carLoader) // TODO:Handle exp gain for everyone
+	public static bool EndJobHook(Job job, CarLoader carLoader)
 	{
 		if (!Client.Instance.isConnected /*|| Server.Instance.isRunning*/) return true;
 
@@ -216,10 +236,25 @@ public static class JobHooks
 		{
 			var modJob = JobManager.selectedJobs.First(j => j.id == job.id);
 			JobManager.selectedJobs.Remove(modJob);
-			var carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
-
-			ClientSend.EndJobPacket(modJob, carLoaderID);
+			ClientSend.EndJobPacket(modJob);
 		}
 		return false;
+	}
+
+	private static IEnumerator GetCarFile(CarLoader carLoader, int carLoaderID, int jobID)
+	{
+		yield return new WaitForEndOfFrame();
+
+		while (!ClientData.Instance.loadedCars[carLoaderID].isReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+		carLoader.SaveCarToFile();
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		NewCarData car = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
+		ModNewCarData modCarData = new ModNewCarData(car, carLoader.placeNo);
+		
+		ClientSend.LoadCarPacket(modCarData, carLoaderID);
+		MelonLogger.Msg($"Created NewCarData for Job or Mission with id: {jobID}");
 	}
 }

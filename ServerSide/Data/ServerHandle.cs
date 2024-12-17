@@ -113,11 +113,8 @@ public static class ServerHandle
 
 			if (action == InventoryAction.add)
 			{
-				if (!ServerData.Instance.items.Any(s => s.UID == item.UID))
-				{
-					SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[fromClient - 1]++;
-					ServerData.Instance.items.Add(item);
-				}
+				SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[fromClient - 1]++;
+				ServerData.Instance.items.Add(item);
 			}
 			else
 			{
@@ -145,9 +142,7 @@ public static class ServerHandle
 			var item = _packet.Read<ModGroupItem>();
 
 			if (action == InventoryAction.add)
-			{
-				if (!ServerData.Instance.groupItems.Any(s => s.UID == item.UID)) ServerData.Instance.groupItems.Add(item);
-			}
+				ServerData.Instance.groupItems.Add(item);
 			else
 			{
 				if (ServerData.Instance.groupItems.Any(s => s.UID == item.UID))
@@ -320,11 +315,10 @@ public static class ServerHandle
 	public static void EndJobPacket(int fromClient, Packet packet)
 	{
 		var job = packet.Read<ModJob>();
-		var carLoaderID = packet.ReadInt();
 
 		MelonLogger.Msg("SV : endjob !");
 		ServerData.Instance.EndJob(job);
-		ServerSend.EndJobPacket(fromClient, job, carLoaderID);
+		ServerSend.EndJobPacket(fromClient, job);
 	}
 
 	public static void SceneChangePacket(int fromClient, Packet packet)

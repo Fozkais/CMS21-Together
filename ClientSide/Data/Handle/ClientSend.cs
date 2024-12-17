@@ -216,7 +216,6 @@ public class ClientSend
 	{
 		using (var packet = new Packet((int)PacketTypes.jobAction))
 		{
-			MelonLogger.Msg("Mission Job packet");
 			packet.Write(jobID);
 			packet.Write(takeJob);
 
@@ -236,13 +235,12 @@ public class ClientSend
 		}
 	}
 
-	public static void EndJobPacket(ModJob modJob, int carLoaderID)
+	public static void EndJobPacket(ModJob modJob)
 	{
 		using (var packet = new Packet((int)PacketTypes.endJob))
 		{
 			MelonLogger.Msg("EndJobPacket");
 			packet.Write(modJob);
-			packet.Write(carLoaderID);
 
 			SendData(packet);
 		}
