@@ -166,7 +166,6 @@ public static class EngineCrane
 				selectedCarLoader.EngineParams.EngineSwap = string.Empty;
 			}
 			Component[] array = currentEngine.gameObject.GetComponentsInChildren<PartScript>();
-			array = array;
 			for (int i = 0; i < array.Length; i++)
 			{
 				PartScript partScript = (PartScript)array[i];

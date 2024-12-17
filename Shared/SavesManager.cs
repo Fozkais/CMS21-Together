@@ -317,13 +317,13 @@ public static class SavesManager
 		return true;
 	}
 
-	public static Gamemode GetGamemodeFromInt(int selectectGamemode)
+	public static Gamemode GetGamemodeFromInt(int selectedGamemode)
 	{
-		if (selectectGamemode == 2)
+		if (selectedGamemode == 1)
 			return Gamemode.Normal;
-		if (selectectGamemode == 1)
+		if (selectedGamemode == 0)
 			return Gamemode.Easy;
-		if (selectectGamemode == 3)
+		if (selectedGamemode == 2)
 			return Gamemode.Expert;
 		return Gamemode.Sandbox;
 	}

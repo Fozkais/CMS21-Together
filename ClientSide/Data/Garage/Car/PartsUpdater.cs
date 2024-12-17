@@ -10,13 +10,6 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 
 public static class PartsUpdater
 {
-	private static IEnumerator IsCarReady(int carLoaderID)
-	{
-		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
-			while (!car.isReady)
-				yield return new WaitForSeconds(0.25f);
-	}
-
 	public static IEnumerator UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
 		if (carLoaderID == -1)
@@ -30,9 +23,9 @@ public static class PartsUpdater
 			yield break;
 		}
 		
-		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
-		yield return waitforCar;
-
+		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var _car))
+			while (!_car.isReady)
+				yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
 		MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] Car ready, updating..");
@@ -147,8 +140,9 @@ public static class PartsUpdater
 
 	public static IEnumerator UpdateBodyParts(ModCarPart carPart, int carLoaderID)
 	{
-		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
-		yield return waitforCar;
+		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var _car))
+			while (!_car.isReady)
+				yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
 		MelonLogger.Msg("[PartsUpdater->UpdateBodyParts] Car ready, updating..");
@@ -225,8 +219,9 @@ public static class PartsUpdater
 
 	public static IEnumerator UpdateFluid(ModFluidData fluid, int carLoaderID)
 	{
-		var waitforCar = MelonCoroutines.Start(IsCarReady(carLoaderID));
-		yield return waitforCar;
+		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var _car))
+			while (!_car.isReady)
+				yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
 		PartUpdateHooks.listen = false;

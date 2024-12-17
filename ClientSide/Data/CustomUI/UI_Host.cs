@@ -6,8 +6,7 @@ namespace CMS21Together.ClientSide.Data.CustomUI;
 
 public static class UI_Host
 {
-	private static int displayedPage = 1;
-
+	
 	public static void InitializeHostMenu()
 	{
 		var parent = new GameObject("MP_HostButtons");
