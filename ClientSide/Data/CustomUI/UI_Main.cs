@@ -24,7 +24,6 @@ public class UI_Main
 				button = button,
 				Disabled = false
 			};
-
 			CustomUIBuilder.AddButtonToSection(buttonState, CustomUISection.V_Main);
 		}
 

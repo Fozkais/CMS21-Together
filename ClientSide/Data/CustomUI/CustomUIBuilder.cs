@@ -128,8 +128,6 @@ public static class CustomUIBuilder
 			};
 			Action a2 = delegate
 			{
-				//PreferencesManager.SavePreferences();
-
 				SavesManager.RemoveModSave(saveData.saveIndex);
 
 				CustomUIManager.MP_Saves_Buttons[saveData.saveIndex - 4].button.GetComponentInChildren<Text>().text = "New Game";
@@ -291,7 +289,7 @@ public static class CustomUIBuilder
 
 			var s1_pos = new Vector2(-180, 0);
 			var s1_size = new Vector2(400, 100);
-			var selector = CreateNewSelector(s1_pos, s1_size, new[] { "Sandbox", "Campaign" }, inputFieldObject.transform);
+			var selector = CreateNewSelector(s1_pos, s1_size, new[] {"Easy", "Normal", "Expert", "Sandbox"}, inputFieldObject.transform);
 			tmpWindow2.Add(selector.gameObject);
 			selector.gameObject.SetActive(true);
 			selector.EnableArrows();

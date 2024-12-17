@@ -74,7 +74,7 @@ public static class Stats
 	public static void AddPlayerExpHook(int exp, bool instant = false)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
 		ClientData.Instance.exp = GlobalData.PlayerExp;
 
@@ -87,7 +87,7 @@ public static class Stats
 	public static void AddPointsHook(UpgradeSystem __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 		
 		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
 		ClientSend.PointPacket(__instance.availablePoints);
@@ -98,7 +98,7 @@ public static class Stats
 	public static void UnlockSkillActionHook(SkillsTab __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 		
 		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
 		ClientSend.PointPacket(__instance.upgradeSystem.availablePoints);
@@ -109,7 +109,7 @@ public static class Stats
 	public static void AddPlayerMoneyHook(int money)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
 		ClientData.Instance.money = GlobalData.PlayerMoney;
 
@@ -127,7 +127,7 @@ public static class Stats
 	public static void AddPlayerScrapsHook(int amount)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode != Gamemode.Campaign) return;
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
 		ClientData.Instance.scrap = GlobalData.PlayerScraps;
 

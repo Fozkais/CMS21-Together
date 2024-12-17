@@ -209,8 +209,12 @@ public static class SavesManager
 
 	private static DifficultyLevel GetDifficultyFromGamemode(Gamemode saveDataSelectedGamemode)
 	{
-		if (saveDataSelectedGamemode == Gamemode.Campaign)
+		if (saveDataSelectedGamemode == Gamemode.Normal)
 			return DifficultyLevel.Normal;
+		if  (saveDataSelectedGamemode == Gamemode.Easy)
+			return DifficultyLevel.Easy;
+		if  (saveDataSelectedGamemode == Gamemode.Expert)
+			return DifficultyLevel.Expert;
 		return DifficultyLevel.Sandbox;
 	}
 
@@ -313,23 +317,14 @@ public static class SavesManager
 		return true;
 	}
 
-	public static void SaveAllModSaves()
-	{
-		if (!Directory.Exists(SAVE_FOLDER_PATH)) Directory.CreateDirectory(SAVE_FOLDER_PATH);
-
-		foreach (var saveData in ModSaves)
-			if (saveData.Value.alreadyLoaded)
-			{
-				var saveFileName = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveData.Value.saveIndex}.cms21mp");
-				string serializedSave = JsonConvert.SerializeObject(saveData);
-				File.WriteAllText(saveFileName, serializedSave);
-			}
-	}
-
 	public static Gamemode GetGamemodeFromInt(int selectectGamemode)
 	{
+		if (selectectGamemode == 2)
+			return Gamemode.Normal;
 		if (selectectGamemode == 1)
-			return Gamemode.Campaign;
+			return Gamemode.Easy;
+		if (selectectGamemode == 3)
+			return Gamemode.Expert;
 		return Gamemode.Sandbox;
 	}
 
@@ -337,6 +332,10 @@ public static class SavesManager
 	{
 		if (difficultyLevel == DifficultyLevel.Sandbox)
 			return Gamemode.Sandbox;
-		return Gamemode.Campaign;
+		if (difficultyLevel == DifficultyLevel.Easy)
+			return Gamemode.Easy;
+		if (difficultyLevel == DifficultyLevel.Expert)
+			return Gamemode.Expert;
+		return Gamemode.Normal;
 	}
 }

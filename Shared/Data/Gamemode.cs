@@ -6,5 +6,7 @@ namespace CMS21Together.Shared.Data;
 public enum Gamemode
 {
 	Sandbox,
-	Campaign
+	Easy,
+	Normal,
+	Expert
 }
