@@ -43,15 +43,16 @@ public class SteamSocket: SocketManager
             else
             {          
                 MelonLogger.Error($"[SteamSocket->OnConnectionChanged] Connection {clientSteamID} could not be accepted: {res.ToString()}");
+                connection.Close(false, 0, res.ToString());
             }
         }
         else if (info.State == ConnectionState.Connected)
         {
+            base.OnConnected(connection, info);
             foreach (int ClientID in Server.Instance.clients.Keys)
             {
                 if (Server.Instance.clients[ClientID].isConnected == false)
                 {
-                    MelonLogger.Msg($"[OnConnectionChanged]Connecting Client.");
                     Server.Instance.clients[ClientID].steam.connection = connection;
                     Server.Instance.clients[ClientID].steam.isConnected = true;
                     Server.Instance.clients[ClientID].Connect();
@@ -65,14 +66,11 @@ public class SteamSocket: SocketManager
     public override void OnConnecting(Connection connection, ConnectionInfo info)
     {
         MelonLogger.Msg("[SteamSocket->OnConnecting] A client is trying to connect...");
-        
-        base.OnConnecting(connection, info);
     }
 
     public override void OnConnected(Connection connection, ConnectionInfo info)
     {
         MelonLogger.Msg("[SteamSocket->OnConnected] A client connected successfully.");
-        base.OnConnected(connection, info);
     }
 
     public override void OnDisconnected(Connection connection, ConnectionInfo info)
