@@ -27,11 +27,16 @@ public static class SceneManager
 				MelonCoroutines.Start(Server.Instance.CloseServer());
 			if (Client.Instance.isConnected)
 				Client.Instance.Disconnect();
+
+			ClientData.GameReady = false;
 		}
-		else if (newSceneName == "garage" && ClientData.GameReady)
+		else if (newSceneName == "garage" || newSceneName == "Christmas")
 		{
-			GameData.isReady = false;
-			MelonCoroutines.Start(GarageResync.ResyncCars());
+			if (ClientData.GameReady)
+			{
+				GameData.isReady = false;
+				MelonCoroutines.Start(GarageResync.ResyncCars());
+			}
 		}
 		else
 		{

@@ -43,6 +43,7 @@ public class ClientData
 			MelonCoroutines.Start(InitializeGameData());
 		
 		Movement.SendPosition();
+		Movement.CheckForInactivity();
 		Rotation.SendRotation();
 		Garage.Tools.ToolsMoveManager.Reset();
 	}

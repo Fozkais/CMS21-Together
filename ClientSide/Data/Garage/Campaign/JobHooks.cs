@@ -20,7 +20,8 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 [HarmonyPatch]
 public static class JobHooks
 {
-	
+	public static bool listenToCancel = true;
+
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Load))]
 	[HarmonyPostfix]
 	public static void LoadHook(OrderGenerator __instance)
@@ -122,7 +123,7 @@ public static class JobHooks
 	[HarmonyPostfix]
 	public static void CancelJobHook(int id, OrderGenerator __instance)
 	{
-		if (!Client.Instance.isConnected) return;
+		if (!Client.Instance.isConnected || !listenToCancel) { listenToCancel = true; return; }
 
 		if (__instance.selectedJobs.ToArray().Any(j => j.id == id))
 		{

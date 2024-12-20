@@ -384,6 +384,7 @@ public static class JobManager
 	public static void TakeJob(Job job)
 	{
 		GameData.Instance.orderGenerator.selectedJobs.Add(job);
+		JobHooks.listenToCancel = false;
 		GameData.Instance.orderGenerator.CancelJob(job.id);
 		UIManager.Get().UpdateJobs(GameData.Instance.orderGenerator.jobs, null);
 	}
