@@ -27,26 +27,29 @@
 
 Who never dreamed playing CMS with some friends?  Since it's not in the base game I'll add it myself ! :)
 
-**In its current state, the mod is EXPERIMENTAL, many features are missing, others are buggy and there are certainly many bugs and features that could break the game, use at your own risk.**
+**From 0.4.0 mod exit from Experimental, almost everything from base game is synced and core gameplay should work without to many issue, however be carefull of potential save corruption or crash.**
 
 *Here's every planned feature state :*
 
 * Implement Networking System (TCP/UDP) : ✅
-* Implement Steam API Networking : ❌
+* Implement Steam API Networking : ✅
 * Create a Lobby system : ✅
 * Add a Custom Save System : ✅
 * Sync players Position and Rotation : ✅
+* Add Animation to players : ✅
 * Sync Inventory : ✅ 
 * Sync Cars Spawning and position : ✅
 * Sync Garage Interaction : ✅ (Lifter, Wheel Assembler and Wheel Balancer)
-* Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash,Power bench and wheel alignment are missing)
-* Sync Cars "mechanic" : ✅ 
+* Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash,Power bench and wheel alignment)
+* Sync Cars  : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
-* Sync Quest : ❌
-* Sync garage upgrade : ❌
+* Sync Quest : ✅
+* Sync garage upgrade : ✅
 * Sync garage Customization : ❌
-* Add Mod Support : ❌
-* Add Animation to players : ✅
+* Add QoLMod Support : ❌
+* Add Tk Basic's and Aftermarket Support : ❌
+* Sync Workshop Car : ❌
+* Standalone dedicated server : ❌
 
 **Here the description of every emote :**
 <br/>
@@ -63,22 +66,32 @@ You can join the project Discord if you want to talk or ask for help :
 https://discord.gg/rMz4tGbrc6
 ## How it work
 
-Here's the procedure to compile it youself :<br/>
+Below is the installation guide :<br/>
+It change depending the version of the mod you've downloaded.<br/>
 <br/>
+CASE 1 - 0.4.0 and later<br/>
+1- Download Latest build on release page<br/>
+2- Download and Install MelonLoader on version 0.5.7<br/>
+3- extract mod folder inside game directory<br/>
+4- Launch the game !<br/>
+<br/>
+CASE 2 - 0.2.8 to 0.3.5<br/>
 1- Go to the github page on the branch "MainMod"<br/>
 2- Download the source code as ZIP and extract it<br/>
 3- Download a code editor : VS Community or Jetbrain Rider<br/>
 4- Once installed open the project with one of these editor <br/>
-<br/>
-From there it change depending the version of the mod you've downloaded.<br/>
-CASE 1 - 0.2.8 and Later<br/>
 5- Download and Install MelonLoader on version 0.6.1<br/>
 6- Open the game 1 time until main Menu and close it<br/>
 7- Go back to code editor, press Ctrl + B to compile (maybe not working on VS Community)<br/>
 8- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
 9- Paste the mod dll into mod folder in game directory<br/>
+10- Launch the game !<br/>
 <br/>
-CASE 2 - Older than 0.2.8<br/>
+CASE 3 - 0.1.0 to 0.2.7<br/>
+1- Go to the github page on the branch "MainMod"<br/>
+2- Download the source code as ZIP and extract it<br/>
+3- Download a code editor : VS Community or Jetbrain Rider<br/>
+4- Once installed open the project with one of these editor <br/>
 5- You need to download and Install MelonLoader on version 0.6.1<br/>
 6- Open the game 1 time until main Menu and close it<br/>
 7- Once you done that , go back to you code editor , it'll have a lot of error because of the dependencies missing<br/>
@@ -88,15 +101,12 @@ CASE 2 - Older than 0.2.8<br/>
 11- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
 12- You'll also need to past 2 additional dll on userLibs, you can find them on github page<br/>
 13- Paste the mod dll into mod folder in game directory<br/>
+14- Launch the game !
 <br/>
-Then your all set :) just launch the game and everything should work .<br/>
 NOTE: for those using mod before 0.3.0 to open the mod menu it's "Right Shift"<br/>
 
-From this point on, you should be able to launch the game with the mod, once launched you should be able to open the mod's menu with the Right Shift key, <br/>
+From this point on, you should be able to launch the game with the mod, once launched you should have a new button to access multiplayer features. <br/>
 <br/>
-from there you'll be able to launch a game and join one (you have to launch/join from the main menu, not in-game). <br/>
-if there's no issue with the save system it should create a new save and create a lobby that 4 player max can join,<br/>
-if they are all ready you can start the game and start playing (in the case where everything work)<br/>
 
 ## Authors
 

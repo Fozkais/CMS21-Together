@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zsxbQobSGFqrjXD7WQAVt41jYLxz1n+17dPJd6kXZHIKmkZl9/jE2q1EZ6ICM4ZJrYb/MjHobtGCMii0uKF4rg==",
+  "dgSpecHash": "l5qoo7dgP9qTGslRjct7a/Fxq8RkcpA/rMWzlX3bCDr6gzMwYPAY/labDFthndvnm16xTd+sbZnRdoY6f/P/1g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\brand\\CMS21-Together\\CMS21-Together.csproj",
+  "projectFilePath": "E:\\Rider Project\\CMS21-TogetherMain\\CMS21-Together.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\brand\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",
     "C:\\Users\\brand\\.nuget\\packages\\microsoft.net.stringtools\\17.6.3\\microsoft.net.stringtools.17.6.3.nupkg.sha512",

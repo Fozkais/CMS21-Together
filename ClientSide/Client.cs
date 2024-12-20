@@ -1,162 +1,143 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Car;
-using CMS21Together.ClientSide.Data.PlayerData;
-using CMS21Together.ClientSide.Handle;
-using CMS21Together.ClientSide.Transport;
+using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
-namespace CMS21Together.ClientSide
+namespace CMS21Together.ClientSide;
+
+//[RegisterTypeInIl2Cpp]
+public class Client
 {
-    [RegisterTypeInIl2Cpp]
-    public class Client: MonoBehaviour
-    {
-        public static Client Instance;
-        public static int dataBufferSize = 4096;
+	public delegate void PacketHandler(Packet _packet);
 
-        public string username = "player";
-        public string ip = "127.0.0.1";
-        public int port;
-        public int Id;
-        public ClientTCP tcp;
-        public ClientUDP udp;
+	public static Client Instance;
+	public static Dictionary<int, PacketHandler> PacketHandlers;
+	public bool isConnected;
 
-        public bool isConnected;
-        public static bool forceDisconnected;
+	public NetworkType networkType;
 
-        public delegate void PacketHandler(Packet _packet);
+	public ClientSteam steam;
+	public ClientTCP tcp;
+	public ClientUDP udp;
 
-        public static Dictionary<int, PacketHandler> PacketHandlers;
+	public void ConnectToServer(NetworkType type, string ip = "")
+	{
+		networkType = type;
+		ClientData.Instance = new ClientData();
+		ConnectToServer(ip);
+	}
 
-        public ThreadManager threadManager;
+	private void ConnectToServer(string ip = "")
+	{
+		InitializeClientData();
 
-        public void Awake()
-        {
-            if (Instance == null)
-            {
-                Instance = this;
-            }
-            else if (Instance != this)
-            {
-                MelonLogger.Msg("Instance already exists, destroying object!");
-                Destroy(this);
-            }
-            tcp = new ClientTCP();
-            udp = new ClientUDP();
-        }
+		if (networkType == NetworkType.Steam)
+		{
+			MelonLogger.Msg($"LobbyID:{ip}\n");
+			SteamId lobbyID = SteamworksUtils.StringToUInt64(ip);
+		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
+		}
+		else
+		if (networkType == NetworkType.TCP)
+		{
+			tcp = new ClientTCP();
+			udp = new ClientUDP();
 
-        public void ClientOnApplicationQuit()
-        {
-           // ClientSend.Disconnect(Instance.Id); TODO:FIX
-        }
+			tcp.Connect(ip);
+		}
+
+		isConnected = true;
+	}
+
+	public void SendData(Packet packet, bool reliable)
+	{
+		switch (networkType)
+		{
+			case NetworkType.TCP:
+				if (reliable) tcp.Send(packet);
+				else udp.Send(packet);
+				break;
+			case NetworkType.Steam:
+			    steam.Send(packet, reliable);
+			    break;
+		}
+	}
+
+	private void InitializeClientData()
+	{
+		PacketHandlers = new Dictionary<int, PacketHandler>
+		{
+			{ (int)PacketTypes.connect, ClientHandle.ConnectPacket },
+			{ (int)PacketTypes.disconnect, ClientHandle.DisconnectPacket },
+			{ (int)PacketTypes.userData, ClientHandle.UserDataPacket },
+			{ (int)PacketTypes.readyState, ClientHandle.ReadyPacket },
+			{ (int)PacketTypes.start, ClientHandle.StartPacket },
+			{ (int)PacketTypes.contentInfo, ClientHandle.ContentsInfoPacket },
+
+			{ (int)PacketTypes.spawn, ClientHandle.SpawnPacket },
+			{ (int)PacketTypes.position, ClientHandle.PositionPacket },
+			{ (int)PacketTypes.rotation, ClientHandle.RotationPacket },
+			{ (int)PacketTypes.sceneChange, ClientHandle.SceneChangePacket },
+
+			{ (int)PacketTypes.item, ClientHandle.ItemPacket },
+			{ (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
+
+			{ (int)PacketTypes.stat, ClientHandle.StatPacket },
+
+			{ (int)PacketTypes.lifter, ClientHandle.LifterPacket },
+			{ (int)PacketTypes.setSpringClamp, ClientHandle.SetSpringClampPacket },
+			{ (int)PacketTypes.clearSpringClamp, ClientHandle.SpringClampClearPacket },
+			{ (int)PacketTypes.setTireChanger, ClientHandle.SetTireChangerPacket },
+			{ (int)PacketTypes.clearTireChanger, ClientHandle.ClearTireChangerPacket },
+			{ (int)PacketTypes.wheelBalance, ClientHandle.WheelBalancePacket },
+			{ (int)PacketTypes.oilBinUse, ClientHandle.OilBinPacket },
+			{ (int)PacketTypes.toolMove, ClientHandle.ToolsMovePacket },
+			{ (int)PacketTypes.engineCrane, ClientHandle.EngineCraneHandlePacket },
+			{ (int)PacketTypes.engineStandSetGroup, ClientHandle.EngineSetGroupPacket },
+			{ (int)PacketTypes.engineStandTakeOff, ClientHandle.EngineTakeOffPacket },
+			{ (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAnglePacket },
+			{ (int)PacketTypes.carFluid, ClientHandle.CarFluidPacket },
+
+			{ (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
+			{ (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
+			{ (int)PacketTypes.partScript, ClientHandle.PartScriptPacket },
+
+			{ (int)PacketTypes.deleteCar, ClientHandle.DeleteCarPacket },
+			{ (int)PacketTypes.carPosition, ClientHandle.CarPositionPacket },
+
+			{ (int)PacketTypes.garageUpgrade, ClientHandle.GarageUpgradePacket },
+			{ (int)PacketTypes.newJob, ClientHandle.JobPacket },
+			{ (int)PacketTypes.jobAction, ClientHandle.JobActionPacket },
+			{ (int)PacketTypes.selectedJob, ClientHandle.SelectedJobPacket },
+			{ (int)PacketTypes.endJob, ClientHandle.EndJobPacket }
+		};
+	}
+
+	public void Disconnect()
+	{
+		if (!isConnected) return;
 
 
-        public void ConnectToServer(string _ipAdress)
-        {
-            InitializeClientData();
-            Instance.ip = _ipAdress;
-            Instance.port = MainMod.PORT;
+		ClientSend.DisconnectPacket();
+		Application.runInBackground = false;
+		isConnected = false;
 
-            ClientData data = new ClientData();
-            ClientData.Instance = data;
+		tcp.Disconnect();
+		udp.Disconnect();
 
-            try
-            {
-                isConnected = true;
-                tcp.Connect();
-                //udp.Connect(((IPEndPoint)tcp.socket.Client.LocalEndPoint).Port);
-            }
-            catch (Exception ex) // Capturer toutes les exceptions possibles
-            {
-                MelonLogger.Msg($"Error detected! Failed to connect to server. Error: {ex}");
-                Client.Instance.Disconnect();
-            }
+		if (SceneManager.GetActiveScene().name != "Menu")
+		{
+			var manager = NotificationCenter.m_instance;
+			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
+		}
 
-            if (!isConnected)
-            {
-                // Traiter les erreurs de connexion ici
-                PacketHandlers.Clear();
-            }
-        }
-
-        private void InitializeClientData()
-        {
-            PacketHandlers = new Dictionary<int, PacketHandler>()
-            {
-                { (int)PacketTypes.welcome, ClientHandle.Welcome },
-                { (int)PacketTypes.contentInfo, ClientHandle.ContentsInfo },
-                { (int)PacketTypes.keepAlive, ClientHandle.KeepAlive},
-                { (int)PacketTypes.keepAliveConfirmed, ClientHandle.KeepAliveConfirmation},
-                { (int)PacketTypes.disconnect, ClientHandle.Disconnect },
-                { (int)PacketTypes.readyState, ClientHandle.ReadyState },
-                { (int)PacketTypes.playerInfo, ClientHandle.PlayerInfo },
-                { (int)PacketTypes.playersInfo, ClientHandle.PlayersInfo },
-                { (int)PacketTypes.startGame, ClientHandle.StartGame },
-                { (int)PacketTypes.spawnPlayer, ClientHandle.SpawnPlayer },
-                
-                { (int)PacketTypes.playerPosition, ClientHandle.playerPosition },
-                { (int)PacketTypes.playerInitialPos, ClientHandle.playerInitialPos },
-                { (int)PacketTypes.playerRotation, ClientHandle.playerRotation},
-                { (int)PacketTypes.playerSceneChange, ClientHandle.playerSceneChange},
-                { (int)PacketTypes.stats, ClientHandle.playerStats},
-                { (int)PacketTypes.inventoryItem, ClientHandle.InventoryItem},
-                { (int)PacketTypes.inventoryGroupItem, ClientHandle.InventoryGroupItem},
-                
-                { (int)PacketTypes.lifter, ClientHandle.Lifter},
-                { (int)PacketTypes.tireChanger, ClientHandle.TireChange},
-                { (int)PacketTypes.wheelBalancer, ClientHandle.WheelBalancer},
-                { (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAngle},
-                { (int)PacketTypes.takeOffEngineFromStand, ClientHandle.TakeOffEngineFromStand},
-                { (int)PacketTypes.engineCrane, ClientHandle.EngineCrane},
-                { (int)PacketTypes.setEngineOnStand, ClientHandle.setEngineOnStand},
-                { (int)PacketTypes.setGroupEngineOnStand, ClientHandle.setGroupEngineOnStand},
-                { (int)PacketTypes.oilBin, ClientHandle.OilBin},
-                { (int)PacketTypes.springClampGroup, ClientHandle.SpringClampGroup},
-                { (int)PacketTypes.springClampClear, ClientHandle.SpringClampClear},
-                { (int)PacketTypes.toolMove, ClientHandle.ToolsMove},
-                
-                { (int)PacketTypes.carInfo, ClientHandle.CarInfo},
-                //{ (int)PacketTypes.carLoadInfo, ClientHandle.CarLoadInfo},
-                { (int)PacketTypes.carPosition, ClientHandle.CarPosition},
-                { (int)PacketTypes.carPart, ClientHandle.CarPart},
-                { (int)PacketTypes.bodyPart, ClientHandle.BodyPart},
-                { (int)PacketTypes.carParts, ClientHandle.CarParts},
-                { (int)PacketTypes.bodyParts, ClientHandle.BodyParts},
-            };
-            MelonLogger.Msg("Initialized Packets!");
-        }
-        
-        public void Disconnect()
-        {
-            if (isConnected)
-            {
-                CarHarmonyPatches.ListenToDeleteCar = false;
-                
-                Application.runInBackground = false;
-                isConnected = false;
-                tcp.Disconnect();
-                udp.Disconnect();
-                if(tcp.socket != null)
-                    tcp.socket.Close();
-                if (udp.socket != null)
-                    udp.socket.Close();
-
-                ClientData.Instance.GameReady = false;
-                ClientData.Instance = null;
-                GameData.Instance = null;
-                
-                ModInventory.handledGroupItem.Clear();
-                ModInventory.handledItem.Clear();
-
-                ModUI.Instance.window = guiWindow.main;
-                
-                MelonLogger.Msg("CL : Disconnected from server.");
-            }
-            CarHarmonyPatches.ListenToDeleteCar = true;
-            ApiCalls.API_M2(ContentManager.Instance.OwnedContents);
-        }
-    }
+		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
+		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
+	}
 }

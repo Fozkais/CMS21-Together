@@ -1,161 +1,273 @@
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using CMS.MainMenu.Sections;
+using CMS.UI.Controls;
+using CMS.UI.Logic;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
-using HarmonyLib;
-using Il2Cpp;
-using Il2CppCMS.MainMenu.Controls;
-using Il2CppCMS.MainMenu.Sections;
-using Il2CppCMS.MainMenu.Windows;
-using Il2CppCMS.UI;
-using Il2CppCMS.UI.Helpers;
+using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
-namespace CMS21Together.ClientSide.Data.CustomUI
+namespace CMS21Together.ClientSide.Data.CustomUI;
+
+public static class CustomUIManager
 {
-    [HarmonyPatch]
-    public static class CustomUIManager
-    {
+	public static GameObject templateButton;
+	public static GameObject templateText;
+	public static GameObject templateInputField;
+	public static GameObject templateSelector;
 
-        public static bool inLobbyWindow;
-        public static MainMenuButton multiplayerButton;
-        public static List<MainMenuButton> multiplayerMenuButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> hostMenuButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> saveButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> inputFieldButtons = new List<MainMenuButton>();
-        public static List<MainMenuButton> lobbyMenuButtons = new List<MainMenuButton>();
-        
-        public static void OnSceneChange(string scene)
-        {
-            if(scene == "Menu")
-            {
-                CustomHostMenu.isSet = false;
-                CustomHostMenu.isSavesSet = false;
-                CustomHostMenu.isnewSaveSet = false;
-                CustomHostMenu.displaySaves = false;
-                CustomLobbyMenu.isSet = false;
-                inLobbyWindow = false;
-                multiplayerButton = null;
-                multiplayerMenuButtons = new List<MainMenuButton>();
-                hostMenuButtons = new List<MainMenuButton>();
-                saveButtons = new List<MainMenuButton>();
-                inputFieldButtons = new List<MainMenuButton>();
-                lobbyMenuButtons = new List<MainMenuButton>();
-                CustomLobbyMenu.backgrounds = new List<GameObject>();
-                CustomLobbyMenu.readyText = new List<GameObject>();
-                CustomLobbyMenu.usernameText = new List<GameObject>();
-                CustomLobbyMenu.kickButtons = new List<GameObject>();
-                MelonCoroutines.Start(CustomMainMenu.DefaultMenuPatch());
-                SavesManager.Initialize();
-            }
-        }
+	public static List<ButtonState> V_Main_Buttons = new();
 
-        public static void UpdateLobby()
-        {
-            if (!inLobbyWindow) return;
+	public static List<ButtonState> MP_Main_Buttons = new();
+	public static List<ButtonState> MP_Host_Buttons = new();
+	public static List<ButtonState> MP_Saves_Buttons = new();
 
-            for (int i = 0; i < 4; i++)
-            {
-                if (ClientData.Instance.players.TryGetValue(i + 1, out var player))
-                {
-                    if (CustomLobbyMenu.usernameText.All(s => s.GetComponent<Text>().text != player.username))
-                    {
-                        if (!CustomLobbyMenu.backgrounds[i].active)
-                        {
-                            CustomLobbyMenu.backgrounds[i].SetActive(true);
-                            CustomLobbyMenu.usernameText[i].SetActive(true);
-                            CustomLobbyMenu.usernameText[i].GetComponent<Text>().text = player.username;
-                            CustomLobbyMenu.readyText[i].SetActive(true);
-                            CustomLobbyMenu.kickButtons[i].SetActive(true);
+	public static List<ButtonState> MP_Lobby_Buttons = new();
+	public static List<(int, GameObject)> MP_Lobby_Addition = new();
 
-                        }
-                    }
-                    else
-                    {
-                        if (player.isReady)
-                            CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Ready";
-                        else
-                            CustomLobbyMenu.readyText[i].GetComponent<Text>().text = "Not Ready";
+	public static Transform V_Main_Parent;
+	public static Transform MP_Main_Parent;
+	public static Transform MP_Host_Parent;
+	public static Transform MP_Lobby_Parent;
+	public static Transform MP_Saves_Parent;
 
-                    }
-                }
-                else
-                {
-                    if (CustomLobbyMenu.backgrounds[i].active)
-                        CustomLobbyMenu.backgrounds[i].SetActive(false);
-                    if (CustomLobbyMenu.usernameText[i].active)
-                        CustomLobbyMenu.usernameText[i].SetActive(false);
-                    if (CustomLobbyMenu.readyText[i].active)
-                        CustomLobbyMenu.readyText[i].SetActive(false);
-                    if (CustomLobbyMenu.kickButtons[i].active)
-                        CustomLobbyMenu.kickButtons[i].SetActive(false);
-                }
-            }
-        }
-        
-        public static bool DisableInputFix(bool disable, bool disableFeatures, MainSection __instance)
-        {
-            MelonLogger.Msg("Begin.");
-            __instance.inputIsEnabled = !disable;
-            if (disableFeatures)
-            {
-                for (int i = 0; i < 5; i++)
-                {
-                    __instance.buttons[i].SetDisabledSoft(disable);
-                }
-                MelonLogger.Msg("1Begin.");
-                if (disable)
-                {
-                    __instance.listNavigationManager.DisableAllFeatures();
-                }
-                else
-                {
-                    __instance.listNavigationManager.EnableAllFeatures();
-                }
-            }
-            
-            MelonLogger.Msg("Finished.");
+	public static CustomUISection currentSection = CustomUISection.V_Main;
 
-            return false;
-        }
-        
-        public static bool SetButtonsAlphaFix(float value, MainSection __instance)
-        {
-            MelonLogger.Msg("Begin.");
-            for (int i = 0; i < 5; i++)
-            {
-                __instance.buttons[i].SetAlpha(value);
-            }
+	public static void OnSceneChange(string scene)
+	{
+		if (scene == "Menu") MelonCoroutines.Start(InitializeCustomUI());
+	}
 
-            MelonLogger.Msg("Finished2.");
-            
-            return  false;;
-        }
-        
-        public static bool Hide(bool hiddenFromOutside, DLCWindow __instance)
-        {
-            //base.Hide(hiddenFromOutside);
-            __instance.SetAsActive(active: false);
-            __instance.EnableGrid(enable: false);
-            __instance.dlcButton.SetClickedState(clicked: false);
-            if (!GameSettings.ConsoleMode)
-            {
-                __instance.dlcButton.Deselect();
-            }
-            DisableInputFix(false,false, CustomMainMenu.section);
-            __instance.menuManager.DisableParallax(disable: false);
-            __instance.menuManager.ChangeParallaxGrayscale(0f);
-            __instance.menuManager.ChangeLogoGrayscale(0f);
-            SetButtonsAlphaFix(1f, CustomMainMenu.section);
-            __instance.UnregisterButtonsEvents();
-            __instance. UnregisterGridEvents();
-            __instance.RemoveDescriptionsActions();
-            DescriptionHelper.HideDescription(WindowID.DLC);
-            __instance.EnableUI(enable: false);
-            __instance.isActive = false;
-            
-            return false;
-        }
-    }
+	private static IEnumerator InitializeCustomUI()
+	{
+		yield return new WaitForSeconds(0.1f);
+		yield return new WaitForEndOfFrame();
+
+		CustomUIBuilder.LoadCustomlogo();
+		SavesManager.Initialize();
+
+		GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+		templateButton = GameObject.Find("MainMenuButton");
+		templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
+		templateText = templateButton.GetComponentInChildren<Text>().gameObject;
+		templateSelector = GameObject.Find("MainMenuWindows").transform.GetChild(3).GetChild(0).gameObject
+			.GetComponentInChildren<StringSelector>().gameObject;
+
+		ResetLists();
+
+		UI_Main.InitializeMainMenu();
+		UI_Main.InitializeMultiplayerMenu();
+		UI_Host.InitializeHostMenu();
+		UI_Saves.InitializeSavesMenu();
+		UI_Lobby.InitializeLobbyMenu();
+	}
+
+	private static void ResetLists()
+	{
+		V_Main_Buttons.Clear();
+		MP_Lobby_Buttons.Clear();
+		MP_Lobby_Addition.Clear();
+		MP_Saves_Buttons.Clear();
+		MP_Main_Buttons.Clear();
+		MP_Host_Buttons.Clear();
+	}
+
+	public static void DisableUI(CustomUISection section)
+	{
+		if (section == CustomUISection.V_Main)
+		{
+			V_Main_Parent.GetComponent<MainMenuSection>().Close();
+			DisableUIList(V_Main_Buttons);
+		}
+		else if (section == CustomUISection.MP_Main)
+		{
+			DisableUIList(MP_Main_Buttons);
+		}
+		else if (section == CustomUISection.MP_Host)
+		{
+			DisableUIList(MP_Host_Buttons);
+		}
+		else if (section == CustomUISection.MP_Lobby)
+		{
+			DisableUIAddition(MP_Lobby_Addition);
+			DisableUIList(MP_Lobby_Buttons);
+		}
+		else if (section == CustomUISection.MP_Saves)
+		{
+			DisableUIList(MP_Saves_Buttons);
+		}
+	}
+
+	public static void EnableUI(CustomUISection section)
+	{
+		if (section == CustomUISection.V_Main)
+		{
+			V_Main_Parent.GetComponent<MainMenuSection>().Open();
+			EnableUIList(V_Main_Buttons);
+		}
+		else if (section == CustomUISection.MP_Main)
+		{
+			EnableUIList(MP_Main_Buttons);
+		}
+		else if (section == CustomUISection.MP_Host)
+		{
+			EnableUIList(MP_Host_Buttons);
+		}
+		else if (section == CustomUISection.MP_Lobby)
+		{
+			foreach (var elt in MP_Lobby_Addition) Object.Destroy(elt.Item2);
+			MP_Lobby_Addition.Clear();
+			CustomUIBuilder.BuildLobbyHeader();
+			switch (Server.Instance.isRunning)
+			{
+				case false:
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Disconnect";
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
+
+					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Disabled, true);
+					MP_Lobby_Buttons[0].button.isDisabled = true;
+					MP_Lobby_Buttons[0].button.SetDisabled(true, true);
+					break;
+				case true:
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Back to saves";
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
+
+					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Normal, true);
+					MP_Lobby_Buttons[0].button.SetDisabled(false, true);
+					break;
+			}
+
+			EnableUIList(MP_Lobby_Buttons);
+			EnableUIAddition(MP_Lobby_Addition);
+		}
+		else if (section == CustomUISection.MP_Saves)
+		{
+			EnableUIList(MP_Saves_Buttons);
+		}
+
+		currentSection = section;
+	}
+
+	public static void LockUI(CustomUISection section)
+	{
+		if (section == CustomUISection.V_Main)
+			LockUIList(V_Main_Buttons);
+		else if (section == CustomUISection.MP_Main)
+			LockUIList(MP_Main_Buttons);
+		else if (section == CustomUISection.MP_Host)
+			LockUIList(MP_Host_Buttons);
+		else if (section == CustomUISection.MP_Lobby)
+			LockUIList(MP_Lobby_Buttons);
+		else if (section == CustomUISection.MP_Saves)
+			LockUIList(MP_Saves_Buttons);
+	}
+
+	public static void UnlockUI(CustomUISection section)
+	{
+		if (section == CustomUISection.V_Main)
+			UnlockUIList(V_Main_Buttons);
+		else if (section == CustomUISection.MP_Main)
+			UnlockUIList(MP_Main_Buttons);
+		else if (section == CustomUISection.MP_Host)
+			UnlockUIList(MP_Host_Buttons);
+		else if (section == CustomUISection.MP_Lobby)
+			UnlockUIList(MP_Lobby_Buttons);
+		else if (section == CustomUISection.MP_Saves)
+			UnlockUIList(MP_Saves_Buttons);
+	}
+
+	private static void EnableUIList(List<ButtonState> buttonsToEnable)
+	{
+		foreach (var buttonState in buttonsToEnable)
+		{
+			buttonState.button.gameObject.SetActive(true);
+			if (buttonState.Disabled)
+			{
+				buttonState.button.SetDisabled(true, true);
+				buttonState.button.DoStateTransition(SelectionState.Disabled, true);
+			}
+		}
+	}
+
+	private static void DisableUIList(List<ButtonState> buttonsToDisable)
+	{
+		foreach (var buttonState in buttonsToDisable) buttonState.button.gameObject.SetActive(false);
+	}
+
+	private static void DisableUIAddition(List<GameObject> objectsToDisable)
+	{
+		for (var index = 0; index < objectsToDisable.Count; index++)
+		{
+			var obj = objectsToDisable[index];
+			if (index > 3)
+			{
+				objectsToDisable.Remove(obj);
+				Object.Destroy(obj);
+			}
+			else
+			{
+				obj.SetActive(false);
+			}
+		}
+	}
+
+	private static void DisableUIAddition(List<(int, GameObject)> objectsToDisable)
+	{
+		for (var index = 0; index < objectsToDisable.Count; index++)
+		{
+			var obj = objectsToDisable[index];
+			if (index > 3)
+			{
+				objectsToDisable.Remove(obj);
+				Object.Destroy(obj.Item2);
+			}
+			else
+			{
+				obj.Item2.SetActive(false);
+			}
+		}
+	}
+
+	private static void EnableUIAddition(List<GameObject> objectsToEnable)
+	{
+		foreach (var obj in objectsToEnable) obj.SetActive(true);
+	}
+
+	private static void EnableUIAddition(List<(int, GameObject)> objectsToEnable)
+	{
+		foreach (var obj in objectsToEnable) obj.Item2.SetActive(true);
+	}
+
+	private static void LockUIList(List<ButtonState> buttonsToLock)
+	{
+		foreach (var buttonState in buttonsToLock)
+		{
+			buttonState.button.SetDisabled(true, true);
+			buttonState.button.DoStateTransition(SelectionState.Disabled, true);
+		}
+	}
+
+	private static void UnlockUIList(List<ButtonState> buttonsToLock)
+	{
+		foreach (var buttonState in buttonsToLock)
+		{
+			buttonState.button.SetDisabled(false, true);
+			buttonState.button.DoStateTransition(SelectionState.Normal, true);
+		}
+	}
+
+	public static void ResetSaveUI()
+	{
+		for (var index = 0; index < MP_Saves_Buttons.Count; index++)
+		{
+			var buttonState = MP_Saves_Buttons[index];
+			Object.Destroy(buttonState.button.gameObject);
+		}
+
+		MP_Saves_Buttons.Clear();
+	}
 }

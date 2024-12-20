@@ -1,15 +1,14 @@
 using System;
 
-namespace CMS21Together.Shared.Data
+namespace CMS21Together.Shared.Data;
+
+[Serializable]
+public enum GameScene
 {
-    [Serializable]
-    public enum GameScene
-    {
-        unknow,
-        garage,
-        junkyard,
-        auto_salon,
-        barn,
-        menu
-    }
+	unknow,
+	garage,
+	junkyard,
+	auto_salon,
+	barn,
+	menu
 }

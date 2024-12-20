@@ -1,173 +1,121 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using CMS21Together.ServerSide.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Car;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ServerSide;
-using CMS21Together.ServerSide.Handle;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
-using Il2Cpp;
+using Il2CppSystem.Collections;
 using MelonLoader;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using SceneManager = UnityEngine.SceneManagement.SceneManager;
+using SteamManager = CMS21Together.Shared.SteamManager;
 
 // ReSharper disable All
 
 namespace CMS21Together
 {
-    public class MainMod : MelonMod
-    {
-        public const int MAX_SAVE_COUNT = 22; // need to add 6 to match correct save number: 16 = 22 (+1 for clientSlot)
-        public const int MAX_PLAYER = 4;
-        public const int PORT = 7777;
-        public const string ASSEMBLY_MOD_VERSION = "0.3.5";
-        public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
-        public const KeyCode MOD_GUI_KEY = KeyCode.RightShift;
-        
-        public Client client;
-        public ModUI modUI;
-        public ContentManager contentManager;
+	public class MainMod : MelonMod
+	{
+		public const int MAX_SAVE_COUNT = 22;
+		public const int MAX_PLAYER = 4;
+		public const int PORT = 7777;
+		public const string ASSEMBLY_MOD_VERSION = "0.4.0";
+		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
+		public bool isModInitialized;
 
-        public bool isModInitialized;
+		public override void OnLateInitializeMelon()
+		{
 
-        public override void OnEarlyInitializeMelon()
-        {
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ApiCalls.CurrentDomain_AssemblyResolve);
-        }
+			Client.Instance = new Client();
+			Server.Instance = new Server();
+			ContentManager.Instance = new ContentManager();
 
-        public override void OnLateInitializeMelon()
-        {
-            GameObject modObject = new GameObject("TogetherMod");
-            Object.DontDestroyOnLoad(modObject);
-            client = modObject.AddComponent<Client>();
-            client.Awake();
-            
-            modUI = modObject.AddComponent<ModUI>();
-            modUI.Awake();
-            
-            contentManager = modObject.AddComponent<ContentManager>();
-            
-            PreferencesManager.LoadPreferences();
-            isModInitialized = true;
-            LoggerInstance.Msg("Together Mod Initialized!");
-            
-        }
-        
+			ClientData.UserData = TogetherModManager.LoadUserData();
+			Shared.SteamManager.Instance = new Shared.SteamManager();
+			isModInitialized = true;
+			LoggerInstance.Msg("Together Mod Initialized!");
+		}
 
-        public override void OnGUI()
-        {
-            if(!isModInitialized) {return;}
-            modUI.OnGUI();
-        }
-        public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
-        {
-            if(sceneName == "Menu") contentManager.Initialize();
-            if(!isModInitialized) {return;}
-            contentManager.LoadCustomlogo();
-            CustomUIManager.OnSceneChange(sceneName);
-            
-            if (client.isConnected || ServerData.isRunning)
-            {
-                GameData.DataInitialized = false;
-                ModSceneManager.UpdatePlayerScene();
-                if(ModSceneManager.isInMenu() && client.isConnected && !ServerData.isRunning)
-                {
-                    Client.Instance.Disconnect();
-                    Application.runInBackground = false;
-                }
-                if(ModSceneManager.isInMenu() && ServerData.isRunning)
-                {
-                    Server.Stop();
-                    Application.runInBackground = false;
-                }
-                if(ModSceneManager.isInGarage())
-                {
-                    MelonCoroutines.Start(ClientData.Instance.Initialize());
-                    MelonCoroutines.Start(CarManagement.UpdateCarOnSceneChange());
 
-                    foreach (KeyValuePair<int, Player> player in ClientData.Instance.players)
-                    {
-                        if (ModSceneManager.isInGarage(player.Value))
-                        {
-                            MelonLogger.Msg($"Player: {player.Value.username} in garage, Spawning...");
-                            if (!ClientData.Instance.PlayersGameObjects.ContainsKey(player.Value.id))
-                            {
-                                ClientData.Instance.SpawnPlayer(player.Value);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+		public override void OnGUI()
+		{
+			if (!isModInitialized)
+			{
+				return;
+			}
+		}
 
-        public override void OnUpdate()
-        {
-            if(!isModInitialized) {return;}
-            if (GameData.DataInitialized)
-            {
-                if (Client.Instance.isConnected)
-                {
-                    if(ModSceneManager.isInGarage())
-                        ClientData.Instance.UpdateClient();
-                }
-            }
-            if (Client.Instance.isConnected)
-            {
-                if (ClientData.Instance.needToKeepAlive)
-                {
-                    if (!ClientData.Instance.isKeepingAlive)
-                    {
-                        MelonCoroutines.Start(ClientData.Instance.KeepClientAlive());
-                        MelonCoroutines.Start(ClientData.Instance.isServer_alive());
-                    }
-                }
+		public override void OnSceneWasLoaded(int buildindex, string sceneName) // Runs when a Scene has Loaded and is passed the Scene's Build Index and Name.
+		{
+			if (!isModInitialized)
+			{
+				return;
+			}
 
-                if (ModSceneManager.isInMenu())
-                {
-                    CustomUIManager.UpdateLobby();
-                }
-            }
+			CustomUIManager.OnSceneChange(sceneName);
 
-            if (ServerData.isRunning)
-            {
-                if (Server.clients.Count == 0)
-                {
-                    Server.Stop();
-                }
-            }
-            ThreadManager.UpdateThread();
-        }
+			if (sceneName == "Menu")
+			{
+				ContentManager.Instance.Initialize();
 
-        public override void OnLateUpdate()
-        {
-            if(!isModInitialized) {return;}
-            modUI.showUI();
-            
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                Cursor3D.Get().BlockCursor(false);
-            }
-            if (Input.GetKey(KeyCode.RightArrow))
-            {
-                Cursor3D.Get().BlockCursor(true);
-            }
-        }
-        
-        
-        
-        public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
-        {
-            PreferencesManager.SaveMelonLog();
-            if (ServerData.isRunning)
-            {
-                foreach (int id in Server.clients.Keys)
-                {
-                    ServerSend.DisconnectClient(id, "Server is shutting down.");
-                }
-            }
-        }
-    }
+				Application.runInBackground = false;
+			}
+
+			if (Client.Instance.isConnected)
+			{
+				if (sceneName == "garage" && ClientData.Instance.playerPrefab == null)
+					ClientData.Instance.LoadPlayerPrefab();
+
+				ClientData.UserData.UpdateScene(sceneName);
+			}
+		}
+
+		public override void OnUpdate()
+		{
+			if (!isModInitialized)
+			{
+				return;
+			}
+
+			if (!Client.Instance.isConnected)
+			{
+				return;
+			}
+
+			if (SceneManager.GetActiveScene().name == "garage")
+			{
+				ClientData.Instance.UpdateClient();
+			}
+			
+			if (Input.GetKeyDown(KeyCode.RightShift))
+			{
+				//ServerData.Instance.SendCar(0,0);
+			}
+
+			ThreadManager.UpdateThread();
+		}
+
+
+		public static void StartCoroutine(IEnumerator routine)
+		{
+			GameManager.Instance.StartCoroutine(routine);
+		}
+
+		public override void OnLateUpdate()
+		{
+			if (!isModInitialized)
+			{
+				return;
+			}
+		}
+
+		public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
+		{
+			TogetherModManager.SavePreferences();
+			if (Server.Instance.isRunning)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
+		}
+	}
 }

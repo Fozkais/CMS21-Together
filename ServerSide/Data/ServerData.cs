@@ -1,39 +1,278 @@
-using System.Collections.Generic;
-using CMS21Together.Shared;
+﻿using System.Collections.Generic;
+using System.Linq;
+using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared.Data;
-using Il2Cpp;
+using CMS21Together.Shared.Data.Vanilla;
+using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
+using CMS21Together.Shared.Data.Vanilla.Jobs;
+using MelonLoader;
 
-namespace CMS21Together.ServerSide.Data
+namespace CMS21Together.ServerSide.Data;
+
+public class ServerData
 {
-    public static class ServerData
-    {
-        public static Dictionary<int, Player> players = new Dictionary<int, Player>(); 
-        public static Dictionary<int, ModCar> LoadedCars = new Dictionary<int, ModCar>(); 
+	public static ServerData Instance;
+	public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
+	
+	public Dictionary<int, ModCarInfo> CarPartInfo = new();
+	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
+	public ModEngineStand engineStand = new();
+	public int engineStandAngle  = 0;
 
-        public static List<ModItem> itemInventory = new List<ModItem>();
-        public static List<ModGroupItem> groupItemInventory = new List<ModGroupItem>();
+	public Dictionary<int, UserData> connectedClients = new();
 
-        public static int money, scrap, exp;
+	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
+	public List<ModGroupItem> groupItems = new();
+	public List<ModItem> items = new();
 
-        public static bool isRunning;
-        public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new Dictionary<ModIOSpecialType, ModCarPlace>();
-        public static ModEngineStand engineStand = new ModEngineStand();
+	public List<ModJob> jobs = new();
+	public int money, scrap;
+	public List<ModJob> selectedJobs = new();
 
-        public static void ResetData()
-        {
-            players.Clear();
-            LoadedCars.Clear();
-            
-            itemInventory.Clear();
-            groupItemInventory.Clear();
-            toolsPosition.Clear();
-            engineStand = new ModEngineStand();
+	public GarageTool springClamp = new();
+	public GarageTool tireChanger = new();
+	public GarageTool wheelBalancer = new();
 
-            money = 0;
-            scrap = 0;
-            exp = 0;
-            
-            isRunning = false;
-        }
-    }
+
+	public void SendCar(int id, int carLoader)
+	{
+		ClientData.Instance.loadedCars.Remove(carLoader);
+		GameData.Instance.carLoaders[carLoader].DeleteCar();
+		ServerSend.LoadCarPacket(-1, CarSpawnDatas[id], carLoader);
+	}
+	public void ResendInventory()
+	{
+		ClientSide.Data.Player.Inventory.items.Clear();
+		ClientSide.Data.Player.Inventory.groupItems.Clear();
+		GameData.Instance.localInventory.items.Clear();
+		GameData.Instance.localInventory.groups.Clear();
+		
+		foreach (ModItem item in items)
+		{
+			ServerSend.ItemPacket(-1, item, InventoryAction.add);
+		}
+		foreach (ModGroupItem item in groupItems)
+		{
+			ServerSend.GroupItemPacket(-1, item, InventoryAction.add);
+		}
+	}
+
+	public void SetGarageUpgrade(GarageUpgrade upgrade)
+	{
+		garageUpgrades[upgrade.upgradeID] = upgrade;
+	}
+
+	public void DeleteCar(int carLoaderID)
+	{
+		if (CarSpawnDatas.ContainsKey(carLoaderID))
+			CarSpawnDatas.Remove(carLoaderID);
+		if (CarPartInfo.ContainsKey(carLoaderID))
+			CarPartInfo.Remove(carLoaderID);
+	}
+
+	public void UpdatePartScripts(ModPartScript partScript, int carLoaderID)
+	{
+		if (carLoaderID == -1)
+		{
+			UpdateEngineCrane(partScript);
+			return;
+		}
+		
+		if (!Instance.CarPartInfo.ContainsKey(carLoaderID))
+			Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
+
+		var carInfos = Instance.CarPartInfo[carLoaderID];
+		var key = partScript.partID;
+		var index = partScript.partIdNumber;
+
+		switch (partScript.type)
+		{
+			case ModPartType.engine:
+				carInfos.EnginePartsReferences[key] = partScript;
+				break;
+			case ModPartType.suspension:
+				if (!carInfos.SuspensionPartsReferences.ContainsKey(key))
+					carInfos.SuspensionPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
+
+				if (!carInfos.SuspensionPartsReferences[key].ContainsKey(index))
+					carInfos.SuspensionPartsReferences[key].Add(index, partScript);
+				else
+					carInfos.SuspensionPartsReferences[key][index] = partScript;
+
+				break;
+			case ModPartType.other:
+				if (!carInfos.OtherPartsReferences.ContainsKey(key))
+					carInfos.OtherPartsReferences.Add(key, new Dictionary<int, ModPartScript>());
+
+				if (!carInfos.OtherPartsReferences[key].ContainsKey(index))
+					carInfos.OtherPartsReferences[key].Add(index, partScript);
+				else
+					carInfos.OtherPartsReferences[key][index] = partScript;
+				break;
+			case ModPartType.driveshaft:
+				carInfos.DriveshaftPartsReferences[key] = partScript;
+				break;
+		}
+	}
+
+	private void UpdateEngineCrane(ModPartScript partScript)
+	{
+		engineStand.parts[partScript.partID] = partScript;
+	}
+
+	public void UpdateBodyParts(ModCarPart carPart, int carLoaderID)
+	{
+		if (!Instance.CarPartInfo.ContainsKey(carLoaderID))
+			Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
+
+		var carInfos = Instance.CarPartInfo[carLoaderID];
+		carInfos.BodyPartsReferences[carPart.carPartID] = carPart;
+	}
+
+	public void ChangePosition(int carLoaderID, int placeNo)
+	{
+		if (Instance.CarPartInfo.TryGetValue(carLoaderID, out var info)) info.placeNo = placeNo;
+	}
+
+	public void AddJob(ModJob job)
+	{
+		jobs.Add(job);
+	}
+
+	public void RemoveJob(int jobID)
+	{
+		var job = jobs.Find(j => j.id == jobID);
+		if (job != null)
+			jobs.Remove(job);
+	}
+
+	public void SetLoadJobCar(ModCar carData)
+	{
+		if (Instance.CarPartInfo.ContainsKey(carData.carLoaderID)) return;
+
+		Instance.CarPartInfo[carData.carLoaderID] = new ModCarInfo();
+		var data = Instance.CarPartInfo[carData.carLoaderID];
+
+		data.carToLoad = carData.carID;
+		data.carLoaderID = carData.carLoaderID;
+		data.configVersion = carData.configVersion;
+		data.placeNo = carData.carPosition;
+		data.customerCar = carData.customerCar;
+	}
+
+	public void UpdateSelectedJobs(ModJob job, bool action)
+	{
+		if (action)
+		{
+			if (selectedJobs.All(j => j.id != job.id)) selectedJobs.Add(job);
+		}
+		else
+		{
+			if (selectedJobs.Any(j => j.id == job.id)) selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
+		}
+	}
+
+	public static void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
+	{
+		toolsPosition[tool] = place;
+	}
+
+	public void SetSpringClampState(bool remove, ModGroupItem item)
+	{
+		if (remove)
+		{
+			springClamp.isMounted = true;
+			springClamp.groupItem = null;
+			return;
+		}
+
+		springClamp.isMounted = false;
+		springClamp.groupItem = item;
+	}
+
+	public void SetTireChangerState(bool remove, ModGroupItem item)
+	{
+		if (remove)
+		{
+			tireChanger.isMounted = true;
+			tireChanger.groupItem = null;
+			return;
+		}
+
+		tireChanger.isMounted = false;
+		tireChanger.groupItem = item;
+	}
+
+	public void SetWheelBalancerState(ModGroupItem item)
+	{
+		if (item == null)
+		{
+			wheelBalancer.isMounted = false;
+			wheelBalancer.additionalState = false;
+			wheelBalancer.groupItem = null;
+			return;
+		}
+
+		if (!wheelBalancer.additionalState)
+		{
+			wheelBalancer.groupItem = item;
+			wheelBalancer.additionalState = true;
+			wheelBalancer.isMounted = true;
+			return;
+		}
+
+		wheelBalancer.groupItem = item;
+		wheelBalancer.additionalState = true;
+		wheelBalancer.isMounted = true;
+	}
+
+	public void EndJob(ModJob job)
+	{
+		if (selectedJobs.Any(j => j.id == job.id)) selectedJobs.Remove(selectedJobs.First(j => j.id == job.id));
+	}
+
+	public void UpdateFluid(ModFluidData fluid, int carLoaderID)
+	{
+		//MelonLogger.Msg("Not implemented...");
+	}
+
+	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position)
+	{
+		engineStand = new ModEngineStand();
+		engineStand.position = position;
+		engineStand.engineGroupItem = engineGroup;
+	}
+
+	public void ClearEngineFromStand()
+	{
+		engineStand = new ModEngineStand();
+	}
+
+	public void IncreaseStandAngle(int val)
+	{
+		engineStandAngle = val;
+	}
+}
+
+public class GarageTool
+{
+	public bool additionalState;
+	public ModGroupItem groupItem;
+	public bool isMounted;
+}
+
+public class ModCarInfo
+{
+	public int carLoaderID;
+	public string carToLoad;
+	public int configVersion;
+	public bool customerCar;
+	public int placeNo;
+	public Dictionary<int, ModCarPart> BodyPartsReferences = new();
+	public Dictionary<int, ModPartScript> DriveshaftPartsReferences = new();
+	public Dictionary<int, ModPartScript> EnginePartsReferences = new();
+	public Dictionary<int, Dictionary<int, ModPartScript>> OtherPartsReferences = new();
+	public Dictionary<int, Dictionary<int, ModPartScript>> SuspensionPartsReferences = new();
 }
