@@ -31,6 +31,7 @@ public class UserData
 
 
 	[JsonIgnore] [NonSerialized] public GameObject userObject;
+	[JsonIgnore] [NonSerialized] public float lastUpdateTime;
 
 	public UserData()
 	{

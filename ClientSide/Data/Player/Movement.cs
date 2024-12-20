@@ -32,6 +32,7 @@ public static class Movement
 		if (player.scene != ClientData.UserData.scene) return;
 		if (player.userObject == null) player.SpawnPlayer();
 
+		float currentTime = Time.time;
 		// player.userObject.transform.Translate(position.toVector3() * Time.deltaTime); without animation method
 		if (player.lastPosition != null)
 		{
@@ -40,6 +41,7 @@ public static class Movement
 
 			// Mettre à jour les animations
 			UpdateAnimations(player.userAnimator, direction, speed);
+			player.lastUpdateTime = currentTime;
 		}
 
 		// Mettre à jour la position
@@ -54,6 +56,22 @@ public static class Movement
 
 		animator.SetFloat("Vertical", Mathf.Lerp(animator.GetFloat("Vertical"), verticalSpeed, Time.deltaTime * 10f));
 		animator.SetFloat("Horizontal", Mathf.Lerp(animator.GetFloat("Horizontal"), horizontalSpeed, Time.deltaTime * 10f));
+	}
+	
+	public static void CheckForInactivity()
+	{
+		foreach (var client in ClientData.Instance.connectedClients.Values)
+		{
+			if (client.userObject == null || client.userAnimator == null) continue;
+			
+			float elapsedTime = Time.time - client.lastUpdateTime;
+			
+			if (elapsedTime > 0.15f) 
+			{
+				client.userAnimator.SetFloat("Vertical", Mathf.Lerp(client.userAnimator.GetFloat("Vertical"), 0, Time.deltaTime * 10f));
+				client.userAnimator.SetFloat("Horizontal", Mathf.Lerp(client.userAnimator.GetFloat("Horizontal"), 0, Time.deltaTime * 10f));
+			}
+		}
 	}
 
 	public static void SendPosition()
