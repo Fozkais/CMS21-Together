@@ -12,10 +12,6 @@ using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
-using UnityEngine;
-using Inventory = CMS21Together.ClientSide.Data.Player.Inventory;
-using TireChangerLogic = CMS21Together.ClientSide.Data.Garage.Tools.TireChangerLogic;
-using ToolsMoveManager = CMS21Together.ClientSide.Data.Garage.Tools.ToolsMoveManager;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -137,7 +133,7 @@ public static class ClientHandle
 
 	public static void LifterPacket(Packet packet)
 	{
-		if (ClientData.UserData.scene != GameScene.garage) return;
+		if (SceneManager.CurrentScene() != GameScene.garage) return;
 
 		var state = packet.Read<ModLifterState>();
 		var carLoaderID = packet.ReadInt();

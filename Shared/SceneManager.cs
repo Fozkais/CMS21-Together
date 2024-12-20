@@ -49,7 +49,7 @@ public static class SceneManager
 		
 		if (scene == "Barn")
 			return GameScene.barn;
-		if (scene == "garage")
+		if (scene == "garage" || scene == "Christmas")
 			return GameScene.garage;
 		if (scene == "Junkyard")
 			return GameScene.junkyard;

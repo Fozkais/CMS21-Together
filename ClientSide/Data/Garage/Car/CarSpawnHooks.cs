@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using SceneManager = CMS21Together.Shared.SceneManager;
 
 namespace CMS21Together.ClientSide.Data.Garage.Car;
 
@@ -57,7 +59,7 @@ public static class CarSpawnHooks
 		}
 		
 		if (string.IsNullOrEmpty(name)) return;
-		if (!Shared.SceneManager.IsInGarage()) return;
+		if (!SceneManager.IsInGarage()) return;
 
 		MelonLogger.Msg($"[CarSpawnHooks->LoadJobCar] Triggered:{name}");
 
@@ -75,7 +77,7 @@ public static class CarSpawnHooks
 			return;
 		}
 		if (!NotificationCenter.IsGameReady) return;
-		if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.GetActiveScene().name != "garage") return;
+		if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.CurrentScene() != GameScene.garage) return;
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
