@@ -11,14 +11,22 @@ public class ClientSteam : ConnectionManager
 {
     public override void OnConnectionChanged(ConnectionInfo info)
     {
-        base.OnConnectionChanged(info);
-        if (info.State == ConnectionState.Connected)
+        if (info.State == ConnectionState.Connecting)
         {
+            Interface?.OnConnecting(info);
+            Connecting = true;
+            OnConnecting(info);
+            MelonLogger.Msg("[ClientSteam->OnConnectionChanged] Connection in progress.");   
+        }
+        else if (info.State == ConnectionState.Connected)
+        {
+            Interface?.OnConnected(info);
             Connected = true;
+            Connecting = false;
             OnConnected(info);
             MelonLogger.Msg("[ClientSteam->OnConnectionChanged] Connection established.");
         }
-        else if (info.State == ConnectionState.ClosedByPeer || info.State == ConnectionState.Dead)
+        else if (info.State == ConnectionState.ClosedByPeer || info.State == ConnectionState.Dead || info.State == ConnectionState.None)
         {
             Connected = false;
             OnDisconnected(info);
@@ -33,13 +41,11 @@ public class ClientSteam : ConnectionManager
     
      public override void OnConnecting(ConnectionInfo info)
     {
-        base.OnConnecting(info);
         MelonLogger.Msg("Connecting to server.");
     }
 
     public override void OnConnected(ConnectionInfo info)
     {
-        base.OnConnected(info);
         MelonLogger.Msg("Successfully connected to server.");
     }
 

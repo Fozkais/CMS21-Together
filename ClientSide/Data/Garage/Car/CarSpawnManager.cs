@@ -48,6 +48,7 @@ public static class CarSpawnManager
 		yield return YieldInstructions.WaitForEndOfFrame;
 		
 		var car = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo, carLoader.customerCar);
+		
 		ClientSend.LoadJobCarPacket(car);
 
 		yield return new WaitForEndOfFrame();
@@ -55,6 +56,17 @@ public static class CarSpawnManager
 		{
 			ClientData.Instance.loadedCars.Add(carLoaderID, car);
 			MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
+			
+			while (!ClientData.Instance.loadedCars[carLoaderID].isReady)
+				yield return new WaitForSeconds(0.25f);
+			yield return new WaitForEndOfFrame();
+			carLoader.SaveCarToFile();
+			yield return new WaitForEndOfFrame();
+			yield return new WaitForEndOfFrame();
+			NewCarData carData = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
+			ModNewCarData modCarData = new ModNewCarData(carData, carLoader.placeNo, carLoader.orderConnection);
+			
+			ClientSend.LoadCarPacket(modCarData, carLoaderID);
 		}
 	}
 
@@ -73,6 +85,8 @@ public static class CarSpawnManager
 		yield return new WaitForEndOfFrame();
 		
 		CarSpawnHooks.listenToSimpleLoad = false;
+		if (data.jobID != -1)
+			carLoader.SetCustomerCar(true, data.jobID);
 		MainMod.StartCoroutine(carLoader.LoadCarFromFile(carData));
 		var car = new ModCar(carLoaderID, data.carToLoad, data.configVersion);
 		ClientData.Instance.loadedCars[carLoaderID] = car;

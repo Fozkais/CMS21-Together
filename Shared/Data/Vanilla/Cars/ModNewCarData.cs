@@ -17,6 +17,7 @@ public class ModNewCarData
 	public ModColor color;
 	public int configVersion;
 	public bool customerCar;
+	public int jobID;
 	public ModTuningData ecuData;
 	public ModEngineData EngineData;
 	public string engineSwap;
@@ -45,7 +46,7 @@ public class ModNewCarData
 
 	public int carPosition;
 
-	public ModNewCarData(NewCarData newCarData, int placeNo = 0)
+	public ModNewCarData(NewCarData newCarData, int placeNo = 0, int _jobID = -1)
 	{
 		carPosition = placeNo;
 
@@ -70,6 +71,7 @@ public class ModNewCarData
 			carToLoad = newCarData.carToLoad;
 			configVersion = newCarData.configVersion;
 			customerCar = newCarData.customerCar;
+			jobID = _jobID;
 
 			ecuData = new ModTuningData(newCarData.ecuData);
 

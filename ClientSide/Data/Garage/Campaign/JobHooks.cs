@@ -20,7 +20,6 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 [HarmonyPatch]
 public static class JobHooks
 {
-	public static bool listenToCancel = true;
 
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Load))]
 	[HarmonyPostfix]
@@ -117,21 +116,6 @@ public static class JobHooks
 
 		MelonLogger.Msg($"[Hook->DeclineOrderActionHook] Decline Order : {__instance.currentJob.id}");
 		ClientSend.JobActionPacket(__instance.currentJob.id, false);
-	}
-
-	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.CancelJob))]
-	[HarmonyPostfix]
-	public static void CancelJobHook(int id, OrderGenerator __instance)
-	{
-		if (!Client.Instance.isConnected || !listenToCancel) { listenToCancel = true; return; }
-
-		if (__instance.selectedJobs.ToArray().Any(j => j.id == id))
-		{
-			Job job = __instance.selectedJobs.ToArray().First(j => j.id == id);
-			int carLoaderID = job.carLoaderID;
-			CarLoader carLoader = GameData.Instance.carLoaders[carLoaderID];
-			MelonCoroutines.Start(GetCarFile(carLoader, carLoaderID, job.id));
-		}
 	}
 	
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))]
@@ -242,7 +226,7 @@ public static class JobHooks
 		return false;
 	}
 
-	private static IEnumerator GetCarFile(CarLoader carLoader, int carLoaderID, int jobID)
+/*	private static IEnumerator GetCarFile(CarLoader carLoader, int carLoaderID, int jobID)
 	{
 		yield return new WaitForEndOfFrame();
 
@@ -253,9 +237,9 @@ public static class JobHooks
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		NewCarData car = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
-		ModNewCarData modCarData = new ModNewCarData(car, carLoader.placeNo);
+		ModNewCarData modCarData = new ModNewCarData(car, carLoader.placeNo, jobID);
 		
 		ClientSend.LoadCarPacket(modCarData, carLoaderID);
 		MelonLogger.Msg($"Created NewCarData for Job or Mission with id: {jobID}");
-	}
+	}*/
 }

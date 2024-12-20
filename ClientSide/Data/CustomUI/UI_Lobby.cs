@@ -32,10 +32,13 @@ public static class UI_Lobby
 		var b1_size = new Vector2(336, 65);
 		Action b1_action = delegate
 		{
-			foreach (var player in ServerData.Instance.connectedClients.Values)
-				if (player != null && !player.isReady)
-					return;
-			MelonCoroutines.Start(StartGame());
+			if (ServerData.Instance != null) // if player is host
+			{
+				foreach (var player in ServerData.Instance.connectedClients.Values)
+					if (player != null && !player.isReady)
+						return;
+				MelonCoroutines.Start(StartGame());
+			}
 		};
 		var b1_info = new ButtonInfo(b1_pos, b1_size, b1_action, "Start game", 0);
 		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b1_info, false);
@@ -44,16 +47,19 @@ public static class UI_Lobby
 		var b2_size = new Vector2(336, 65);
 		Action b2_action = delegate
 		{
-			foreach (var i in ClientData.Instance.connectedClients.Keys)
+			if (ClientData.Instance != null)
 			{
-				var player = ClientData.Instance.connectedClients[i];
-				if (player != null)
-					if (player.playerID == ClientData.UserData.playerID)
-					{
-						player.isReady = !player.isReady;
-						ClientSend.ReadyPacket(player.isReady, i);
-						ChangeReadyState(i, player.isReady);
-					}
+				foreach (var i in ClientData.Instance.connectedClients.Keys)
+				{
+					var player = ClientData.Instance.connectedClients[i];
+					if (player != null)
+						if (player.playerID == ClientData.UserData.playerID)
+						{
+							player.isReady = !player.isReady;
+							ClientSend.ReadyPacket(player.isReady, i);
+							ChangeReadyState(i, player.isReady);
+						}
+				}
 			}
 		};
 		var b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Toggle Ready", 1);
