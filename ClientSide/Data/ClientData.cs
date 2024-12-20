@@ -8,7 +8,6 @@ using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 using UnityEngine;
-using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace CMS21Together.ClientSide.Data;
 
@@ -50,7 +49,7 @@ public class ClientData
 
 	private IEnumerator InitializeGameData()
 	{
-		while (SceneManager.GetActiveScene().name != "garage")
+		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForEndOfFrame();
 		GameData.Instance = new GameData();
 		Stats.SendInitialStats();

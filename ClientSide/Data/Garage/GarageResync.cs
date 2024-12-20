@@ -6,7 +6,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
 using UnityEngine;
-using SceneManager = UnityEngine.SceneManagement.SceneManager;
+
 
 namespace CMS21Together.ClientSide.Data.Garage;
 
@@ -14,7 +14,7 @@ public static class GarageResync
 {
 	public static IEnumerator ResyncCars()
 	{
-		while (SceneManager.GetActiveScene().name != "garage")
+		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForSeconds(0.5f);
 		while (!NotificationCenter.IsGameReady)
 			yield return new WaitForSeconds(0.25f);
