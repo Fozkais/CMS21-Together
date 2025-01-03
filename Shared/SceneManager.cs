@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Garage;
-using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
@@ -33,14 +32,10 @@ public static class SceneManager
 		else if (newSceneName == "garage" || newSceneName == "Christmas")
 		{
 			if (ClientData.GameReady)
-			{
-				GameData.isReady = false;
 				MelonCoroutines.Start(GarageResync.ResyncCars());
-			}
 		}
 		else
 		{
-			MelonLogger.Msg("Set all car for resync!");
 			foreach (ModCar loadedCar in ClientData.Instance.loadedCars.Values)
 			{
 				loadedCar.needResync = true;
@@ -55,7 +50,10 @@ public static class SceneManager
 		if (scene == "Barn")
 			return GameScene.barn;
 		if (scene == "garage" || scene == "Christmas")
+		{
+			GameData.isReady = false;
 			return GameScene.garage;
+		}
 		if (scene == "Junkyard")
 			return GameScene.junkyard;
 		if (scene == "Auto_salon")

@@ -135,7 +135,7 @@ public static class JobHooks
 	[HarmonyPrefix]
 	public static bool EndJobHook(Job job, CarLoader carLoader)
 	{
-		if (!Client.Instance.isConnected /*|| Server.Instance.isRunning*/) return true;
+		if (!Client.Instance.isConnected) return true;
 
 		if (!carLoader.CheckCarPartsBolts())
 		{
@@ -217,29 +217,10 @@ public static class JobHooks
 		if (job.IsCompleted && job.BonusToMoney) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_money", 1);
 		
 		// Only accept job end if is valid
-		if (JobManager.selectedJobs.Any(j => j.id == job.id))
-		{
-			var modJob = JobManager.selectedJobs.First(j => j.id == job.id);
-			JobManager.selectedJobs.Remove(modJob);
-			ClientSend.EndJobPacket(modJob);
-		}
+		var modJob = JobManager.selectedJobs.First(j => j.id == job.id);
+		JobManager.selectedJobs.Remove(modJob);
+		ClientSend.EndJobPacket(modJob);
+		
 		return false;
 	}
-
-/*	private static IEnumerator GetCarFile(CarLoader carLoader, int carLoaderID, int jobID)
-	{
-		yield return new WaitForEndOfFrame();
-
-		while (!ClientData.Instance.loadedCars[carLoaderID].isReady)
-			yield return new WaitForSeconds(0.25f);
-		yield return new WaitForEndOfFrame();
-		carLoader.SaveCarToFile();
-		yield return new WaitForEndOfFrame();
-		yield return new WaitForEndOfFrame();
-		NewCarData car = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
-		ModNewCarData modCarData = new ModNewCarData(car, carLoader.placeNo, jobID);
-		
-		ClientSend.LoadCarPacket(modCarData, carLoaderID);
-		MelonLogger.Msg($"Created NewCarData for Job or Mission with id: {jobID}");
-	}*/
 }

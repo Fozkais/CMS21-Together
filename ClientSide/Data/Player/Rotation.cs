@@ -32,6 +32,7 @@ public class Rotation
 		if (player.scene != ClientData.UserData.scene) return;
 		if (player.userObject == null) player.SpawnPlayer();
 
+		player.lastUpdateTime = Time.time;
 		player.userObject.transform.rotation = rotation.toQuaternion();
 	}
 

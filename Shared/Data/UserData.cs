@@ -61,9 +61,7 @@ public class UserData
 		if (ClientData.Instance.playerPrefab == null) return;
 
 		if (playerID == ClientData.UserData.playerID)
-		{
 			userObject = GameData.Instance.localPlayer;
-		}
 		else
 		{
 			userObject = Object.Instantiate(ClientData.Instance.playerPrefab, position.toVector3(), rotation.toQuaternion());

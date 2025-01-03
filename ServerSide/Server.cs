@@ -95,8 +95,8 @@ public class Server
 
 			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
-			
-			ServerSend.DisconnectPacket(id, "Server is shutting down.");
+			if (id != 1) // dont send to host
+				ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);
