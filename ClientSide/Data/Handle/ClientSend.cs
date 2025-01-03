@@ -398,12 +398,14 @@ public class ClientSend
 		}
 	}
 
-	public static void AskResync(PacketTypes resyncType)
+	public static void ResyncCar(int carLoaderID)
 	{
 		using (var packet = new Packet((int)PacketTypes.resync))
 		{
-			packet.Write(resyncType);
+			packet.Write(PacketTypes.loadCar);
+			packet.Write(carLoaderID);
 			SendData(packet);
 		}
 	}
+	
 }

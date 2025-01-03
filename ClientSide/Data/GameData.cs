@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using CMS.UI.Logic.Upgrades;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data;
@@ -41,6 +42,7 @@ public class GameData
 		};
 
 		isReady = true;
+		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
 
 	public static IEnumerator GameReady()

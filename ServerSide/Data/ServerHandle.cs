@@ -437,7 +437,8 @@ public static class ServerHandle
 		switch (resyncType)
 		{
 			case PacketTypes.loadCar:
-				ServerResyncs.ResyncCars(fromClient);
+				int carLoaderID = packet.ReadInt();
+				ServerResyncs.ResyncCar(fromClient, carLoaderID);
 				break;
 		}
 	}

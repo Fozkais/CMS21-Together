@@ -2,16 +2,15 @@
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using Il2CppSystem.Collections;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using SceneManager = UnityEngine.SceneManagement.SceneManager;
-using SteamManager = CMS21Together.Shared.SteamManager;
 
 // ReSharper disable All
 
@@ -22,9 +21,10 @@ namespace CMS21Together
 		public const int MAX_SAVE_COUNT = 22;
 		public const int MAX_PLAYER = 4;
 		public const int PORT = 7777;
-		public const string ASSEMBLY_MOD_VERSION = "0.4.4";
+		public const string ASSEMBLY_MOD_VERSION = "0.4.5";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
 		public bool isModInitialized;
+		public static bool isClosing;
 
 		public override void OnLateInitializeMelon()
 		{
@@ -61,6 +61,7 @@ namespace CMS21Together
 			{
 				ContentManager.Instance.Initialize();
 
+				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);
 				Application.runInBackground = false;
 			}
 
@@ -75,31 +76,15 @@ namespace CMS21Together
 
 		public override void OnUpdate()
 		{
-			if (!isModInitialized)
-			{
+			if (!isModInitialized || !Client.Instance.isConnected)
 				return;
-			}
 
-			if (!Client.Instance.isConnected)
-			{
-				return;
-			}
-
-			if (SceneManager.GetActiveScene().name == "garage")
-			{
+			if (SceneManager.CurrentScene() == GameScene.garage)
 				ClientData.Instance.UpdateClient();
-			}
-			
-			if (Input.GetKeyDown(KeyCode.RightShift))
-			{
-				//ServerData.Instance.SendCar(0,0);
-			}
 
 			SteamClient.RunCallbacks();
-			if (Client.Instance.steam != null)
-				Client.Instance.steam.Receive();
-			if (Server.Instance.steam != null)
-				Server.Instance.steam.Receive();
+			if (Client.Instance.steam != null) Client.Instance.steam.Receive();
+			if (Server.Instance.steam != null) Server.Instance.steam.Receive();
 			
 			ThreadManager.UpdateThread();
 		}
@@ -118,8 +103,9 @@ namespace CMS21Together
 			}
 		}
 
-		public override void OnApplicationQuit() // Runs when the Game is told to Close.ca
+		public override void OnApplicationQuit() // Runs when the Game is told to Close
 		{
+			isClosing = true;
 			TogetherModManager.SavePreferences();
 			if (Server.Instance.isRunning)
 				MelonCoroutines.Start(Server.Instance.CloseServer());

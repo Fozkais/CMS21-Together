@@ -13,11 +13,13 @@ namespace CMS21Together.ClientSide.Data.Player;
 [HarmonyPatch]
 public static class Stats
 {
+	private static bool initialStatsSent = false;
 	public static bool listentoAddMoney = true;
 	public static bool listentoAddScrap = true;
 
 	public static void Reset()
 	{
+		initialStatsSent = false;
 		listentoAddMoney = true;
 		listentoAddScrap = true;
 	}
@@ -25,8 +27,9 @@ public static class Stats
 
 	public static void SendInitialStats()
 	{
-		if (!Server.Instance.isRunning) return;
-		
+		if (!Server.Instance.isRunning || initialStatsSent) return;
+
+		initialStatsSent = true;
 		ClientSend.StatPacket(GlobalData.PlayerMoney, ModStats.money, true);
 		ClientSend.StatPacket(GlobalData.PlayerScraps, ModStats.scrap, true);
 	}
@@ -44,12 +47,10 @@ public static class Stats
 				case ModStats.money:
 					ClientData.Instance.money = value;
 					GlobalData.SetPlayerMoney(value);
-					UIManager.Get().RefreshStatsUICoroutine(StatType.Money);
 					break;
 				case ModStats.scrap:
 					ClientData.Instance.scrap = value;
 					GlobalData.SetPlayerScraps(value);
-					UIManager.Get().RefreshStatsUICoroutine(StatType.Scraps);
 					break;
 			}
 

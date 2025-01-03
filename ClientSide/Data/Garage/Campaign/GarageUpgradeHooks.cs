@@ -1,4 +1,5 @@
 ﻿using CMS.UI.Logic;
+using CMS.UI.Logic.Navigation;
 using CMS.UI.Logic.Upgrades;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
@@ -24,8 +25,6 @@ public static class GarageUpgradeHooks
 			listenToUpgrades = true;
 			return;
 		}
-
-		if (!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
 		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
 
 		MelonLogger.Msg($"[GarageUpgradeHooks-> SwitchInteractiveObjectsHook] Triggered: {upgradeID}, {on}");
@@ -33,39 +32,27 @@ public static class GarageUpgradeHooks
 		ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[upgradeID]);
 	}
 
-	[HarmonyPatch(typeof(GarageAndToolsTab), nameof(GarageAndToolsTab.UpdateSkillState))]
-	[HarmonyPrefix]
-	public static void UpdateSkillStateHook(UpgradeItem upgradeItem, UpgradeState state)
-	{
-		if (!Client.Instance.isConnected || !listenToUpgrades)
-		{
-			listenToUpgrades = true;
-			return;
-		}
 
-		if (!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
-		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
-
-		MelonLogger.Msg($"[GarageUpgradeHooks-> Pre-UpdateSkillStateHook] Triggered: {upgradeItem.upgradeID}, {state}");
-		/*ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
-		ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[upgradeID]);*/
-	}
-
+	
 	[HarmonyPatch(typeof(GarageAndToolsTab), nameof(GarageAndToolsTab.UnlockCurrentSelectedSkillAction))]
 	[HarmonyPrefix]
-	public static void UnlockCurrentSelectedSkillActionHook()
+	public static void UnlockCurrentSelectedSkillActionHook(GarageAndToolsTab __instance=null)
 	{
 		if (!Client.Instance.isConnected || !listenToUpgrades)
 		{
 			listenToUpgrades = true;
 			return;
 		}
-
-		if (!ClientData.GameReady && !Server.Instance.isRunning) return; // Only run on host?
+		
 		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
 
-		MelonLogger.Msg("[GarageUpgradeHooks-> Pre-UnlockCurrentSelectedSkillActionHook] Triggered");
-		/*ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
-		ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[upgradeID]);*/
+
+		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
+		if (upgradeCost <= GlobalData.PlayerMoney)
+		{
+			MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Post-Triggered: {__instance.currentUpgradeItem.upgradeID}");
+			ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, true);
+			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID]);
+		}
 	}
 }

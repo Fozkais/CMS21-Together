@@ -74,12 +74,7 @@ public static class SavesManager
 			Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(vanillaSaveArray);
 		}
 	}
-
-	public static ProfileData GetProfile(int saveIndex)
-	{
-		return Singleton<GameManager>.Instance.GameDataManager.ProfileData[saveIndex];
-	}
-
+	
 	private static SaveData GetSave(int saveIndex)
 	{
 		Il2CppStructArray<byte> bytes = LoadProfileSave(saveIndex, out var format, out var parameter);
@@ -151,6 +146,7 @@ public static class SavesManager
 			{
 				gameManager.ProfileManager.selectedProfile = index;
 				gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
+				Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level); // ensure gamemode is not loss
 				gameManager.ProfileManager.Load();
 
 				MelonLogger.Msg("-------------------Save Info---------------------");
@@ -227,15 +223,15 @@ public static class SavesManager
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
 			
-			string playerGUID = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerGUID == p.id);
+			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
+			PlayerInfo info = ModSaves[currentSaveIndex].PlayerInfos.First(p => playerGuid == p.id);
 			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
 			int exp = ServerData.Instance.connectedClients[id].playerExp;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
-			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
+			if (ModSaves[currentSaveIndex].PlayerInfos.Any(p => playerGuid == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
 		}
 		
@@ -299,8 +295,8 @@ public static class SavesManager
 	{
 		if (!Client.Instance.isConnected) return;
 
-		MelonLogger.Msg("Save GameProfile");
-		MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+		//MelonLogger.Msg("Save GameProfile");
+		//MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
 		SaveModSave(__instance.selectedProfile);
 	}
 
@@ -310,8 +306,8 @@ public static class SavesManager
 	{
 		if (!Client.Instance.isConnected) return true;
 
-		MelonLogger.Msg("Save Game");
-		MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
+		//MelonLogger.Msg("Save Game");
+		//MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
 		GameData.Instance.orderGenerator.Save();
 		SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
 		return true;

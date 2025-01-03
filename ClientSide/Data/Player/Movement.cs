@@ -9,19 +9,6 @@ public static class Movement
 	private static readonly float minDistance = 0.01f;
 	private static Vector3 lastPosition;
 
-
-	public static void SetSpawnPosition(int id, Vector3Serializable position)
-	{
-		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
-
-		var player = ClientData.Instance.connectedClients[id];
-
-		if (player.scene != ClientData.UserData.scene) return;
-		if (player.userObject == null) return;
-
-		player.userObject.transform.position = position.toVector3();
-	}
-
 	public static void UpdatePosition(int id, Vector3Serializable position)
 	{
 		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
@@ -31,8 +18,7 @@ public static class Movement
 
 		if (player.scene != ClientData.UserData.scene) return;
 		if (player.userObject == null) player.SpawnPlayer();
-
-		float currentTime = Time.time;
+		
 		// player.userObject.transform.Translate(position.toVector3() * Time.deltaTime); without animation method
 		if (player.lastPosition != null)
 		{
@@ -41,12 +27,17 @@ public static class Movement
 
 			// Mettre à jour les animations
 			UpdateAnimations(player.userAnimator, direction, speed);
-			player.lastUpdateTime = currentTime;
+			player.lastUpdateTime = Time.time;
 		}
 
 		// Mettre à jour la position
-		player.userObject.transform.position = position.toVector3();
-		player.lastPosition = position;
+		if (player.userObject != null)
+		{
+			player.userObject.transform.position = position.toVector3();
+			player.lastPosition = position;
+		}
+		else
+			player.SpawnPlayer();
 	}
 
 	private static void UpdateAnimations(Animator animator, Vector3 direction, float speed)
@@ -70,6 +61,11 @@ public static class Movement
 			{
 				client.userAnimator.SetFloat("Vertical", Mathf.Lerp(client.userAnimator.GetFloat("Vertical"), 0, Time.deltaTime * 10f));
 				client.userAnimator.SetFloat("Horizontal", Mathf.Lerp(client.userAnimator.GetFloat("Horizontal"), 0, Time.deltaTime * 10f));
+				
+				// Arrêter la rotation
+				var currentRotation = client.userObject.transform.rotation;
+				var targetRotation = Quaternion.identity; // Retourner à la rotation neutre
+				client.userObject.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * 5f);
 			}
 		}
 	}

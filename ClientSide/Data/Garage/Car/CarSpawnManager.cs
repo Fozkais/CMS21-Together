@@ -49,7 +49,8 @@ public static class CarSpawnManager
 		
 		var car = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo, carLoader.customerCar);
 		
-		ClientSend.LoadJobCarPacket(car);
+		if (carLoader.customerCar)
+			ClientSend.LoadJobCarPacket(car);
 
 		yield return new WaitForEndOfFrame();
 		if (!ClientData.Instance.loadedCars.ContainsKey(carLoaderID))

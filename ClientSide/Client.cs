@@ -136,7 +136,7 @@ public class Client
 			var manager = NotificationCenter.m_instance;
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 		}
-
+		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
 	}

@@ -34,6 +34,7 @@ public class ClientData
 		CarSpawnHooks.Reset();
 		JobManager.Reset();
 		Stats.Reset();
+		Garage.Tools.ToolsMoveManager.Reset();
 		engineStand = new();
 	}
 
@@ -41,17 +42,22 @@ public class ClientData
 	{
 		if (GameData.isReady == false)
 			MelonCoroutines.Start(InitializeGameData());
-		
-		Movement.SendPosition();
-		Movement.CheckForInactivity();
-		Rotation.SendRotation();
-		Garage.Tools.ToolsMoveManager.Reset();
+
+		if (GameReady)
+		{
+			Movement.SendPosition();
+			Movement.CheckForInactivity();
+			Rotation.SendRotation();
+		}
 	}
 
 	private IEnumerator InitializeGameData()
 	{
 		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForEndOfFrame();
+		
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
 		GameData.Instance = new GameData();
 		Stats.SendInitialStats();
 
@@ -59,6 +65,7 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		GameReady = true;
+		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		MelonLogger.Msg("Game is ready.");
 	}
 
