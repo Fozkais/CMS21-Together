@@ -18,16 +18,21 @@ public static class GarageUpgradeManager
 
 		yield return new WaitForEndOfFrame();
 
-		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
-		var gt = GameData.Instance.upgradeTools;
-
-		foreach (UpgradeItem item in gt.upgradeItems.ToArray())
+		if (upgrade.upgradeID == "initialSent")
 		{
-			if (item.upgradeID == upgrade.upgradeID)
-			{
-				gt.UnlockSkill(item);
-				break;
-			}
+			GarageUpgradeHooks.listenToUpgrades = true;
+			GarageUpgradeHooks.receivedInitial = true;
+			yield break;
+		}
+		
+		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
+		
+		GarageLevelManager glm = Object.FindObjectOfType<GarageLevelManager>();
+		if (glm.garageAndToolsTab.upgradeItems.ToArray().Any(u => u.upgradeID == upgrade.upgradeID))
+		{
+			UpgradeItem item = glm.garageAndToolsTab.upgradeItems.ToArray().First(u => u.upgradeID == upgrade.upgradeID);
+			if (upgrade.unlocked)
+				glm.garageAndToolsTab.UnlockSkill(item);
 		}
 	}
 }

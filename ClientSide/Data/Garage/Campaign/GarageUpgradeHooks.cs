@@ -1,4 +1,5 @@
-﻿using CMS.UI.Logic;
+﻿using System.Collections;
+using CMS.UI.Logic;
 using CMS.UI.Logic.Navigation;
 using CMS.UI.Logic.Upgrades;
 using CMS21Together.ClientSide.Data.Handle;
@@ -7,6 +8,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 
@@ -14,9 +16,18 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 public static class GarageUpgradeHooks
 {
 	public static bool listenToUpgrades = true;
+	public static bool sentInitial = false;
+	public static bool receivedInitial = false;
+	
+	public static void Reset()
+	{
+		listenToUpgrades = false;
+		sentInitial = false;
+		receivedInitial = false;
+	}
 
 
-	[HarmonyPatch(typeof(GarageAndToolsTab), nameof(GarageAndToolsTab.SwitchInteractiveObjects))]
+	/*[HarmonyPatch(typeof(GarageAndToolsTab), nameof(GarageAndToolsTab.SwitchInteractiveObjects))]
 	[HarmonyPrefix]
 	public static void SwitchInteractiveObjectsHook(string upgradeID, bool on)
 	{
@@ -30,7 +41,7 @@ public static class GarageUpgradeHooks
 		MelonLogger.Msg($"[GarageUpgradeHooks-> SwitchInteractiveObjectsHook] Triggered: {upgradeID}, {on}");
 		ClientData.Instance.garageUpgrades[upgradeID] = new GarageUpgrade(upgradeID, on);
 		ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[upgradeID]);
-	}
+	}*/
 
 
 	
@@ -40,19 +51,38 @@ public static class GarageUpgradeHooks
 	{
 		if (!Client.Instance.isConnected || !listenToUpgrades)
 		{
-			listenToUpgrades = true;
+			if (sentInitial || receivedInitial) listenToUpgrades = true;
 			return;
 		}
 		
 		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
 
-
 		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
 		if (upgradeCost <= GlobalData.PlayerMoney)
 		{
-			MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Post-Triggered: {__instance.currentUpgradeItem.upgradeID}");
+			MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Triggered: {__instance.currentUpgradeItem.upgradeID}");
 			ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, true);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID]);
 		}
+	}
+
+	public static IEnumerator SendInitial()
+	{
+		if (sentInitial || !Server.Instance.isRunning) yield break;
+
+		while (!ClientData.GameReady)
+			yield return new WaitForSeconds(0.2f);
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
+		foreach (UpgradeItem item in GameData.Instance.upgradeTools.upgradeItems)
+		{
+			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.IsUnlocked);
+			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[item.upgradeID]);
+		}
+		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", false));
+		yield return new WaitForEndOfFrame();
+		listenToUpgrades = true;
+		MelonLogger.Msg($"[GarageUpgradeHooks->SendInitial] Sent initials upgrades to server");
 	}
 }

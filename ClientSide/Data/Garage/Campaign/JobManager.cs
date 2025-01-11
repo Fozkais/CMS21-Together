@@ -105,13 +105,14 @@ public static class JobManager
 		yield return new WaitForEndOfFrame();
 
 		MelonLogger.Msg("[JobManager] -> OnJobComplete");
-		MelonLogger.Msg("- Job Info received by Host -");
-		MelonLogger.Msg($"ID:{job.id}");
-		MelonLogger.Msg($"IsMission:{job.IsMission}");
-		MelonLogger.Msg($"isCompleted:{job.IsCompleted}");
-		MelonLogger.Msg($"Payout:{job.TotalPayout}");
-		MelonLogger.Msg($"XP:{job.XP}");
-		MelonLogger.Msg($"MoneySpent:{job.MoneySpent}");
+		MelonLogger.Msg("\n - Job Info received - " + 
+		                $"\nID:{job.id}" +
+		                $"\nIsMission:{job.IsMission}" +
+		                $"\nisCompleted:{job.IsCompleted}" +
+		                $"\nPayout:{job.TotalPayout}" +
+		                $"\nXP:{job.XP}" +
+		                $"\nMoneySpent:{job.MoneySpent}" +
+		                "\n----------------------------------------");
 		
 		GlobalData.AddPlayerExp(job.XP);
 

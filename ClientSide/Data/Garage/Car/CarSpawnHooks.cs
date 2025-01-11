@@ -71,18 +71,22 @@ public static class CarSpawnHooks
 	[HarmonyPrefix]
 	public static void DeleteCarHook(CarLoader __instance)
 	{
-		if ( MainMod.isClosing || !Client.Instance.isConnected || !listenToDelete)
+		if (MainMod.isClosing || Client.Instance == null) return;
+		if (!Client.Instance.isConnected || !listenToDelete)
 		{
 			listenToDelete = true;
 			return;
 		}
+		
 		if (!NotificationCenter.IsGameReady) return;
-		if (string.IsNullOrEmpty(__instance.carToLoad) || SceneManager.CurrentScene() != GameScene.garage) return;
-
+		if (__instance == null || string.IsNullOrEmpty(__instance.carToLoad)) return;
+		
+		if (SceneManager.CurrentScene() != GameScene.garage) return;
+		
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
-			if (!ClientData.Instance.loadedCars[carLoaderID].needResync)
+			if (!car.needResync)
 			{
 				MelonLogger.Msg("Sent Delete car packet.");
 				ClientSend.DeleteCarPacket(carLoaderID);

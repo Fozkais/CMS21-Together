@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using CMS21Together.Shared;
 using MelonLoader;
 using Steamworks;
@@ -28,7 +29,7 @@ public class SteamConnection
 	     if(res != Result.OK)
 	         MelonLogger.Error($"[SteamConnection->Send] Could not send packet:{res.ToString()}.");
 
-	     SteamworksUtils.FreeIntPtr(_data);
+	     if (_data != IntPtr.Zero) Marshal.FreeHGlobal(_data);
 	 }
 
 	 public void Disconnect()

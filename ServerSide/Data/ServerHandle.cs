@@ -63,8 +63,13 @@ public static class ServerHandle
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
 	{
-		MelonLogger.Msg($"[ServerHandle->DisconnectPacket] {ServerData.Instance.connectedClients[fromclient].username} as disconnected from server.");
-		Server.Instance.clients[fromclient].Disconnect();
+		if (ServerData.Instance.connectedClients.ContainsKey(fromclient))
+		{
+			MelonLogger.Msg($"[ServerHandle->DisconnectPacket] {ServerData.Instance.connectedClients[fromclient].username} as disconnected from server.");
+			Server.Instance.clients[fromclient].Disconnect();
+		}
+		else
+			MelonLogger.Msg($"[ServerHandle->DisconnectPacket] a unknown client with id:{fromclient} as disconnected from server.");
 	}
 
 	public static void ReadyPacket(int fromClient, Packet packet)
@@ -227,6 +232,7 @@ public static class ServerHandle
 		var carLoaderID = packet.ReadInt();
 
 		ServerData.Instance.CarSpawnDatas[carLoaderID] = carData;
+		ServerData.Instance.SetLoadJobCar(new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, -1, carData.customerCar));
 
 		ServerSend.LoadCarPacket(fromClient, carData, carLoaderID);
 	}

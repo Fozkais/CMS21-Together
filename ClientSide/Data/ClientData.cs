@@ -34,6 +34,7 @@ public class ClientData
 		CarSpawnHooks.Reset();
 		JobManager.Reset();
 		Stats.Reset();
+		GarageUpgradeHooks.Reset();
 		Garage.Tools.ToolsMoveManager.Reset();
 		engineStand = new();
 	}
@@ -59,7 +60,8 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		GameData.Instance = new GameData();
-		Stats.SendInitialStats();
+		MelonCoroutines.Start(Stats.SendInitialStats());
+		MelonCoroutines.Start(GarageUpgradeHooks.SendInitial());
 
 		yield return new WaitForSeconds(2);
 		yield return new WaitForEndOfFrame();

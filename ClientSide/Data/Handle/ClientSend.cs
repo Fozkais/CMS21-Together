@@ -84,7 +84,7 @@ public class ClientSend
 		}
 	}
 
-	public static void StatPacket(int diff, ModStats type, bool initial)
+	public static void StatPacket(int diff, ModStats type, bool initial=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.stat))
 		{

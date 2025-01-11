@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using CMS21Together.ServerSide;
 using MelonLoader;
 using Steamworks;
@@ -11,6 +12,9 @@ namespace CMS21Together.Shared;
 
 public static class SteamworksUtils
 {
+	private const string Characters = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	private static readonly Random Random = new Random();
+	
 	public static byte[] ConvertIntPtrToByteArray(IntPtr ptr, int size)
 	{
 		byte[] byteArray = new byte[size];
@@ -24,51 +28,6 @@ public static class SteamworksUtils
 		Marshal.Copy(byteArray, 0, ptr, byteArray.Length);
 		return ptr;
 	}
-        
-	public static void FreeIntPtr(IntPtr ptr)
-	{
-		if (ptr != IntPtr.Zero)
-		{
-			Marshal.FreeHGlobal(ptr);
-		}
-	}
-
-	public static ulong ConvertLobbyID(string lobbyCode)
-	{
-		lobbyCode = lobbyCode.TrimStart('0');
-		lobbyCode = lobbyCode.TrimEnd('0');
-        
-		ulong lobbyID = ulong.Parse(lobbyCode, System.Globalization.NumberStyles.Integer);
-		return lobbyID;
-	}
-	public static ulong StringToUInt64(string steamIDString)
-	{
-		if (string.IsNullOrWhiteSpace(steamIDString))
-			throw new ArgumentException("Input string cannot be null, empty, or whitespace.");
-
-		
-		steamIDString = steamIDString.Trim(); // Nettoyer les espaces et les caractères invisibles
-		
-		if (!steamIDString.All(char.IsDigit))
-			throw new FormatException($"Input string '{steamIDString}' contains invalid characters.");
-
-		if (ulong.TryParse(steamIDString, out ulong steamId))
-			return steamId;
-		
-		MelonLogger.Error($"Input string '{steamIDString}' is out of range for a ulong.");
-		return 0;
-	}
-
-    
-	public static string ConvertServerID(SteamId lobbyID)
-	{
-		string code = lobbyID.Value.ToBase36();
-            
-		code = code.PadLeft(5, '0');
-		code = code.PadRight(6, '0');
-            
-		return code;
-	}
 
 	public static ServerConnection GetClientFromConnection(Connection connection)
 	{
@@ -76,5 +35,42 @@ public static class SteamworksUtils
 		if(SV_client == null)
 			MelonLogger.Warning($"[SteamworksUtils->GetClientFromConnection] Did not found a valid client.");
 		return SV_client;
+	}
+	
+	public static string GetServerID(ulong lobbyID)
+	{
+		int offset = Random.Next(0, 62);
+		
+		StringBuilder result = new StringBuilder();
+		do
+		{
+			int index = (int)(lobbyID % 62);
+
+			char newChar = Characters[(index + offset) % 62];
+			result.Insert(0, newChar);
+			lobbyID /= 62;
+		} while (lobbyID > 0);
+
+		// Ajouter le caractère correspondant au décalage à la fin de la chaîne
+		result.Append(Characters[offset]);
+
+		return result.ToString();
+	}
+
+	public static ulong ConvertServerID(string code)
+	{
+		char offsetChar = code[code.Length - 1];
+		int offset = Characters.IndexOf(offsetChar);
+		
+		ulong result = 0;
+		for (int i = 0; i < code.Length - 1; i++)
+		{
+			int index = Characters.IndexOf(code[i]);
+
+			int originalIndex = (index - offset + 62) % 62;
+			result = result * 62 + (ulong)originalIndex;
+		}
+
+		return result;
 	}
 }

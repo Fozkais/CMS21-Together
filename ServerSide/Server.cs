@@ -32,8 +32,11 @@ public class Server
 	public TcpListener tcp;
 	public UdpClient udp;
 
+	public string serverID;
+
 	public void StartServer(NetworkType type)
 	{
+		serverID = null;
 		networkType = type;
 		ServerData.Instance = new ServerData();
 		InitializeServerData();
