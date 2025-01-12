@@ -107,7 +107,7 @@ public class ClientData
 
 	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills, long startItemUid)
 	{
-		while (!ClientData.GameReady)
+		while (!GameReady)
 			yield return new WaitForSeconds(0.1f);
 		
 		yield return new WaitForEndOfFrame();
@@ -115,7 +115,7 @@ public class ClientData
 
 		UIDManager.LastUID = startItemUid;
 
-		if (SavesManager.currentSave.Difficulty != DifficultyLevel.Sandbox)
+		if (GameManager.Instance.GameDataManager.CurrentProfileData.Difficulty != DifficultyLevel.Sandbox)
 		{
 			GlobalData.PlayerLevel = _level;
 			UIManager.Get().StatsContainer.CurrentLevel = _level;

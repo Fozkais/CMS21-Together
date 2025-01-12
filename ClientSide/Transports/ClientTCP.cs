@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
@@ -8,7 +9,7 @@ namespace CMS21Together.ClientSide.Transports;
 
 public class ClientTCP
 {
-	private readonly int dataBufferSize = 2048;
+	private readonly int dataBufferSize = 4096;
 
 	private byte[] receiveBuffer;
 	private Packet receivedData;
@@ -65,20 +66,29 @@ public class ClientTCP
 
 		try
 		{
-			var byteLenght = stream.EndRead(result);
-			if (byteLenght <= 0)
+			var byteLength = stream.EndRead(result);
+			if (byteLength <= 0)
+			{
+				MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by the server.");
+				Client.Instance.Disconnect();
 				return;
+			}
 
-			var data = new byte[byteLenght];
-
-			Array.Copy(receiveBuffer, data, byteLenght);
+			var data = new byte[byteLength];
+			Array.Copy(receiveBuffer, data, byteLength);
 			receivedData.Reset(HandleData(data));
 			Array.Clear(receiveBuffer, 0, receiveBuffer.Length);
+			
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 		}
-		catch (Exception e)
+		catch (IOException ioEx)
 		{
-			MelonLogger.Error($"[ClientTCP->ReceiveCallback] Error while receiving data : {e}");
+			MelonLogger.Error($"[ClientTCP->ReceiveCallback] IOException: {ioEx.Message}");
+			Client.Instance.Disconnect();
+		}
+		catch (Exception ex)
+		{
+			MelonLogger.Error($"[ClientTCP->ReceiveCallback] Unexpected error: {ex.Message}");
 			Client.Instance.Disconnect();
 		}
 	}
@@ -135,7 +145,7 @@ public class ClientTCP
 				}
 				catch (Exception ex)
 				{
-					MelonLogger.Error($"Error while writing data : {ex.Message}");
+					MelonLogger.Error($"[TCP]Error while writing data : {ex.Message}");
 				}
 			}, null);
 		}
