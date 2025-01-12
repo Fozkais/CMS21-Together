@@ -62,40 +62,28 @@ public static class JobManager
 		MelonLogger.Msg($"Should have added a Mision! {newJob.id} , {newJob.IsMission}");
 	}
 
-	public static IEnumerator JobAction(int jobID, bool takeJob)
+	public static IEnumerator JobAction(ModJob modJob, bool takeJob)
 	{
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
-		var exist = false;
-		var job = new Job();
-		foreach (var _job in GameData.Instance.orderGenerator.jobs)
-			if (_job.id == jobID)
+		Job job = modJob.ToGame();
+		foreach (var _job in GameData.Instance.orderGenerator.jobs.ToArray())
+		{
+			if (_job.id == modJob.id)
 			{
-				exist = true;
-				job = _job;
+				GameData.Instance.orderGenerator.CancelJob(_job.id);
 				break;
 			}
-
-		if (!exist) yield break;
+		}
 
 		if (takeJob)
 		{
-			TakeJob(job);
-			MelonLogger.Msg("CL: Took Job!");
+			GameData.Instance.orderGenerator.selectedJobs.Add(job);
+			UIManager.Get().UpdateJobs(GameData.Instance.orderGenerator.jobs, null);
+			MelonLogger.Msg($"CL: Took Job! {job.id} , cLoader {job.carLoaderID}");
 		}
-		else
-		{
-			GameData.Instance.orderGenerator.CancelJob(job.id);
-		}
-	}
-
-	public static void TakeJob(Job job)
-	{
-		GameData.Instance.orderGenerator.selectedJobs.Add(job);
-		GameData.Instance.orderGenerator.CancelJob(job.id);
-		UIManager.Get().UpdateJobs(GameData.Instance.orderGenerator.jobs, null);
 	}
 	
 	public static IEnumerator OnJobComplete(ModJob job)
@@ -105,13 +93,14 @@ public static class JobManager
 		yield return new WaitForEndOfFrame();
 
 		MelonLogger.Msg("[JobManager] -> OnJobComplete");
-		MelonLogger.Msg("- Job Info received by Host -");
-		MelonLogger.Msg($"ID:{job.id}");
-		MelonLogger.Msg($"IsMission:{job.IsMission}");
-		MelonLogger.Msg($"isCompleted:{job.IsCompleted}");
-		MelonLogger.Msg($"Payout:{job.TotalPayout}");
-		MelonLogger.Msg($"XP:{job.XP}");
-		MelonLogger.Msg($"MoneySpent:{job.MoneySpent}");
+		MelonLogger.Msg("\n - Job Info received - " + 
+		                $"\nID:{job.id}" +
+		                $"\nIsMission:{job.IsMission}" +
+		                $"\nisCompleted:{job.IsCompleted}" +
+		                $"\nPayout:{job.TotalPayout}" +
+		                $"\nXP:{job.XP}" +
+		                $"\nMoneySpent:{job.MoneySpent}" +
+		                "\n----------------------------------------");
 		
 		GlobalData.AddPlayerExp(job.XP);
 

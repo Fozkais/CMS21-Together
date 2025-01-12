@@ -16,7 +16,7 @@ public static class ServerSend
 	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		//if (id == 1) return; // dont send if it's host (1 = host)
+		if (id == 1) return; // don't send if it's host (1 == host)
 		
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
@@ -186,11 +186,11 @@ public static class ServerSend
 		}
 	}
 
-	public static void JobActionPacket(int fromClient, int jobID, bool takeJob)
+	public static void JobActionPacket(int fromClient, ModJob job, bool takeJob)
 	{
 		using (var packet = new Packet((int)PacketTypes.jobAction))
 		{
-			packet.Write(jobID);
+			packet.Write(job);
 			packet.Write(takeJob);
 
 			SendDataToAll(fromClient, packet);

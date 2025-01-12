@@ -39,8 +39,10 @@ public class Client
 
 		if (networkType == NetworkType.Steam)
 		{
-			MelonLogger.Msg($"LobbyID:{ip}\n");
-			SteamId lobbyID = SteamworksUtils.StringToUInt64(ip);
+			SteamId lobbyID = new SteamId();
+			lobbyID.Value = SteamworksUtils.ConvertServerID(ip);
+			MelonLogger.Msg($"LobbyID : {ip} ConvertedID : {lobbyID.Value}.");
+			
 		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
 		}
 		else

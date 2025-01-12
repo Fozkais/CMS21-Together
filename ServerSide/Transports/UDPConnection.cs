@@ -1,6 +1,7 @@
 using System;
 using System.Net;
 using CMS21Together.Shared;
+using MelonLoader;
 
 namespace CMS21Together.ServerSide.Transports;
 
@@ -41,6 +42,19 @@ public class UDPConnection
 
 	public void Send(Packet packet)
 	{
-		if (endPoint != null) Server.Instance.udp.BeginSend(packet.ToArray(), packet.Length(), endPoint, null, null);
+		if (endPoint != null)
+		{
+			Server.Instance.udp.BeginSend(packet.ToArray(), packet.Length(), endPoint, (ar) =>
+			{
+				try
+				{
+					Server.Instance.udp.EndSend(ar);
+				}
+				catch (Exception ex)
+				{
+					MelonLogger.Error($"[UDP]Error while writing data : {ex.Message}");
+				}
+			}, null);
+		}
 	}
 }

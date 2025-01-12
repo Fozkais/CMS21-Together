@@ -41,7 +41,19 @@ public class ClientUDP
 		{
 			packet.InsertInt(ClientData.UserData.playerID);
 			if (socket != null)
-				socket.BeginSend(packet.ToArray(), packet.Length(), null, null);
+			{
+				socket.BeginSend(packet.ToArray(), packet.Length(), (ar) =>
+				{
+					try
+					{
+						socket.EndSend(ar);
+					}
+					catch (Exception ex)
+					{
+						MelonLogger.Error($"[UDP]Error while writing data : {ex.Message}");
+					}
+				}, null);
+			}
 		}
 		catch (SocketException ex)
 		{
