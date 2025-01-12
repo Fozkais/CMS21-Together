@@ -300,12 +300,12 @@ public static class ServerHandle
 
 	public static void JobActionPacket(int fromClient, Packet packet)
 	{
-		var jobID = packet.ReadInt();
+		ModJob job = packet.Read<ModJob>();
 		var takeJob = packet.Read<bool>();
 
 		MelonLogger.Msg("SV: Received JobAction!");
-		ServerData.Instance.RemoveJob(jobID);
-		ServerSend.JobActionPacket(fromClient, jobID, takeJob);
+		ServerData.Instance.RemoveJob(job.id);
+		ServerSend.JobActionPacket(fromClient, job, takeJob);
 	}
 
 	public static void SelectedJobPacket(int fromClient, Packet packet)

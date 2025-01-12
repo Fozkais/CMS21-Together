@@ -212,11 +212,11 @@ public class ClientSend
 		}
 	}
 
-	public static void JobActionPacket(int jobID, bool takeJob)
+	public static void JobActionPacket(ModJob job, bool takeJob)
 	{
 		using (var packet = new Packet((int)PacketTypes.jobAction))
 		{
-			packet.Write(jobID);
+			packet.Write(job);
 			packet.Write(takeJob);
 
 			SendData(packet);

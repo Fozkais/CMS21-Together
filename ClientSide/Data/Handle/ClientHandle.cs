@@ -287,10 +287,10 @@ public static class ClientHandle
 
 	public static void JobActionPacket(Packet packet)
 	{
-		var jobID = packet.ReadInt();
+		ModJob job = packet.Read<ModJob>();
 		var takeJob = packet.Read<bool>();
 		
-		MelonCoroutines.Start(JobManager.JobAction(jobID, takeJob));
+		MelonCoroutines.Start(JobManager.JobAction(job, takeJob));
 	}
 
 	public static void SelectedJobPacket(Packet packet)

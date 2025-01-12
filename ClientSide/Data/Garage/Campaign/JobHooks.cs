@@ -26,7 +26,6 @@ public static class JobHooks
 	public static void LoadHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		if (__instance.jobs.Count <= 0) return;
 		
 		if (Server.Instance.isRunning)
 		{
@@ -83,7 +82,7 @@ public static class JobHooks
 			return false;
 		return true;
 	}
-
+	
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
 	[HarmonyPostfix]
 	public static void GenerateNewJobHook(OrderGenerator __instance)
@@ -100,13 +99,23 @@ public static class JobHooks
 
 	[HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.AcceptOrderAction))]
 	[HarmonyPrefix]
-	public static void AcceptOrderActionHook(OrdersWindow __instance) // TODO: if job is not a mission then send modJob and spawn car from carSync and not JobManager
+	public static void AcceptOrderActionHook(OrdersWindow __instance)
 	{
 		if (!Client.Instance.isConnected) return;
 
-		MelonLogger.Msg($"[Hook->AcceptOrderActionHook] Accept Order : {__instance.currentJob.id}");
-		ClientSend.JobActionPacket(__instance.currentJob.id, true);
+		ClientSend.JobActionPacket(new ModJob(__instance.currentJob), false);
+		MelonCoroutines.Start(WaitForCarToBeReady(__instance.currentJob));
 	}
+
+	private static IEnumerator WaitForCarToBeReady(Job job)
+	{
+		while (job.carLoaderID == 0)
+			yield return new WaitForSeconds(0.2f);
+		
+		MelonLogger.Msg($"[Hook->AcceptOrderActionHook] Accept Order : {job.id}, {job.carLoaderID}");
+		ClientSend.JobActionPacket(new ModJob(job), true);
+	}
+	
 
 	[HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.DeclineOrderAction))]
 	[HarmonyPrefix]
@@ -115,7 +124,7 @@ public static class JobHooks
 		if (!Client.Instance.isConnected) return;
 
 		MelonLogger.Msg($"[Hook->DeclineOrderActionHook] Decline Order : {__instance.currentJob.id}");
-		ClientSend.JobActionPacket(__instance.currentJob.id, false);
+		ClientSend.JobActionPacket(new ModJob(__instance.currentJob), false);
 	}
 	
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))]
