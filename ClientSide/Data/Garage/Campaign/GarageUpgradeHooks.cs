@@ -75,9 +75,13 @@ public static class GarageUpgradeHooks
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
+		GameData.Instance.upgradeTools.PrepareItems();
+		yield return new WaitForEndOfFrame();
+		
 		foreach (UpgradeItem item in GameData.Instance.upgradeTools.upgradeItems)
 		{
-			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.IsUnlocked);
+			MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
+			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.upgradeState == UpgradeState.Unlocked);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[item.upgradeID]);
 		}
 		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", false));
