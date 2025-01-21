@@ -69,42 +69,11 @@ https://discord.gg/rMz4tGbrc6
 Below is the installation guide :<br/>
 It change depending the version of the mod you've downloaded.<br/>
 <br/>
-CASE 1 - 0.4.0 and later<br/>
 1- Download Latest build on release page<br/>
 2- Download and Install MelonLoader on version 0.5.7<br/>
 3- extract mod folder inside game directory<br/>
 4- Launch the game !<br/>
 <br/>
-CASE 2 - 0.2.8 to 0.3.5<br/>
-1- Go to the github page on the branch "MainMod"<br/>
-2- Download the source code as ZIP and extract it<br/>
-3- Download a code editor : VS Community or Jetbrain Rider<br/>
-4- Once installed open the project with one of these editor <br/>
-5- Download and Install MelonLoader on version 0.6.1<br/>
-6- Open the game 1 time until main Menu and close it<br/>
-7- Go back to code editor, press Ctrl + B to compile (maybe not working on VS Community)<br/>
-8- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
-9- Paste the mod dll into mod folder in game directory<br/>
-10- Launch the game !<br/>
-<br/>
-CASE 3 - 0.1.0 to 0.2.7<br/>
-1- Go to the github page on the branch "MainMod"<br/>
-2- Download the source code as ZIP and extract it<br/>
-3- Download a code editor : VS Community or Jetbrain Rider<br/>
-4- Once installed open the project with one of these editor <br/>
-5- You need to download and Install MelonLoader on version 0.6.1<br/>
-6- Open the game 1 time until main Menu and close it<br/>
-7- Once you done that , go back to you code editor , it'll have a lot of error because of the dependencies missing<br/>
-8- Delete All existing dependencies except System and System.xxxxx<br/>
-9- Add all required dependencies listed below: (you can find them either in net6 or IL2CppAssemblies folders)<br/>
-10- Once done , there should no longer have any error , press Ctrl + B to compile<br/>
-11- Go Copy the "CMS21-Together.dll" located inside bin/debug folder from project directory<br/>
-12- You'll also need to past 2 additional dll on userLibs, you can find them on github page<br/>
-13- Paste the mod dll into mod folder in game directory<br/>
-14- Launch the game !
-<br/>
-NOTE: for those using mod before 0.3.0 to open the mod menu it's "Right Shift"<br/>
-
 From this point on, you should be able to launch the game with the mod, once launched you should have a new button to access multiplayer features. <br/>
 <br/>
 
