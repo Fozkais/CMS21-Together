@@ -10,12 +10,12 @@ namespace CMS21Together.Shared;
 public static class ApiCalls
 {
 
-	private static Assembly apiAssembly = LoadAssembly();
+	private static readonly Assembly APIAssembly = LoadAssembly();
 	public static Dictionary<string, bool> API_M3()
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod3", BindingFlags.Static | BindingFlags.Public);
@@ -29,7 +29,7 @@ public static class ApiCalls
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod2", BindingFlags.Static | BindingFlags.Public);
@@ -46,7 +46,7 @@ public static class ApiCalls
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod1", BindingFlags.Static | BindingFlags.Public);

@@ -80,9 +80,17 @@ public class ClientUDP
 			HandleData(_data);
 			socket.BeginReceive(ReceiveCallback, null);
 		}
+		catch (ObjectDisposedException)
+		{
+			MelonLogger.Warning("[ClientUDP->ReceiveCallback] Attempted to access a disposed socket. Ignoring callback.");
+		}
 		catch (SocketException ex)
 		{
 			MelonLogger.Error("[ClientUDP->ReceiveCallback] Error while receiving data from server via UDP: " + ex);
+		}
+		catch (Exception ex)
+		{
+			MelonLogger.Error("[ClientUDP->ReceiveCallback] Unexpected error: " + ex);
 		}
 	}
 

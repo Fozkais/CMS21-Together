@@ -84,23 +84,27 @@ public class Server
 		if (!isRunning) yield break;
 
 		MelonLogger.Msg("[Server->CloseServer] Saving players infos...");
+		ModSaveData save = SavesManager.ModSaves[SavesManager.currentSaveIndex];
 		foreach (var id in clients.Keys)
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
 			
-			string playerGUID = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerGUID == p.id);
+			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
+			PlayerInfo info = save.playerInfos.First(p => playerGuid == p.id);
 			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerExp;
 			int exp = ServerData.Instance.connectedClients[id].playerLevel;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
-			if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(p => playerGUID == p.id))
+			if (save.playerInfos.Any(p => playerGuid == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
 			if (id != 1) // dont send to host
 				ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
+		save.missionFinished = GlobalData.MissionsFinished;
+		save.storyMissionInProgress = GlobalData.IsStoryMissionInProgress;
+		
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);
 		MelonLogger.Msg("[Server->CloseServer] Successfully Saved players infos!");

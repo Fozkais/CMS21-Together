@@ -42,7 +42,7 @@ public static class Inventory
 	{
 		if (!Client.Instance.isConnected || !listenToAddItem) {listenToAddItem = true; return;}
 		
-		MelonLogger.Msg($"Add new item with UID: {item.UID}.");
+		//MelonLogger.Msg($"Add new item with UID: {item.UID}.");
 		var newItem = new ModItem(item);
 		items.Add(newItem);
 		ClientSend.ItemPacket(newItem, InventoryAction.add);
@@ -54,7 +54,7 @@ public static class Inventory
 	{
 		if (!Client.Instance.isConnected || !listenToAddGroupItem) {listenToAddGroupItem = true; return;}
 
-		MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
+		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
 		var newItem = new ModGroupItem(group);
 		groupItems.Add(newItem);
 		ClientSend.GroupItemPacket(newItem, InventoryAction.add);

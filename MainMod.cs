@@ -21,7 +21,7 @@ namespace CMS21Together
 		public const int MAX_SAVE_COUNT = 22;
 		public const int MAX_PLAYER = 4;
 		public const int PORT = 7777;
-		public const string ASSEMBLY_MOD_VERSION = "0.4.6";
+		public const string ASSEMBLY_MOD_VERSION = "0.4.7";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
 		public bool isModInitialized;
 		public static bool isClosing;
@@ -82,6 +82,7 @@ namespace CMS21Together
 			if (SceneManager.CurrentScene() == GameScene.garage)
 				ClientData.Instance.UpdateClient();
 
+			
 			SteamClient.RunCallbacks();
 			if (Client.Instance.steam != null) Client.Instance.steam.Receive();
 			if (Server.Instance.steam != null) Server.Instance.steam.Receive();

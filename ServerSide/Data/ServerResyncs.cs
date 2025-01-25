@@ -11,6 +11,8 @@ public static class ServerResyncs
 		ModNewCarData carToResync = ServerData.Instance.CarSpawnDatas[carLoaderID];
 		ModCarInfo carInfo = ServerData.Instance.CarPartInfo[carLoaderID];
 		
+		MelonLogger.Msg($"Sent a resync car from: {carLoaderID}  {carToResync.CarInfoData.CarFrom}");
+		
 		ServerSend.LoadCarPacket(playerID, carToResync, carLoaderID, true);
 
 		foreach (KeyValuePair<int, ModCarPart> partsReference in carInfo.BodyPartsReferences)
@@ -23,6 +25,7 @@ public static class ServerResyncs
 			foreach (KeyValuePair<int,ModPartScript> modPartScript in partsReference.Value)
 			{
 				ServerSend.PartScriptPacket(playerID, modPartScript.Value, carLoaderID, true);
+				MelonLogger.Msg("Sent part.");
 			}
 		}
 		
@@ -41,6 +44,7 @@ public static class ServerResyncs
 			foreach (KeyValuePair<int,ModPartScript> modPartScript in partsReference.Value)
 			{
 				ServerSend.PartScriptPacket(playerID, modPartScript.Value, carLoaderID, true);
+				MelonLogger.Msg("Sent part.");
 			}
 		}
 		MelonLogger.Msg("[ServerResyncs->ResyncCar] Resent car info to client!");

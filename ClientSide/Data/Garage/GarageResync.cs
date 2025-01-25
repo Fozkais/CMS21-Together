@@ -23,9 +23,10 @@ public static class GarageResync
 			yield return new WaitForSeconds(0.5f);
 		yield return new WaitForEndOfFrame();
 		MelonLogger.Msg("Remove all car !");
-		for (int i = 0; i < ClientData.Instance.loadedCars.Values.Count; i++)
+		List<ModCar> carsToCheck = ClientData.Instance.loadedCars.Values.ToList();
+		for (int i = 0; i < carsToCheck.Count; i++)
 		{
-			ModCar car = ClientData.Instance.loadedCars.Values.ToList()[i];
+			ModCar car = carsToCheck[i];
 			if (car.needResync)
 			{
 				CarSpawnHooks.listenToDelete = false;
@@ -33,8 +34,9 @@ public static class GarageResync
 				yield return new WaitForEndOfFrame();
 				ClientData.Instance.loadedCars.Remove(car.carLoaderID);
 				ClientSend.ResyncCar(car.carLoaderID);
+				MelonLogger.Msg($"Asked resync for {car.carLoaderID} ({car.carID}) to server!");
 			}
 		}
-		MelonLogger.Msg("Asked resync to server!");
+
 	}
 }

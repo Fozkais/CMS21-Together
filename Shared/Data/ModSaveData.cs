@@ -12,21 +12,25 @@ public class ModSaveData
 	public int saveIndex;
 	public Gamemode selectedGamemode = Gamemode.Sandbox;
 	public bool alreadyLoaded;
-	public List<PlayerInfo> PlayerInfos = new List<PlayerInfo>();
-	public long[] InventoryItemUID;
+	public List<PlayerInfo> playerInfos = new List<PlayerInfo>();
+	public long[] inventoryItemUID;
+	public bool storyMissionInProgress;
+	public int missionFinished;
 	public ModSaveData(string saveName, int index, bool loaded)
 	{
 		Name = saveName;
 		saveIndex = index;
 		selectedGamemode = Gamemode.Sandbox;
 		alreadyLoaded = loaded;
-		InventoryItemUID = new long[]
+		inventoryItemUID = new long[]
 		{
 			1000,
 			10000000,
 			20000000,
 			30000000
 		};
+		storyMissionInProgress = false;
+		missionFinished = 0;
 	}
 
 	public ModSaveData()

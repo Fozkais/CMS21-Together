@@ -37,6 +37,7 @@ public class ClientData
 		GarageUpgradeHooks.Reset();
 		Garage.Tools.ToolsMoveManager.Reset();
 		engineStand = new();
+		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
 	public void UpdateClient()
@@ -105,7 +106,8 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills, long startItemUid)
+	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
+		List<bool>> skills, long startItemUid, int missionFinished, bool missionInProgress)
 	{
 		while (!GameReady)
 			yield return new WaitForSeconds(0.1f);
@@ -115,6 +117,14 @@ public class ClientData
 
 		UIDManager.LastUID = startItemUid;
 
+		MelonLogger.Msg("\nReceived Player info! : \n"
+		                + $"MissionFinished : {missionFinished}\n"
+		                + $"StoryInProgress : {missionInProgress}\n"
+		                + $"StartItemUID : {startItemUid}\n"
+		                + $"Exp : {_exp}\n"
+		                + $"Level : {_level}\n"
+		                + $"Exp : {_exp}\n"
+		                + $"SkillPoints : {skillPoints}\n");
 		if (GameManager.Instance.GameDataManager.CurrentProfileData.Difficulty != DifficultyLevel.Sandbox)
 		{
 			GlobalData.PlayerLevel = _level;
@@ -125,6 +135,9 @@ public class ClientData
 			
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 		}
+
+		GlobalData.MissionsFinished = missionFinished;
+		GlobalData.IsStoryMissionInProgress = missionInProgress;
 		
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;
