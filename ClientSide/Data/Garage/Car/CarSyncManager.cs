@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Car;
@@ -15,6 +16,7 @@ public static class CarSyncManager
 		{
 			if (placeNo != car.carPosition)
 			{
+				MelonLogger.Msg($"Change {car.carID} position to {placeNo}.");
 				car.carPosition = placeNo;
 				CarSyncHooks.listenToChangePosition = false;
 				GameData.Instance.carLoaders[carLoaderID].ChangePosition(placeNo);

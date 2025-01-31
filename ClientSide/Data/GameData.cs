@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 using CMS.UI.Logic.Upgrades;
+using CMS.UI.Windows;
+using CMS21Together.ClientSide.Data.Handle;
+using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
 
@@ -16,6 +19,7 @@ public class GameData
 	public OrderGenerator orderGenerator;
 	public SpringClampLogic springClampLogic;
 	public EngineStandLogic engineStandLogic;
+	public EngineStandLogic engineStandLogic2;
 	public TireChangerLogic tireChanger;
 	public GarageAndToolsTab upgradeTools;
 	public ToolsMoveManager toolsMoveManager;
@@ -29,6 +33,8 @@ public class GameData
 		toolsMoveManager = Object.FindObjectOfType<ToolsMoveManager>();
 		orderGenerator = Object.FindObjectOfType<OrderGenerator>();
 		engineStandLogic = Object.FindObjectOfType<EngineStandLogic>();
+		engineStandLogic2 = Object.Instantiate(engineStandLogic.gameObject,
+				new Vector3(-16, 0, -3.1f), Quaternion.identity).GetComponent<EngineStandLogic>();
 		springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
 		tireChanger = Object.FindObjectOfType<TireChangerLogic>();
 		wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
@@ -44,7 +50,7 @@ public class GameData
 		isReady = true;
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
-
+	
 	public static IEnumerator GameReady()
 	{
 		while (!isReady)

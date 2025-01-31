@@ -437,6 +437,14 @@ public static class ServerHandle
 		ServerSend.IncreaseStandAnglePacket(fromClient, val);
 	}
 	
+	public static void CarWashPacket(int fromClient, Packet packet)
+	{
+		int loaderID = packet.ReadInt();
+		
+		//ServerData.Instance.SetCarWash(loaderID); TODO:Implement This
+		ServerSend.CarWashPacket(fromClient, loaderID);
+	}
+	
 	public static void ResyncPacket(int fromClient, Packet packet)
 	{
 		PacketTypes resyncType = packet.Read<PacketTypes>();

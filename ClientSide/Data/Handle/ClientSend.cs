@@ -407,5 +407,13 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
+	public static void CarWashPacket(int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.carWash))
+		{
+			packet.Write(carLoaderID);
+			SendData(packet);
+		}
+	}
 }

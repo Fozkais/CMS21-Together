@@ -26,23 +26,26 @@ public static class CarSyncHooks
 	}
 
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.ChangePosition), typeof(int))]
-	[HarmonyPostfix]
-	public static void ChangePositionHook(int no, CarLoader __instance)
+	[HarmonyPrefix]
+	public static bool ChangePositionHook(int no, CarLoader __instance)
 	{
 		if (!Client.Instance.isConnected || !listenToChangePosition)
 		{
 			listenToChangePosition = true;
-			return;
+			return true;
 		}
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		
+		MelonLogger.Msg($"Move {__instance.carToLoad} to {no}.");
 		if (! ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
-			return;
+			return true;
+		if (no == -1)
+			return false;
 		
 		var car = ClientData.Instance.loadedCars[carLoaderID];
 		car.carPosition = no;
 		
 		ClientSend.CarPositionPacket(carLoaderID, no);
+		return true;
 	}
 }

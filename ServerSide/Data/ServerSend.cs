@@ -459,4 +459,14 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void CarWashPacket(int fromClient, int loaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carWash))
+		{
+			_packet.Write(loaderID);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }

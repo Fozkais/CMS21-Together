@@ -46,5 +46,6 @@ public enum PacketTypes
 	carFluid,
 	exp,
 	point,
-	resync
+	resync,
+	carWash
 }

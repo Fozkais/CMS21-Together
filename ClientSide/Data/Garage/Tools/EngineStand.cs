@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
@@ -19,6 +20,34 @@ namespace CMS21Together.ClientSide.Data.Garage.Tools;
 public static class EngineStand
 {
 	public static bool listen = true;
+	
+	public static bool useAlt;
+	
+	[HarmonyPatch(typeof(GameScript), nameof(GameScript.SetIOMouseOver))]
+	[HarmonyPrefix]
+	public static void SetIOMouseOverHook(GameObject go, string type, InteractiveObject io)
+	{
+		if(!Client.Instance.isConnected)  return;
+		if (type == "#enginestand" && go.name == "Engine_stand(Clone)" && !useAlt)
+			useAlt = true;
+		else if (useAlt)
+			useAlt = false;
+	}
+	
+	[HarmonyPatch(typeof(CreateEngineWindow), nameof(CreateEngineWindow.CreateEngineAction))]
+	[HarmonyPrefix]
+	public static bool CreateEngineActionHook(CreateEngineWindow __instance)
+	{
+		if(!Client.Instance.isConnected) return true;
+		if (useAlt)
+		{
+			MelonLogger.Msg("Set engine on stand #2");
+			GameData.Instance.engineStandLogic2.SetEngineOnEngineStand(__instance.currentEngine);
+			__instance.Hide(false);
+			return false;
+		}
+		return true;
+	}
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.IncreaseEngineStandAngle))] 
 	[HarmonyPrefix]

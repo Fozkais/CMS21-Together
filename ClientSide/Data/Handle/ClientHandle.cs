@@ -226,6 +226,13 @@ public static class ClientHandle
 		MelonCoroutines.Start(Garage.Tools.ToolsMoveManager.UpdateToolMove((IOSpecialType)tool, place, playSound));
 	}
 
+	public static void CarWashPacket(Packet _packet)
+	{
+		int carLoaderID = _packet.ReadInt();
+
+		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID));
+	}
+	
 	public static void LoadCarPacket(Packet packet)
 	{
 		var carData = packet.Read<ModNewCarData>();

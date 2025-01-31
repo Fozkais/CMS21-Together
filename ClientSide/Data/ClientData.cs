@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -16,18 +17,21 @@ public class ClientData
 	public static ClientData Instance;
 	public static UserData UserData;
 	public static bool GameReady;
+	private bool initRoutine;
 
 	public Dictionary<int, UserData> connectedClients = new();
 	public Gamemode gamemode;
 	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
 	public Dictionary<int, ModCar> loadedCars = new();
 	public ModEngineStand engineStand;
+	public ModEngineStand engineStand2;
 	public GameObject playerPrefab;
 	public int scrap, money ,exp, level;
 
 	public ClientData()
 	{
 		GameReady = false;
+		initRoutine = false;
 		GameData.Instance = null;
 
 		Player.Inventory.Reset();
@@ -36,13 +40,16 @@ public class ClientData
 		Stats.Reset();
 		GarageUpgradeHooks.Reset();
 		Garage.Tools.ToolsMoveManager.Reset();
+		Garage.Tools.CarWashLogic.Reset();
+		CarPaintLogic.Reset();
 		engineStand = new();
+		engineStand2 = new();
 		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
 	public void UpdateClient()
 	{
-		if (GameData.isReady == false)
+		if (GameData.isReady == false && !initRoutine)
 			MelonCoroutines.Start(InitializeGameData());
 
 		if (GameReady)
@@ -55,6 +62,7 @@ public class ClientData
 
 	private IEnumerator InitializeGameData()
 	{
+		initRoutine = true;
 		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForEndOfFrame();
 		
@@ -68,6 +76,7 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		GameReady = true;
+		initRoutine = false;
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		MelonLogger.Msg("Game is ready.");
 	}
