@@ -233,6 +233,13 @@ public static class ClientHandle
 		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID));
 	}
 	
+	public static void CarPaintPacket(Packet _packet)
+	{
+		ModColor color = _packet.Read<ModColor>();
+
+		MelonCoroutines.Start(CarPaintLogic.ChangeColor(color));
+	}
+	
 	public static void LoadCarPacket(Packet packet)
 	{
 		var carData = packet.Read<ModNewCarData>();

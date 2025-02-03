@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using CMS.Managers;
 using CMS.UI.Logic.Upgrades;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
@@ -24,6 +25,7 @@ public class GameData
 	public GarageAndToolsTab upgradeTools;
 	public ToolsMoveManager toolsMoveManager;
 	public WheelBalancerLogic wheelBalancer;
+	public PaintshopManager paintshopManager;
 
 	public GameData()
 	{
@@ -38,6 +40,7 @@ public class GameData
 		springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
 		tireChanger = Object.FindObjectOfType<TireChangerLogic>();
 		wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
+		paintshopManager = Object.FindObjectOfType<PaintshopManager>();
 		carLoaders = new[]
 		{
 			GameScript.Get().carOnScene[0],

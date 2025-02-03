@@ -21,7 +21,7 @@ public static class EngineStand
 {
 	public static bool listen = true;
 	
-	public static bool useAlt;
+	/*public static bool useAlt;
 	
 	[HarmonyPatch(typeof(GameScript), nameof(GameScript.SetIOMouseOver))]
 	[HarmonyPrefix]
@@ -47,7 +47,7 @@ public static class EngineStand
 			return false;
 		}
 		return true;
-	}
+	}*/
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.IncreaseEngineStandAngle))] 
 	[HarmonyPrefix]
@@ -120,7 +120,8 @@ public static class EngineStand
 		
 		if (listen)
 		{
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.5f);
+			yield return new WaitForEndOfFrame();
 			if (GameData.Instance.engineStandLogic.engineGameObject != null)
 			{
 				Vector3Serializable position = new Vector3Serializable(GameData.Instance.engineStandLogic.engineGameObject.transform.position);

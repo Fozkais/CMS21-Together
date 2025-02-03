@@ -1,5 +1,7 @@
-﻿using CMS.Managers;
+﻿using System.Collections;
+using CMS.Managers;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -13,30 +15,34 @@ public static class CarPaintLogic
 
 	public static void Reset() => listen = true;
 	
-	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.SetCarColor))]
-	[HarmonyPostfix]
-	public static void SetCarColorHook(CarPart part, Color c, CarLoader __instance)
-	{
-		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
-
-		MelonLogger.Msg("SetCarColorHook");
-	}
 	
-	[HarmonyPatch(typeof(PaintshopManager), nameof(PaintshopManager.SubmitColor), typeof(bool))]
+	[HarmonyPatch(typeof(PaintshopManager), nameof(PaintshopManager.MakePaintEffects))]
 	[HarmonyPostfix]
-	public static void SubmitColorHook(bool setSelected, PaintshopManager __instance)
+	public static void MakePaintEffectsHook(PaintshopManager __instance)
 	{
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 
-		MelonLogger.Msg($"SubmitColor : {__instance.paintshopState.Selected.Color}");
+		MelonLogger.Msg($"Car color change : {__instance.paintshopState.Selected.Color} !");
+		ClientSend.CarPaint(new ModColor(__instance.paintshopState.Selected.Color));
 	}
-	
-	[HarmonyPatch(typeof(PaintHelper), nameof(PaintHelper.SetColor), typeof(Renderer), typeof(Color), typeof(bool))]
-	[HarmonyPostfix]
-	public static void SetColorHook(Renderer renderer, Color c, bool isBodyPart)
-	{
-		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 
-		MelonLogger.Msg("SetColorHook");
+	public static IEnumerator ChangeColor(ModColor color)
+	{
+		while (!ClientData.GameReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
+		foreach (ModCar car in ClientData.Instance.loadedCars.Values)
+		{
+			if (car.carPosition == 5)
+			{
+				GameData.Instance.paintshopManager.paintshopState.SetSelectedColor(color.ToGame());
+				GameData.Instance.paintshopManager.UpdateColor(color.ToGame());
+				MainMod.StartCoroutine(GameData.Instance.paintshopManager.MakePaintEffects());
+				break;
+			}
+		}
+		MelonLogger.Msg("Painted a car!");
 	}
 }

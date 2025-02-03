@@ -469,4 +469,14 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void CarPaintPacket(int fromClient, ModColor color)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carPaint))
+		{
+			_packet.Write(color);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }

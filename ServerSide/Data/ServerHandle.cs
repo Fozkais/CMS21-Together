@@ -445,6 +445,14 @@ public static class ServerHandle
 		ServerSend.CarWashPacket(fromClient, loaderID);
 	}
 	
+	public static void CarPaintPacket(int fromClient, Packet packet)
+	{
+		ModColor color = packet.Read<ModColor>();
+		
+		ServerData.Instance.SetCarColor(color);
+		ServerSend.CarPaintPacket(fromClient, color);
+	}
+	
 	public static void ResyncPacket(int fromClient, Packet packet)
 	{
 		PacketTypes resyncType = packet.Read<PacketTypes>();
