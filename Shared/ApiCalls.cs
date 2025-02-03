@@ -10,6 +10,7 @@ namespace CMS21Together.Shared;
 public static class ApiCalls
 {
 
+	public static readonly bool useSteam = API_M4();
 	private static readonly Assembly APIAssembly = LoadAssembly();
 	public static Dictionary<string, bool> API_M3()
 	{
@@ -24,6 +25,23 @@ public static class ApiCalls
 
 		return null;
 	}
+	
+	public static bool API_M4()
+	{
+		var className = "TogetherModAPI.MainApi";
+
+		var myClassType = APIAssembly.GetType(className);
+		if (myClassType != null)
+		{
+			var apiMethod1 = myClassType.GetMethod("StaticMethod4", BindingFlags.Static | BindingFlags.Public);
+			if (apiMethod1 != null)
+			{
+
+				return (bool)apiMethod1.Invoke(null, null);
+			}
+		}
+		return true;
+	}
 
 	public static void API_M2(object c)
 	{
@@ -36,7 +54,6 @@ public static class ApiCalls
 			if (apiMethod1 != null)
 			{
 				object[] parameters = { c };
-
 				apiMethod1.Invoke(null, parameters);
 			}
 		}
