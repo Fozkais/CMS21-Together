@@ -41,10 +41,10 @@ public static class CarSpawnHooks
 	{
 		yield return new WaitForEndOfFrame();
 		if (string.IsNullOrEmpty(__instance.carToLoad)) yield break;
-		if (!Shared.SceneManager.IsInGarage()) yield break;
+		if (!SceneManager.IsInGarage()) yield break;
 		
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{__instance.carToLoad} , {carLoaderID}");
+		//MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{__instance.carToLoad} , {carLoaderID}");
 		MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
 	}
 
@@ -61,7 +61,7 @@ public static class CarSpawnHooks
 		if (string.IsNullOrEmpty(name)) return;
 		if (!SceneManager.IsInGarage()) return;
 
-		MelonLogger.Msg($"[CarSpawnHooks->LoadJobCar] Triggered:{name}");
+		//MelonLogger.Msg($"[CarSpawnHooks->LoadJobCar] Triggered:{name}");
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		MelonCoroutines.Start(CarSpawnManager.LoadJobCar(name, carLoaderID, __instance));

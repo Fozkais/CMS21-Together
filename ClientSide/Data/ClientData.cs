@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -16,18 +17,21 @@ public class ClientData
 	public static ClientData Instance;
 	public static UserData UserData;
 	public static bool GameReady;
+	private bool initRoutine;
 
 	public Dictionary<int, UserData> connectedClients = new();
 	public Gamemode gamemode;
 	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
 	public Dictionary<int, ModCar> loadedCars = new();
 	public ModEngineStand engineStand;
+	public ModEngineStand engineStand2;
 	public GameObject playerPrefab;
 	public int scrap, money ,exp, level;
 
 	public ClientData()
 	{
 		GameReady = false;
+		initRoutine = false;
 		GameData.Instance = null;
 
 		Player.Inventory.Reset();
@@ -36,12 +40,16 @@ public class ClientData
 		Stats.Reset();
 		GarageUpgradeHooks.Reset();
 		Garage.Tools.ToolsMoveManager.Reset();
+		Garage.Tools.CarWashLogic.Reset();
+		CarPaintLogic.Reset();
 		engineStand = new();
+		engineStand2 = new();
+		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
 	public void UpdateClient()
 	{
-		if (GameData.isReady == false)
+		if (GameData.isReady == false && !initRoutine)
 			MelonCoroutines.Start(InitializeGameData());
 
 		if (GameReady)
@@ -54,6 +62,7 @@ public class ClientData
 
 	private IEnumerator InitializeGameData()
 	{
+		initRoutine = true;
 		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForEndOfFrame();
 		
@@ -67,6 +76,7 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		GameReady = true;
+		initRoutine = false;
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		MelonLogger.Msg("Game is ready.");
 	}
@@ -105,7 +115,8 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string, List<bool>> skills, long startItemUid)
+	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
+		List<bool>> skills, long startItemUid, int missionFinished, bool missionInProgress)
 	{
 		while (!GameReady)
 			yield return new WaitForSeconds(0.1f);
@@ -115,6 +126,14 @@ public class ClientData
 
 		UIDManager.LastUID = startItemUid;
 
+		MelonLogger.Msg("\nReceived Player info! : \n"
+		                + $"MissionFinished : {missionFinished}\n"
+		                + $"StoryInProgress : {missionInProgress}\n"
+		                + $"StartItemUID : {startItemUid}\n"
+		                + $"Exp : {_exp}\n"
+		                + $"Level : {_level}\n"
+		                + $"Exp : {_exp}\n"
+		                + $"SkillPoints : {skillPoints}\n");
 		if (GameManager.Instance.GameDataManager.CurrentProfileData.Difficulty != DifficultyLevel.Sandbox)
 		{
 			GlobalData.PlayerLevel = _level;
@@ -125,6 +144,9 @@ public class ClientData
 			
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 		}
+
+		GlobalData.MissionsFinished = missionFinished;
+		GlobalData.IsStoryMissionInProgress = missionInProgress;
 		
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;

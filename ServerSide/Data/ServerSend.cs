@@ -16,8 +16,8 @@ public static class ServerSend
 	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		if (id == 1) return; // don't send if it's host (1 == host)
-		
+		//if (id == 1) return; // don't send if it's host (1 == host)
+		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
 			packet.Write(info.playerExp);
@@ -26,7 +26,9 @@ public static class ServerSend
 			packet.Write(info.position);
 			packet.Write(info.rotation);
 			packet.Write(info.skillsInfo);
-			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[id - 1]);
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[id - 1]);
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].missionFinished);
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].storyMissionInProgress);
 
 			SendData(id, packet);
 		}
@@ -126,7 +128,7 @@ public static class ServerSend
 				SendData(fromClient, packet);
 		}
 
-		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
+		//MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
 	}
 
 	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID, bool resync=false)
@@ -142,7 +144,7 @@ public static class ServerSend
 				SendData(fromClient, packet);
 		}
 
-		MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
+	//	MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
 	}
 
 	public static void DeleteCarPacket(int fromClient, int carLoaderID)
@@ -172,7 +174,7 @@ public static class ServerSend
 		{
 			packet.Write(upgrade);
 
-			SendDataToAll(fromClient, packet);
+			SendDataToAll(packet);
 		}
 	}
 
@@ -453,6 +455,26 @@ public static class ServerSend
 		{
 			_packet.Write(carLoaderID);
 			_packet.Write(fluid);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarWashPacket(int fromClient, int loaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carWash))
+		{
+			_packet.Write(loaderID);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarPaintPacket(int fromClient, ModColor color)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carPaint))
+		{
+			_packet.Write(color);
 			
 			SendDataToAll(fromClient, _packet);
 		}

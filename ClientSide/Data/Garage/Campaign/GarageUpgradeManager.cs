@@ -26,13 +26,25 @@ public static class GarageUpgradeManager
 		}
 		
 		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
+
+		GarageAndToolsTab upgradeTools = GameData.Instance.upgradeTools;
 		
-		GarageLevelManager glm = Object.FindObjectOfType<GarageLevelManager>();
-		if (glm.garageAndToolsTab.upgradeItems.ToArray().Any(u => u.upgradeID == upgrade.upgradeID))
+		upgradeTools.PrepareItems();
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		
+		if (upgradeTools.upgradeItems.ToArray().Any(u => u.upgradeID == upgrade.upgradeID))
 		{
-			UpgradeItem item = glm.garageAndToolsTab.upgradeItems.ToArray().First(u => u.upgradeID == upgrade.upgradeID);
-			if (upgrade.unlocked)
-				glm.garageAndToolsTab.UnlockSkill(item);
+			UpgradeItem item = upgradeTools.upgradeItems.ToArray().First(u => u.upgradeID == upgrade.upgradeID);
+			if (upgrade.unlocked && item != null && item.upgradeState != UpgradeState.Unlocked)
+			{
+				//MelonLogger.Msg($"Unlock : {upgrade.upgradeID} , {item == null}");
+				yield return new WaitForEndOfFrame();
+				upgradeTools.UpdateSkillState(item, UpgradeState.Unlocked);
+				upgradeTools.UpdateRelatedSkillState(item);
+				upgradeTools.upgradeSystem.UnlockUpgrade(item.UpgradeID, item.UpgradeLevel, UpgradeType.Money);
+				MainMod.StartCoroutine(upgradeTools.SwitchObjectsUnlock(item.UpgradeID, true));
+			}
 		}
 	}
 }

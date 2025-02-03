@@ -45,7 +45,7 @@ public static class ClientHandle
 
 		ClientData.Instance.connectedClients[data.playerID] = data;
 		UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
-		MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
+		//MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
 	}
 
 	public static void ContentsInfoPacket(Packet _packet)
@@ -82,9 +82,11 @@ public static class ClientHandle
 		QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
 		Dictionary<string, List<bool>> skills = packet.Read<Dictionary<string, List<bool>>>();
 		long startItemUID = packet.Read<long>();
+		int missionFinished = packet.ReadInt();
+		bool missionInProgress = packet.Read<bool>();
 		
 		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(),
-			rotation.toQuaternion(), skillPoints, skills, startItemUID));
+			rotation.toQuaternion(), skillPoints, skills, startItemUID, missionFinished, missionInProgress));
 	}
 
 	public static void PositionPacket(Packet packet)
@@ -127,7 +129,7 @@ public static class ClientHandle
 		var type = packet.Read<ModStats>();
 		var initial = packet.Read<bool>();
 
-		MelonLogger.Msg($"Received stat:{value} , {type.ToString()}");
+		//MelonLogger.Msg($"Received stat:{value} , {type.ToString()}");
 		MelonCoroutines.Start(Stats.UpdateStats(type, value, initial));
 	}
 
@@ -180,7 +182,7 @@ public static class ClientHandle
 		else
 		{
 			WheelBalancer.listen = false;
-			MelonLogger.Msg("CL: Received WheelBalance!");
+			//MelonLogger.Msg("CL: Received WheelBalance!");
 			GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(_item!.ToGame(_item), true);
 		}
 	}
@@ -224,12 +226,26 @@ public static class ClientHandle
 		MelonCoroutines.Start(Garage.Tools.ToolsMoveManager.UpdateToolMove((IOSpecialType)tool, place, playSound));
 	}
 
+	public static void CarWashPacket(Packet _packet)
+	{
+		int carLoaderID = _packet.ReadInt();
+
+		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID));
+	}
+	
+	public static void CarPaintPacket(Packet _packet)
+	{
+		ModColor color = _packet.Read<ModColor>();
+
+		MelonCoroutines.Start(CarPaintLogic.ChangeColor(color));
+	}
+	
 	public static void LoadCarPacket(Packet packet)
 	{
 		var carData = packet.Read<ModNewCarData>();
 		var carLoaderID = packet.ReadInt();
 
-		MelonLogger.Msg("[ClientHandle->LoadCarPacket] Received new car info.");
+		//MelonLogger.Msg("[ClientHandle->LoadCarPacket] Received new car info.");
 
 		MelonCoroutines.Start(CarSpawnManager.LoadCarFromServer(carData, carLoaderID));
 	}
@@ -239,7 +255,7 @@ public static class ClientHandle
 		var carPart = packet.Read<ModCarPart>();
 		var carLoaderID = packet.ReadInt();
 
-		MelonLogger.Msg("[ClientHandle->BodyPartPacket] Receive BodyPart.");
+		//MelonLogger.Msg("[ClientHandle->BodyPartPacket] Receive BodyPart.");
 		MelonCoroutines.Start(PartsUpdater.UpdateBodyParts(carPart, carLoaderID));
 	}
 
@@ -273,7 +289,7 @@ public static class ClientHandle
 	{
 		var upgrade = packet.Read<GarageUpgrade>();
 
-		MelonLogger.Msg($"[ClientHandle->GarageUpgradePacket] Received upgrade for {upgrade.upgradeID}.");
+		//MelonLogger.Msg($"[ClientHandle->GarageUpgradePacket] Received upgrade for {upgrade.upgradeID}.");
 		MelonCoroutines.Start(GarageUpgradeManager.SetUpgrade(upgrade));
 	}
 
@@ -281,7 +297,7 @@ public static class ClientHandle
 	{
 		var job = packet.Read<ModJob>();
 		
-		MelonLogger.Msg("[ClientHandle->JobPacket] Received a job.");
+		//MelonLogger.Msg("[ClientHandle->JobPacket] Received a job.");
 		MelonCoroutines.Start(JobManager.AddJob(job));
 	}
 

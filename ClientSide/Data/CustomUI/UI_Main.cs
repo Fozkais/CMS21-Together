@@ -1,6 +1,7 @@
 ﻿using System;
 using CMS.MainMenu.Controls;
 using CMS.MainMenu.Sections;
+using CMS.UI.Logic;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
@@ -71,6 +72,12 @@ public class UI_Main
 		Action b3_action = delegate { ChangeNetworkType(); };
 		var b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, $"Network type: {ClientData.UserData.selectedNetworkType}", 2);
 		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Main, b3_info, false);
+		if (!ApiCalls.useSteam)
+		{
+			CustomUIManager.MP_Main_Buttons[2].button.DoStateTransition(SelectionState.Disabled, true);
+			CustomUIManager.MP_Main_Buttons[2].button.isDisabled = true;
+			CustomUIManager.MP_Main_Buttons[2].button.SetDisabled(true, true);
+		}
 
 		var b4_pos = new Vector2(20, -242);
 		var b4_size = new Vector2(336, 65);

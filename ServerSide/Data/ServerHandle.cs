@@ -26,7 +26,7 @@ public static class ServerHandle
 		var modVersion = packet.Read<string>();
 		string playerID = packet.Read<string>();
 
-		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
+		//MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
 
 		if (modVersion != MainMod.ASSEMBLY_MOD_VERSION)
 		{
@@ -49,16 +49,17 @@ public static class ServerHandle
 			return;
 		}
 
-		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Any(s => s.id == playerID))
-			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(s => s.id == playerID));
-		else
-		{
-			SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
-			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
-		}
 		
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] {username} connected successfully.");
 		Server.Instance.clients[fromClient].SendToLobby(username, playerID);
+		
+		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Any(s => s.id == playerID))
+			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(s => s.id == playerID));
+		else
+		{
+			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
+			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+		}
 	}
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
@@ -88,7 +89,7 @@ public static class ServerHandle
 		string id = packet.Read<string>();
 		List<bool> skill = packet.Read<List<bool>>();
 
-		SavesManager.ModSaves[SavesManager.currentSaveIndex].PlayerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
+		SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
 	}
 
 	public static void PositionPacket(int fromClient, Packet packet)
@@ -118,7 +119,7 @@ public static class ServerHandle
 
 			if (action == InventoryAction.add)
 			{
-				SavesManager.ModSaves[SavesManager.currentSaveIndex].InventoryItemUID[fromClient - 1]++;
+				SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
 				ServerData.Instance.items.Add(item);
 			}
 			else
@@ -199,7 +200,7 @@ public static class ServerHandle
 		int exp = packet.ReadInt();
 		int lvl = packet.ReadInt();
 		
-		MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
+		//MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
 		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
 	}
@@ -208,7 +209,7 @@ public static class ServerHandle
 	{
 		int points = packet.ReadInt();
 		
-		MelonLogger.Msg($"Received PointPacket Packet : {points}");
+		//MelonLogger.Msg($"Received PointPacket Packet : {points}");
 		ServerData.Instance.connectedClients[fromClient].playerSkillPoints = points;
 	}
 
@@ -232,7 +233,7 @@ public static class ServerHandle
 		var carLoaderID = packet.ReadInt();
 
 		ServerData.Instance.CarSpawnDatas[carLoaderID] = carData;
-		ServerData.Instance.SetLoadJobCar(new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, -1, carData.customerCar));
+		ServerData.Instance.SetLoadJobCar(new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, carData.carPosition, carData.customerCar));
 
 		ServerSend.LoadCarPacket(fromClient, carData, carLoaderID);
 	}
@@ -293,7 +294,7 @@ public static class ServerHandle
 	{
 		var job = packet.Read<ModJob>();
 
-		MelonLogger.Msg("SV: Received JobPacket!");
+		//MelonLogger.Msg("SV: Received JobPacket!");
 		ServerData.Instance.AddJob(job);
 		ServerSend.JobPacket(fromClient, job);
 	}
@@ -303,7 +304,7 @@ public static class ServerHandle
 		ModJob job = packet.Read<ModJob>();
 		var takeJob = packet.Read<bool>();
 
-		MelonLogger.Msg("SV: Received JobAction!");
+		//MelonLogger.Msg("SV: Received JobAction!");
 		ServerData.Instance.RemoveJob(job.id);
 		ServerSend.JobActionPacket(fromClient, job, takeJob);
 	}
@@ -313,7 +314,7 @@ public static class ServerHandle
 		var job = packet.Read<ModJob>();
 		var action = packet.Read<bool>();
 		
-		MelonLogger.Msg("cl: Received SelectedJobPacket!");
+		//MelonLogger.Msg("cl: Received SelectedJobPacket!");
 		ServerData.Instance.UpdateSelectedJobs(job, action);
 		ServerSend.SelectedJobPacket(fromClient, job, action);
 	}
@@ -322,7 +323,7 @@ public static class ServerHandle
 	{
 		var job = packet.Read<ModJob>();
 
-		MelonLogger.Msg("SV : endjob !");
+		//MelonLogger.Msg("SV : endjob !");
 		ServerData.Instance.EndJob(job);
 		ServerSend.EndJobPacket(fromClient, job);
 	}
@@ -434,6 +435,22 @@ public static class ServerHandle
 		
 		ServerData.Instance.IncreaseStandAngle(val);
 		ServerSend.IncreaseStandAnglePacket(fromClient, val);
+	}
+	
+	public static void CarWashPacket(int fromClient, Packet packet)
+	{
+		int loaderID = packet.ReadInt();
+		
+		//ServerData.Instance.SetCarWash(loaderID); TODO:Implement This
+		ServerSend.CarWashPacket(fromClient, loaderID);
+	}
+	
+	public static void CarPaintPacket(int fromClient, Packet packet)
+	{
+		ModColor color = packet.Read<ModColor>();
+		
+		ServerData.Instance.SetCarColor(color);
+		ServerSend.CarPaintPacket(fromClient, color);
 	}
 	
 	public static void ResyncPacket(int fromClient, Packet packet)

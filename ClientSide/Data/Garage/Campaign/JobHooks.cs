@@ -31,13 +31,13 @@ public static class JobHooks
 		{
 			foreach (Job job in __instance.jobs.ToArray())
 			{
-				MelonLogger.Msg($"[Hook->LoadHook] Sent new job.");
+				//MelonLogger.Msg($"[Hook->LoadHook] Sent new job.");
 				ClientSend.JobPacket(new ModJob(job));
 			}
 			
 			foreach (Job job in __instance.selectedJobs.ToArray())
 			{
-				MelonLogger.Msg($"[Hook->LoadHook] Sent new selected job.");
+				//MelonLogger.Msg($"[Hook->LoadHook] Sent new selected job.");
 				ClientSend.SelectedJobPacket(new ModJob(job), true);
 			}
 		}
@@ -64,7 +64,7 @@ public static class JobHooks
 		if (Server.Instance.isRunning)
 		{
 			
-			MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
+			//MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
 			var enumerator = __instance.jobs.ToArray();
 			var newJob = enumerator[__instance.jobs.Count - 1];
 			var job = new ModJob(newJob);
@@ -90,7 +90,7 @@ public static class JobHooks
 		if (!Client.Instance.isConnected) return;
 		
 		if (__instance.jobs.Count <= 0) return;
-		MelonLogger.Msg("[Hook->GenerateNewJobHook] Generated new job");
+		//MelonLogger.Msg("[Hook->GenerateNewJobHook] Generated new job");
 		var enumerator = __instance.jobs.ToArray();
 		var newJob = enumerator[__instance.jobs.Count - 1];
 		var job = new ModJob(newJob);

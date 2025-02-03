@@ -10,12 +10,13 @@ namespace CMS21Together.Shared;
 public static class ApiCalls
 {
 
-	private static Assembly apiAssembly = LoadAssembly();
+	public static readonly bool useSteam = API_M4();
+	private static readonly Assembly APIAssembly = LoadAssembly();
 	public static Dictionary<string, bool> API_M3()
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod3", BindingFlags.Static | BindingFlags.Public);
@@ -24,19 +25,35 @@ public static class ApiCalls
 
 		return null;
 	}
+	
+	public static bool API_M4()
+	{
+		var className = "TogetherModAPI.MainApi";
+
+		var myClassType = APIAssembly.GetType(className);
+		if (myClassType != null)
+		{
+			var apiMethod1 = myClassType.GetMethod("StaticMethod4", BindingFlags.Static | BindingFlags.Public);
+			if (apiMethod1 != null)
+			{
+
+				return (bool)apiMethod1.Invoke(null, null);
+			}
+		}
+		return true;
+	}
 
 	public static void API_M2(object c)
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod2", BindingFlags.Static | BindingFlags.Public);
 			if (apiMethod1 != null)
 			{
 				object[] parameters = { c };
-
 				apiMethod1.Invoke(null, parameters);
 			}
 		}
@@ -46,7 +63,7 @@ public static class ApiCalls
 	{
 		var className = "TogetherModAPI.MainApi";
 
-		var myClassType = apiAssembly.GetType(className);
+		var myClassType = APIAssembly.GetType(className);
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod1", BindingFlags.Static | BindingFlags.Public);

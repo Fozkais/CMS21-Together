@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
@@ -134,6 +135,7 @@ public class ServerData
 	public void ChangePosition(int carLoaderID, int placeNo)
 	{
 		if (Instance.CarPartInfo.TryGetValue(carLoaderID, out var info)) info.placeNo = placeNo;
+		if (Instance.CarSpawnDatas.TryGetValue(carLoaderID, out var info2)) info2.carPosition = placeNo;
 	}
 
 	public void AddJob(ModJob job)
@@ -153,7 +155,7 @@ public class ServerData
 		if (Instance.CarPartInfo.ContainsKey(carData.carLoaderID)) return;
 
 		Instance.CarPartInfo[carData.carLoaderID] = new ModCarInfo();
-		var data = Instance.CarPartInfo[carData.carLoaderID];
+		ModCarInfo data = Instance.CarPartInfo[carData.carLoaderID];
 
 		data.carToLoad = carData.carID;
 		data.carLoaderID = carData.carLoaderID;
@@ -235,7 +237,7 @@ public class ServerData
 
 	public void UpdateFluid(ModFluidData fluid, int carLoaderID)
 	{
-		//MelonLogger.Msg("Not implemented...");
+		//MelonLogger.Msg("Not implemented..."); TODO: Implemnt this
 	}
 
 	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position)
@@ -253,6 +255,26 @@ public class ServerData
 	public void IncreaseStandAngle(int val)
 	{
 		engineStandAngle = val;
+	}
+
+	public void SetPlayerInfo(int id, PlayerInfo info)
+	{
+		connectedClients[id].playerExp = info.playerExp;
+		connectedClients[id].playerLevel = info.playerLevel;
+		connectedClients[id].playerSkillPoints = info.skillPoints;
+		connectedClients[id].position = info.position;
+		connectedClients[id].rotation = info.rotation;
+	}
+
+	public void SetCarColor(ModColor color)
+	{
+		foreach (ModCarInfo car in CarPartInfo.Values)
+		{
+			if (car.placeNo == 5)
+			{
+				CarSpawnDatas[car.carLoaderID].color = color;
+			}
+		}
 	}
 }
 

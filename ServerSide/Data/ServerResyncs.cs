@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
 
@@ -6,10 +7,18 @@ namespace CMS21Together.ServerSide.Data;
 
 public static class ServerResyncs
 {
+
+	public static void SendColor()
+	{
+		ServerSend.CarPaintPacket(2, new ModColor(255, 255, 255, 255));
+	}
+	
 	public static void ResyncCar(int playerID, int carLoaderID)
 	{
 		ModNewCarData carToResync = ServerData.Instance.CarSpawnDatas[carLoaderID];
 		ModCarInfo carInfo = ServerData.Instance.CarPartInfo[carLoaderID];
+		
+		MelonLogger.Msg($"Sent a resync car from: {carLoaderID}  {carToResync.CarInfoData.CarFrom}");
 		
 		ServerSend.LoadCarPacket(playerID, carToResync, carLoaderID, true);
 
@@ -23,6 +32,7 @@ public static class ServerResyncs
 			foreach (KeyValuePair<int,ModPartScript> modPartScript in partsReference.Value)
 			{
 				ServerSend.PartScriptPacket(playerID, modPartScript.Value, carLoaderID, true);
+				MelonLogger.Msg("Sent part.");
 			}
 		}
 		
@@ -41,6 +51,7 @@ public static class ServerResyncs
 			foreach (KeyValuePair<int,ModPartScript> modPartScript in partsReference.Value)
 			{
 				ServerSend.PartScriptPacket(playerID, modPartScript.Value, carLoaderID, true);
+				MelonLogger.Msg("Sent part.");
 			}
 		}
 		MelonLogger.Msg("[ServerResyncs->ResyncCar] Resent car info to client!");

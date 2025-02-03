@@ -12,6 +12,13 @@ public static class PartsUpdater
 {
 	public static IEnumerator UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
+		while (!ClientData.GameReady)
+			yield return new WaitForSeconds(0.25f);
+
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		
 		if (carLoaderID == -1)
 		{
 			while (!ClientData.Instance.engineStand.isHandled)
@@ -28,7 +35,7 @@ public static class PartsUpdater
 				yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
-		MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] Car ready, updating..");
+		//MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] Car ready, updating..");
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
 			var key = partScript.partID;
