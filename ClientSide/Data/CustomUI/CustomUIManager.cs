@@ -131,6 +131,10 @@ public static class CustomUIManager
 					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Disabled, true);
 					MP_Lobby_Buttons[0].button.isDisabled = true;
 					MP_Lobby_Buttons[0].button.SetDisabled(true, true);
+					
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.DoStateTransition(SelectionState.Disabled, true);
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.isDisabled = true;
+					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.SetDisabled(true, true);
 					break;
 				case true:
 					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Back to saves";
@@ -138,6 +142,11 @@ public static class CustomUIManager
 
 					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Normal, true);
 					MP_Lobby_Buttons[0].button.SetDisabled(false, true);
+					if (Server.Instance.steam != null)
+					{
+						MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.DoStateTransition(SelectionState.Normal, true);
+						MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.SetDisabled(false, true);
+					}
 					break;
 			}
 
@@ -197,24 +206,6 @@ public static class CustomUIManager
 	{
 		foreach (var buttonState in buttonsToDisable) buttonState.button.gameObject.SetActive(false);
 	}
-
-	private static void DisableUIAddition(List<GameObject> objectsToDisable)
-	{
-		for (var index = 0; index < objectsToDisable.Count; index++)
-		{
-			var obj = objectsToDisable[index];
-			if (index > 3)
-			{
-				objectsToDisable.Remove(obj);
-				Object.Destroy(obj);
-			}
-			else
-			{
-				obj.SetActive(false);
-			}
-		}
-	}
-
 	private static void DisableUIAddition(List<(int, GameObject)> objectsToDisable)
 	{
 		for (var index = 0; index < objectsToDisable.Count; index++)
@@ -230,11 +221,6 @@ public static class CustomUIManager
 				obj.Item2.SetActive(false);
 			}
 		}
-	}
-
-	private static void EnableUIAddition(List<GameObject> objectsToEnable)
-	{
-		foreach (var obj in objectsToEnable) obj.SetActive(true);
 	}
 
 	private static void EnableUIAddition(List<(int, GameObject)> objectsToEnable)

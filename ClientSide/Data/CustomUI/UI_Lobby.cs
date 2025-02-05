@@ -65,11 +65,21 @@ public static class UI_Lobby
 		var b2_info = new ButtonInfo(b2_pos, b2_size, b2_action, "Toggle Ready", 1);
 		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b2_info, false);
 
-		var b3_pos = new Vector2(20, -317);
+		
+		var b3_pos = new Vector2(20, -92);
 		var b3_size = new Vector2(336, 65);
-		Action b3_action = delegate { OpenMainMenu(); };
-		var b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Disconnect", 2);
-		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b3_info, false); // Need to be last
+		Action b3_action = delegate
+		{
+			GUIUtility.systemCopyBuffer = Server.Instance.serverID;
+		};
+		var b3_info = new ButtonInfo(b3_pos, b3_size, b3_action, "Copy Server ID", 2);
+		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b3_info, false);
+		
+		var b4_pos = new Vector2(20, -317);
+		var b4_size = new Vector2(336, 65);
+		Action b4_action = delegate { OpenMainMenu(); };
+		var b4_info = new ButtonInfo(b4_pos, b4_size, b4_action, "Disconnect", 3);
+		CustomUIBuilder.CreateNewButton(CustomUISection.MP_Lobby, b4_info, false); // Need to be last
 
 		CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
 	}
