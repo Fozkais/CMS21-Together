@@ -3,6 +3,7 @@ using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Garage.Car;
+using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
@@ -10,6 +11,7 @@ using CMS21Together.Shared.Data;
 using Il2CppSystem.Collections;
 using MelonLoader;
 using Steamworks;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 
 // ReSharper disable All
@@ -21,7 +23,7 @@ namespace CMS21Together
 		public const int MAX_SAVE_COUNT = 22;
 		public const int MAX_PLAYER = 4;
 		public const int PORT = 7777;
-		public const string ASSEMBLY_MOD_VERSION = "0.4.7";
+		public const string ASSEMBLY_MOD_VERSION = "0.4.8";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
 		public bool isModInitialized;
 		
@@ -107,6 +109,11 @@ namespace CMS21Together
 			{
 				return;
 			}
+		}
+
+		public override void OnApplicationStart()
+		{
+			ClassInjector.RegisterTypeInIl2Cpp<InfoBillboard>();
 		}
 
 		public override void OnApplicationQuit() // Runs when the Game is told to Close

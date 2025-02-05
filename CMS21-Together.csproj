@@ -70,6 +70,7 @@
         <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
+        <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
         <Compile Include="ClientSide\Data\Player\Inventory.cs"/>
         <Compile Include="ClientSide\Data\Player\Movement.cs"/>
         <Compile Include="ClientSide\Data\Player\Rotation.cs"/>
