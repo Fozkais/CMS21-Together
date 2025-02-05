@@ -52,15 +52,15 @@ public class SteamSocket: SocketManager
         else if (info.State == ConnectionState.Connected)
         {
             base.OnConnected(connection, info);
-            foreach (int ClientID in Server.Instance.clients.Keys)
+            for (int i = 1; i <= MainMod.MAX_PLAYER; i++)
             {
-                if (Server.Instance.clients[ClientID].isConnected == false)
+                if (! Server.Instance.clients[i].isConnected)
                 {
-                    Server.Instance.clients[ClientID].steam.connection = connection;
-                    Server.Instance.clients[ClientID].steam.isConnected = true;
-                    Server.Instance.clients[ClientID].Connect();
+                    Server.Instance.clients[i].steam.connection = connection;
+                    Server.Instance.clients[i].steam.isConnected = true;
+                    Server.Instance.clients[i].Connect();
                     OnConnected(connection, info);
-                    break;
+                    return;
                 }
             }
         }

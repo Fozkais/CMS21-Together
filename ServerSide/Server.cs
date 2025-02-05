@@ -170,14 +170,15 @@ public class Server
 
 		MelonLogger.Msg($"[Server->TCPConnectCallback] Incoming connection from {_client.Client.RemoteEndPoint}...");
 
-		foreach (var ClientID in clients.Keys)
-			if (clients[ClientID].isConnected == false)
+		for (int i = 1; i <= MainMod.MAX_PLAYER; i++)
+		{
+			if (!clients[i].isConnected)
 			{
-				clients[ClientID].Connect(_client);
-				MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{ClientID}.");
+				clients[i].Connect(_client);
+				MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{i}.");
 				return;
 			}
-
+		}
 		MelonLogger.Warning($"[Server->TCPConnectCallback] {_client.Client.RemoteEndPoint} failed to connect: Server full!");
 	}
 
