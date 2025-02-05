@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
@@ -123,22 +124,31 @@ public class Client
 		};
 	}
 
-	public void Disconnect()
+	public void Disconnect(bool fromServer=false)
 	{
 		if (!isConnected) return;
 
 
-		ClientSend.DisconnectPacket();
+		if (!fromServer)
+			ClientSend.DisconnectPacket();
 		Application.runInBackground = false;
 		isConnected = false;
 
 		tcp.Disconnect();
 		udp.Disconnect();
-
+		
 		if (SceneManager.GetActiveScene().name != "Menu")
 		{
 			var manager = NotificationCenter.m_instance;
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
+		}
+		else
+		{
+			if (CustomUIManager.currentSection == CustomUISection.MP_Lobby)
+			{
+				CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
+				CustomUIManager.EnableUI(CustomUISection.MP_Main);
+			}
 		}
 		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
