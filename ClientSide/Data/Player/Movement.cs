@@ -64,7 +64,7 @@ public static class Movement
 				
 				// Arrêter la rotation
 				var currentRotation = client.userObject.transform.rotation;
-				var targetRotation = Quaternion.identity; // Retourner à la rotation neutre
+				var targetRotation = client.userObject.transform.rotation;
 				client.userObject.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * 5f);
 			}
 		}
