@@ -479,4 +479,14 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void WelderPacket(int fromClient, int loaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.useWelder))
+		{
+			_packet.Write(loaderID);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }

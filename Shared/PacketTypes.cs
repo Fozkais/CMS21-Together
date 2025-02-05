@@ -48,5 +48,6 @@ public enum PacketTypes
 	point,
 	resync,
 	carWash,
-	carPaint
+	carPaint,
+	useWelder
 }

@@ -25,6 +25,7 @@ public class GameData
 	public GarageAndToolsTab upgradeTools;
 	public ToolsMoveManager toolsMoveManager;
 	public WheelBalancerLogic wheelBalancer;
+	public WelderLogic welderLogic;
 	public PaintshopManager paintshopManager;
 
 	public GameData()
@@ -40,6 +41,7 @@ public class GameData
 		springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
 		tireChanger = Object.FindObjectOfType<TireChangerLogic>();
 		wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
+		welderLogic = Object.FindObjectOfType<WelderLogic>();
 		paintshopManager = Object.FindObjectOfType<PaintshopManager>();
 		carLoaders = new[]
 		{

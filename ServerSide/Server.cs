@@ -219,6 +219,7 @@ public class Server
 			{ (int)PacketTypes.engineStandTakeOff, ServerHandle.EngineStandTakeOffPacket },
 			{ (int)PacketTypes.engineStandAngle, ServerHandle.EngineStandAnglePacket },
 			{ (int)PacketTypes.carWash, ServerHandle.CarWashPacket },
+			{ (int)PacketTypes.useWelder, ServerHandle.WelderPacket },
 			{ (int)PacketTypes.carPaint, ServerHandle.CarPaintPacket },
 
 			{ (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },

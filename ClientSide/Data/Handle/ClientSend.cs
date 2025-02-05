@@ -425,4 +425,13 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void WelderPacket(int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.useWelder))
+		{
+			packet.Write(carLoaderID);
+			SendData(packet);
+		}
+	}
 }

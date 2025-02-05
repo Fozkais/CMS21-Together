@@ -445,6 +445,14 @@ public static class ServerHandle
 		ServerSend.CarWashPacket(fromClient, loaderID);
 	}
 	
+	public static void WelderPacket(int fromClient, Packet packet)
+	{
+		int loaderID = packet.ReadInt();
+		
+		//ServerData.Instance.SetWelder(loaderID); TODO:Implement This
+		ServerSend.WelderPacket(fromClient, loaderID);
+	}
+	
 	public static void CarPaintPacket(int fromClient, Packet packet)
 	{
 		ModColor color = packet.Read<ModColor>();

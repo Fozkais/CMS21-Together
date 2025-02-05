@@ -197,6 +197,13 @@ public static class ClientHandle
 		GameData.Instance.carLoaders[carLoaderID].UseOilbin();
 	}
 	
+	public static void WelderPacket(Packet _packet)
+	{
+		int carLoaderID = _packet.ReadInt();
+
+		MelonCoroutines.Start(Garage.Tools.WelderLogic.UseWelder(carLoaderID));
+	}
+	
 	public static void SetSpringClampPacket(Packet packet)
 	{
 		var item = packet.Read<ModGroupItem>();
