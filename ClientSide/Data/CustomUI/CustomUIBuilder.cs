@@ -198,7 +198,7 @@ public static class CustomUIBuilder
 
 			if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
 			{
-				Vector2 t5_pos = new Vector2(905, 30);
+				Vector2 t5_pos = new Vector2(890, 30);
 				Vector2 t5_size = new Vector2(400, 100);
 				CreateText(t5_pos, t5_size, $"Server ID: {Server.Instance.steam.GetServerID()}", 14, lobbyHeaderObject.transform);
 			}
