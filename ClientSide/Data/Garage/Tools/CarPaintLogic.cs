@@ -39,6 +39,7 @@ public static class CarPaintLogic
 			{
 				GameData.Instance.paintshopManager.paintshopState.SetSelectedColor(color.ToGame());
 				GameData.Instance.paintshopManager.UpdateColor(color.ToGame());
+				listen = false;
 				MainMod.StartCoroutine(GameData.Instance.paintshopManager.MakePaintEffects());
 				break;
 			}
