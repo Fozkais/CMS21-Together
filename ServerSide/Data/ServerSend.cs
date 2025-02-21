@@ -168,13 +168,16 @@ public static class ServerSend
 		}
 	}
 
-	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade)
+	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.garageUpgrade))
 		{
 			packet.Write(upgrade);
 
-			SendDataToAll(packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 	}
 
@@ -240,7 +243,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
+	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.toolMove))
 		{
@@ -248,7 +251,10 @@ public static class ServerSend
 			packet.Write(place);
 			packet.Write(playSound);
 
-			SendDataToAll(fromClient, packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 	}
 

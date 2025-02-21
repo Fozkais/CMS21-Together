@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
@@ -55,5 +57,21 @@ public static class ServerResyncs
 			}
 		}
 		MelonLogger.Msg("[ServerResyncs->ResyncCar] Resent car info to client!");
+	}
+
+	public static void ResyncTools(int fromClient)
+	{
+		foreach (KeyValuePair<ModIOSpecialType, ModCarPlace> tool in ServerData.toolsPosition)
+		{
+			ServerSend.ToolsMovePacket(fromClient, tool.Key, tool.Value, false, true);
+		}
+	}
+
+	public static void ResyncUpgrade(int fromClient)
+	{
+		foreach (KeyValuePair<string,GarageUpgrade> upgrade in ServerData.Instance.garageUpgrades)
+		{
+			ServerSend.GarageUpgradePacket(fromClient, upgrade.Value, true);
+		}
 	}
 }

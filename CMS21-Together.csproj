@@ -217,6 +217,9 @@
         <Reference Include="UnityEngine.InputModule">
             <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule">
+          <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
           <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
@@ -254,6 +257,7 @@
         <Content Include="Libs\UnityEngine.ImageConversionModule.dll"/>
         <Content Include="Libs\UnityEngine.IMGUIModule.dll"/>
         <Content Include="Libs\UnityEngine.InputModule.dll"/>
+        <Content Include="Libs\UnityEngine.ParticleSystemModule.dll" />
         <Content Include="Libs\UnityEngine.PhysicsModule.dll"/>
         <Content Include="Libs\UnityEngine.TextCoreModule.dll"/>
         <Content Include="Libs\UnityEngine.TextRenderingModule.dll"/>

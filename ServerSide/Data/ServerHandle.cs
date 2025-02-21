@@ -471,6 +471,12 @@ public static class ServerHandle
 				int carLoaderID = packet.ReadInt();
 				ServerResyncs.ResyncCar(fromClient, carLoaderID);
 				break;
+			case PacketTypes.toolMove:
+				ServerResyncs.ResyncTools(fromClient);
+				break;
+			case PacketTypes.garageUpgrade:
+				ServerResyncs.ResyncUpgrade(fromClient);
+				break;
 		}
 	}
 }

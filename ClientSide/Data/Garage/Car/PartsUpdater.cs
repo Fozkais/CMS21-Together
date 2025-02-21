@@ -78,7 +78,6 @@ public static class PartsUpdater
 			if (!string.IsNullOrEmpty(part.tunedID) && !string.IsNullOrEmpty(reference.tunedID))
 				if (reference.tunedID != part.tunedID)
 					GameData.Instance.carLoaders[carLoaderID].TunePart(reference.id, part.tunedID);
-
 		reference.IsExamined = part.isExamined;
 		reference.Quality = part.quality;
 		reference.SetCondition(part.condition);

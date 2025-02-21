@@ -407,6 +407,24 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+	
+	public static void ResyncTools()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.toolMove);
+			SendData(packet);
+		}
+	}
+	
+	public static void ResyncUpgrade()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.garageUpgrade);
+			SendData(packet);
+		}
+	}
 
 	public static void CarWashPacket(int carLoaderID)
 	{

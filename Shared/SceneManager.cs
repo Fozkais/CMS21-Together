@@ -32,7 +32,7 @@ public static class SceneManager
 		else if (newSceneName == "garage" || newSceneName == "Christmas")
 		{
 			if (ClientData.GameReady)
-				MelonCoroutines.Start(GarageResync.ResyncCars());
+				MelonCoroutines.Start(GarageResync.ResyncGarage());
 		}
 		else
 		{
