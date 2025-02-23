@@ -6,6 +6,7 @@ using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 using UnityEngine;
@@ -143,6 +144,20 @@ public class ClientData
 			UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
 			
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
+			if (skills != null)
+			{
+				GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
+				foreach (KeyValuePair<string, List<bool>> skill in skills)
+				{
+					int lvl = 0;
+					foreach (bool unlocked in skill.Value)
+					{
+						if(unlocked)
+							GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
+						lvl++;
+					}
+				}
+			}
 		}
 
 		GlobalData.MissionsFinished = missionFinished;
@@ -152,20 +167,5 @@ public class ClientData
 			GameData.Instance.localPlayer.transform.position = pos;
 		if (rot != Quaternion.identity)
 			GameData.Instance.localPlayer.transform.rotation = rot;
-		
-		if (skills != null)
-		{
-			GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
-			foreach (KeyValuePair<string, List<bool>> skill in skills)
-			{
-				int lvl = 0;
-				foreach (bool unlocked in skill.Value)
-				{
-					if(unlocked)
-						GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
-					lvl++;
-				}
-			}
-		}
 	}
 }
