@@ -276,7 +276,22 @@ public class ServerData
 			}
 		}
 	}
+
+	public void UpdatePartInfo(ModPartInfo info, bool isBody, bool success)
+	{
+		if (items.Any(i => i.UID == info.Item.UID))
+		{
+			ModItem item = items.First(i => i.UID == info.Item.UID);
+			item.Condition = (success ? info.SuccessCondition : info.FailCondition);
+			item.RepairAmount++;
+			if (isBody)
+			{
+				item.Dent = (success ? info.DentSuccessCondition : info.DentFailCondition);
+			}
+		}
+	}
 }
+
 
 public class GarageTool
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;

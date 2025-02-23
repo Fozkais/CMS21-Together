@@ -19,7 +19,7 @@ public static class PartsReferencer
 		yield return new WaitForSeconds(1f);
 		yield return new WaitForEndOfFrame();
 
-		car.partInfo = new ModPartInfo();
+		car.CarPartInfo = new ModCarPartInfo();
 		var getBodyPartCoroutine = GetBodyPartCoroutine(car);
 		var getOtherPartCoroutine = GetOtherPartCoroutine(car);
 		var getEnginePartCoroutine = GetEnginePartCoroutine(car);
@@ -50,7 +50,7 @@ public static class PartsReferencer
 		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearLeft_h);
 		suspensions.Add(GameData.Instance.carLoaders[car.carLoaderID].s_rearRight_h);
 
-		var reference = car.partInfo.SuspensionPartsReferences;
+		var reference = car.CarPartInfo.SuspensionPartsReferences;
 
 		for (var i = 0; i < suspensions.Count; i++)
 		{
@@ -75,7 +75,7 @@ public static class PartsReferencer
 		{
 			var driveshaftParts = driveshaft.GetComponentsInChildren<PartScript>().ToList();
 
-			var reference = car.partInfo.DriveshaftPartsReferences;
+			var reference = car.CarPartInfo.DriveshaftPartsReferences;
 
 			for (var i = 0; i < driveshaftParts.Count; i++)
 				if (!reference.ContainsKey(i))
@@ -90,7 +90,7 @@ public static class PartsReferencer
 		var engine = GameData.Instance.carLoaders[car.carLoaderID].e_engine_h;
 		var engineParts = engine.GetComponentsInChildren<PartScript>().ToList();
 
-		var reference = car.partInfo.EnginePartsReferences;
+		var reference = car.CarPartInfo.EnginePartsReferences;
 
 		for (var i = 0; i < engineParts.Count; i++)
 			if (!reference.ContainsKey(i))
@@ -102,7 +102,7 @@ public static class PartsReferencer
 		yield return new WaitForEndOfFrame();
 
 		var partList = GameData.Instance.carLoaders[car.carLoaderID].Parts;
-		var reference = car.partInfo.OtherPartsReferences;
+		var reference = car.CarPartInfo.OtherPartsReferences;
 
 		for (var i = 0; i < partList.Count; i++)
 		{
@@ -124,7 +124,7 @@ public static class PartsReferencer
 		yield return new WaitForEndOfFrame();
 
 		var bodyParts = GameData.Instance.carLoaders[car.carLoaderID].carParts.ToArray();
-		var reference = car.partInfo.BodyPartsReferences;
+		var reference = car.CarPartInfo.BodyPartsReferences;
 
 		for (var i = 0; i < bodyParts.Count; i++)
 			if (!reference.ContainsKey(i))

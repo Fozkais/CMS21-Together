@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -449,6 +450,17 @@ public class ClientSend
 		using (var packet = new Packet((int)PacketTypes.useWelder))
 		{
 			packet.Write(carLoaderID);
+			SendData(packet);
+		}
+	}
+
+	public static void RepairPart(ModPartInfo modPartInfo,  bool isBody, bool success)
+	{
+		using (var packet = new Packet((int)PacketTypes.repairPart))
+		{
+			packet.Write(modPartInfo);
+			packet.Write(isBody);
+			packet.Write(success);
 			SendData(packet);
 		}
 	}

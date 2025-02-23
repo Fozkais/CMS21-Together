@@ -49,5 +49,6 @@ public enum PacketTypes
 	resync,
 	carWash,
 	carPaint,
-	useWelder
+	useWelder,
+	repairPart
 }

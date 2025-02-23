@@ -221,6 +221,7 @@ public class Server
 			{ (int)PacketTypes.carWash, ServerHandle.CarWashPacket },
 			{ (int)PacketTypes.useWelder, ServerHandle.WelderPacket },
 			{ (int)PacketTypes.carPaint, ServerHandle.CarPaintPacket },
+			{ (int)PacketTypes.repairPart, ServerHandle.RepairPartPacket },
 
 			{ (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },
 			{ (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },

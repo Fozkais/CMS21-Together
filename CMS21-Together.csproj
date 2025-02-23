@@ -64,6 +64,7 @@
         <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs"/>
         <Compile Include="ClientSide\Data\Garage\Tools\OilBin.cs" />
+        <Compile Include="ClientSide\Data\Garage\Tools\RepairPartLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\TireChangerLogic.cs"/>
         <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs"/>
@@ -98,9 +99,7 @@
         <Compile Include="Shared\Data\CustomUISection.cs"/>
         <Compile Include="Shared\Data\Gamemode.cs"/>
         <Compile Include="Shared\Data\GameScene.cs"/>
-        <Compile Include="Shared\Data\GarageUpgrade.cs"/>
         <Compile Include="Shared\Data\ModCar.cs"/>
-        <Compile Include="Shared\Data\ModColor.cs"/>
         <Compile Include="Shared\Data\ModSaveData.cs"/>
         <Compile Include="Shared\Data\NetworkType.cs"/>
         <Compile Include="Shared\Data\PlayerInfo.cs" />
@@ -136,6 +135,7 @@
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModNewUnlockedPosition.cs"/>
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModToolsData.cs"/>
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModWheelBalancerActionType.cs"/>
+        <Compile Include="Shared\Data\Vanilla\GarageUpgrade.cs" />
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJob.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJobPart.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJobTask.cs"/>
@@ -143,6 +143,7 @@
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobsData.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobTaskWrapper.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobWrapper.cs"/>
+        <Compile Include="Shared\Data\Vanilla\ModColor.cs" />
         <Compile Include="Shared\Data\Vanilla\ModDifficultyLevel.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModGroupItem.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModItem.cs"/>
@@ -153,6 +154,7 @@
         <Compile Include="Shared\Data\Vanilla\ModNewUpgradeSystemData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModPaintData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModPaintType.cs"/>
+        <Compile Include="Shared\Data\Vanilla\ModPartInfo.cs" />
         <Compile Include="Shared\Data\Vanilla\ModProfileData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModStats.cs"/>
         <Compile Include="Shared\Data\Vector3Serializable.cs"/>

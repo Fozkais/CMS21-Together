@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CMS21Together.Shared.Data;
+namespace CMS21Together.Shared.Data.Vanilla;
 
 [Serializable]
 public class ModColor

@@ -123,7 +123,7 @@ public static class PartUpdateHooks
 
 		if (FindBodyPartInDictionary(car, name, out var key))
 		{
-			var part = car.partInfo.BodyPartsReferences[key];
+			var part = car.CarPartInfo.BodyPartsReferences[key];
 			MelonCoroutines.Start(SendBodyPart(part, key, carLoaderID));
 		}
 	}
@@ -132,7 +132,7 @@ public static class PartUpdateHooks
 	{
 		index = null;
 
-		foreach (var kvp in car.partInfo.OtherPartsReferences)
+		foreach (var kvp in car.CarPartInfo.OtherPartsReferences)
 		{
 			var listIndex = kvp.Value.FindIndex(part => part == partScript);
 			if (listIndex >= 0)
@@ -144,7 +144,7 @@ public static class PartUpdateHooks
 			}
 		}
 
-		foreach (var kvp in car.partInfo.SuspensionPartsReferences)
+		foreach (var kvp in car.CarPartInfo.SuspensionPartsReferences)
 		{
 			var listIndex = kvp.Value.FindIndex(part => part == partScript);
 			if (listIndex >= 0)
@@ -156,7 +156,7 @@ public static class PartUpdateHooks
 			}
 		}
 
-		foreach (var kvp in car.partInfo.EnginePartsReferences)
+		foreach (var kvp in car.CarPartInfo.EnginePartsReferences)
 			if (kvp.Value == partScript)
 			{
 				partType = ModPartType.engine;
@@ -164,7 +164,7 @@ public static class PartUpdateHooks
 				return true;
 			}
 
-		foreach (var kvp in car.partInfo.DriveshaftPartsReferences)
+		foreach (var kvp in car.CarPartInfo.DriveshaftPartsReferences)
 			if (kvp.Value == partScript)
 			{
 				partType = ModPartType.driveshaft;
@@ -180,7 +180,7 @@ public static class PartUpdateHooks
 
 	public static bool FindBodyPartInDictionary(ModCar car, string carPartName, out int key)
 	{
-		foreach (var kvp in car.partInfo.BodyPartsReferences)
+		foreach (var kvp in car.CarPartInfo.BodyPartsReferences)
 			if (kvp.Value.name == carPartName)
 			{
 				key = kvp.Key;
@@ -200,19 +200,19 @@ public static class PartUpdateHooks
 		switch (partType)
 		{
 			case ModPartType.engine:
-				part = car.partInfo.EnginePartsReferences[key];
+				part = car.CarPartInfo.EnginePartsReferences[key];
 				break;
 			case ModPartType.engineStand:
 				part = ClientData.Instance.engineStand.partReferences[key];
 				break;
 			case ModPartType.suspension:
-				part = car.partInfo.SuspensionPartsReferences[key][index.Value];
+				part = car.CarPartInfo.SuspensionPartsReferences[key][index.Value];
 				break;
 			case ModPartType.other:
-				part = car.partInfo.OtherPartsReferences[key][index.Value];
+				part = car.CarPartInfo.OtherPartsReferences[key][index.Value];
 				break;
 			case ModPartType.driveshaft:
-				part = car.partInfo.DriveshaftPartsReferences[key];
+				part = car.CarPartInfo.DriveshaftPartsReferences[key];
 				break;
 			default:
 				yield break;

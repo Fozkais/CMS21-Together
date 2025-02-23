@@ -363,6 +363,15 @@ public static class ClientHandle
 		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle));
 	}
 	
+	public static void RepairPartPacket(Packet packet)
+	{
+		ModPartInfo info = packet.Read<ModPartInfo>();
+		bool isBody = packet.Read<bool>();
+		bool success = packet.Read<bool>();
+		
+		MelonCoroutines.Start(RepairPartLogic.RepairAction(info, isBody, success));
+	}
+	
 	public static void CarFluidPacket(Packet packet)
 	{
 		var carLoaderID = packet.ReadInt();

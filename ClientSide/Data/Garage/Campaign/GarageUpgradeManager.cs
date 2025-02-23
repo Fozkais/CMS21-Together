@@ -4,6 +4,7 @@ using CMS;
 using CMS.UI.Logic;
 using CMS.UI.Logic.Upgrades;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using MelonLoader;
 using UnityEngine;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -459,6 +460,16 @@ public static class ServerHandle
 		
 		ServerData.Instance.SetCarColor(color);
 		ServerSend.CarPaintPacket(fromClient, color);
+	}
+	
+	public static void RepairPartPacket(int fromClient, Packet packet)
+	{
+		ModPartInfo info = packet.Read<ModPartInfo>();
+		bool isBody = packet.Read<bool>();
+		bool success = packet.Read<bool>();
+		
+		ServerData.Instance.UpdatePartInfo(info, isBody, success);
+		ServerSend.RepairPartPacket(fromClient, info, isBody, success);
 	}
 	
 	public static void ResyncPacket(int fromClient, Packet packet)

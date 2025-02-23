@@ -105,6 +105,7 @@ public class Client
 			{ (int)PacketTypes.engineStandSetGroup, ClientHandle.EngineSetGroupPacket },
 			{ (int)PacketTypes.engineStandTakeOff, ClientHandle.EngineTakeOffPacket },
 			{ (int)PacketTypes.engineStandAngle, ClientHandle.EngineStandAnglePacket },
+			{ (int)PacketTypes.repairPart, ClientHandle.RepairPartPacket },
 			{ (int)PacketTypes.carFluid, ClientHandle.CarFluidPacket },
 			{ (int)PacketTypes.carWash, ClientHandle.CarWashPacket },
 			{ (int)PacketTypes.useWelder, ClientHandle.WelderPacket },

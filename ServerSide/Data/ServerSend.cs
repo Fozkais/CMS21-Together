@@ -495,4 +495,16 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void RepairPartPacket(int fromClient, ModPartInfo info, bool isBody, bool success)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.repairPart))
+		{
+			_packet.Write(info);
+			_packet.Write(isBody);
+			_packet.Write(success);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
 }
