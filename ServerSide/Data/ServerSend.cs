@@ -466,11 +466,12 @@ public static class ServerSend
 		}
 	}
 
-	public static void CarWashPacket(int fromClient, int loaderID)
+	public static void CarWashPacket(int fromClient, int loaderID, bool interior)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.carWash))
 		{
 			_packet.Write(loaderID);
+			_packet.Write(interior);
 			
 			SendDataToAll(fromClient, _packet);
 		}

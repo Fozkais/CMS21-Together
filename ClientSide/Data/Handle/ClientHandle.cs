@@ -236,8 +236,9 @@ public static class ClientHandle
 	public static void CarWashPacket(Packet _packet)
 	{
 		int carLoaderID = _packet.ReadInt();
+		bool interior = _packet.Read<bool>();
 
-		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID));
+		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID, interior));
 	}
 	
 	public static void CarPaintPacket(Packet _packet)

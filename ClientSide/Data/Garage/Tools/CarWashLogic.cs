@@ -2,6 +2,7 @@
 using CMS;
 using CMS21Together.ClientSide.Data.Handle;
 using HarmonyLib;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Tools;
@@ -22,8 +23,19 @@ public static class CarWashLogic
 		int carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		ClientSend.CarWashPacket(carLoaderID);
 	}
+	
+	[HarmonyPatch(typeof(InteriorDetailingToolkitLogic), nameof(InteriorDetailingToolkitLogic.DoWorkAnim))]
+	[HarmonyPrefix]
+	public static void DoWorkAnimHook(CarLoader carLoader)
+	{
+		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 
-	public static IEnumerator WashCar(int carLoaderID)
+		int carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
+		ClientSend.CarWashPacket(carLoaderID, true);
+		MelonLogger.Msg("Wash interior!");
+	}
+
+	public static IEnumerator WashCar(int carLoaderID, bool interior)
 	{
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
@@ -32,7 +44,10 @@ public static class CarWashLogic
 
 		if (ClientData.Instance.loadedCars.ContainsKey(carLoaderID)) yield break;
 		listen = false;
-		GameData.Instance.carLoaders[carLoaderID].TweenExteriorDustWash(0f, 1f, 0.1f);
+		if (!interior)
+			GameData.Instance.carLoaders[carLoaderID].TweenExteriorDustWash(0f, 1f, 0.1f);
+		else
+			GameData.Instance.carLoaders[carLoaderID].TweenInteriorConditionAndDust(1f, 0f, 3f);
 		listen = true;
 	}
 }

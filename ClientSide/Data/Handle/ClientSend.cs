@@ -427,11 +427,12 @@ public class ClientSend
 		}
 	}
 
-	public static void CarWashPacket(int carLoaderID)
+	public static void CarWashPacket(int carLoaderID, bool interior=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.carWash))
 		{
 			packet.Write(carLoaderID);
+			packet.Write(interior);
 			SendData(packet);
 		}
 	}

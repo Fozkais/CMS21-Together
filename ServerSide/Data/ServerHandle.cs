@@ -441,9 +441,10 @@ public static class ServerHandle
 	public static void CarWashPacket(int fromClient, Packet packet)
 	{
 		int loaderID = packet.ReadInt();
+		bool interior = packet.Read<bool>();
 		
 		//ServerData.Instance.SetCarWash(loaderID); TODO:Implement This
-		ServerSend.CarWashPacket(fromClient, loaderID);
+		ServerSend.CarWashPacket(fromClient, loaderID, interior);
 	}
 	
 	public static void WelderPacket(int fromClient, Packet packet)
