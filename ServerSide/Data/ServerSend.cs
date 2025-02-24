@@ -20,6 +20,7 @@ public static class ServerSend
 		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].money);
 			packet.Write(info.playerExp);
 			packet.Write(info.playerLevel);
 			packet.Write(info.skillPoints);

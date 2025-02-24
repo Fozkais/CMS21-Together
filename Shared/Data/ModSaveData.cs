@@ -16,6 +16,7 @@ public class ModSaveData
 	public long[] inventoryItemUID;
 	public bool storyMissionInProgress;
 	public int missionFinished;
+	public int money;
 	public ModSaveData(string saveName, int index, bool loaded)
 	{
 		Name = saveName;
@@ -31,6 +32,7 @@ public class ModSaveData
 		};
 		storyMissionInProgress = false;
 		missionFinished = 0;
+		money = 0;
 	}
 
 	public ModSaveData()

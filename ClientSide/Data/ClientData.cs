@@ -116,7 +116,7 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
+	public IEnumerator SpawnPlayer(int _money, int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
 		List<bool>> skills, long startItemUid, int missionFinished, bool missionInProgress)
 	{
 		while (!GameReady)
@@ -132,6 +132,7 @@ public class ClientData
 		                + $"StoryInProgress : {missionInProgress}\n"
 		                + $"StartItemUID : {startItemUid}\n"
 		                + $"Exp : {_exp}\n"
+		                + $"Money : {_money}\n"
 		                + $"Level : {_level}\n"
 		                + $"Exp : {_exp}\n"
 		                + $"SkillPoints : {skillPoints}\n");
@@ -142,6 +143,8 @@ public class ClientData
 			UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
 			GlobalData.PlayerExp = _exp;
 			UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
+			GlobalData.PlayerMoney = _money;
+			UIManager.Get().StatsContainer.Refresh(StatType.Money, true);
 			
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 			if (skills != null)

@@ -230,7 +230,8 @@ public static class SavesManager
 			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
 			int exp = ServerData.Instance.connectedClients[id].playerExp;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
-
+			
+			
 			if (ModSaves[currentSaveIndex].playerInfos.Any(p => playerGuid == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
 		}

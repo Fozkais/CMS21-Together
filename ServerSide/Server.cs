@@ -104,6 +104,7 @@ public class Server
 		}
 		save.missionFinished = GlobalData.MissionsFinished;
 		save.storyMissionInProgress = GlobalData.IsStoryMissionInProgress;
+		save.money = GlobalData.PlayerMoney;
 		
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);

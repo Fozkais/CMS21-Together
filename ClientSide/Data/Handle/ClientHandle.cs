@@ -75,6 +75,7 @@ public static class ClientHandle
 	
 	public static void SpawnPacket(Packet packet)
 	{
+		int playerMoney = packet.ReadInt();
 		int playerExp = packet.ReadInt();
 		int playerLevel = packet.ReadInt();
 		int skillPoints = packet.ReadInt();
@@ -85,7 +86,7 @@ public static class ClientHandle
 		int missionFinished = packet.ReadInt();
 		bool missionInProgress = packet.Read<bool>();
 		
-		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(),
+		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerMoney, playerExp, playerLevel, position.toVector3(),
 			rotation.toQuaternion(), skillPoints, skills, startItemUID, missionFinished, missionInProgress));
 	}
 
