@@ -33,8 +33,6 @@ public static class WelderLogic
 		listen = false;
 		WelderL l = GameData.Instance.welderLogic;
 		CarLoader carLoader = GameData.Instance.carLoaders[carLoaderID];
-		
-		//MainMod.StartCoroutine(l.DoWorkAnim(GameData.Instance.carLoaders[carLoaderID]));
 
 		StartAnimFix(carLoader, l);
 		carLoader.TweenCondition("body", 1f, l.effectTime);

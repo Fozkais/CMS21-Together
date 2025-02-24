@@ -48,6 +48,5 @@ public static class CarWashLogic
 			GameData.Instance.carLoaders[carLoaderID].TweenExteriorDustWash(0f, 1f, 0.1f);
 		else
 			GameData.Instance.carLoaders[carLoaderID].TweenInteriorConditionAndDust(1f, 0f, 3f);
-		listen = true;
 	}
 }

@@ -443,7 +443,7 @@ public static class ServerHandle
 		int loaderID = packet.ReadInt();
 		bool interior = packet.Read<bool>();
 		
-		//ServerData.Instance.SetCarWash(loaderID); TODO:Implement This
+		ServerData.Instance.SetCarWash(loaderID, interior); 
 		ServerSend.CarWashPacket(fromClient, loaderID, interior);
 	}
 	
@@ -451,7 +451,7 @@ public static class ServerHandle
 	{
 		int loaderID = packet.ReadInt();
 		
-		//ServerData.Instance.SetWelder(loaderID); TODO:Implement This
+		ServerData.Instance.SetWelder(loaderID);
 		ServerSend.WelderPacket(fromClient, loaderID);
 	}
 	

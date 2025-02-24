@@ -10,12 +10,6 @@ namespace CMS21Together.ServerSide.Data;
 
 public static class ServerResyncs
 {
-
-	public static void SendColor()
-	{
-		ServerSend.CarPaintPacket(2, new ModColor(255, 255, 255, 255));
-	}
-	
 	public static void ResyncCar(int playerID, int carLoaderID)
 	{
 		ModNewCarData carToResync = ServerData.Instance.CarSpawnDatas[carLoaderID];

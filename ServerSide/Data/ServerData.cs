@@ -290,6 +290,73 @@ public class ServerData
 			}
 		}
 	}
+	
+	public void SetCarWash(int loaderID, bool interior)
+	{
+		if (!CarPartInfo.TryGetValue(loaderID, out var car))
+			return;
+
+		if (interior)
+		{
+			foreach (KeyValuePair<int, ModCarPart> part in car.BodyPartsReferences)
+			{
+				if (!part.Value.unmounted)
+				{
+						part.Value.washFactor = 1;
+						part.Value.Dust = 0;
+					
+				}
+			}
+			ModCarPart detailsPart = GetCarPart(loaderID, "details");
+			if (detailsPart != null)
+			{
+				detailsPart.Dust = 0;
+				ModCarPart details2 = GetCarPart(loaderID, "details2");
+				if (details2 != null) details2.Dust = 0;
+				ModCarPart details3 = GetCarPart(loaderID, "details3");
+				if (details3 != null) details3.Dust = 0;
+			}
+		}
+		else
+		{
+			string[] interiorParts = { "benchFront", "bench", "steeringWheel", "seatLeft", "seatRight", "details", "details2", "details3" };
+			foreach (string partName in interiorParts)
+			{
+				ModCarPart part = GetCarPart(loaderID, partName);
+				if (part != null && !part.unmounted)
+				{
+					part.condition = 1;
+					part.Dust = 0;
+					if (partName == "details")
+					{
+						ModCarPart details2 = GetCarPart(loaderID, "details2");
+						if (details2 != null) details2.Dust = 0;
+
+						ModCarPart details3 = GetCarPart(loaderID, "details3");
+						if (details3 != null) details3.Dust = 0;
+					}
+				}
+			}
+		}
+	}
+
+	private ModCarPart GetCarPart(int loaderID, string partName)
+	{
+		return CarPartInfo[loaderID].BodyPartsReferences
+			.Values.FirstOrDefault(p => p.name == partName);
+	}
+
+	public void SetWelder(int loaderID)
+	{
+		if (!CarPartInfo.ContainsKey(loaderID))
+			return;
+		
+		ModCarPart part = GetCarPart(loaderID, "body");
+		part.condition = 1;
+		part.dent = 1;
+		ModCarPart part2 = GetCarPart(loaderID, "details");
+		part2.dent = 1;
+	}
 }
 
 
