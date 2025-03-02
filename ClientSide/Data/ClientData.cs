@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -28,7 +29,6 @@ public class ClientData
 	public ModEngineStand engineStand2;
 	public GameObject playerPrefab;
 	public int scrap, money ,exp, level;
-
 	public ClientData()
 	{
 		GameReady = false;
@@ -43,8 +43,8 @@ public class ClientData
 		Garage.Tools.ToolsMoveManager.Reset();
 		Garage.Tools.CarWashLogic.Reset();
 		CarPaintLogic.Reset();
-		engineStand = new();
-		engineStand2 = new();
+		engineStand = new(null);
+		engineStand2 = new(null);
 		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
@@ -161,6 +161,7 @@ public class ClientData
 					}
 				}
 			}
+			GameData.Instance.upgradeTools.upgradeSystem.GetAvailablePoints();
 		}
 
 		GlobalData.MissionsFinished = missionFinished;
@@ -170,5 +171,7 @@ public class ClientData
 			GameData.Instance.localPlayer.transform.position = pos;
 		if (rot != Quaternion.identity)
 			GameData.Instance.localPlayer.transform.rotation = rot;
+
+		ClientSend.ResyncEngineStandPacket(true);
 	}
 }

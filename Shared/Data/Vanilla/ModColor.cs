@@ -11,6 +11,8 @@ public class ModColor
 	public float b;
 	public float a;
 
+	public ModColor() { }
+	
 	public ModColor(float r, float g, float b, float a)
 	{
 		this.r = r;

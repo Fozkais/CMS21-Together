@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -73,14 +75,21 @@ public static class PartUpdateHooks
 		}
 		else
 		{
-			foreach (var kvp in ClientData.Instance.engineStand.partReferences)
+			ModEngineStand stand;
+			if (EngineStand.useAlt)
+				stand = ClientData.Instance.engineStand2;
+			else
+				stand = ClientData.Instance.engineStand;
+			foreach (var kvp in stand.partReferences)
 			{
 				if (kvp.Value == partScript)
 				{
-					MelonCoroutines.Start(SendPartUpdate(null, -1, kvp.Key, null, ModPartType.engineStand));
+					MelonLogger.Msg($"Sending part:{partScript.id} , {kvp.Key}.");
+					MelonCoroutines.Start(SendPartUpdate(null, EngineStand.useAlt ? -2 : -1, kvp.Key, null, ModPartType.engineStand));
 					break;
 				}
 			}
+			
 		}
 	}
 
@@ -203,7 +212,10 @@ public static class PartUpdateHooks
 				part = car.CarPartInfo.EnginePartsReferences[key];
 				break;
 			case ModPartType.engineStand:
-				part = ClientData.Instance.engineStand.partReferences[key];
+				if (carLoaderID == -1)
+					part = ClientData.Instance.engineStand.partReferences[key];
+				else
+					part = ClientData.Instance.engineStand2.partReferences[key];
 				break;
 			case ModPartType.suspension:
 				part = car.CarPartInfo.SuspensionPartsReferences[key][index.Value];
@@ -225,7 +237,7 @@ public static class PartUpdateHooks
 		else if (partType != ModPartType.engineStand)
 			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
 		else
-			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), -1);
+			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
 	}
 
 	public static IEnumerator SendBodyPart(CarPart part, int key, int carLoaderID)

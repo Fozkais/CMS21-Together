@@ -349,20 +349,25 @@ public static class ClientHandle
 	
 	public static void EngineSetGroupPacket(Packet packet)
 	{
-		var engineGroup = packet.Read<ModGroupItem>();
+		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		bool alt = packet.Read<bool>();
 		
-		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position));
+		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position, alt));
 	}
 	public static void EngineTakeOffPacket(Packet packet)
 	{
-		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand());
+		bool alt = packet.Read<bool>();
+		
+		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand(alt));
 	}
+	
 	public static void EngineStandAnglePacket(Packet packet)
 	{
-		int angle = packet.ReadInt();
+		float angle = packet.ReadInt();
+		bool alt = packet.Read<bool>();
 		
-		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle));
+		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle, alt));
 	}
 	
 	public static void RepairPartPacket(Packet packet)

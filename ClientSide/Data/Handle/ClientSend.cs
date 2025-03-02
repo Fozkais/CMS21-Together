@@ -352,31 +352,35 @@ public class ClientSend
 		}
 	}
 
-	public static void EngineStandAnglePacket(float val)
+	public static void EngineStandAnglePacket(float val, bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandAngle))
 		{
 			packet.Write(val);
+			packet.Write(useAlt);
 			
 			SendData(packet);
 		}
 	}
 
-	public static void EngineStandSetGroupPacket(ModGroupItem engineGroupItem, Vector3Serializable position)
+	public static void EngineStandSetGroupPacket(ModGroupItem engineGroupItem, Vector3Serializable position, bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
 			packet.Write(engineGroupItem);
 			packet.Write(position);
+			packet.Write(useAlt);
 			
 			SendData(packet);
 		}
 	}
 
-	public static void TakeOffEnginePacket()
+	public static void TakeOffEnginePacket(bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
+			packet.Write(useAlt);
+			
 			SendData(packet);
 		}
 	}
@@ -465,4 +469,16 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void ResyncEngineStandPacket(bool alt)
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			MelonLogger.Msg("Ask resync for addition engine stand");
+			packet.Write(PacketTypes.engineStandSetGroup);
+			packet.Write(alt);
+			SendData(packet);
+		}
+	}
+	
 }

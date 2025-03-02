@@ -27,6 +27,11 @@ public static class GarageUpgradeManager
 		}
 		
 		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
+		
+		if (upgrade.upgradeID == "crane" && !upgrade.unlocked)
+			GameData.Instance.engineStandLogic2.gameObject.SetActive(false);
+		else if (upgrade.upgradeID == "crane" && upgrade.unlocked)
+			GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
 
 		GarageAndToolsTab upgradeTools = GameData.Instance.upgradeTools;
 		

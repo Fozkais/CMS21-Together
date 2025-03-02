@@ -84,6 +84,11 @@ public static class GarageUpgradeHooks
 			//MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
 			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.upgradeState == UpgradeState.Unlocked);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[item.upgradeID]);
+			
+			if (item.upgradeID == "crane" && item.upgradeState != UpgradeState.Unlocked)
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(false);
+			else if (item.upgradeID == "crane" && item.upgradeState == UpgradeState.Unlocked)
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
 		}
 		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", false));
 		yield return new WaitForEndOfFrame();

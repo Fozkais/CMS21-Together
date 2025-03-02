@@ -39,6 +39,7 @@ public class Server
 		serverID = null;
 		networkType = type;
 		ServerData.Instance = new ServerData();
+		ServerData.Instance.engineStand2 = SavesManager.ModSaves[SavesManager.currentSaveIndex].additionnalStand;
 		InitializeServerData();
 		StartServer();
 	}

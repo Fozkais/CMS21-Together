@@ -47,6 +47,9 @@ public static class GarageResync
 		ClientSend.ResyncTools();
 		yield return new WaitForEndOfFrame();
 		ClientSend.ResyncUpgrade();
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncEngineStandPacket(true);
+		ClientSend.ResyncEngineStandPacket(false);
 	}
 
 

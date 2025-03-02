@@ -218,7 +218,9 @@ public static class SavesManager
 	public static void SaveModSave(int saveIndex)
 	{
 		var modSaveData = ModSaves[saveIndex];
-		
+	
+		if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
+			modSaveData.additionnalStand = ServerData.Instance.engineStand2;
 		foreach (var id in Server.Instance.clients.Keys)
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;

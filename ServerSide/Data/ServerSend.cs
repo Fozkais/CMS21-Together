@@ -415,30 +415,37 @@ public static class ServerSend
 		}
 	}
 
-	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position)
+	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position, bool useAlt, bool resync=false)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
 			_packet.Write(engineGroup);
 			_packet.Write(position);
+			_packet.Write(useAlt);
 
-			SendDataToAll(fromClient, _packet);
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
 		}
 	}
 
-	public static void EngineStandTakeOffPacket(int fromClient)
+	public static void EngineStandTakeOffPacket(int fromClient, bool alt)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
+			_packet.Write(alt);
+			
 			SendDataToAll(fromClient, _packet);
 		}
 	}
 
-	public static void IncreaseStandAnglePacket(int fromClient, int val)
+	public static void IncreaseStandAnglePacket(int fromClient, float val, bool alt)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
 		{
 			_packet.Write(val);
+			_packet.Write(alt);
 			
 			SendDataToAll(fromClient, _packet);
 		}

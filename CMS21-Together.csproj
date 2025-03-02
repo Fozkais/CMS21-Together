@@ -61,8 +61,8 @@
         <Compile Include="ClientSide\Data\Garage\Tools\CarPaintLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\CarWashLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\EngineCrane.cs" />
-        <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\OilBin.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\RepairPartLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
@@ -247,6 +247,7 @@
         <EmbeddedResource Include="Assets\lobbyBorder.png"/>
         <EmbeddedResource Include="Assets\player.assets"/>
         <EmbeddedResource Include="Assets\TogetherModAPI.dll"/>
+        <EmbeddedResource Include="Assets\engineStand.assets" />
         <Content Include="Libs\0Harmony.dll"/>
         <Content Include="Libs\Assembly-CSharp-firstpass.dll"/>
         <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />

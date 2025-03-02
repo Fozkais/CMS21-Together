@@ -19,8 +19,10 @@ public class ServerData
 	
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
-	public ModEngineStand engineStand = new();
-	public int engineStandAngle  = 0;
+	public ModEngineStand engineStand = new(null);
+	public ModEngineStand engineStand2 = new(null);
+	public float engineStandAngle;
+	public float engineStand2Angle;
 
 	public Dictionary<int, UserData> connectedClients = new();
 
@@ -35,30 +37,6 @@ public class ServerData
 	public GarageTool springClamp = new();
 	public GarageTool tireChanger = new();
 	public GarageTool wheelBalancer = new();
-
-
-	public void SendCar(int id, int carLoader)
-	{
-		ClientData.Instance.loadedCars.Remove(carLoader);
-		GameData.Instance.carLoaders[carLoader].DeleteCar();
-		ServerSend.LoadCarPacket(-1, CarSpawnDatas[id], carLoader);
-	}
-	public void ResendInventory()
-	{
-		ClientSide.Data.Player.Inventory.items.Clear();
-		ClientSide.Data.Player.Inventory.groupItems.Clear();
-		GameData.Instance.localInventory.items.Clear();
-		GameData.Instance.localInventory.groups.Clear();
-		
-		foreach (ModItem item in items)
-		{
-			ServerSend.ItemPacket(-1, item, InventoryAction.add);
-		}
-		foreach (ModGroupItem item in groupItems)
-		{
-			ServerSend.GroupItemPacket(-1, item, InventoryAction.add);
-		}
-	}
 
 	public void SetGarageUpgrade(GarageUpgrade upgrade)
 	{
@@ -75,9 +53,10 @@ public class ServerData
 
 	public void UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
-		if (carLoaderID == -1)
+		if (carLoaderID == -1 || carLoaderID == -2)
 		{
-			UpdateEngineCrane(partScript);
+			UpdateEngineStand(partScript, carLoaderID == -2);
+			MelonLogger.Msg("received a enginestand part.");
 			return;
 		}
 		
@@ -118,9 +97,12 @@ public class ServerData
 		}
 	}
 
-	private void UpdateEngineCrane(ModPartScript partScript)
+	private void UpdateEngineStand(ModPartScript partScript, bool alt)
 	{
-		engineStand.parts[partScript.partID] = partScript;
+		if (!alt)
+			engineStand.parts[partScript.partID] = partScript;
+		else
+			engineStand2.parts[partScript.partID] = partScript;
 	}
 
 	public void UpdateBodyParts(ModCarPart carPart, int carLoaderID)
@@ -237,24 +219,39 @@ public class ServerData
 
 	public void UpdateFluid(ModFluidData fluid, int carLoaderID)
 	{
-		//MelonLogger.Msg("Not implemented..."); TODO: Implemnt this
+		//MelonLogger.Msg("Not implemented..."); TODO: Implement this
 	}
 
-	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position)
+	public void SetEngineOnStand(ModGroupItem engineGroup, Vector3Serializable position, bool alt)
 	{
-		engineStand = new ModEngineStand();
-		engineStand.position = position;
-		engineStand.engineGroupItem = engineGroup;
+		if (!alt)
+		{
+			engineStand = new ModEngineStand(null);
+			engineStand.engineGroupItem = engineGroup;
+			engineStand.position = position;
+		}
+		else
+		{
+			engineStand2 = new ModEngineStand(null);
+			engineStand2.engineGroupItem = engineGroup;
+			engineStand2.position = position;
+		}
 	}
 
-	public void ClearEngineFromStand()
+	public void ClearEngineFromStand(bool alt)
 	{
-		engineStand = new ModEngineStand();
+		if (!alt)
+			engineStand = new ModEngineStand(null);
+		else
+			engineStand2 = new ModEngineStand(null);
 	}
 
-	public void IncreaseStandAngle(int val)
+	public void IncreaseStandAngle(float val, bool alt)
 	{
-		engineStandAngle = val;
+		if (!alt)
+			engineStandAngle = val;
+		else
+			engineStand2Angle = val;
 	}
 
 	public void SetPlayerInfo(int id, PlayerInfo info)

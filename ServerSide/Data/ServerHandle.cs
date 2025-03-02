@@ -421,21 +421,27 @@ public static class ServerHandle
 	{
 		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		bool alt = packet.Read<bool>();
 
-		ServerData.Instance.SetEngineOnStand(engineGroup, position);
-		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position);
+		ServerData.Instance.SetEngineOnStand(engineGroup, position, alt);
+		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position, alt);
 	}
+	
+	
 	public static void EngineStandTakeOffPacket(int fromClient, Packet packet)
 	{
-		ServerData.Instance.ClearEngineFromStand();
-		ServerSend.EngineStandTakeOffPacket(fromClient);
+		bool alt = packet.Read<bool>();
+		
+		ServerData.Instance.ClearEngineFromStand(alt);
+		ServerSend.EngineStandTakeOffPacket(fromClient, alt);
 	}	
 	public static void EngineStandAnglePacket(int fromClient, Packet packet)
 	{
-		int val = packet.ReadInt();
+		float val = packet.Read<float>();
+		bool alt = packet.Read<bool>();
 		
-		ServerData.Instance.IncreaseStandAngle(val);
-		ServerSend.IncreaseStandAnglePacket(fromClient, val);
+		ServerData.Instance.IncreaseStandAngle(val, alt);
+		ServerSend.IncreaseStandAnglePacket(fromClient, val, alt);
 	}
 	
 	public static void CarWashPacket(int fromClient, Packet packet)
@@ -488,6 +494,10 @@ public static class ServerHandle
 				break;
 			case PacketTypes.garageUpgrade:
 				ServerResyncs.ResyncUpgrade(fromClient);
+				break;
+			case PacketTypes.engineStandSetGroup:
+				bool alt = packet.Read<bool>();
+				ServerResyncs.ResyncEngineStand(fromClient, alt);
 				break;
 		}
 	}
