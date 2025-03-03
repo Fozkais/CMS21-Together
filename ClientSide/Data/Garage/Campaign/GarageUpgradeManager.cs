@@ -4,6 +4,7 @@ using CMS;
 using CMS.UI.Logic;
 using CMS.UI.Logic.Upgrades;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using MelonLoader;
 using UnityEngine;
 
@@ -26,6 +27,11 @@ public static class GarageUpgradeManager
 		}
 		
 		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
+		
+		if (upgrade.upgradeID == "crane" && !upgrade.unlocked)
+			GameData.Instance.engineStandLogic2.gameObject.SetActive(false);
+		else if (upgrade.upgradeID == "crane" && upgrade.unlocked)
+			GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
 
 		GarageAndToolsTab upgradeTools = GameData.Instance.upgradeTools;
 		

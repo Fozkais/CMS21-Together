@@ -36,7 +36,7 @@ public static class ClientHandle
 		var message = packet.Read<string>();
 
 		MelonLogger.Msg($"[ClientHandle->DisconnectPacket] You've been disconnected from server: {message}");
-		Client.Instance.Disconnect();
+		Client.Instance.Disconnect(true);
 	}
 
 	public static void UserDataPacket(Packet packet)
@@ -75,6 +75,7 @@ public static class ClientHandle
 	
 	public static void SpawnPacket(Packet packet)
 	{
+		int playerMoney = packet.ReadInt();
 		int playerExp = packet.ReadInt();
 		int playerLevel = packet.ReadInt();
 		int skillPoints = packet.ReadInt();
@@ -85,7 +86,7 @@ public static class ClientHandle
 		int missionFinished = packet.ReadInt();
 		bool missionInProgress = packet.Read<bool>();
 		
-		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerExp, playerLevel, position.toVector3(),
+		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerMoney, playerExp, playerLevel, position.toVector3(),
 			rotation.toQuaternion(), skillPoints, skills, startItemUID, missionFinished, missionInProgress));
 	}
 
@@ -197,6 +198,13 @@ public static class ClientHandle
 		GameData.Instance.carLoaders[carLoaderID].UseOilbin();
 	}
 	
+	public static void WelderPacket(Packet _packet)
+	{
+		int carLoaderID = _packet.ReadInt();
+
+		MelonCoroutines.Start(Garage.Tools.WelderLogic.UseWelder(carLoaderID));
+	}
+	
 	public static void SetSpringClampPacket(Packet packet)
 	{
 		var item = packet.Read<ModGroupItem>();
@@ -229,8 +237,9 @@ public static class ClientHandle
 	public static void CarWashPacket(Packet _packet)
 	{
 		int carLoaderID = _packet.ReadInt();
+		bool interior = _packet.Read<bool>();
 
-		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID));
+		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID, interior));
 	}
 	
 	public static void CarPaintPacket(Packet _packet)
@@ -340,20 +349,34 @@ public static class ClientHandle
 	
 	public static void EngineSetGroupPacket(Packet packet)
 	{
-		var engineGroup = packet.Read<ModGroupItem>();
+		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		bool alt = packet.Read<bool>();
 		
-		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position));
+		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position, alt));
 	}
 	public static void EngineTakeOffPacket(Packet packet)
 	{
-		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand());
+		bool alt = packet.Read<bool>();
+		
+		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand(alt));
 	}
+	
 	public static void EngineStandAnglePacket(Packet packet)
 	{
-		int angle = packet.ReadInt();
+		float angle = packet.ReadInt();
+		bool alt = packet.Read<bool>();
 		
-		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle));
+		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle, alt));
+	}
+	
+	public static void RepairPartPacket(Packet packet)
+	{
+		ModPartInfo info = packet.Read<ModPartInfo>();
+		bool isBody = packet.Read<bool>();
+		bool success = packet.Read<bool>();
+		
+		MelonCoroutines.Start(RepairPartLogic.RepairAction(info, isBody, success));
 	}
 	
 	public static void CarFluidPacket(Packet packet)

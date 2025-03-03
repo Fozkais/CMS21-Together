@@ -54,6 +54,7 @@ public static class WheelBalancer
                 yield return new WaitForEndOfFrame();
                 yield return new WaitForSeconds(0.1f);
                 GameData.Instance.wheelBalancer.balanceCanceled = false;
+                GameMode.m_instance.SetCurrentMode(gameMode.Garage);
             }
             ClientSend.SendWheelBalancer(1, GameData.Instance.wheelBalancer.groupOnWheelBalancer);
         }

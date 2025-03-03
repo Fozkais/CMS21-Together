@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -351,31 +352,35 @@ public class ClientSend
 		}
 	}
 
-	public static void EngineStandAnglePacket(float val)
+	public static void EngineStandAnglePacket(float val, bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandAngle))
 		{
 			packet.Write(val);
+			packet.Write(useAlt);
 			
 			SendData(packet);
 		}
 	}
 
-	public static void EngineStandSetGroupPacket(ModGroupItem engineGroupItem, Vector3Serializable position)
+	public static void EngineStandSetGroupPacket(ModGroupItem engineGroupItem, Vector3Serializable position, bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
 			packet.Write(engineGroupItem);
 			packet.Write(position);
+			packet.Write(useAlt);
 			
 			SendData(packet);
 		}
 	}
 
-	public static void TakeOffEnginePacket()
+	public static void TakeOffEnginePacket(bool useAlt)
 	{
 		using (var packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
+			packet.Write(useAlt);
+			
 			SendData(packet);
 		}
 	}
@@ -407,12 +412,31 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+	
+	public static void ResyncTools()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.toolMove);
+			SendData(packet);
+		}
+	}
+	
+	public static void ResyncUpgrade()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.garageUpgrade);
+			SendData(packet);
+		}
+	}
 
-	public static void CarWashPacket(int carLoaderID)
+	public static void CarWashPacket(int carLoaderID, bool interior=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.carWash))
 		{
 			packet.Write(carLoaderID);
+			packet.Write(interior);
 			SendData(packet);
 		}
 	}
@@ -425,4 +449,36 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void WelderPacket(int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.useWelder))
+		{
+			packet.Write(carLoaderID);
+			SendData(packet);
+		}
+	}
+
+	public static void RepairPart(ModPartInfo modPartInfo,  bool isBody, bool success)
+	{
+		using (var packet = new Packet((int)PacketTypes.repairPart))
+		{
+			packet.Write(modPartInfo);
+			packet.Write(isBody);
+			packet.Write(success);
+			SendData(packet);
+		}
+	}
+
+	public static void ResyncEngineStandPacket(bool alt)
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			MelonLogger.Msg("Ask resync for addition engine stand");
+			packet.Write(PacketTypes.engineStandSetGroup);
+			packet.Write(alt);
+			SendData(packet);
+		}
+	}
+	
 }

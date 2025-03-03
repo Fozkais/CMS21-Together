@@ -6,6 +6,7 @@ using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -60,6 +61,9 @@ public static class GarageUpgradeHooks
 		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
 		if (upgradeCost <= GlobalData.PlayerMoney)
 		{
+			if (__instance.currentUpgradeItem.UpgradeID == "crane")
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
+			
 			//MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Triggered: {__instance.currentUpgradeItem.upgradeID}");
 			ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, true);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID]);
@@ -83,6 +87,11 @@ public static class GarageUpgradeHooks
 			//MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
 			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.upgradeState == UpgradeState.Unlocked);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[item.upgradeID]);
+			
+			if (item.upgradeID == "crane" && item.upgradeState != UpgradeState.Unlocked)
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(false);
+			else if (item.upgradeID == "crane" && item.upgradeState == UpgradeState.Unlocked)
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
 		}
 		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", false));
 		yield return new WaitForEndOfFrame();

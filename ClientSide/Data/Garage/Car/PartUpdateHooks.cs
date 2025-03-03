@@ -1,7 +1,9 @@
 ﻿using System.Collections;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -73,14 +75,21 @@ public static class PartUpdateHooks
 		}
 		else
 		{
-			foreach (var kvp in ClientData.Instance.engineStand.partReferences)
+			ModEngineStand stand;
+			if (EngineStand.useAlt)
+				stand = ClientData.Instance.engineStand2;
+			else
+				stand = ClientData.Instance.engineStand;
+			foreach (var kvp in stand.partReferences)
 			{
 				if (kvp.Value == partScript)
 				{
-					MelonCoroutines.Start(SendPartUpdate(null, -1, kvp.Key, null, ModPartType.engineStand));
+					MelonLogger.Msg($"Sending part:{partScript.id} , {kvp.Key}.");
+					MelonCoroutines.Start(SendPartUpdate(null, EngineStand.useAlt ? -2 : -1, kvp.Key, null, ModPartType.engineStand));
 					break;
 				}
 			}
+			
 		}
 	}
 
@@ -123,7 +132,7 @@ public static class PartUpdateHooks
 
 		if (FindBodyPartInDictionary(car, name, out var key))
 		{
-			var part = car.partInfo.BodyPartsReferences[key];
+			var part = car.CarPartInfo.BodyPartsReferences[key];
 			MelonCoroutines.Start(SendBodyPart(part, key, carLoaderID));
 		}
 	}
@@ -132,7 +141,7 @@ public static class PartUpdateHooks
 	{
 		index = null;
 
-		foreach (var kvp in car.partInfo.OtherPartsReferences)
+		foreach (var kvp in car.CarPartInfo.OtherPartsReferences)
 		{
 			var listIndex = kvp.Value.FindIndex(part => part == partScript);
 			if (listIndex >= 0)
@@ -144,7 +153,7 @@ public static class PartUpdateHooks
 			}
 		}
 
-		foreach (var kvp in car.partInfo.SuspensionPartsReferences)
+		foreach (var kvp in car.CarPartInfo.SuspensionPartsReferences)
 		{
 			var listIndex = kvp.Value.FindIndex(part => part == partScript);
 			if (listIndex >= 0)
@@ -156,7 +165,7 @@ public static class PartUpdateHooks
 			}
 		}
 
-		foreach (var kvp in car.partInfo.EnginePartsReferences)
+		foreach (var kvp in car.CarPartInfo.EnginePartsReferences)
 			if (kvp.Value == partScript)
 			{
 				partType = ModPartType.engine;
@@ -164,7 +173,7 @@ public static class PartUpdateHooks
 				return true;
 			}
 
-		foreach (var kvp in car.partInfo.DriveshaftPartsReferences)
+		foreach (var kvp in car.CarPartInfo.DriveshaftPartsReferences)
 			if (kvp.Value == partScript)
 			{
 				partType = ModPartType.driveshaft;
@@ -180,7 +189,7 @@ public static class PartUpdateHooks
 
 	public static bool FindBodyPartInDictionary(ModCar car, string carPartName, out int key)
 	{
-		foreach (var kvp in car.partInfo.BodyPartsReferences)
+		foreach (var kvp in car.CarPartInfo.BodyPartsReferences)
 			if (kvp.Value.name == carPartName)
 			{
 				key = kvp.Key;
@@ -200,19 +209,22 @@ public static class PartUpdateHooks
 		switch (partType)
 		{
 			case ModPartType.engine:
-				part = car.partInfo.EnginePartsReferences[key];
+				part = car.CarPartInfo.EnginePartsReferences[key];
 				break;
 			case ModPartType.engineStand:
-				part = ClientData.Instance.engineStand.partReferences[key];
+				if (carLoaderID == -1)
+					part = ClientData.Instance.engineStand.partReferences[key];
+				else
+					part = ClientData.Instance.engineStand2.partReferences[key];
 				break;
 			case ModPartType.suspension:
-				part = car.partInfo.SuspensionPartsReferences[key][index.Value];
+				part = car.CarPartInfo.SuspensionPartsReferences[key][index.Value];
 				break;
 			case ModPartType.other:
-				part = car.partInfo.OtherPartsReferences[key][index.Value];
+				part = car.CarPartInfo.OtherPartsReferences[key][index.Value];
 				break;
 			case ModPartType.driveshaft:
-				part = car.partInfo.DriveshaftPartsReferences[key];
+				part = car.CarPartInfo.DriveshaftPartsReferences[key];
 				break;
 			default:
 				yield break;
@@ -225,7 +237,7 @@ public static class PartUpdateHooks
 		else if (partType != ModPartType.engineStand)
 			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
 		else
-			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), -1);
+			ClientSend.PartScriptPacket(new ModPartScript(part, key, -1, partType), carLoaderID);
 	}
 
 	public static IEnumerator SendBodyPart(CarPart part, int key, int carLoaderID)

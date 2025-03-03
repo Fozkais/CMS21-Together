@@ -15,12 +15,6 @@ public static class GarageResync
 {
 	public static IEnumerator ResyncCars()
 	{
-		while (SceneManager.CurrentScene() != GameScene.garage)
-			yield return new WaitForSeconds(0.5f);
-		while (!NotificationCenter.IsGameReady)
-			yield return new WaitForSeconds(0.25f);
-		while (!GameData.isReady)
-			yield return new WaitForSeconds(0.5f);
 		yield return new WaitForEndOfFrame();
 		MelonLogger.Msg("Remove all car !");
 		List<ModCar> carsToCheck = ClientData.Instance.loadedCars.Values.ToList();
@@ -39,4 +33,25 @@ public static class GarageResync
 		}
 
 	}
+
+	public static IEnumerator ResyncGarage()
+	{
+		while (SceneManager.CurrentScene() != GameScene.garage)
+			yield return new WaitForSeconds(0.5f);
+		while (!NotificationCenter.IsGameReady)
+			yield return new WaitForSeconds(0.25f);
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.5f);
+		
+		MelonCoroutines.Start(ResyncCars());
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncTools();
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncUpgrade();
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncEngineStandPacket(true);
+		ClientSend.ResyncEngineStandPacket(false);
+	}
+
+
 }

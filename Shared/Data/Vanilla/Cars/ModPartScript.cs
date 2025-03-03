@@ -26,6 +26,7 @@ public class ModPartScript
 	public int partIdNumber;
 	public ModPartType type;
 
+	public ModPartScript() { }
 
 	public ModPartScript(PartScript data, int _partID, int _partIdNumber, ModPartType _type)
 	{

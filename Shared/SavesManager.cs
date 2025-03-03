@@ -218,7 +218,9 @@ public static class SavesManager
 	public static void SaveModSave(int saveIndex)
 	{
 		var modSaveData = ModSaves[saveIndex];
-		
+	
+		if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
+			modSaveData.additionnalStand = ServerData.Instance.engineStand2;
 		foreach (var id in Server.Instance.clients.Keys)
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
@@ -230,7 +232,8 @@ public static class SavesManager
 			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
 			int exp = ServerData.Instance.connectedClients[id].playerExp;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
-
+			
+			
 			if (ModSaves[currentSaveIndex].playerInfos.Any(p => playerGuid == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
 		}

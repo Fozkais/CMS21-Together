@@ -2,6 +2,7 @@
 using CMS.Managers;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -39,6 +40,7 @@ public static class CarPaintLogic
 			{
 				GameData.Instance.paintshopManager.paintshopState.SetSelectedColor(color.ToGame());
 				GameData.Instance.paintshopManager.UpdateColor(color.ToGame());
+				listen = false;
 				MainMod.StartCoroutine(GameData.Instance.paintshopManager.MakePaintEffects());
 				break;
 			}

@@ -141,7 +141,7 @@ public class ClientTCP
 			{
 				try
 				{
-					stream.EndWrite(ar);
+					stream?.EndWrite(ar);
 				}
 				catch (Exception ex)
 				{

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
 
-public class Rotation
+public static class Rotation
 {
 	private static readonly float minDistance = 0.01f;
 	private static Quaternion lastRotation;

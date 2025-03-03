@@ -24,6 +24,7 @@ public class ServerConnection
 		tcp = new TCPConnection(id);
 		udp = new UDPConnection(id);
 		steam = new SteamConnection(id);
+		isConnected = false;
 	}
 
 	public void Connect(TcpClient connection)

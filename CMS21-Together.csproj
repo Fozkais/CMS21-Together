@@ -61,15 +61,18 @@
         <Compile Include="ClientSide\Data\Garage\Tools\CarPaintLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\CarWashLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\EngineCrane.cs" />
-        <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\LifterLogic.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Tools\EngineStand.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\OilBin.cs" />
+        <Compile Include="ClientSide\Data\Garage\Tools\RepairPartLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\SpringClampLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\TireChangerLogic.cs"/>
         <Compile Include="ClientSide\Data\Garage\Tools\ToolsMoveManager.cs"/>
+        <Compile Include="ClientSide\Data\Garage\Tools\WelderLogic.cs" />
         <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
+        <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
         <Compile Include="ClientSide\Data\Player\Inventory.cs"/>
         <Compile Include="ClientSide\Data\Player\Movement.cs"/>
         <Compile Include="ClientSide\Data\Player\Rotation.cs"/>
@@ -96,9 +99,7 @@
         <Compile Include="Shared\Data\CustomUISection.cs"/>
         <Compile Include="Shared\Data\Gamemode.cs"/>
         <Compile Include="Shared\Data\GameScene.cs"/>
-        <Compile Include="Shared\Data\GarageUpgrade.cs"/>
         <Compile Include="Shared\Data\ModCar.cs"/>
-        <Compile Include="Shared\Data\ModColor.cs"/>
         <Compile Include="Shared\Data\ModSaveData.cs"/>
         <Compile Include="Shared\Data\NetworkType.cs"/>
         <Compile Include="Shared\Data\PlayerInfo.cs" />
@@ -134,6 +135,7 @@
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModNewUnlockedPosition.cs"/>
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModToolsData.cs"/>
         <Compile Include="Shared\Data\Vanilla\GarageTool\ModWheelBalancerActionType.cs"/>
+        <Compile Include="Shared\Data\Vanilla\GarageUpgrade.cs" />
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJob.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJobPart.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModJobTask.cs"/>
@@ -141,6 +143,7 @@
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobsData.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobTaskWrapper.cs"/>
         <Compile Include="Shared\Data\Vanilla\Jobs\ModNewJobWrapper.cs"/>
+        <Compile Include="Shared\Data\Vanilla\ModColor.cs" />
         <Compile Include="Shared\Data\Vanilla\ModDifficultyLevel.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModGroupItem.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModItem.cs"/>
@@ -151,6 +154,7 @@
         <Compile Include="Shared\Data\Vanilla\ModNewUpgradeSystemData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModPaintData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModPaintType.cs"/>
+        <Compile Include="Shared\Data\Vanilla\ModPartInfo.cs" />
         <Compile Include="Shared\Data\Vanilla\ModProfileData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModStats.cs"/>
         <Compile Include="Shared\Data\Vector3Serializable.cs"/>
@@ -215,6 +219,9 @@
         <Reference Include="UnityEngine.InputModule">
             <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule">
+          <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
         <Reference Include="UnityEngine.PhysicsModule">
           <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
         </Reference>
@@ -240,6 +247,7 @@
         <EmbeddedResource Include="Assets\lobbyBorder.png"/>
         <EmbeddedResource Include="Assets\player.assets"/>
         <EmbeddedResource Include="Assets\TogetherModAPI.dll"/>
+        <EmbeddedResource Include="Assets\engineStand.assets" />
         <Content Include="Libs\0Harmony.dll"/>
         <Content Include="Libs\Assembly-CSharp-firstpass.dll"/>
         <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
@@ -252,6 +260,7 @@
         <Content Include="Libs\UnityEngine.ImageConversionModule.dll"/>
         <Content Include="Libs\UnityEngine.IMGUIModule.dll"/>
         <Content Include="Libs\UnityEngine.InputModule.dll"/>
+        <Content Include="Libs\UnityEngine.ParticleSystemModule.dll" />
         <Content Include="Libs\UnityEngine.PhysicsModule.dll"/>
         <Content Include="Libs\UnityEngine.TextCoreModule.dll"/>
         <Content Include="Libs\UnityEngine.TextRenderingModule.dll"/>

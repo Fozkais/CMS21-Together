@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 using UnityEngine;
@@ -27,7 +29,6 @@ public class ClientData
 	public ModEngineStand engineStand2;
 	public GameObject playerPrefab;
 	public int scrap, money ,exp, level;
-
 	public ClientData()
 	{
 		GameReady = false;
@@ -42,8 +43,8 @@ public class ClientData
 		Garage.Tools.ToolsMoveManager.Reset();
 		Garage.Tools.CarWashLogic.Reset();
 		CarPaintLogic.Reset();
-		engineStand = new();
-		engineStand2 = new();
+		engineStand = new(null);
+		engineStand2 = new(null);
 		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
@@ -115,7 +116,7 @@ public class ClientData
 		}
 	}
 
-	public IEnumerator SpawnPlayer(int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
+	public IEnumerator SpawnPlayer(int _money, int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
 		List<bool>> skills, long startItemUid, int missionFinished, bool missionInProgress)
 	{
 		while (!GameReady)
@@ -131,6 +132,7 @@ public class ClientData
 		                + $"StoryInProgress : {missionInProgress}\n"
 		                + $"StartItemUID : {startItemUid}\n"
 		                + $"Exp : {_exp}\n"
+		                + $"Money : {_money}\n"
 		                + $"Level : {_level}\n"
 		                + $"Exp : {_exp}\n"
 		                + $"SkillPoints : {skillPoints}\n");
@@ -141,8 +143,25 @@ public class ClientData
 			UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
 			GlobalData.PlayerExp = _exp;
 			UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
+			GlobalData.PlayerMoney = _money;
+			UIManager.Get().StatsContainer.Refresh(StatType.Money, true);
 			
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
+			if (skills != null)
+			{
+				GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
+				foreach (KeyValuePair<string, List<bool>> skill in skills)
+				{
+					int lvl = 0;
+					foreach (bool unlocked in skill.Value)
+					{
+						if(unlocked)
+							GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
+						lvl++;
+					}
+				}
+			}
+			GameData.Instance.upgradeTools.upgradeSystem.GetAvailablePoints();
 		}
 
 		GlobalData.MissionsFinished = missionFinished;
@@ -152,20 +171,14 @@ public class ClientData
 			GameData.Instance.localPlayer.transform.position = pos;
 		if (rot != Quaternion.identity)
 			GameData.Instance.localPlayer.transform.rotation = rot;
+
+		while (SceneManager.CurrentScene() != GameScene.garage)
+			yield return new WaitForSeconds(0.5f);
+		while (!NotificationCenter.IsGameReady)
+			yield return new WaitForSeconds(0.25f);
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.5f);
 		
-		if (skills != null)
-		{
-			GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
-			foreach (KeyValuePair<string, List<bool>> skill in skills)
-			{
-				int lvl = 0;
-				foreach (bool unlocked in skill.Value)
-				{
-					if(unlocked)
-						GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
-					lvl++;
-				}
-			}
-		}
+		ClientSend.ResyncEngineStandPacket(true);
 	}
 }

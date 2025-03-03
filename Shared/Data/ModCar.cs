@@ -16,13 +16,13 @@ public class ModCar
 	public bool needResync;
 	public bool isFromServer;
 
-	[NonSerialized] public ModPartInfo partInfo;
+	[NonSerialized] public ModCarPartInfo CarPartInfo;
 
 	public ModCar(int _carLoaderID, string _carID, int _configVersion, int _carPosition = -1, bool _customerCar = false)
 	{
 		carLoaderID = _carLoaderID;
 		carID = _carID;
-		partInfo = new ModPartInfo();
+		CarPartInfo = new ModCarPartInfo();
 		carPosition = _carPosition;
 		configVersion = _configVersion;
 		customerCar = _customerCar;
@@ -32,7 +32,7 @@ public class ModCar
 	}
 }
 
-public class ModPartInfo
+public class ModCarPartInfo
 {
 	public Dictionary<int, CarPart> BodyPartsReferences = new();
 	public Dictionary<int, PartScript> DriveshaftPartsReferences = new();

@@ -20,7 +20,7 @@ public static class CarSyncHooks
 
 		if (PartUpdateHooks.FindBodyPartInDictionary(car, name, out var key))
 		{
-			var part = car.partInfo.BodyPartsReferences[key];
+			var part = car.CarPartInfo.BodyPartsReferences[key];
 			MelonCoroutines.Start(PartUpdateHooks.SendBodyPart(part, key, carLoaderID));
 		}
 	}

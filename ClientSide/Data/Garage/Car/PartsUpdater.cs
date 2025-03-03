@@ -25,8 +25,22 @@ public static class PartsUpdater
 				yield return new WaitForSeconds(.15f);
 			yield return new WaitForEndOfFrame();
 			
-			MelonLogger.Msg("[PartsUpdater->UpdatePartScripts] EngineStand, updating..");
+			MelonLogger.Msg($"[PartsUpdater->UpdatePartScripts]{partScript.id} for es 1");
 			UpdatePartScript(partScript, ClientData.Instance.engineStand.partReferences[partScript.partID], -1);
+			yield break;
+		}
+		if (carLoaderID == -2)
+		{
+			int counter = 0;
+			while (counter < 25 && !ClientData.Instance.engineStand2.isHandled)
+			{
+				yield return new WaitForSeconds(.5f);
+				counter++;
+			}
+			yield return new WaitForEndOfFrame();
+			
+			MelonLogger.Msg($"[PartsUpdater->UpdatePartScripts] {partScript.id} for es 2");
+			UpdatePartScript(partScript, ClientData.Instance.engineStand2.partReferences[partScript.partID], -2);
 			yield break;
 		}
 		
@@ -46,16 +60,16 @@ public static class PartsUpdater
 			switch (partScript.type)
 			{
 				case ModPartType.engine:
-					reference = car.partInfo.EnginePartsReferences[key];
+					reference = car.CarPartInfo.EnginePartsReferences[key];
 					break;
 				case ModPartType.suspension:
-					reference = car.partInfo.SuspensionPartsReferences[key][index];
+					reference = car.CarPartInfo.SuspensionPartsReferences[key][index];
 					break;
 				case ModPartType.other:
-					reference = car.partInfo.OtherPartsReferences[key][index];
+					reference = car.CarPartInfo.OtherPartsReferences[key][index];
 					break;
 				case ModPartType.driveshaft:
-					reference = car.partInfo.DriveshaftPartsReferences[key];
+					reference = car.CarPartInfo.DriveshaftPartsReferences[key];
 					break;
 				default:
 					yield break;
@@ -74,11 +88,10 @@ public static class PartsUpdater
 			return;
 		}
 
-		if(carLoaderID != -1)
+		if(carLoaderID != -1 && carLoaderID != -2)
 			if (!string.IsNullOrEmpty(part.tunedID) && !string.IsNullOrEmpty(reference.tunedID))
 				if (reference.tunedID != part.tunedID)
 					GameData.Instance.carLoaders[carLoaderID].TunePart(reference.id, part.tunedID);
-
 		reference.IsExamined = part.isExamined;
 		reference.Quality = part.quality;
 		reference.SetCondition(part.condition);
@@ -111,7 +124,7 @@ public static class PartsUpdater
 				reference.SetConditionNormal(part.condition);
 			}
 
-			if (carLoaderID != -1)
+			if (carLoaderID != -1 && carLoaderID != -2)
 			{
 				var wheelData = GameData.Instance.carLoaders[carLoaderID].WheelsData;
 				for (var i = 0; i < GameData.Instance.carLoaders[carLoaderID].WheelsData.Wheels.Count; i++)
@@ -128,7 +141,7 @@ public static class PartsUpdater
 		{
 			if (reference.IsUnmounted == false)
 			{
-				if (carLoaderID != -1)
+				if (carLoaderID != -1 && carLoaderID != -2)
 					reference.HideBySavegame(false, GameData.Instance.carLoaders[carLoaderID]);
 				else
 					reference.HideBySavegame(false);
@@ -157,7 +170,7 @@ public static class PartsUpdater
 		{
 			var key = carPart.carPartID;
 
-			var reference = car.partInfo.BodyPartsReferences[key];
+			var reference = car.CarPartInfo.BodyPartsReferences[key];
 			MelonLogger.Msg("[PartsUpdater->UpdateBodyParts] Updating BodyPart..");
 			UpdateBodyPart(carPart, reference, carLoaderID);
 		}
@@ -212,7 +225,7 @@ public static class PartsUpdater
 		foreach (var _carPart in carPart.connectedParts)
 		{
 			var key = _carPart.carPartID;
-			var _reference = ClientData.Instance.loadedCars[carLoaderID].partInfo.BodyPartsReferences[key];
+			var _reference = ClientData.Instance.loadedCars[carLoaderID].CarPartInfo.BodyPartsReferences[key];
 			MelonLogger.Msg("[PartsUpdater->UpdateBodyParts] Updating BodyPart..");
 			UpdateBodyPart(_carPart, _reference, carLoaderID);
 		}

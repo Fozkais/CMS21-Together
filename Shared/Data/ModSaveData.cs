@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using Steamworks.Data;
 using UnityEngine.Serialization;
 
@@ -16,6 +17,9 @@ public class ModSaveData
 	public long[] inventoryItemUID;
 	public bool storyMissionInProgress;
 	public int missionFinished;
+	public int money;
+	public ModEngineStand additionnalStand;
+	
 	public ModSaveData(string saveName, int index, bool loaded)
 	{
 		Name = saveName;
@@ -31,6 +35,8 @@ public class ModSaveData
 		};
 		storyMissionInProgress = false;
 		missionFinished = 0;
+		money = 0;
+		additionnalStand = null;
 	}
 
 	public ModSaveData()

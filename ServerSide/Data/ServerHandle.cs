@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -420,29 +421,45 @@ public static class ServerHandle
 	{
 		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
+		bool alt = packet.Read<bool>();
 
-		ServerData.Instance.SetEngineOnStand(engineGroup, position);
-		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position);
+		MelonLogger.Msg("SV: received new engine");
+		ServerData.Instance.SetEngineOnStand(engineGroup, position, alt);
+		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position, alt);
 	}
+	
+	
 	public static void EngineStandTakeOffPacket(int fromClient, Packet packet)
 	{
-		ServerData.Instance.ClearEngineFromStand();
-		ServerSend.EngineStandTakeOffPacket(fromClient);
+		bool alt = packet.Read<bool>();
+		
+		ServerData.Instance.ClearEngineFromStand(alt);
+		ServerSend.EngineStandTakeOffPacket(fromClient, alt);
 	}	
 	public static void EngineStandAnglePacket(int fromClient, Packet packet)
 	{
-		int val = packet.ReadInt();
+		float val = packet.Read<float>();
+		bool alt = packet.Read<bool>();
 		
-		ServerData.Instance.IncreaseStandAngle(val);
-		ServerSend.IncreaseStandAnglePacket(fromClient, val);
+		ServerData.Instance.IncreaseStandAngle(val, alt);
+		ServerSend.IncreaseStandAnglePacket(fromClient, val, alt);
 	}
 	
 	public static void CarWashPacket(int fromClient, Packet packet)
 	{
 		int loaderID = packet.ReadInt();
+		bool interior = packet.Read<bool>();
 		
-		//ServerData.Instance.SetCarWash(loaderID); TODO:Implement This
-		ServerSend.CarWashPacket(fromClient, loaderID);
+		ServerData.Instance.SetCarWash(loaderID, interior); 
+		ServerSend.CarWashPacket(fromClient, loaderID, interior);
+	}
+	
+	public static void WelderPacket(int fromClient, Packet packet)
+	{
+		int loaderID = packet.ReadInt();
+		
+		ServerData.Instance.SetWelder(loaderID);
+		ServerSend.WelderPacket(fromClient, loaderID);
 	}
 	
 	public static void CarPaintPacket(int fromClient, Packet packet)
@@ -451,6 +468,16 @@ public static class ServerHandle
 		
 		ServerData.Instance.SetCarColor(color);
 		ServerSend.CarPaintPacket(fromClient, color);
+	}
+	
+	public static void RepairPartPacket(int fromClient, Packet packet)
+	{
+		ModPartInfo info = packet.Read<ModPartInfo>();
+		bool isBody = packet.Read<bool>();
+		bool success = packet.Read<bool>();
+		
+		ServerData.Instance.UpdatePartInfo(info, isBody, success);
+		ServerSend.RepairPartPacket(fromClient, info, isBody, success);
 	}
 	
 	public static void ResyncPacket(int fromClient, Packet packet)
@@ -462,6 +489,16 @@ public static class ServerHandle
 			case PacketTypes.loadCar:
 				int carLoaderID = packet.ReadInt();
 				ServerResyncs.ResyncCar(fromClient, carLoaderID);
+				break;
+			case PacketTypes.toolMove:
+				ServerResyncs.ResyncTools(fromClient);
+				break;
+			case PacketTypes.garageUpgrade:
+				ServerResyncs.ResyncUpgrade(fromClient);
+				break;
+			case PacketTypes.engineStandSetGroup:
+				bool alt = packet.Read<bool>();
+				ServerResyncs.ResyncEngineStand(fromClient, alt);
 				break;
 		}
 	}

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CMS21Together.Shared.Data;
+namespace CMS21Together.Shared.Data.Vanilla;
 
 [Serializable]
 public class ModColor
@@ -11,6 +11,8 @@ public class ModColor
 	public float b;
 	public float a;
 
+	public ModColor() { }
+	
 	public ModColor(float r, float g, float b, float a)
 	{
 		this.r = r;

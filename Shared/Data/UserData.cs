@@ -1,6 +1,7 @@
 ﻿using System;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ClientSide.Data.Player;
 using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -65,6 +66,7 @@ public class UserData
 		else
 		{
 			userObject = Object.Instantiate(ClientData.Instance.playerPrefab, position.toVector3(), rotation.toQuaternion());
+			userObject.AddComponent<InfoBillboard>();
 			userAnimator = userObject.GetComponent<Animator>();
 			userObject.name = username;
 		}

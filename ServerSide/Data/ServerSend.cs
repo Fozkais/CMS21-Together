@@ -20,6 +20,7 @@ public static class ServerSend
 		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
+			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].money);
 			packet.Write(info.playerExp);
 			packet.Write(info.playerLevel);
 			packet.Write(info.skillPoints);
@@ -168,13 +169,16 @@ public static class ServerSend
 		}
 	}
 
-	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade)
+	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.garageUpgrade))
 		{
 			packet.Write(upgrade);
 
-			SendDataToAll(packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 	}
 
@@ -240,7 +244,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound)
+	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound, bool resync=false)
 	{
 		using (var packet = new Packet((int)PacketTypes.toolMove))
 		{
@@ -248,7 +252,10 @@ public static class ServerSend
 			packet.Write(place);
 			packet.Write(playSound);
 
-			SendDataToAll(fromClient, packet);
+			if (!resync)
+				SendDataToAll(fromClient, packet);
+			else
+				SendData(fromClient, packet);
 		}
 	}
 
@@ -408,30 +415,37 @@ public static class ServerSend
 		}
 	}
 
-	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position)
+	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position, bool useAlt, bool resync=false)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandSetGroup))
 		{
 			_packet.Write(engineGroup);
 			_packet.Write(position);
+			_packet.Write(useAlt);
 
-			SendDataToAll(fromClient, _packet);
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
 		}
 	}
 
-	public static void EngineStandTakeOffPacket(int fromClient)
+	public static void EngineStandTakeOffPacket(int fromClient, bool alt)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
+			_packet.Write(alt);
+			
 			SendDataToAll(fromClient, _packet);
 		}
 	}
 
-	public static void IncreaseStandAnglePacket(int fromClient, int val)
+	public static void IncreaseStandAnglePacket(int fromClient, float val, bool alt)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
 		{
 			_packet.Write(val);
+			_packet.Write(alt);
 			
 			SendDataToAll(fromClient, _packet);
 		}
@@ -460,11 +474,12 @@ public static class ServerSend
 		}
 	}
 
-	public static void CarWashPacket(int fromClient, int loaderID)
+	public static void CarWashPacket(int fromClient, int loaderID, bool interior)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.carWash))
 		{
 			_packet.Write(loaderID);
+			_packet.Write(interior);
 			
 			SendDataToAll(fromClient, _packet);
 		}
@@ -475,6 +490,28 @@ public static class ServerSend
 		using (Packet _packet = new Packet((int)PacketTypes.carPaint))
 		{
 			_packet.Write(color);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void WelderPacket(int fromClient, int loaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.useWelder))
+		{
+			_packet.Write(loaderID);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void RepairPartPacket(int fromClient, ModPartInfo info, bool isBody, bool success)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.repairPart))
+		{
+			_packet.Write(info);
+			_packet.Write(isBody);
+			_packet.Write(success);
 			
 			SendDataToAll(fromClient, _packet);
 		}
