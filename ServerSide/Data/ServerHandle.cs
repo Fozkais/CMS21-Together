@@ -423,6 +423,7 @@ public static class ServerHandle
 		Vector3Serializable position = packet.Read<Vector3Serializable>();
 		bool alt = packet.Read<bool>();
 
+		MelonLogger.Msg("SV: received new engine");
 		ServerData.Instance.SetEngineOnStand(engineGroup, position, alt);
 		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position, alt);
 	}

@@ -158,6 +158,8 @@ public static class UI_Lobby
 
 		StartGame(saveIndex);
 		SavesManager.ModSaves[saveIndex].alreadyLoaded = true;
+		if (SavesManager.ModSaves[saveIndex].additionnalStand != null)
+			ServerData.Instance.engineStand2 = SavesManager.ModSaves[saveIndex].additionnalStand;
 		SavesManager.SaveModSave(saveIndex);
 	}
 

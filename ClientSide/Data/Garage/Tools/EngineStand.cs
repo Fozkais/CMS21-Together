@@ -27,9 +27,11 @@ public static class EngineStand
 	public static void SetIOMouseOverHook(GameObject go, string type, InteractiveObject io)
 	{
 		if(!Client.Instance.isConnected)  return;
-
+		
 		if (type == "#enginestand")
 			useAlt = go.name == "Engine_stand_2";
+		else if (type == "#engine")
+			useAlt = go.transform.parent.parent.parent.name == "Engine_stand_2";
 	}
 	
 	[HarmonyPatch(typeof(CreateEngineWindow), nameof(CreateEngineWindow.CreateEngineAction))]
@@ -50,11 +52,11 @@ public static class EngineStand
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.IncreaseEngineStandAngle))] 
 	[HarmonyPrefix]
-	public static void IncreaseEngineStandAngleHook(float val)
+	public static void IncreaseEngineStandAngleHook(float val, EngineStandLogic __instance)
 	{
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 		
-		ClientSend.EngineStandAnglePacket(val, useAlt);
+		ClientSend.EngineStandAnglePacket(val, __instance.gameObject.name == "Engine_stand_2");
 	}
 	
 	[HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
@@ -81,7 +83,7 @@ public static class EngineStand
 		
 		if (groupItem == null || groupItem.ItemList == null) return;
 		ModEngineStand stand;
-		if (useAlt)
+		if (__instance.gameObject.name == "Engine_stand_2")
 		{
 			ClientData.Instance.engineStand2 = new ModEngineStand(GameData.Instance.engineStandLogic2);
 			stand = ClientData.Instance.engineStand2;
@@ -136,21 +138,32 @@ public static class EngineStand
 
 	public static IEnumerator TakeOnEngineFromStand(ModGroupItem engineGroup, Vector3Serializable position, bool alt)
 	{
+		MelonLogger.Msg($"Received engine from server! {alt}");
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
 		ModEngineStand stand;
 		if (alt)
+		{
+			ClientData.Instance.engineStand2 = new ModEngineStand(GameData.Instance.engineStandLogic2);
 			stand = ClientData.Instance.engineStand2;
+		}
 		else
+		{
+			ClientData.Instance.engineStand = new ModEngineStand(GameData.Instance.engineStandLogic);
 			stand = ClientData.Instance.engineStand;
+		}
+		
 		listen = false;
 		MainMod.StartCoroutine(stand.reference.SetGroupOnEngineStand(engineGroup.ToGame(), false));
 		
 		int counter = 0;
-		while (counter++ < 20 && stand.reference.engineGameObject == null)
-			yield return new WaitForSeconds(0.25f);
+		while (counter < 20 && stand.reference.engineGameObject == null)
+		{
+			yield return new WaitForSeconds(0.5f);
+			counter++;
+		}
 		if (stand.reference.engineGameObject == null)
 		{
 			MelonLogger.Warning("[EngineStand->TakeOnEngineFromStand] EngineStand as no engineObject ! aborting...");

@@ -31,8 +31,12 @@ public static class PartsUpdater
 		}
 		if (carLoaderID == -2)
 		{
-			while (!ClientData.Instance.engineStand2.isHandled)
-				yield return new WaitForSeconds(.15f);
+			int counter = 0;
+			while (counter < 25 && !ClientData.Instance.engineStand2.isHandled)
+			{
+				yield return new WaitForSeconds(.5f);
+				counter++;
+			}
 			yield return new WaitForEndOfFrame();
 			
 			MelonLogger.Msg($"[PartsUpdater->UpdatePartScripts] {partScript.id} for es 2");

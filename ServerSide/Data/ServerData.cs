@@ -240,6 +240,7 @@ public class ServerData
 
 	public void ClearEngineFromStand(bool alt)
 	{
+		MelonLogger.Msg("SV: Clear engine.");
 		if (!alt)
 			engineStand = new ModEngineStand(null);
 		else

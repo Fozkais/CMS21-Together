@@ -61,6 +61,9 @@ public static class GarageUpgradeHooks
 		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
 		if (upgradeCost <= GlobalData.PlayerMoney)
 		{
+			if (__instance.currentUpgradeItem.UpgradeID == "crane")
+				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
+			
 			//MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Triggered: {__instance.currentUpgradeItem.upgradeID}");
 			ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, true);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID]);

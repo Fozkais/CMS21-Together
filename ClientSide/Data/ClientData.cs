@@ -172,6 +172,13 @@ public class ClientData
 		if (rot != Quaternion.identity)
 			GameData.Instance.localPlayer.transform.rotation = rot;
 
+		while (SceneManager.CurrentScene() != GameScene.garage)
+			yield return new WaitForSeconds(0.5f);
+		while (!NotificationCenter.IsGameReady)
+			yield return new WaitForSeconds(0.25f);
+		while (!GameData.isReady)
+			yield return new WaitForSeconds(0.5f);
+		
 		ClientSend.ResyncEngineStandPacket(true);
 	}
 }

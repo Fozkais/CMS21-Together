@@ -56,6 +56,7 @@ public static class ServerResyncs
 	
 	public static void ResyncEngineStand(int fromClient, bool alt)
 	{
+		MelonLogger.Msg($"Client asked for es resync!");
 		if (alt)
 		{
 			if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
