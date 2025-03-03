@@ -52,11 +52,20 @@ public static class EngineStand
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.IncreaseEngineStandAngle))] 
 	[HarmonyPrefix]
-	public static void IncreaseEngineStandAngleHook(float val, EngineStandLogic __instance)
+	public static bool IncreaseEngineStandAngleHook(float val, EngineStandLogic __instance)
 	{
-		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
+		if(!Client.Instance.isConnected || !listen) { listen = true; return true;}
 		
+		if (useAlt)
+		{
+			listen = false;
+			GameData.Instance.engineStandLogic2.IncreaseEngineStandAngle(val);
+			ClientSend.EngineStandAnglePacket(val, __instance.gameObject.name == "Engine_stand_2");
+			return false;
+		}
 		ClientSend.EngineStandAnglePacket(val, __instance.gameObject.name == "Engine_stand_2");
+		return true;
+
 	}
 	
 	[HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_35")]
@@ -74,6 +83,7 @@ public static class EngineStand
 		}
 		return true;
 	}
+	
 	
 	[HarmonyPatch(typeof(EngineStandLogic), nameof(EngineStandLogic.SetGroupOnEngineStand))] 
 	[HarmonyPostfix]
