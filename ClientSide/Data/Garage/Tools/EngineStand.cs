@@ -31,7 +31,7 @@ public static class EngineStand
 		if (type == "#enginestand")
 			useAlt = go.name == "Engine_stand_2";
 		else if (type == "#engine")
-			useAlt = go.transform.parent.parent.parent.name == "Engine_stand_2";
+			useAlt = go.transform.parent?.parent?.parent.name == "Engine_stand_2";
 	}
 	
 	[HarmonyPatch(typeof(CreateEngineWindow), nameof(CreateEngineWindow.CreateEngineAction))]
