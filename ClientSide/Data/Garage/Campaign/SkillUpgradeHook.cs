@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data.Handle;
 using HarmonyLib;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 
@@ -31,5 +33,16 @@ public static class SkillUpgradeHook
 		
 		// ReSharper disable once PossibleNullReferenceException
 		ClientSend.SkillChangePacket(id, skillInfo);
+		MelonCoroutines.Start(UpdateSkillPoint(__instance));
+	}
+
+	private static IEnumerator UpdateSkillPoint(UpgradeSystem upgradeSystem)
+	{
+		yield return new WaitForSeconds(0.5f);
+		
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		MelonLogger.Msg($"UpdateSkillPoint: {upgradeSystem.AvailablePoints}");
+		ClientSend.PointPacket(upgradeSystem.AvailablePoints);
 	}
 }

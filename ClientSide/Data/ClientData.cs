@@ -160,7 +160,6 @@ public class ClientData
 					}
 				}
 			}
-			GameData.Instance.upgradeTools.upgradeSystem.GetAvailablePoints();
 		}
 
 		GlobalData.MissionsFinished = missionFinished;
