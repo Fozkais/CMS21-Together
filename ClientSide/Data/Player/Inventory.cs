@@ -17,22 +17,12 @@ public static class Inventory
 	public static List<ModGroupItem> groupItems = new();
 	private static bool loadSkip;
 
-	public static bool listenToAddItem = true;
-	public static bool listenToAddGroupItem = true;
-	
-	public static bool listenToRemoveItem = true;
-	public static bool listenToRemoveGroupItem = true;
-
 	public static void Reset()
 	{
 		items.Clear();
 		groupItems.Clear();
 		loadSkip = false;
 		
-		listenToAddItem = true;
-		listenToAddGroupItem = true;
-		listenToRemoveItem = true;
-		listenToRemoveGroupItem = true;
 	}
 
 
@@ -40,7 +30,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
-		if (!Client.Instance.isConnected || !listenToAddItem) {listenToAddItem = true; return;}
+		if (!Client.Instance.isConnected) {return;}
 		
 		//MelonLogger.Msg($"Add new item with UID: {item.UID}.");
 		var newItem = new ModItem(item);
@@ -52,7 +42,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void AddGroupItemHook(GroupItem group)
 	{
-		if (!Client.Instance.isConnected || !listenToAddGroupItem) {listenToAddGroupItem = true; return;}
+		if (!Client.Instance.isConnected) {return;}
 
 		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
 		var newItem = new ModGroupItem(group);
@@ -64,7 +54,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void RemoveItemHook(Item item, global::Inventory __instance)
 	{
-		if (!Client.Instance.isConnected || !listenToRemoveItem) {listenToRemoveItem = true; return;}
+		if (!Client.Instance.isConnected) {return;}
 
 		if (item == null) return;
 
@@ -80,7 +70,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void RemoveGroupItemHook(long UId)
 	{
-		if (!Client.Instance.isConnected || !listenToRemoveGroupItem) {listenToRemoveGroupItem = true; return;}
+		if (!Client.Instance.isConnected ) {return;}
 
 		if (groupItems.Any(s => s.UID == UId))
 		{
@@ -141,13 +131,11 @@ public static class Inventory
 		{
 			case InventoryAction.add:
 				items.Add(item);
-				listenToAddItem = false;
 				GameData.Instance.localInventory.Add(item.ToGame());
 				break;
 			case InventoryAction.remove:
 				if (items.Any(i => i.UID == item.UID))
 					items.Remove(item);
-				listenToRemoveItem = false;
 				GameData.Instance.localInventory.Delete(item.ToGame());
 				break;
 		}
@@ -160,13 +148,11 @@ public static class Inventory
 		{
 			case InventoryAction.add:
 				groupItems.Add(item);
-				listenToAddGroupItem = false;
 				GameData.Instance.localInventory.AddGroup(item.ToGame());
 				break;
 			case InventoryAction.remove:
 				if (groupItems.Any(i => i.UID == item.UID))
 					groupItems.Remove(item);
-				listenToRemoveGroupItem = false;
 				GameData.Instance.localInventory.DeleteGroup(item.UID);
 				break;
 		}
