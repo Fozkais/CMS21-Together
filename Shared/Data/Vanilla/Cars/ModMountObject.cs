@@ -16,20 +16,11 @@ public class ModMountObject
 	public QuaternionSerializable oldRotChild;
 	public Vector3Serializable childPosUnMount;
 	public bool alternativeSFX;
-
-	//  private Renderer[] renderers;
-
-	//   protected Highlighter ho;
-
 	public bool unmounted;
 	public bool reverseMode;
 	public bool mouseOver;
 	public bool canAction;
-
 	public bool IsStuck;
-
-	//  public Transform child;
-	//  private BoxCollider boxCollider;
 	public bool PlayingStuckAnim;
 	public bool canUpdate = true;
 
