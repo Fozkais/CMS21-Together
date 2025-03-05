@@ -19,6 +19,7 @@ public class ServerData
 	
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
+	public Dictionary<int, ModNewCarData> CarOnPark = new();
 	public ModEngineStand engineStand = new(null);
 	public ModEngineStand engineStand2 = new(null);
 	public float engineStandAngle;
@@ -354,6 +355,17 @@ public class ServerData
 		part.dent = 1;
 		ModCarPart part2 = GetCarPart(loaderID, "details");
 		part2.dent = 1;
+	}
+
+	public void AddCarToPark(ModNewCarData car, int index)
+	{
+		CarOnPark.Add(index, car);
+	}
+
+	public void RemoveCarFromPark(int index)
+	{
+		if (CarOnPark.ContainsKey(index))
+			CarOnPark.Remove(index);
 	}
 }
 

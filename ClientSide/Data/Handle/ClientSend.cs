@@ -480,5 +480,25 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
+	public static void AddCarToParkPacket(ModNewCarData modNewCarData, int index)
+	{
+		using (var packet = new Packet((int)PacketTypes.parkAdd))
+		{
+			MelonLogger.Msg("Add a car to parking");
+			packet.Write(modNewCarData);
+			packet.Write(index);
+			SendData(packet);
+		}
+	}
+
+	public static void RemoveCarFromParkPacket(int index)
+	{
+		using (var packet = new Packet((int)PacketTypes.parkRemove))
+		{
+			MelonLogger.Msg("Remove a car to parking");
+			packet.Write(index);
+			SendData(packet);
+		}
+	}
 }

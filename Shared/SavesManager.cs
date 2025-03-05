@@ -8,6 +8,7 @@ using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using HarmonyLib;
 using MelonLoader;
 using Newtonsoft.Json;
@@ -111,7 +112,7 @@ public static class SavesManager
 	}
 
 
-	public static void LoadSave(ModSaveData saveData, bool clientSave = false)
+	public static void LoadSave(ModSaveData saveData, List<ModNewCarData> carOnPark=null, bool clientSave = false)
 	{
 		var gameManager = Singleton<GameManager>.Instance;
 		int index;
@@ -189,6 +190,17 @@ public static class SavesManager
 			Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
 			Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
 			gameManager.ProfileManager.Load();
+			
+			currentSave = gameManager.ProfileManager.GetSelectedProfileData();
+			if (carOnPark != null)
+			{
+				currentSave.carsOnParking = new Il2CppReferenceArray<NewCarData>(carOnPark.Count);
+				for (int i = 0; i < carOnPark.Count; i++)
+				{
+					var car = carOnPark[i];
+					currentSave.carsOnParking[i] = car.ToGame();
+				}
+			}
 
 			MelonLogger.Msg("-------------------Save Info---------------------");
 			MelonLogger.Msg("Selected Profile Name : " + gameManager.ProfileManager.GetSelectedProfileName());
@@ -196,7 +208,6 @@ public static class SavesManager
 			MelonLogger.Msg("Selected Profile : " + gameManager.ProfileManager.selectedProfile);
 			MelonLogger.Msg("-------------------------------------------------");
 		}
-
 		currentSave = gameManager.ProfileManager.GetSelectedProfileData();
 
 		if (!clientSave) SaveModSave(index);

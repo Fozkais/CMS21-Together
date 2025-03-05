@@ -50,5 +50,7 @@ public enum PacketTypes
 	carWash,
 	carPaint,
 	useWelder,
-	repairPart
+	repairPart,
+	parkAdd,
+	parkRemove
 }

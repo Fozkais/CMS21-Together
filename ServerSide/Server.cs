@@ -224,6 +224,8 @@ public class Server
 			{ (int)PacketTypes.carPaint, ServerHandle.CarPaintPacket },
 			{ (int)PacketTypes.repairPart, ServerHandle.RepairPartPacket },
 
+			{ (int)PacketTypes.parkAdd, ServerHandle.AddCarToParkPacket },
+			{ (int)PacketTypes.parkRemove, ServerHandle.RemoveCarFromParkPacket },
 			{ (int)PacketTypes.loadJobCar, ServerHandle.LoadJobCarPacket },
 			{ (int)PacketTypes.loadCar, ServerHandle.LoadCarPacket },
 			{ (int)PacketTypes.bodyPart, ServerHandle.BodyPartPacket },

@@ -7,6 +7,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
@@ -166,6 +167,32 @@ public static class UI_Lobby
 	private static void StartGame(int _saveIndex)
 	{
 		SavesManager.StartGame(_saveIndex);
-		ServerSend.StartPacket(SavesManager.ModSaves[_saveIndex].selectedGamemode);
+
+		List<ModNewCarData> parksCars = new List<ModNewCarData>();
+		foreach (NewCarData carData in SavesManager.currentSave.carsOnParking)
+		{
+			parksCars.Add(new ModNewCarData(carData));
+		}
+		ServerSend.StartPacket(SavesManager.ModSaves[_saveIndex].selectedGamemode, parksCars);
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

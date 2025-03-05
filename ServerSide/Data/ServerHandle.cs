@@ -473,6 +473,23 @@ public static class ServerHandle
 		ServerSend.CarPaintPacket(fromClient, color);
 	}
 	
+	public static void AddCarToParkPacket(int fromClient, Packet packet)
+	{
+		ModNewCarData car = packet.Read<ModNewCarData>();
+		int index = packet.ReadInt();
+		
+		ServerData.Instance.AddCarToPark(car, index);
+		ServerSend.AddCarToParkPacket(fromClient, car, index);
+	}
+	
+	public static void RemoveCarFromParkPacket(int fromClient, Packet packet)
+	{
+		int index = packet.ReadInt();
+		
+		ServerData.Instance.RemoveCarFromPark(index);
+		ServerSend.RemoveCarFromParkPacket(fromClient, index);
+	}
+	
 	public static void RepairPartPacket(int fromClient, Packet packet)
 	{
 		ModPartInfo info = packet.Read<ModPartInfo>();

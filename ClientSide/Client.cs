@@ -111,6 +111,8 @@ public class Client
 			{ (int)PacketTypes.useWelder, ClientHandle.WelderPacket },
 			{ (int)PacketTypes.carPaint, ClientHandle.CarPaintPacket },
 
+			{ (int)PacketTypes.parkAdd, ClientHandle.AddCarToParkPacket },
+			{ (int)PacketTypes.parkRemove, ClientHandle.RemoveCarFromParkPacket },
 			{ (int)PacketTypes.loadCar, ClientHandle.LoadCarPacket },
 			{ (int)PacketTypes.bodyPart, ClientHandle.BodyPartPacket },
 			{ (int)PacketTypes.partScript, ClientHandle.PartScriptPacket },
