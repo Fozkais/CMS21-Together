@@ -16,7 +16,7 @@ public static class ServerSend
 	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		//if (id == 1) return; // don't send if it's host (1 == host)
+		if (id == 1) return; // don't send if it's host (1 == host)
 		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
