@@ -519,14 +519,17 @@ public static class ServerSend
 		}
 	}
 
-	public static void AddCarToParkPacket(int fromClient, ModNewCarData car, int index)
+	public static void AddCarToParkPacket(int fromClient, ModNewCarData car, int index, bool resync = false)
 	{
 		using (Packet _packet = new Packet((int)PacketTypes.parkAdd))
 		{
 			_packet.Write(car);
 			_packet.Write(index);
 			
-			SendDataToAll(fromClient, _packet);
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
 		}
 	}
 

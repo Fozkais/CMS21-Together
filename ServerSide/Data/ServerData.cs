@@ -15,7 +15,7 @@ namespace CMS21Together.ServerSide.Data;
 public class ServerData
 {
 	public static ServerData Instance;
-	public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
+	public Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
 	
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
@@ -159,7 +159,7 @@ public class ServerData
 		}
 	}
 
-	public static void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
+	public void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
 	{
 		toolsPosition[tool] = place;
 	}

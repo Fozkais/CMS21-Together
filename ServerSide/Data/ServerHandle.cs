@@ -346,7 +346,7 @@ public static class ServerHandle
 		var place = _packet.Read<ModCarPlace>();
 		var playSound = _packet.Read<bool>();
 
-		ServerData.ChangeToolPosition(tool, place);
+		ServerData.Instance.ChangeToolPosition(tool, place);
 
 		ServerSend.ToolsMovePacket(_fromClient, tool, place, playSound);
 	}
@@ -509,6 +509,9 @@ public static class ServerHandle
 			case PacketTypes.loadCar:
 				int carLoaderID = packet.ReadInt();
 				ServerResyncs.ResyncCar(fromClient, carLoaderID);
+				break;
+			case PacketTypes.parkAdd:
+				ServerResyncs.ResyncPark(fromClient);
 				break;
 			case PacketTypes.toolMove:
 				ServerResyncs.ResyncTools(fromClient);

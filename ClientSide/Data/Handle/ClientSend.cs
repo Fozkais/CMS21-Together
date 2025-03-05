@@ -480,6 +480,15 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+	public static void ResyncPark()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			MelonLogger.Msg("Ask resync for park");
+			packet.Write(PacketTypes.parkAdd);
+			SendData(packet);
+		}
+	}
 
 	public static void AddCarToParkPacket(ModNewCarData modNewCarData, int index)
 	{

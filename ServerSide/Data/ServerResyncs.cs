@@ -87,9 +87,17 @@ public static class ServerResyncs
 
 	public static void ResyncTools(int fromClient)
 	{
-		foreach (KeyValuePair<ModIOSpecialType, ModCarPlace> tool in ServerData.toolsPosition)
+		foreach (KeyValuePair<ModIOSpecialType, ModCarPlace> tool in ServerData.Instance.toolsPosition)
 		{
 			ServerSend.ToolsMovePacket(fromClient, tool.Key, tool.Value, false, true);
+		}
+	}
+	
+	public static void ResyncPark(int fromClient)
+	{
+		foreach (KeyValuePair<int, ModNewCarData> car in ServerData.Instance.CarOnPark)
+		{
+			ServerSend.AddCarToParkPacket(fromClient, car.Value, car.Key, true);
 		}
 	}
 
