@@ -15,6 +15,20 @@ public static class PartUpdateHooks
 {
 	public static bool listen = true;
 	
+	[HarmonyPatch(typeof(FluidsData), nameof(FluidsData.SetLevel))]
+	[HarmonyPostfix]
+	public static void SetLevelAltHook(float level, CarFluidType carFluidType, int id, FluidsData __instance)
+	{
+		if (!Client.Instance.isConnected || !listen) {listen = true; return;}
+
+		if (carFluidType == CarFluidType.EngineOil && __instance.Oil.CarFluid != null)
+		{
+			int carLoaderID = __instance.Oil.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance.Oil));
+		}
+
+	}
+	
 	[HarmonyPatch(typeof(FluidData), nameof(FluidData.SetLevel))]
 	[HarmonyPostfix]
 	public static void SetLevelHook(float level, FluidData __instance)
