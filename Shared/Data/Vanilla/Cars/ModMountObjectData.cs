@@ -11,8 +11,12 @@ public class ModMountObjectData
 
 	public bool[] IsStuck;
 
+	public ModMountObjectData() {}
+	
 	public ModMountObjectData(MountObjectData data)
 	{
+		if (data == null) return;
+		
 		ParentPath = data.ParentPath;
 		Condition = data.Condition;
 		IsStuck = data.IsStuck;

@@ -15,10 +15,11 @@ namespace CMS21Together.ServerSide.Data;
 public class ServerData
 {
 	public static ServerData Instance;
-	public static Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
+	public Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
 	
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
+	public Dictionary<int, ModNewCarData> CarOnPark = new();
 	public ModEngineStand engineStand = new(null);
 	public ModEngineStand engineStand2 = new(null);
 	public float engineStandAngle;
@@ -158,7 +159,7 @@ public class ServerData
 		}
 	}
 
-	public static void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
+	public void ChangeToolPosition(ModIOSpecialType tool, ModCarPlace place)
 	{
 		toolsPosition[tool] = place;
 	}
@@ -354,6 +355,17 @@ public class ServerData
 		part.dent = 1;
 		ModCarPart part2 = GetCarPart(loaderID, "details");
 		part2.dent = 1;
+	}
+
+	public void AddCarToPark(ModNewCarData car, int index)
+	{
+		CarOnPark.Add(index, car);
+	}
+
+	public void RemoveCarFromPark(int index)
+	{
+		if (CarOnPark.ContainsKey(index))
+			CarOnPark.Remove(index);
 	}
 }
 

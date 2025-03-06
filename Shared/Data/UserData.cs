@@ -69,6 +69,7 @@ public class UserData
 			userObject.AddComponent<InfoBillboard>();
 			userAnimator = userObject.GetComponent<Animator>();
 			userObject.name = username;
+			Physics.IgnoreCollision(GameData.Instance.localPlayer.GetComponent<Collider>(), userObject.GetComponent<Collider>());
 		}
 	}
 

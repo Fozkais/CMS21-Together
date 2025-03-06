@@ -118,10 +118,12 @@ public static class ServerHandle
 		{
 			var item = _packet.Read<ModItem>();
 
-			if (action == InventoryAction.add)
+			
+			if (action == InventoryAction.add && ServerData.Instance.items.All(i => i.UID != item.UID))
 			{
 				SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
 				ServerData.Instance.items.Add(item);
+				ServerSend.ItemPacket(fromClient, item, action);
 			}
 			else
 			{
@@ -130,9 +132,8 @@ public static class ServerHandle
 					var index = ServerData.Instance.items.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.items.Remove(ServerData.Instance.items[index]);
 				}
+				ServerSend.ItemPacket(fromClient, item, action);
 			}
-
-			ServerSend.ItemPacket(fromClient, item, action);
 			return;
 		}
 
@@ -148,8 +149,11 @@ public static class ServerHandle
 		{
 			var item = _packet.Read<ModGroupItem>();
 
-			if (action == InventoryAction.add)
+			if (action == InventoryAction.add && ServerData.Instance.groupItems.All(i => i.UID != item.UID))
+			{
 				ServerData.Instance.groupItems.Add(item);
+				ServerSend.GroupItemPacket(fromClient, item, action);
+			}
 			else
 			{
 				if (ServerData.Instance.groupItems.Any(s => s.UID == item.UID))
@@ -157,9 +161,8 @@ public static class ServerHandle
 					var index = ServerData.Instance.groupItems.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.groupItems.Remove(ServerData.Instance.groupItems[index]);
 				}
+				ServerSend.GroupItemPacket(fromClient, item, action);
 			}
-
-			ServerSend.GroupItemPacket(fromClient, item, action);
 			return;
 		}
 
@@ -343,7 +346,7 @@ public static class ServerHandle
 		var place = _packet.Read<ModCarPlace>();
 		var playSound = _packet.Read<bool>();
 
-		ServerData.ChangeToolPosition(tool, place);
+		ServerData.Instance.ChangeToolPosition(tool, place);
 
 		ServerSend.ToolsMovePacket(_fromClient, tool, place, playSound);
 	}
@@ -470,6 +473,23 @@ public static class ServerHandle
 		ServerSend.CarPaintPacket(fromClient, color);
 	}
 	
+	public static void AddCarToParkPacket(int fromClient, Packet packet)
+	{
+		ModNewCarData car = packet.Read<ModNewCarData>();
+		int index = packet.ReadInt();
+		
+		ServerData.Instance.AddCarToPark(car, index);
+		ServerSend.AddCarToParkPacket(fromClient, car, index);
+	}
+	
+	public static void RemoveCarFromParkPacket(int fromClient, Packet packet)
+	{
+		int index = packet.ReadInt();
+		
+		ServerData.Instance.RemoveCarFromPark(index);
+		ServerSend.RemoveCarFromParkPacket(fromClient, index);
+	}
+	
 	public static void RepairPartPacket(int fromClient, Packet packet)
 	{
 		ModPartInfo info = packet.Read<ModPartInfo>();
@@ -489,6 +509,9 @@ public static class ServerHandle
 			case PacketTypes.loadCar:
 				int carLoaderID = packet.ReadInt();
 				ServerResyncs.ResyncCar(fromClient, carLoaderID);
+				break;
+			case PacketTypes.parkAdd:
+				ServerResyncs.ResyncPark(fromClient);
 				break;
 			case PacketTypes.toolMove:
 				ServerResyncs.ResyncTools(fromClient);

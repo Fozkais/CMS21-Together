@@ -46,6 +46,8 @@ public static class GarageResync
 		MelonCoroutines.Start(ResyncCars());
 		yield return new WaitForEndOfFrame();
 		ClientSend.ResyncTools();
+		/*yield return new WaitForEndOfFrame();
+		ClientSend.ResyncPark();*/
 		yield return new WaitForEndOfFrame();
 		ClientSend.ResyncUpgrade();
 		yield return new WaitForEndOfFrame();

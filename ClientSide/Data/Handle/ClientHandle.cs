@@ -66,11 +66,12 @@ public static class ClientHandle
 	public static void StartPacket(Packet packet)
 	{
 		var gamemode = packet.Read<Gamemode>();
+		var parkCars = packet.Read<List<ModNewCarData>>();
 
 		var data = new ModSaveData();
 		data.selectedGamemode = gamemode;
 
-		SavesManager.LoadSave(data, true);
+		SavesManager.LoadSave(data, parkCars,true);
 	}
 	
 	public static void SpawnPacket(Packet packet)
@@ -385,6 +386,21 @@ public static class ClientHandle
 		ModFluidData fluid = packet.Read<ModFluidData>();
 		
 		MelonCoroutines.Start(PartsUpdater.UpdateFluid(fluid, carLoaderID));
+	}
+	
+	public static void AddCarToParkPacket(Packet packet)
+	{
+		ModNewCarData car = packet.Read<ModNewCarData>();
+		int index = packet.ReadInt();
+		
+		MelonCoroutines.Start(ParkHook.AddCarToPark(car, index));
+	}
+	
+	public static void RemoveCarFromParkPacket(Packet packet)
+	{
+		int index = packet.ReadInt();
+		
+		MelonCoroutines.Start(ParkHook.RemoveCarFromPark(index));
 	}
 
 	public static void SceneChangePacket(Packet packet)

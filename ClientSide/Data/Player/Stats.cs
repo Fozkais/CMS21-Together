@@ -103,19 +103,8 @@ public static class Stats
 		if (!Client.Instance.isConnected) return;
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 		
-		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
-		ClientSend.PointPacket(__instance.availablePoints);
-	}
-	
-	[HarmonyPatch(typeof(SkillsTab), nameof(SkillsTab.UnlockSkillAction))]
-	[HarmonyPostfix]
-	public static void UnlockSkillActionHook(SkillsTab __instance)
-	{
-		if (!Client.Instance.isConnected) return;
-		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
-		
-		MelonLogger.Msg($"Send Point Packet : {GlobalData.PlayerExp}");
-		ClientSend.PointPacket(__instance.upgradeSystem.availablePoints);
+		MelonLogger.Msg($"Send Point Packet : {__instance.AvailablePoints}");
+		ClientSend.PointPacket(__instance.AvailablePoints);
 	}
 	
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]

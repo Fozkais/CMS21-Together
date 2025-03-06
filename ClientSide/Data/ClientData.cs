@@ -108,7 +108,6 @@ public class ClientData
 			playerInstance.transform.rotation = new Quaternion(0, 180, 0, 0);
 
 			playerPrefab = playerInstance;
-
 			Object.DontDestroyOnLoad(playerPrefab);
 
 			playerBundle.Unload(false);
@@ -161,7 +160,6 @@ public class ClientData
 					}
 				}
 			}
-			GameData.Instance.upgradeTools.upgradeSystem.GetAvailablePoints();
 		}
 
 		GlobalData.MissionsFinished = missionFinished;

@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
@@ -13,10 +14,9 @@ namespace CMS21Together.ServerSide.Data;
 
 public static class ServerSend
 {
-	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		//if (id == 1) return; // don't send if it's host (1 == host)
+		if (id == 1) return; // don't send if it's host (1 == host)
 		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
@@ -382,13 +382,14 @@ public static class ServerSend
 		}
 	}
 
-	public static void StartPacket(Gamemode gamemode)
+	public static void StartPacket(Gamemode gamemode, List<ModNewCarData> parkCars)
 	{
 		using (var packet = new Packet((int)PacketTypes.start))
 		{
 			packet.Write(gamemode);
-
-			SendDataToAll(ClientData.UserData.playerID, packet);
+			packet.Write(parkCars);
+			
+			SendDataToAll(1, packet);
 		}
 	}
 
@@ -512,6 +513,30 @@ public static class ServerSend
 			_packet.Write(info);
 			_packet.Write(isBody);
 			_packet.Write(success);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void AddCarToParkPacket(int fromClient, ModNewCarData car, int index, bool resync = false)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.parkAdd))
+		{
+			_packet.Write(car);
+			_packet.Write(index);
+			
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
+		}
+	}
+
+	public static void RemoveCarFromParkPacket(int fromClient, int index)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.parkRemove))
+		{
+			_packet.Write(index);
 			
 			SendDataToAll(fromClient, _packet);
 		}

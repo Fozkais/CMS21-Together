@@ -31,10 +31,8 @@ public static class CarSyncManager
 		yield return new WaitForEndOfFrame();
 
 		if (ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
-		{
-			CarSpawnHooks.listenToDelete = false;
 			ClientData.Instance.loadedCars.Remove(carLoaderID);
-			GameData.Instance.carLoaders[carLoaderID].DeleteCar();
-		}
+		CarSpawnHooks.listenToDelete = false;
+		GameData.Instance.carLoaders[carLoaderID].DeleteCar();
 	}
 }
