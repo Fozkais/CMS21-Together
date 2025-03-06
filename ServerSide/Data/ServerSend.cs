@@ -14,7 +14,6 @@ namespace CMS21Together.ServerSide.Data;
 
 public static class ServerSend
 {
-	
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
 		if (id == 1) return; // don't send if it's host (1 == host)

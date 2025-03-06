@@ -12,14 +12,14 @@ public static class ParkHook
 {
 	public static bool listen = true;
 
-	[HarmonyPatch(typeof(CarLoader), nameof(GameDataManager.SaveCarInParking))]
+	/*[HarmonyPatch(typeof(CarLoader), nameof(GameDataManager.SaveCarInParking))]
 	[HarmonyPostfix]
 	public static void SaveCarInParkingHook(NewCarData carData, int index, GameDataManager __instance)
 	{
 		if (!Client.Instance.isConnected || !listen) { listen = true; return;}
 		
 		MelonCoroutines.Start(AddCarToParkHook(carData, index));
-	}
+	}*/
 
 	private static IEnumerator AddCarToParkHook(NewCarData carData, int index)
 	{
@@ -36,14 +36,14 @@ public static class ParkHook
 		ClientSend.AddCarToParkPacket(new ModNewCarData(carData), index);
 	}
 
-	[HarmonyPatch(typeof(CarLoader), nameof(GameDataManager.LoadCarInGarage))]
+	/*[HarmonyPatch(typeof(CarLoader), nameof(GameDataManager.LoadCarInGarage))]
 	[HarmonyPostfix]
 	public static void LoadCarInGarageHook(int index, GameDataManager __instance)
 	{
 		if (!Client.Instance.isConnected) return;
 
 		ClientSend.RemoveCarFromParkPacket(index);
-	}
+	}*/
 
 	public static IEnumerator AddCarToPark(ModNewCarData car, int index)
 	{
