@@ -1,4 +1,5 @@
 using System;
+using MelonLoader;
 using UnhollowerBaseLib;
 
 namespace CMS21Together.Shared.Data.Vanilla.Cars;
@@ -15,19 +16,62 @@ public struct ModBonusPartsData
 
 	public ModBonusPartsData(BonusPartsData data)
 	{
+		if (data == null)
+		{
+			MelonLogger.Error("ModBonusPartsData: data is null");
+			return;
+		}
+
 		IDs = data.IDs;
 		IsPainted = data.IsPainted;
-		Color = new ModCustomColor[data.Color.Count];
-		for (var i = 0; i < data.Color.Count; i++) Color[i] = new ModCustomColor(data.Color[i]);
-
-		PaintType = new ModPaintType[data.PaintType.Count];
-		for (var i = 0; i < data.PaintType.Count; i++) PaintType[i] = (ModPaintType)data.PaintType[i];
-
-		PaintData = new ModPaintData[data.PaintData.Count];
-		for (var i = 0; i < data.PaintData.Count; i++) PaintData[i] = new ModPaintData(data.PaintData[i]);
-
+		
+		if (data.Color != null)
+		{
+			Color = new ModCustomColor[data.Color.Count];
+			for (var i = 0; i < data.Color.Count; i++)
+			{
+				if (data.Color[i] != null)
+					Color[i] = new ModCustomColor(data.Color[i]);
+				else
+					MelonLogger.Warning($"ModBonusPartsData: Color[{i}] is null");
+			}
+		}
+		else
+		{
+			MelonLogger.Warning("ModBonusPartsData: data.Color is null");
+			Color = new ModCustomColor[0];
+		}
+		
+		if (data.PaintType != null)
+		{
+			PaintType = new ModPaintType[data.PaintType.Count];
+			for (var i = 0; i < data.PaintType.Count; i++)
+			{
+				PaintType[i] = (ModPaintType)data.PaintType[i];
+			}
+		}
+		else
+		{
+			MelonLogger.Warning("ModBonusPartsData: data.PaintType is null");
+			PaintType = [];
+		}
+		
+		if (data.PaintData != null)
+		{
+			PaintData = new ModPaintData[data.PaintData.Count];
+			for (var i = 0; i < data.PaintData.Count; i++)
+			{
+				PaintData[i] = new ModPaintData(data.PaintData[i]);
+			}
+		}
+		else
+		{
+			MelonLogger.Warning("ModBonusPartsData: data.PaintData is null");
+			PaintData = [];
+		}
 		IdFromConfig = data.IdFromConfig;
 	}
+
 
 	public BonusPartsData ToGame()
 	{
