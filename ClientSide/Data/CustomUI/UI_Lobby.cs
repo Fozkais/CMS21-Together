@@ -171,7 +171,8 @@ public static class UI_Lobby
 		List<ModNewCarData> parksCars = new List<ModNewCarData>();
 		foreach (NewCarData carData in SavesManager.currentSave.carsOnParking)
 		{
-			parksCars.Add(new ModNewCarData(carData));
+			if (carData != null)
+				parksCars.Add(new ModNewCarData(carData));
 		}
 		ServerSend.StartPacket(SavesManager.ModSaves[_saveIndex].selectedGamemode, parksCars);
 	}
