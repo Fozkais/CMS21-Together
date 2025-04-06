@@ -12,8 +12,6 @@ using MelonLoader;
 using Steamworks;
 using UnityEngine;
 
-using SteamManager = CMS21Together.Shared.SteamManager;
-
 namespace CMS21Together.ServerSide;
 
 //[RegisterTypeInIl2Cpp]

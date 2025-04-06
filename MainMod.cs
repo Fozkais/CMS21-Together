@@ -34,7 +34,10 @@ namespace CMS21Together
 
 			ClientData.UserData = TogetherModManager.LoadUserData();
 			if (ApiCalls.useSteam)
-				Shared.SteamManager.Instance = new Shared.SteamManager();
+			{
+				SteamClient.Init(1190000);
+				SteamNetworkingUtils.InitRelayNetworkAccess();
+			}
 			isModInitialized = true;
 			LoggerInstance.Msg("Together Mod Initialized!");
 		}
