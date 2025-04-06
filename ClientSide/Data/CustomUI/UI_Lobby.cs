@@ -168,12 +168,17 @@ public static class UI_Lobby
 	{
 		SavesManager.StartGame(_saveIndex);
 
-		List<ModNewCarData> parksCars = new List<ModNewCarData>();
+		int i = 0;
+		Dictionary<int, ModNewCarData> parksCars = new Dictionary<int, ModNewCarData>();
 		foreach (NewCarData carData in SavesManager.currentSave.carsOnParking)
 		{
-			if (carData != null)
-				parksCars.Add(new ModNewCarData(carData));
+			if (carData != null && !String.IsNullOrEmpty(carData.carToLoad))
+			{
+				parksCars.Add(i, new ModNewCarData(carData));
+			}
+			i++;	
 		}
+		MelonLogger.Msg($"Skipped {i} empty carData.");
 		ServerSend.StartPacket(SavesManager.ModSaves[_saveIndex].selectedGamemode, parksCars);
 	}
 	

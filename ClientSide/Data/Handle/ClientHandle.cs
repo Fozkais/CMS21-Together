@@ -66,7 +66,7 @@ public static class ClientHandle
 	public static void StartPacket(Packet packet)
 	{
 		var gamemode = packet.Read<Gamemode>();
-		var parkCars = packet.Read<List<ModNewCarData>>();
+		var parkCars = packet.Read<Dictionary<int, ModNewCarData>>();
 
 		var data = new ModSaveData();
 		data.selectedGamemode = gamemode;

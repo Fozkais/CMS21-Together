@@ -62,7 +62,8 @@ public class ModNewCarData
 						BodyPartsData.Add(new ModBodyPartData(bodyPartData));
 			}
 
-			if (newCarData.BonusPartsData != null) BonusPartsData = new ModBonusPartsData(newCarData.BonusPartsData);
+			if (newCarData.BonusPartsData != null) 
+				BonusPartsData = new ModBonusPartsData(newCarData.BonusPartsData);
 
 
 			CarInfoData = new ModCarInfoData(newCarData.CarInfoData);
