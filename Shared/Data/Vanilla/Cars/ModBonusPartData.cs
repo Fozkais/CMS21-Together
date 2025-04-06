@@ -29,17 +29,7 @@ public struct ModBonusPartsData
 		{
 			Color = new ModCustomColor[data.Color.Count];
 			for (var i = 0; i < data.Color.Count; i++)
-			{
-				if (data.Color[i] != null)
-					Color[i] = new ModCustomColor(data.Color[i]);
-				else
-					MelonLogger.Warning($"ModBonusPartsData: Color[{i}] is null");
-			}
-		}
-		else
-		{
-			MelonLogger.Warning("ModBonusPartsData: data.Color is null");
-			Color = new ModCustomColor[0];
+				Color[i] = new ModCustomColor(data.Color[i]);
 		}
 		
 		if (data.PaintType != null)
@@ -50,11 +40,6 @@ public struct ModBonusPartsData
 				PaintType[i] = (ModPaintType)data.PaintType[i];
 			}
 		}
-		else
-		{
-			MelonLogger.Warning("ModBonusPartsData: data.PaintType is null");
-			PaintType = [];
-		}
 		
 		if (data.PaintData != null)
 		{
@@ -63,11 +48,6 @@ public struct ModBonusPartsData
 			{
 				PaintData[i] = new ModPaintData(data.PaintData[i]);
 			}
-		}
-		else
-		{
-			MelonLogger.Warning("ModBonusPartsData: data.PaintData is null");
-			PaintData = [];
 		}
 		IdFromConfig = data.IdFromConfig;
 	}
@@ -112,7 +92,8 @@ public struct ModCustomColor
 
 	public ModCustomColor(CustomColor color)
 	{
-		Color = color.Color;
+		if (color.Color != null)
+			Color = color.Color;
 	}
 
 	public CustomColor ToGame()

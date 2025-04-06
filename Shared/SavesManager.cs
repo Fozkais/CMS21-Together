@@ -112,7 +112,7 @@ public static class SavesManager
 	}
 
 
-	public static void LoadSave(ModSaveData saveData, List<ModNewCarData> carOnPark=null, bool clientSave = false)
+	public static void LoadSave(ModSaveData saveData, Dictionary<int, ModNewCarData> carOnPark=null, bool clientSave = false)
 	{
 		var gameManager = Singleton<GameManager>.Instance;
 		int index;
@@ -194,7 +194,6 @@ public static class SavesManager
 			currentSave = gameManager.ProfileManager.GetSelectedProfileData();
 			if (carOnPark != null)
 			{
-				currentSave.carsOnParking = new Il2CppReferenceArray<NewCarData>(carOnPark.Count);
 				for (int i = 0; i < carOnPark.Count; i++)
 				{
 					var car = carOnPark[i];

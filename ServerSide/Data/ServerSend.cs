@@ -382,7 +382,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void StartPacket(Gamemode gamemode, List<ModNewCarData> parkCars)
+	public static void StartPacket(Gamemode gamemode, Dictionary<int, ModNewCarData> parkCars)
 	{
 		using (var packet = new Packet((int)PacketTypes.start))
 		{
