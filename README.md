@@ -39,7 +39,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Add Animation to players : ✅
 * Sync Inventory : ✅ 
 * Sync Cars Spawning and position : ✅
-* Sync Garage Interaction : 🚧 (Lifter, Wheel Assembler, Wheel Balancer, Spring clamp, etc...)
+* Sync Garage Interaction : ✅ (Lifter, Wheel Assembler, Wheel Balancer, Spring clamp, etc...)
 * Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash, Power bench and wheel alignment)
 * Sync Cars  : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
