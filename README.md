@@ -66,7 +66,8 @@ You can join the project Discord if you want to talk or ask for help :
 https://discord.gg/rMz4tGbrc6
 ## How it work
 
-Below is the installation guide :<br/>
+You can follow this video (for steam) : https://www.youtube.com/watch?v=BKX5lMkSfco&t=1s <br/>
+And below is the installation guide :<br/>
 It change depending the version of the mod you've downloaded.<br/>
 <br/>
 1- Download Latest build on release page<br/>
