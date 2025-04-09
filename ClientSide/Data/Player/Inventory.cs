@@ -31,8 +31,8 @@ public static class Inventory
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
 		if (!Client.Instance.isConnected) {return;}
+		if (items.Any(i => i.UID == item.UID)) return;
 		
-		//MelonLogger.Msg($"Add new item with UID: {item.UID}.");
 		var newItem = new ModItem(item);
 		items.Add(newItem);
 		ClientSend.ItemPacket(newItem, InventoryAction.add);
@@ -43,6 +43,7 @@ public static class Inventory
 	public static void AddGroupItemHook(GroupItem group)
 	{
 		if (!Client.Instance.isConnected) {return;}
+		if (groupItems.Any(i => i.UID == group.UID)) return;
 
 		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
 		var newItem = new ModGroupItem(group);
