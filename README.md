@@ -86,4 +86,3 @@ From this point on, you should be able to launch the game with the mod, once lau
 ## License
 
 Distributed under the MIT License. See [LICENSE](https://github.com/Fozkais/CMS21-Together/blob/MainMod/LICENSE) for more information.
-<meta name="google-site-verification" content="Qc6zcsXUDYUOJaRLEway3AM7xgQwVEYMYVMrxlUxMnc" />
