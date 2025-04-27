@@ -227,34 +227,29 @@ public static class SavesManager
 
 	public static void SaveModSave(int saveIndex)
 	{
-		var modSaveData = ModSaves[saveIndex];
-	
 		if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
-			modSaveData.additionnalStand = ServerData.Instance.engineStand2;
+			ModSaves[saveIndex].additionnalStand = ServerData.Instance.engineStand2;
 		foreach (var id in Server.Instance.clients.Keys)
 		{
-			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
+			if (!ServerData.Instance.connectedClients.TryGetValue(id, out var client)) break;
 			
-			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.First(p => playerGuid == p.id);
-			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
-			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
-			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
-			int exp = ServerData.Instance.connectedClients[id].playerExp;
-			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
+			string playerGuid = client.playerGUID;
+			PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.FirstOrDefault(p => playerGuid == p.id);
 			
+			Vector3Serializable pos = client.position;
+			QuaternionSerializable rot = client.rotation;
+			int lvl = client.playerLevel;
+			int exp = client.playerExp;
+			int points = client.playerSkillPoints;
 			
-			if (ModSaves[currentSaveIndex].playerInfos.Any(p => playerGuid == p.id))
-				info.UpdateStats(pos, rot, exp , lvl, points);
+			info?.UpdateStats(pos, rot, exp , lvl, points);
 		}
 		
 		var saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveIndex}.cms21mp");
 
 		if (!Directory.Exists(SAVE_FOLDER_PATH)) Directory.CreateDirectory(SAVE_FOLDER_PATH);
-
-		JsonConvert.SerializeObject(modSaveData);
-		File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(modSaveData));
-
+		
+		File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(ModSaves[saveIndex]));
 		MelonLogger.Msg("Saved Successfully!");
 	}
 
@@ -321,7 +316,7 @@ public static class SavesManager
 
 		//MelonLogger.Msg("Save Game");
 		//MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-		GameData.Instance.orderGenerator.Save();
+		GameData.Instance.orderGenerator?.Save();
 		SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
 		return true;
 	}

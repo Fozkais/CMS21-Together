@@ -19,25 +19,20 @@ public static class Movement
 		if (player.scene != ClientData.UserData.scene) return;
 		if (player.userObject == null) player.SpawnPlayer();
 		
-		// player.userObject.transform.Translate(position.toVector3() * Time.deltaTime); without animation method
 		if (player.lastPosition != null)
 		{
 			var direction = (position.toVector3() - player.lastPosition.toVector3()).normalized;
 			var speed = (position.toVector3() - player.lastPosition.toVector3()).magnitude / Time.deltaTime;
-
-			// Mettre à jour les animations
+			
 			UpdateAnimations(player.userAnimator, direction, speed);
 			player.lastUpdateTime = Time.time;
 		}
-
-		// Mettre à jour la position
+		
 		if (player.userObject != null)
 		{
 			player.userObject.transform.position = position.toVector3();
 			player.lastPosition = position;
 		}
-		else
-			player.SpawnPlayer();
 	}
 
 	private static void UpdateAnimations(Animator animator, Vector3 direction, float speed)

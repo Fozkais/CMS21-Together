@@ -59,10 +59,20 @@ public class UserData
 
 	public void SpawnPlayer()
 	{
-		if (ClientData.Instance.playerPrefab == null) return;
-
+		if (ClientData.Instance.playerPrefab == null)
+		{
+			Debug.LogError("[CMS21-Together] Cannot spawn player: playerPrefab is null.");
+			return;
+		}
 		if (playerID == ClientData.UserData.playerID)
+		{
+			if (GameData.Instance.localPlayer == null)
+			{
+				Debug.LogError("[CMS21-Together] Cannot spawn local player: localPlayer is null.");
+				return;
+			}
 			userObject = GameData.Instance.localPlayer;
+		}
 		else
 		{
 			userObject = Object.Instantiate(ClientData.Instance.playerPrefab, position.toVector3(), rotation.toQuaternion());
@@ -71,6 +81,7 @@ public class UserData
 			userObject.name = username;
 			Physics.IgnoreCollision(GameData.Instance.localPlayer.GetComponent<Collider>(), userObject.GetComponent<Collider>());
 		}
+
 	}
 
 	public void DestroyPlayer()
