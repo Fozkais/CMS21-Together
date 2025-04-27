@@ -236,16 +236,14 @@ public static class SavesManager
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
 			
 			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.First(p => playerGuid == p.id);
+			PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.FirstOrDefault(p => playerGuid == p.id);
 			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
 			int exp = ServerData.Instance.connectedClients[id].playerExp;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 			
-			
-			if (ModSaves[currentSaveIndex].playerInfos.Any(p => playerGuid == p.id))
-				info.UpdateStats(pos, rot, exp , lvl, points);
+			info?.UpdateStats(pos, rot, exp , lvl, points);
 		}
 		
 		var saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveIndex}.cms21mp");
