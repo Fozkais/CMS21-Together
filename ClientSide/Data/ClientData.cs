@@ -78,7 +78,8 @@ public class ClientData
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		GameReady = true;
 		initRoutine = false;
-		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+		if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
+			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		MelonLogger.Msg("Game is ready.");
 	}
 
