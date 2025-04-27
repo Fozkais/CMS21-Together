@@ -80,6 +80,11 @@ public class ClientData
 		initRoutine = false;
 		if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
 			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+		foreach (var client in connectedClients)
+		{
+			if (client.Value.scene == GameScene.garage)
+				client.Value.SpawnPlayer();
+		}
 		MelonLogger.Msg("Game is ready.");
 	}
 

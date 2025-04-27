@@ -9,31 +9,24 @@ public static class Rotation
 	private static readonly float minDistance = 0.01f;
 	private static Quaternion lastRotation;
 
-
-	public static void SetSpawnRotation(int id, QuaternionSerializable rotation)
-	{
-		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
-
-		var player = ClientData.Instance.connectedClients[id];
-
-		if (player.scene != ClientData.UserData.scene) return;
-		if (player.userObject == null) return;
-
-		player.userObject.transform.rotation = rotation.toQuaternion();
-	}
-
 	public static void UpdateRotation(int id, QuaternionSerializable rotation)
 	{
 		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
 		if (!GameData.isReady) return;
 
 		var player = ClientData.Instance.connectedClients[id];
-
 		if (player.scene != ClientData.UserData.scene) return;
-		if (player.userObject == null) player.SpawnPlayer();
 
-		player.lastUpdateTime = Time.time;
-		player.userObject.transform.rotation = rotation.toQuaternion();
+		if (player.userObject != null)
+		{
+			player.lastUpdateTime = Time.time;
+			player.userObject.transform.rotation = rotation.toQuaternion();
+		}
+		else
+		{
+			player.rotation = rotation;
+			player.SpawnPlayer();
+		}
 	}
 
 	public static void SendRotation()
