@@ -292,14 +292,5 @@ public static class SavesManager
 		return Gamemode.Sandbox;
 	}
 
-	public static Gamemode GetGamemodeFromDifficulty(DifficultyLevel difficultyLevel)
-	{
-		if (difficultyLevel == DifficultyLevel.Sandbox)
-			return Gamemode.Sandbox;
-		if (difficultyLevel == DifficultyLevel.Easy)
-			return Gamemode.Easy;
-		if (difficultyLevel == DifficultyLevel.Expert)
-			return Gamemode.Expert;
-		return Gamemode.Normal;
-	}
+	public static Gamemode GetGamemodeFromDifficulty(DifficultyLevel difficultyLevel) => (Gamemode)difficultyLevel;
 }
