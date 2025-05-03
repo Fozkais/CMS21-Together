@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using CMS.ContainersSave;
+using CMS.Platforms;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide;
@@ -26,54 +28,33 @@ public static class SavesManager
 
 	private static readonly string GAME_SAVE_FOLDER = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\AppData\LocalLow\Red Dot Games\Car Mechanic Simulator 2021\Save");
 	public static Dictionary<int, ModSaveData> ModSaves = new();
-	public static Il2CppReferenceArray<ProfileData> profileData = new(MainMod.MAX_SAVE_COUNT + 1);
+	public static Il2CppReferenceArray<ProfileData> profileData;
 	public static ProfileData currentSave;
 	public static int currentSaveIndex;
 
 	public static void Initialize()
 	{
+		profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
 		for (var i = 0; i < 4; i++) profileData[i] = Singleton<GameManager>.Instance.GameDataManager.ProfileData[i];
-
-		LoadExistingModSaves();
-
+		
+		if (Directory.Exists(SAVE_FOLDER_PATH))
+		{
+			var savesFiles = new DirectoryInfo(SAVE_FOLDER_PATH).GetFiles("save_*.cms21mp");
+			for (int i = 0; i < savesFiles.Length; i++)
+			{
+				string serializedSave = File.ReadAllText(savesFiles[i].ToString());
+				ModSaveData save = JsonConvert.DeserializeObject<ModSaveData>(serializedSave);
+				ModSaves[save.saveIndex] = save;
+				if (save.alreadyLoaded)
+					profileData[save.saveIndex] = LoadProfile(save.saveIndex, GetSave(save.saveIndex));
+			}
+		}
+		
 		for (var i = 0; i < MainMod.MAX_SAVE_COUNT + 1; i++)
 			if (!ModSaves.ContainsKey(i))
 				ModSaves.Add(i, new ModSaveData("EmptySave", i, false)); // Add empty save to ModSaves 
 
 		Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set new array size
-	}
-
-	private static void LoadExistingModSaves()
-	{
-		if (Directory.Exists(SAVE_FOLDER_PATH))
-		{
-			var saveFolder = new DirectoryInfo(SAVE_FOLDER_PATH);
-			var saveFiles = saveFolder.GetFiles("save_*.cms21mp"); // get all saves files.
-
-			var vanillaSaveArray = new Il2CppReferenceArray<SaveData>(4);
-			for (var i = 0; i < 4; i++) vanillaSaveArray[i] = GetSave(i);
-
-			for (var i = 0; i < saveFiles.Length; i++)
-			{
-				var saveFile = saveFiles[i];
-				var serializedSave = File.ReadAllText(saveFile.ToString());
-				ModSaveData modSave = JsonConvert.DeserializeObject<ModSaveData>(serializedSave);
-
-				ModSaves[modSave.saveIndex] = modSave;
-				if (modSave.alreadyLoaded)
-				{
-					var tempSaveArray = new Il2CppReferenceArray<SaveData>(4);
-					tempSaveArray[3] = GetSave(modSave.saveIndex);
-
-					Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(tempSaveArray);
-					var copiedData = DataHelper.Copy(Singleton<GameManager>.Instance.GameDataManager.ProfileData[3]);
-
-					profileData[modSave.saveIndex] = copiedData;
-				}
-			}
-
-			Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(vanillaSaveArray);
-		}
 	}
 	
 	private static SaveData GetSave(int saveIndex)
@@ -87,7 +68,6 @@ public static class SavesManager
 
 		return saveData;
 	}
-
 	private static byte[] LoadProfileSave(int profileIndex, out byte format, out bool hasData)
 	{
 		var path = string.Format("{0}/profile{1}{2}b", GlobalStrings.SaveDirectory, profileIndex, ".cms21");
@@ -110,7 +90,36 @@ public static class SavesManager
 		hasData = false;
 		return Array.Empty<byte>();
 	}
+	private static ProfileData LoadProfile(int saveIndex,SaveData saveData2)
+	{
+		ProfileData data = new ProfileData();
+		if (!saveData2.HasData || saveData2.Data == null || saveData2.Data.Length == 0)
+		{
+			data.Init();
+		}
+		else if (saveData2.Format == 1)
+		{
+			Il2CppStructArray<byte> dataRef = saveData2.Data;
+			data.DeserializeFromBytes(ref dataRef);
+		}
+		else
+		{
+			string @string = Encoding.UTF8.GetString(saveData2.Data);
+			if (!string.IsNullOrEmpty(@string))
+			{
+				try
+				{
+					data = JsonUtility.FromJson<ProfileData>(@string);
+				}
+				catch (Exception ex)
+				{
+					MelonLogger.Warning(string.Format("[SaveManagerHooks] -> LoadProfile() Error while loading profile '{0}'. Error: {1}", saveIndex, ex.Message));
+				}
+			}
+		}
 
+		return data;
+	}
 
 	public static void LoadSave(ModSaveData saveData, Dictionary<int, ModNewCarData> carOnPark=null, bool clientSave = false)
 	{
@@ -130,31 +139,16 @@ public static class SavesManager
 		}
 
 		currentSaveIndex = index;
-		var level = GetDifficultyFromGamemode(saveData.selectedGamemode);
-
+		DifficultyLevel difficulty = GetDifficultyFromGamemode(saveData.selectedGamemode);
 		gameManager.ProfileManager.selectedProfile = index;
 		gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
-
-		MelonLogger.Msg("-------------------Load Save---------------------");
-		MelonLogger.Msg("Index : " + index);
-		MelonLogger.Msg("Name : " + name);
+		
 		if (!clientSave)
 		{
-			MelonLogger.Msg("Already Loaded : " + saveData.alreadyLoaded);
-			if (!saveData.alreadyLoaded) MelonLogger.Msg("-------------------------------------------------");
-
 			if (saveData.alreadyLoaded)
 			{
-				gameManager.ProfileManager.selectedProfile = index;
-				gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
-				Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level); // ensure gamemode is not loss
+				Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(difficulty);
 				gameManager.ProfileManager.Load();
-
-				MelonLogger.Msg("-------------------Save Info---------------------");
-				MelonLogger.Msg("Selected Profile Name : " + gameManager.ProfileManager.GetSelectedProfileName());
-				MelonLogger.Msg("Selected Profile Difficulty : " + gameManager.ProfileManager.GetSelectedProfileDifficulty());
-				MelonLogger.Msg("Selected Profile : " + gameManager.ProfileManager.selectedProfile);
-				MelonLogger.Msg("-------------------------------------------------");
 				currentSave = gameManager.ProfileManager.GetSelectedProfileData();
 				SaveModSave(index);
 				return;
@@ -169,9 +163,8 @@ public static class SavesManager
 
 			profileData[index] = save;
 			Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-			Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
+			Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(difficulty);
 			Singleton<GameManager>.Instance.ProfileManager.Load();
-
 			ModSaves[index].Name = name;
 			ModSaves[index].saveIndex = index;
 		}
@@ -188,7 +181,7 @@ public static class SavesManager
 			gameManager.ProfileManager.selectedProfile = index;
 			gameManager.RDGPlayerPrefs.SetInt("selectedProfile", index);
 			Singleton<GameManager>.Instance.ProfileManager.SetNameForCurrentProfile(name);
-			Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(level);
+			Singleton<GameManager>.Instance.ProfileManager.SetDifficultyForCurrentProfile(difficulty);
 			gameManager.ProfileManager.Load();
 			
 			currentSave = gameManager.ProfileManager.GetSelectedProfileData();
@@ -201,14 +194,8 @@ public static class SavesManager
 				}
 			}
 
-			MelonLogger.Msg("-------------------Save Info---------------------");
-			MelonLogger.Msg("Selected Profile Name : " + gameManager.ProfileManager.GetSelectedProfileName());
-			MelonLogger.Msg("Selected Profile Difficulty : " + gameManager.ProfileManager.GetSelectedProfileDifficulty());
-			MelonLogger.Msg("Selected Profile : " + gameManager.ProfileManager.selectedProfile);
-			MelonLogger.Msg("-------------------------------------------------");
 		}
 		currentSave = gameManager.ProfileManager.GetSelectedProfileData();
-
 		if (!clientSave) SaveModSave(index);
 		if (clientSave) StartGame(MainMod.MAX_SAVE_COUNT + 1);
 	}
@@ -223,8 +210,7 @@ public static class SavesManager
 			return DifficultyLevel.Expert;
 		return DifficultyLevel.Sandbox;
 	}
-
-
+	
 	public static void SaveModSave(int saveIndex)
 	{
 		if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
@@ -252,8 +238,7 @@ public static class SavesManager
 		File.WriteAllText(saveFilePath, JsonConvert.SerializeObject(ModSaves[saveIndex]));
 		MelonLogger.Msg("Saved Successfully!");
 	}
-
-
+	
 	public static void RemoveModSave(int index)
 	{
 		ModSaves[index] = new ModSaveData("EmptySave", index, false);
@@ -294,31 +279,6 @@ public static class SavesManager
 		Singleton<GameManager>.Instance.StartCoroutine(Singleton<GameManager>.Instance.GameDataManager.Load(true));
 
 		NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("garage", SceneType.Garage, true, true));
-	}
-
-
-	[HarmonyPatch(typeof(ProfileManager), "Save")]
-	[HarmonyPrefix]
-	public static void SavePatch(ProfileManager __instance)
-	{
-		if (!Client.Instance.isConnected) return;
-
-		//MelonLogger.Msg("Save GameProfile");
-		//MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-		SaveModSave(__instance.selectedProfile);
-	}
-
-	[HarmonyPatch(typeof(GarageLoader), nameof(GarageLoader.Save))]
-	[HarmonyPrefix]
-	public static bool SaveHook(bool showInfoIfSaveInProgress = false)
-	{
-		if (!Client.Instance.isConnected) return true;
-
-		//MelonLogger.Msg("Save Game");
-		//MelonLogger.Msg("ProfileManager Save Index: " + Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-		GameData.Instance.orderGenerator?.Save();
-		SaveModSave(Singleton<GameManager>.Instance.ProfileManager.selectedProfile);
-		return true;
 	}
 
 	public static Gamemode GetGamemodeFromInt(int selectedGamemode)

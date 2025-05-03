@@ -159,6 +159,7 @@
         <Compile Include="Shared\Data\Vanilla\ModProfileData.cs"/>
         <Compile Include="Shared\Data\Vanilla\ModStats.cs"/>
         <Compile Include="Shared\Data\Vector3Serializable.cs"/>
+        <Compile Include="Shared\SaveManagerHooks.cs" />
         <Compile Include="Shared\SceneManager.cs"/>
         <Compile Include="Shared\Packet.cs"/>
         <Compile Include="Shared\PacketTypes.cs"/>
@@ -218,6 +219,9 @@
         </Reference>
         <Reference Include="UnityEngine.InputModule">
             <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+          <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.ParticleSystemModule">
           <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
