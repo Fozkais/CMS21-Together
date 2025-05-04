@@ -49,7 +49,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Add QoLMod Support : ❌
 * Add Tk Basic's and Aftermarket Support : ❌
 * Sync Workshop Car : ✅ (seem to work fine)
-* Standalone dedicated server : ❌
+* Standalone dedicated server : 🚧
 
 **Here the description of every emote :**
 <br/>
