@@ -64,15 +64,8 @@ public class UserData
 			Debug.LogError("[CMS21-Together] Cannot spawn player: playerPrefab is null.");
 			return;
 		}
-		if (playerID == ClientData.UserData.playerID)
-		{
-			if (GameData.Instance.localPlayer == null)
-			{
-				Debug.LogError("[CMS21-Together] Cannot spawn local player: localPlayer is null.");
-				return;
-			}
+		if (playerID == ClientData.UserData.playerID) 
 			userObject = GameData.Instance.localPlayer;
-		}
 		else
 		{
 			userObject = Object.Instantiate(ClientData.Instance.playerPrefab, position.toVector3(), rotation.toQuaternion());

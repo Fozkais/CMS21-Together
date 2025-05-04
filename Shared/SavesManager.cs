@@ -32,7 +32,7 @@ public static class SavesManager
 	public static ProfileData currentSave;
 	public static int currentSaveIndex;
 
-	public static void Initialize()
+	/*public static void Initialize() NEW TO FIX
 	{
 		profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
 		for (var i = 0; i < 4; i++) profileData[i] = Singleton<GameManager>.Instance.GameDataManager.ProfileData[i];
@@ -55,6 +55,53 @@ public static class SavesManager
 				ModSaves.Add(i, new ModSaveData("EmptySave", i, false)); // Add empty save to ModSaves 
 
 		Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set new array size
+	}*/
+	
+	public static void Initialize()
+	{
+		profileData = new Il2CppReferenceArray<ProfileData>(MainMod.MAX_SAVE_COUNT + 1);
+		for (var i = 0; i < 4; i++) profileData[i] = Singleton<GameManager>.Instance.GameDataManager.ProfileData[i];
+
+		LoadExistingModSaves();
+
+		for (var i = 0; i < MainMod.MAX_SAVE_COUNT + 1; i++)
+			if (!ModSaves.ContainsKey(i))
+				ModSaves.Add(i, new ModSaveData("EmptySave", i, false)); // Add empty save to ModSaves 
+
+		Singleton<GameManager>.Instance.GameDataManager.ProfileData = profileData; // Set new array size
+	}
+
+	private static void LoadExistingModSaves() // TODO:Replace Outdated system by new (see above)
+	{
+		if (Directory.Exists(SAVE_FOLDER_PATH))
+		{
+			var saveFolder = new DirectoryInfo(SAVE_FOLDER_PATH);
+			var saveFiles = saveFolder.GetFiles("save_*.cms21mp"); // get all saves files.
+
+			var vanillaSaveArray = new Il2CppReferenceArray<SaveData>(4);
+			for (var i = 0; i < 4; i++) vanillaSaveArray[i] = GetSave(i);
+
+			for (var i = 0; i < saveFiles.Length; i++)
+			{
+				var saveFile = saveFiles[i];
+				var serializedSave = File.ReadAllText(saveFile.ToString());
+				ModSaveData modSave = JsonConvert.DeserializeObject<ModSaveData>(serializedSave);
+
+				ModSaves[modSave.saveIndex] = modSave;
+				if (modSave.alreadyLoaded)
+				{
+					var tempSaveArray = new Il2CppReferenceArray<SaveData>(4);
+					tempSaveArray[3] = GetSave(modSave.saveIndex);
+
+					Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(tempSaveArray);
+					var copiedData = DataHelper.Copy(Singleton<GameManager>.Instance.GameDataManager.ProfileData[3]);
+
+					profileData[modSave.saveIndex] = copiedData;
+				}
+			}
+
+			Singleton<GameManager>.Instance.GameDataManager.ReloadProfiles(vanillaSaveArray);
+		}
 	}
 	
 	private static SaveData GetSave(int saveIndex)
@@ -197,7 +244,7 @@ public static class SavesManager
 		}
 		currentSave = gameManager.ProfileManager.GetSelectedProfileData();
 		if (!clientSave) SaveModSave(index);
-		if (clientSave) StartGame(MainMod.MAX_SAVE_COUNT + 1);
+		if (clientSave) StartGame(MainMod.MAX_SAVE_COUNT);
 	}
 
 	private static DifficultyLevel GetDifficultyFromGamemode(Gamemode saveDataSelectedGamemode)
@@ -273,8 +320,9 @@ public static class SavesManager
 	public static void StartGame(int index)
 	{
 		Application.runInBackground = true;
-		Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index; // <- needed
 
+		Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index;
+		Singleton<GameManager>.Instance.RDGPlayerPrefs.SetInt("selectedProfile", index);
 		Singleton<GameManager>.Instance.GameDataManager.LoadProfile();
 		Singleton<GameManager>.Instance.StartCoroutine(Singleton<GameManager>.Instance.GameDataManager.Load(true));
 

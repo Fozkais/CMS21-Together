@@ -20,7 +20,7 @@ namespace CMS21Together
 		public const int MAX_SAVE_COUNT = 22;
 		public const int MAX_PLAYER = 4;
 		public const int PORT = 7777;
-		public const string ASSEMBLY_MOD_VERSION = "0.4.14";
+		public const string ASSEMBLY_MOD_VERSION = "0.5.0";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION;
 		public bool isModInitialized;
 		
@@ -44,13 +44,9 @@ namespace CMS21Together
 
 		public override void OnSceneWasLoaded(int buildindex, string sceneName)
 		{
-			if (!isModInitialized)
-			{
-				return;
-			}
-
+			if (!isModInitialized) return;
+			
 			CustomUIManager.OnSceneChange(sceneName);
-
 			if (sceneName == "Menu")
 			{
 				ContentManager.Instance.Initialize();
@@ -58,7 +54,7 @@ namespace CMS21Together
 				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);
 				Application.runInBackground = false;
 			}
-
+			
 			if (Client.Instance.isConnected)
 			{
 				if (SceneManager.CurrentScene() == GameScene.garage && ClientData.Instance.playerPrefab == null)
@@ -75,30 +71,19 @@ namespace CMS21Together
 
 			if (SceneManager.CurrentScene() == GameScene.garage)
 				ClientData.Instance.UpdateClient();
-
-
+			
 			if (ApiCalls.useSteam)
 			{
 				SteamClient.RunCallbacks();
 				if (Client.Instance.steam != null) Client.Instance.steam.Receive();
 				if (Server.Instance.steam != null) Server.Instance.steam.Receive();
 			}
-			
 			ThreadManager.UpdateThread();
 		}
-
-
+		
 		public static void StartCoroutine(IEnumerator routine)
 		{
 			GameManager.Instance.StartCoroutine(routine);
-		}
-
-		public override void OnLateUpdate()
-		{
-			if (!isModInitialized)
-			{
-				return;
-			}
 		}
 		
 		public override void OnInitializeMelon()

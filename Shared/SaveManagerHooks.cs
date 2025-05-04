@@ -18,8 +18,8 @@ namespace CMS21Together.Shared;
 [HarmonyPatch]
 public static class SaveManagerHooks
 {
-	[HarmonyPatch(typeof(GameDataManager), nameof(GameDataManager.ReloadProfiles))]
-	[HarmonyPrefix]
+	//[HarmonyPatch(typeof(GameDataManager), nameof(GameDataManager.ReloadProfiles))]
+	//[HarmonyPrefix]
 	public static bool ReloadProfilesHook(SaveData[] saveData, GameDataManager __instance)
 	{
 		if (saveData == null)
