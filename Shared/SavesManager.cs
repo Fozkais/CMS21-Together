@@ -210,7 +210,7 @@ public static class SavesManager
 		currentSave = gameManager.ProfileManager.GetSelectedProfileData();
 
 		if (!clientSave) SaveModSave(index);
-		if (clientSave) StartGame(MainMod.MAX_SAVE_COUNT + 1);
+		if (clientSave) StartGame(MainMod.MAX_SAVE_COUNT);
 	}
 
 	private static DifficultyLevel GetDifficultyFromGamemode(Gamemode saveDataSelectedGamemode)
