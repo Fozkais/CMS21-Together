@@ -23,6 +23,9 @@ public static class ToolsMoveManager
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 		
+		yield return new WaitForSeconds(0.15f);
+		yield return new WaitForEndOfFrame();
+		
 		listenToMove = false;
 		if (place == ModCarPlace.none)
 			GameData.Instance.toolsMoveManager.SetOnDefaultPosition(tool);

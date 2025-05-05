@@ -2,6 +2,7 @@
 using CMS.Managers;
 using CMS.UI.Logic.Upgrades;
 using CMS.UI.Windows;
+using CMS21Together.ClientSide.Data.Garage;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared;
@@ -54,7 +55,8 @@ public class GameData
 		};
 		LoadEngineStand();
 		isReady = true;
-		if (!Server.Instance.isRunning) ClientSend.AskFullSync();
+		if (!Server.Instance.isRunning)
+			MelonCoroutines.Start(GarageResync.ResyncGarage());
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
 	

@@ -232,6 +232,7 @@ public static class ClientHandle
 		var place = _packet.Read<ModCarPlace>();
 		var playSound = _packet.Read<bool>();
 
+		MelonLogger.Msg("Received ToolMovePacket");
 		MelonCoroutines.Start(Garage.Tools.ToolsMoveManager.UpdateToolMove((IOSpecialType)tool, place, playSound));
 	}
 
