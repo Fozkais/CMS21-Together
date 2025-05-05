@@ -40,7 +40,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync Inventory : ✅ 
 * Sync Cars Spawning and position : ✅
 * Sync Garage Interaction : ✅ (Lifter, Wheel Assembler, Wheel Balancer, Spring clamp, etc...)
-* Sync OutDoor Interaction : 🚧 (Car Painting, Car Wash, Power bench and wheel alignment)
+* Sync OutDoor Interaction : ⏸️ (Car Painting, Car Wash, Power bench and wheel alignment)
 * Sync Cars  : ✅ 
 * Sync Stats (Money,exp,scrap) : ✅
 * Sync Quest : ✅
