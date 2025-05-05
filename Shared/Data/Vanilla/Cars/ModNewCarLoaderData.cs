@@ -10,6 +10,15 @@ public class ModNewCarLoaderData
 
 	public int[] specialState;
 
+	public ModNewCarLoaderData() {}
+	public ModNewCarLoaderData(ModNewCarLoaderData data)
+	{
+		position = new int[data.position.Length];
+		for (var i = 0; i < position.Length; i++) position[i] = data.position[i];
+		specialState = new int[data.specialState.Length];
+		for (var i = 0; i < specialState.Length; i++) specialState[i] = data.specialState[i];
+	}
+	
 	public ModNewCarLoaderData(NewCarLoaderData data)
 	{
 		position = new int[data.position.Length];

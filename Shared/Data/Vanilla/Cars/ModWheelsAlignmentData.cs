@@ -10,6 +10,15 @@ public struct ModWheelsAlignmentData
 	public float RL;
 	public float RR;
 
+	public ModWheelsAlignmentData() {}
+	public ModWheelsAlignmentData(ModWheelsAlignmentData data)
+	{
+		FL = data.FL;
+		FR = data.FR;
+		RL = data.RL;
+		RR = data.RR;
+	}
+	
 	public ModWheelsAlignmentData(WheelsAlignmentData data)
 	{
 		FL = data.FL;

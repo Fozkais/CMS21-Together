@@ -10,7 +10,16 @@ public class ModWheelData
 	public int Profile;
 	public int Size;
 	public int Width;
-
+	
+	public ModWheelData(ModWheelData itemWheelData)
+	{
+		ET = itemWheelData.ET;
+		IsBalanced = itemWheelData.IsBalanced;
+		Profile = itemWheelData.Profile;
+		Size = itemWheelData.Size;
+		Width = itemWheelData.Width;
+	}
+	
 	public ModWheelData(WheelData itemWheelData)
 	{
 		ET = itemWheelData.ET;

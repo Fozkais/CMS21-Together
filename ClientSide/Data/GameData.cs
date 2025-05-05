@@ -3,6 +3,7 @@ using CMS.Managers;
 using CMS.UI.Logic.Upgrades;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
@@ -53,6 +54,7 @@ public class GameData
 		};
 		LoadEngineStand();
 		isReady = true;
+		if (!Server.Instance.isRunning) ClientSend.AskFullSync();
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
 	

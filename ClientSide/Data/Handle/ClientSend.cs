@@ -510,4 +510,13 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void AskFullSync()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.resync);
+			SendData(packet);
+		}
+	}
 }
