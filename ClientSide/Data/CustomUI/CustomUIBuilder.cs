@@ -156,82 +156,6 @@ public static class CustomUIBuilder
 		splitter3Img.rectTransform.anchoredPosition = new Vector2(0, -200);
 	}
 
-	public static void BuildLobbyHeader()
-	{
-		var lobbyHeaderObject = new GameObject("LobbyHeader");
-		var img = lobbyHeaderObject.AddComponent<Image>();
-		img.rectTransform.parent = GetParentFromSection(CustomUISection.MP_Lobby);
-		img.rectTransform.parentInternal = GetParentFromSection(CustomUISection.MP_Lobby);
-
-		img.color = new Color(.031f, .027f, .033f, 0.85f);
-
-		CustomUIManager.MP_Lobby_Addition.Add((0, lobbyHeaderObject));
-
-		if (Server.Instance.isRunning)
-		{
-			img.rectTransform.sizeDelta = new Vector2(600, 125);
-			img.rectTransform.anchoredPosition = new Vector2(500, 186);
-
-			var t1_pos = new Vector2(620, -30);
-			var t1_size = new Vector2(400, 100);
-			CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
-
-			var t2_pos = new Vector2(800, -30);
-			var t2_size = new Vector2(400, 100);
-			CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
-
-			var t3_pos = new Vector2(1060, -30);
-			var t3_size = new Vector2(400, 100);
-			CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
-
-			var splitter2 = new GameObject("splitter");
-			var splitter2Img = splitter2.AddComponent<Image>();
-			splitter2Img.rectTransform.parent = lobbyHeaderObject.transform;
-			splitter2Img.rectTransform.parentInternal = lobbyHeaderObject.transform;
-			splitter2Img.color = new Color(1f, 1f, 1f, 0.5f);
-			splitter2Img.rectTransform.sizeDelta = new Vector2(580, 2);
-			splitter2Img.rectTransform.anchoredPosition = new Vector2(0, 0);
-
-			var t4_pos = new Vector2(798, 30);
-			var t4_size = new Vector2(600, 100);
-			CreateText(t4_pos, t4_size, $"Save Name: {SavesManager.currentSave.Name}", 12, lobbyHeaderObject.transform);
-
-			if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
-			{
-				Vector2 t5_pos = new Vector2(890, 30);
-				Vector2 t5_size = new Vector2(400, 100);
-				CreateText(t5_pos, t5_size, $"Server ID: {Server.Instance.steam.GetServerID()}", 14, lobbyHeaderObject.transform);
-			}
-		}
-		else
-		{
-			img.rectTransform.sizeDelta = new Vector2(600, 75);
-			img.rectTransform.anchoredPosition = new Vector2(500, 186);
-
-			var t1_pos = new Vector2(620, 0);
-			var t1_size = new Vector2(400, 100);
-			CreateText(t1_pos, t1_size, "Player", 16, lobbyHeaderObject.transform);
-
-			var t2_pos = new Vector2(800, 0);
-			var t2_size = new Vector2(400, 100);
-			CreateText(t2_pos, t2_size, "Ready State", 16, lobbyHeaderObject.transform);
-
-			var t3_pos = new Vector2(1060, 0);
-			var t3_size = new Vector2(400, 100);
-			CreateText(t3_pos, t3_size, "Ping", 16, lobbyHeaderObject.transform);
-		}
-
-		var splitter1 = new GameObject("splitter");
-		var splitter1Img = splitter1.AddComponent<Image>();
-		splitter1Img.rectTransform.parent = lobbyHeaderObject.transform;
-		splitter1Img.rectTransform.parentInternal = lobbyHeaderObject.transform;
-		splitter1Img.color = new Color(1f, 1f, 1f, 0.5f);
-		splitter1Img.rectTransform.sizeDelta = new Vector2(580, 2);
-		splitter1Img.rectTransform.anchoredPosition = new Vector2(0, -62);
-
-		CustomUIManager.MP_Lobby_Addition[0].Item2.SetActive(true);
-	}
-
 	public static StringSelector CreateNewSelector(Vector2 position, Vector2 size, string[] choices, Transform parent)
 	{
 		var selectorObject = Object.Instantiate(CustomUIManager.templateSelector);
@@ -457,7 +381,6 @@ public static class CustomUIBuilder
 
 		buttonTransform.anchoredPosition = buttonInfo.position;
 		buttonTransform.sizeDelta = buttonInfo.size;
-		/*button.OnMouseHover = CustomUIManager.templateButton.GetComponent<MainMenuButton>().OnMouseHover; TODO: Fix MouseHover ?*/
 
 		button.OnClick = new MainMenuButton.ButtonEvent();
 		button.OnClick.AddListener(buttonInfo.action);
@@ -500,8 +423,6 @@ public static class CustomUIBuilder
 			CustomUIManager.MP_Main_Buttons.Add(buttonState);
 		else if (section == CustomUISection.MP_Host)
 			CustomUIManager.MP_Host_Buttons.Add(buttonState);
-		else if (section == CustomUISection.MP_Lobby)
-			CustomUIManager.MP_Lobby_Buttons.Add(buttonState);
 		else if (section == CustomUISection.MP_Saves)
 			CustomUIManager.MP_Saves_Buttons.Add(buttonState);
 		else
@@ -516,8 +437,6 @@ public static class CustomUIBuilder
 			return CustomUIManager.MP_Main_Parent;
 		if (section == CustomUISection.MP_Host)
 			return CustomUIManager.MP_Host_Parent;
-		if (section == CustomUISection.MP_Lobby)
-			return CustomUIManager.MP_Lobby_Parent;
 		if (section == CustomUISection.MP_Saves)
 			return CustomUIManager.MP_Saves_Parent;
 		MelonLogger.Msg("[CustomUIBuilder->GetParentFromSection] section is not valid.");

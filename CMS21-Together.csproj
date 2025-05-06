@@ -40,7 +40,6 @@
         <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\UI_Host.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\UI_Lobby.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs"/>
         <Compile Include="ClientSide\Data\GameData.cs"/>

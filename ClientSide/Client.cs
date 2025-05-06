@@ -79,7 +79,6 @@ public class Client
 			{ (int)PacketTypes.connect, ClientHandle.ConnectPacket },
 			{ (int)PacketTypes.disconnect, ClientHandle.DisconnectPacket },
 			{ (int)PacketTypes.userData, ClientHandle.UserDataPacket },
-			{ (int)PacketTypes.readyState, ClientHandle.ReadyPacket },
 			{ (int)PacketTypes.start, ClientHandle.StartPacket },
 			{ (int)PacketTypes.contentInfo, ClientHandle.ContentsInfoPacket },
 
@@ -146,15 +145,6 @@ public class Client
 			var manager = NotificationCenter.m_instance;
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 		}
-		else
-		{
-			if (CustomUIManager.currentSection == CustomUISection.MP_Lobby)
-			{
-				CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
-				CustomUIManager.EnableUI(CustomUISection.MP_Main);
-			}
-		}
-		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
 	}

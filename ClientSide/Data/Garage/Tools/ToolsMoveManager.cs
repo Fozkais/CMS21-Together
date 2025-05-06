@@ -19,8 +19,10 @@ public static class ToolsMoveManager
 
 	public static IEnumerator UpdateToolMove(IOSpecialType tool, ModCarPlace place, bool playSound)
 	{
-		while (!GameData.isReady)
+		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
+
+		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		
 		yield return new WaitForSeconds(0.15f);
