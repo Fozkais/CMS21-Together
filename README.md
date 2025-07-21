@@ -9,8 +9,6 @@
   <p align="center">
     A work in progress multiplayer mod for Car Mechanic Simulator 2021
     <br/>
-    <br/>
-    <a href="https://discord.gg/rxnXWGCES9">Report Bug</a>
   </p>
 </p>
 
@@ -48,7 +46,7 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync garage Customization : ❌
 * Add QoLMod Support : ❌
 * Add Tk Basic's and Aftermarket Support : ❌
-* Sync Workshop Car : ✅ (seem to work fine)
+* Sync Workshop Car : ✅
 * Standalone dedicated server : 🚧
 
 **Here the description of every emote :**
@@ -62,13 +60,8 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 ⏸️: "Paused" / Some new can appear but it's not the main focus.
 <br/>
 
-You can join the project Discord if you want to talk or ask for help : 
-https://discord.gg/rMz4tGbrc6
-## How it work
-
-You can follow this video (for steam) : https://www.youtube.com/watch?v=BKX5lMkSfco&t=1s <br/>
+You can follow this video : https://www.youtube.com/watch?v=BKX5lMkSfco&t=1s <br/>
 And below is the installation guide :<br/>
-It change depending the version of the mod you've downloaded.<br/>
 <br/>
 1- Download Latest build on release page<br/>
 2- Download and Install MelonLoader on version 0.5.7<br/>
