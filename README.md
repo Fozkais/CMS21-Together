@@ -25,7 +25,7 @@
 
 Who never dreamed playing CMS with some friends?  Since it's not in the base game I'll add it myself ! :)
 
-**From 0.4.0 mod exit from Experimental, almost everything from base game is synced and core gameplay should work without to many issue, however be carefull of potential save corruption or crash.**
+**From 0.4.0, almost everything from base game is synced and core gameplay should work without any major or blocking problems, However, crashes or desynchronization requiring a restart should be expected.**
 
 *Here's every planned feature state :*
 
@@ -44,10 +44,8 @@ Who never dreamed playing CMS with some friends?  Since it's not in the base gam
 * Sync Quest : ✅
 * Sync garage upgrade : ✅
 * Sync garage Customization : ❌
-* Add QoLMod Support : ❌
-* Add Tk Basic's and Aftermarket Support : ❌
 * Sync Workshop Car : ✅
-* Standalone dedicated server : 🚧
+* Standalone dedicated server : ⏸️
 
 **Here the description of every emote :**
 <br/>
