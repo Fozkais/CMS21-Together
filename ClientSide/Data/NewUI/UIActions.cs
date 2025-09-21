@@ -36,7 +36,7 @@ public static class UIActions
 			if (UIUtils.GetSaveName(save_index) != "New game")
 				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.SaveInfo);
 			else
-				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.SaveCreation);
+				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.CreateSave);
 		};
 		return action;
 	}

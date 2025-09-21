@@ -16,7 +16,7 @@ public static class UIElements
 {
 	public static Text CreateText(Transform parent, string content, int fontSize = 16, TextAnchor anchor = TextAnchor.MiddleLeft)
 	{
-		var obj = UICore.CreateElement(CustomUIManager.templateText, parent);
+		var obj = UICore.CreateElement(UICore.templateText, parent);
 		var text = obj.GetComponent<Text>();
 		text.text = content;
 		text.fontSize = fontSize;
@@ -45,7 +45,7 @@ public static class UIElements
 
 	public static InputField CreateInput(Transform parent, string defaultText = "")
 	{
-		var obj = UICore.CreateElement(CustomUIManager.templateInputField, parent);
+		var obj = UICore.CreateElement(UICore.templateInputField, parent);
 		var input = obj.GetComponentInChildren<InputField>();
 		input.text = defaultText;
 		return input;
@@ -53,7 +53,7 @@ public static class UIElements
 
 	public static StringSelector CreateSelector(Transform parent, IEnumerable<string> options)
 	{
-		var obj = UICore.CreateElement(CustomUIManager.templateSelector, parent);
+		var obj = UICore.CreateElement(UICore.templateSelector, parent);
 		var dd = obj.GetComponent<StringSelector>();
 		dd.options = new List<string>(options);
 		return dd;

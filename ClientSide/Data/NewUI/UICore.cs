@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CMS.MainMenu.Controls;
@@ -9,6 +10,7 @@ using CMS21Together.Shared.Data;
 using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.NewUI;
 
@@ -19,15 +21,16 @@ public static class UICore
 	public static GameObject templateInputField;
 	public static GameObject templateSelector;
 	
+	public static GameObject UI_Main;
 	public static GameObject V_Main;
 	public static GameObject MP_Main;
 	public static GameObject MP_Host;
 	public static GameObject MP_Lobby_Parent;
 	public static GameObject MP_Saves_Parent;
 
-	public static IEnumerator InitializeUI(string sceneName)
+	public static void InitializeUI(string sceneName)
 	{
-		if (sceneName != "Menu") yield break;
+		if (sceneName != "Menu") return;
 		
 		templateButton = GameObject.Find("MainMenuButton");
 		templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
@@ -35,6 +38,7 @@ public static class UICore
 		templateSelector = GameObject.Find("MainMenuWindows").transform.GetChild(3).GetChild(0).gameObject
 									 .GetComponentInChildren<StringSelector>().gameObject;
 
+		UI_Main = GameObject.Find("MainButtons").transform.parent.gameObject;
 		V_Main = GameObject.Find("MainButtons").GetComponent<MainSection>().gameObject;
 		MP_Main = CreateNewPanel();
 		MP_Host = CreateNewPanel();
@@ -42,7 +46,6 @@ public static class UICore
 		LoadCustomlogo();
 		GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 		UIMenu.SetupMainMenu();
-		yield return new WaitForEndOfFrame();
 		UIMenu.SetupMultiplayerMenu();
 		UIMenu.SetupHostMenu();
 	}
@@ -105,17 +108,33 @@ public static class UICore
 		rect.pivot = new Vector2(0.5f, 0.5f);
 		rect.anchoredPosition = new Vector2(0, 100);
 		rect.sizeDelta = new Vector2(336, 65);
-
-
+		
 		return obj;
 	}
 
-	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType saveInfo)
+	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType panelType, bool disableCurrentPanel=false)
 	{
-		var buttons = currentPanel.GetComponentsInChildren<MainMenuButton>().ToList();
-		foreach (MainMenuButton button in buttons)
+		if (disableCurrentPanel)
 		{
-			button.SetLocked();
+			var buttons = currentPanel.GetComponentsInChildren<MainMenuButton>().ToList();
+			foreach (MainMenuButton button in buttons)
+			{
+				button.SetLocked();
+			}
+		}
+
+		switch (panelType)
+		{
+			case UICustomPanelType.SaveInfo:
+				UICustomPanel.CreateSaveInfoPanel(null);
+				break;
+			case UICustomPanelType.CreateSave:
+				UICustomPanel.CreateSaveInfoPanel(null);
+				break;
+			case UICustomPanelType.JoinMenu:
+				break;
+			case UICustomPanelType.LoobyMenu:
+				break;
 		}
 	}
 }
