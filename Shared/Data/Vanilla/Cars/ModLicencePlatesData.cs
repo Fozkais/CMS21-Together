@@ -11,6 +11,17 @@ public class ModLicencePlatesData
 	public string LicensePlateFrontTex;
 	public string LicensePlateRearTex;
 
+	public ModLicencePlatesData() {}
+	
+	public ModLicencePlatesData(ModLicencePlatesData data)
+	{
+		LicensePlateNumberFront = data.LicensePlateNumberFront;
+		LicensePlateNumberRear = data.LicensePlateNumberRear;
+		LicensePlateFrontTex = data.LicensePlateFrontTex;
+		LicensePlateRearTex = data.LicensePlateRearTex;
+		FactoryLicensePlateNumber = data.FactoryLicensePlateNumber;
+	}
+	
 	public ModLicencePlatesData(LicensePlatesData data)
 	{
 		LicensePlateNumberFront = data.LicensePlateNumberFront;

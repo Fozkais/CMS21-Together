@@ -7,6 +7,13 @@ public class ModNewCarLifterData
 {
 	public int lifterData;
 
+	public ModNewCarLifterData() {}
+	
+	public ModNewCarLifterData(ModNewCarLifterData data)
+	{
+		lifterData = data.lifterData;
+	}
+	
 	public ModNewCarLifterData(NewCarLifterData data)
 	{
 		lifterData = data.lifterData;

@@ -92,7 +92,7 @@ public static class Stats
 
 		ClientData.Instance.exp = GlobalData.PlayerExp;
 
-		MelonLogger.Msg($"Send XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
+		//MelonLogger.Msg($"Send XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ClientSend.ExpPacket(GlobalData.PlayerExp, GlobalData.PlayerLevel);
 	}
 	
@@ -103,7 +103,7 @@ public static class Stats
 		if (!Client.Instance.isConnected) return;
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 		
-		MelonLogger.Msg($"Send Point Packet : {__instance.AvailablePoints}");
+		//MelonLogger.Msg($"Send Point Packet : {__instance.AvailablePoints}");
 		ClientSend.PointPacket(__instance.AvailablePoints);
 	}
 	

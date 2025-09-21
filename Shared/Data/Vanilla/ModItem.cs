@@ -47,13 +47,13 @@ public class ModItem
 			Color = new ModColor(item.Color.GetColor());
 			Condition = item.Condition;
 			Dent = item.Dent;
-			//this.GearboxData = item.GearboxData; // TODO: Handle class
+			//this.GearboxData = item.GearboxData;
 			IsExamined = item.IsExamined;
 			IsPainted = item.IsPainted;
 			IsTinted = item.IsTinted;
 			Livery = item.Livery;
 			LiveryStrength = item.LiveryStrength;
-			//this.LPData = item.LPData; // TODO: Handle class
+			//this.LPData = item.LPData;
 			if (item.MountObjectData != null) MountObjectData = new ModMountObjectData(item.MountObjectData);
 			NormalID = item.NormalID;
 			OutsideRustEnabled = item.OutsideRustEnabled;

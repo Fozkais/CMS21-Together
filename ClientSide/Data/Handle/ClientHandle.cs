@@ -44,7 +44,6 @@ public static class ClientHandle
 		var data = packet.Read<UserData>();
 
 		ClientData.Instance.connectedClients[data.playerID] = data;
-		UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
 		//MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
 	}
 
@@ -52,15 +51,6 @@ public static class ClientHandle
 	{
 		var infos = _packet.Read<ReadOnlyDictionary<string, bool>>();
 		ApiCalls.API_M2(infos);
-	}
-
-	public static void ReadyPacket(Packet packet)
-	{
-		var id = packet.ReadInt();
-		var ready = packet.Read<bool>();
-
-		ClientData.Instance.connectedClients[id].isReady = ready;
-		UI_Lobby.ChangeReadyState(id, ready);
 	}
 
 	public static void StartPacket(Packet packet)
@@ -150,7 +140,7 @@ public static class ClientHandle
 		else
 			lifter.Action(1);
 
-		// ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state; TODO: fix this?
+		// ClientData.Instance.loadedCars[carLoaderID - 1].CarLifterState = (int)state;
 	}
 
 	public static void SetTireChangerPacket(Packet packet)
@@ -232,6 +222,7 @@ public static class ClientHandle
 		var place = _packet.Read<ModCarPlace>();
 		var playSound = _packet.Read<bool>();
 
+		MelonLogger.Msg("Received ToolMovePacket");
 		MelonCoroutines.Start(Garage.Tools.ToolsMoveManager.UpdateToolMove((IOSpecialType)tool, place, playSound));
 	}
 
@@ -403,6 +394,13 @@ public static class ClientHandle
 		MelonCoroutines.Start(ParkHook.RemoveCarFromPark(index));
 	}
 
+	public static void SpawnPlayerPacket(Packet packet)
+	{
+		int id = packet.ReadInt();
+		
+		ClientData.Instance.connectedClients[id].SpawnPlayer();
+	}
+
 	public static void SceneChangePacket(Packet packet)
 	{
 		var scene = packet.Read<GameScene>();
@@ -411,6 +409,7 @@ public static class ClientHandle
 		ClientData.Instance.connectedClients[id].scene = scene;
 		if (scene != SceneManager.CurrentScene())
 			ClientData.Instance.connectedClients[id].DestroyPlayer();
-		else if (ClientData.Instance.connectedClients[id].userObject == null) ClientData.Instance.connectedClients[id].SpawnPlayer();
+		else if (ClientData.Instance.connectedClients[id].userObject == null)
+			ClientData.Instance.connectedClients[id].SpawnPlayer();
 	}
 }

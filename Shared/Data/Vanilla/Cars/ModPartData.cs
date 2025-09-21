@@ -19,6 +19,24 @@ public class ModPartData
 	public ModTuningData TuningData;
 	public bool Unmounted;
 
+	public ModPartData() {}
+	public ModPartData(ModPartData data)
+	{
+		Color = data.Color;
+		Condition = data.Condition;
+		Dust = data.Dust;
+		Examined = data.Examined;
+		IsPainted = data.IsPainted;
+		MountObjectData = data.MountObjectData;
+		PaintData = data.PaintData;
+		PaintType = data.PaintType;
+		Path = data.Path;
+		Quality = data.Quality;
+		TunedID = data.TunedID;
+		TuningData = data.TuningData;
+		Unmounted = data.Unmounted;
+	}
+	
 	public ModPartData(PartData data)
 	{
 		Color = new ModColor(data.Color.element[0], data.Color.element[1], data.Color.element[2], data.Color.element[3]);

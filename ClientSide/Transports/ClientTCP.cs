@@ -135,9 +135,16 @@ public class ClientTCP
 
 	public void Send(Packet packet)
 	{
-		if (socket != null)
+		try
 		{
-			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), (ar) =>
+			if (socket == null || !socket.Connected || stream == null)
+			{
+				MelonLogger.Warning("[TCP] Tried to send data but the socket is null, not connected, or stream is null.");
+				return;
+			}
+
+			byte[] data = packet.ToArray();
+			stream.BeginWrite(data, 0, packet.Length(), ar =>
 			{
 				try
 				{
@@ -145,11 +152,18 @@ public class ClientTCP
 				}
 				catch (Exception ex)
 				{
-					MelonLogger.Error($"[TCP]Error while writing data : {ex.Message}");
+					MelonLogger.Error($"[TCP] Exception during EndWrite: {ex.Message}");
 				}
 			}, null);
 		}
+		catch (Exception ex)
+		{
+			MelonLogger.Error($"[TCP] Exception during Send: {ex.Message}");
+			// Optionally trigger disconnect logic here
+			Client.Instance.Disconnect();
+		}
 	}
+
 
 	public void Disconnect()
 	{

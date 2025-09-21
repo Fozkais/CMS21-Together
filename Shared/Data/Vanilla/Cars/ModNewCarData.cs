@@ -46,6 +46,8 @@ public class ModNewCarData
 
 	public int carPosition;
 
+	public ModNewCarData() {}
+	
 	public ModNewCarData(NewCarData newCarData, int placeNo = 0, int _jobID = -1)
 	{
 		carPosition = placeNo;

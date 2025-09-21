@@ -112,12 +112,6 @@ public class UI_Main
 		CustomUIManager.EnableUI(CustomUISection.V_Main);
 	}
 
-	private static void OpenLobby()
-	{
-		CustomUIManager.DisableUI(CustomUISection.MP_Main);
-		CustomUIManager.EnableUI(CustomUISection.MP_Lobby);
-	}
-
 	private static void ChangeNetworkType()
 	{
 		switch (ClientData.UserData.selectedNetworkType)
@@ -171,8 +165,6 @@ public class UI_Main
 			{
 				Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType, address);
 				Application.runInBackground = true;
-
-				OpenLobby();
 			}
 			else
 				return;

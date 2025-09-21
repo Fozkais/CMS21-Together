@@ -34,17 +34,6 @@ public class ClientSend
 		}
 	}
 
-	public static void ReadyPacket(bool isReady, int playerID)
-	{
-		using (var packet = new Packet((int)PacketTypes.readyState))
-		{
-			packet.Write(playerID);
-			packet.Write(isReady);
-
-			SendData(packet);
-		}
-	}
-
 	public static void PositionPacket(Vector3Serializable position)
 	{
 		using (var packet = new Packet((int)PacketTypes.position))
@@ -507,6 +496,15 @@ public class ClientSend
 		{
 			MelonLogger.Msg("Remove a car to parking");
 			packet.Write(index);
+			SendData(packet);
+		}
+	}
+
+	public static void AskFullSync()
+	{
+		using (var packet = new Packet((int)PacketTypes.resync))
+		{
+			packet.Write(PacketTypes.resync);
 			SendData(packet);
 		}
 	}

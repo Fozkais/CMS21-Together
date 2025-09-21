@@ -21,18 +21,13 @@ public static class CustomUIManager
 	public static GameObject templateSelector;
 
 	public static List<ButtonState> V_Main_Buttons = new();
-
 	public static List<ButtonState> MP_Main_Buttons = new();
 	public static List<ButtonState> MP_Host_Buttons = new();
 	public static List<ButtonState> MP_Saves_Buttons = new();
 
-	public static List<ButtonState> MP_Lobby_Buttons = new();
-	public static List<(int, GameObject)> MP_Lobby_Addition = new();
-
 	public static Transform V_Main_Parent;
 	public static Transform MP_Main_Parent;
 	public static Transform MP_Host_Parent;
-	public static Transform MP_Lobby_Parent;
 	public static Transform MP_Saves_Parent;
 
 	public static CustomUISection currentSection = CustomUISection.V_Main;
@@ -63,14 +58,11 @@ public static class CustomUIManager
 		UI_Main.InitializeMultiplayerMenu();
 		UI_Host.InitializeHostMenu();
 		UI_Saves.InitializeSavesMenu();
-		UI_Lobby.InitializeLobbyMenu();
 	}
 
 	private static void ResetLists()
 	{
 		V_Main_Buttons.Clear();
-		MP_Lobby_Buttons.Clear();
-		MP_Lobby_Addition.Clear();
 		MP_Saves_Buttons.Clear();
 		MP_Main_Buttons.Clear();
 		MP_Host_Buttons.Clear();
@@ -90,11 +82,6 @@ public static class CustomUIManager
 		else if (section == CustomUISection.MP_Host)
 		{
 			DisableUIList(MP_Host_Buttons);
-		}
-		else if (section == CustomUISection.MP_Lobby)
-		{
-			DisableUIAddition(MP_Lobby_Addition);
-			DisableUIList(MP_Lobby_Buttons);
 		}
 		else if (section == CustomUISection.MP_Saves)
 		{
@@ -117,42 +104,6 @@ public static class CustomUIManager
 		{
 			EnableUIList(MP_Host_Buttons);
 		}
-		else if (section == CustomUISection.MP_Lobby)
-		{
-			foreach (var elt in MP_Lobby_Addition) Object.Destroy(elt.Item2);
-			MP_Lobby_Addition.Clear();
-			CustomUIBuilder.BuildLobbyHeader();
-			switch (Server.Instance.isRunning)
-			{
-				case false:
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Disconnect";
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
-
-					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Disabled, true);
-					MP_Lobby_Buttons[0].button.isDisabled = true;
-					MP_Lobby_Buttons[0].button.SetDisabled(true, true);
-					
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.DoStateTransition(SelectionState.Disabled, true);
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.isDisabled = true;
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.SetDisabled(true, true);
-					break;
-				case true:
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.text = "Back to saves";
-					MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 1].button.text.OnEnable();
-
-					MP_Lobby_Buttons[0].button.DoStateTransition(SelectionState.Normal, true);
-					MP_Lobby_Buttons[0].button.SetDisabled(false, true);
-					if (Server.Instance.steam != null)
-					{
-						MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.DoStateTransition(SelectionState.Normal, true);
-						MP_Lobby_Buttons[MP_Lobby_Buttons.Count - 2].button.SetDisabled(false, true);
-					}
-					break;
-			}
-
-			EnableUIList(MP_Lobby_Buttons);
-			EnableUIAddition(MP_Lobby_Addition);
-		}
 		else if (section == CustomUISection.MP_Saves)
 		{
 			EnableUIList(MP_Saves_Buttons);
@@ -169,8 +120,6 @@ public static class CustomUIManager
 			LockUIList(MP_Main_Buttons);
 		else if (section == CustomUISection.MP_Host)
 			LockUIList(MP_Host_Buttons);
-		else if (section == CustomUISection.MP_Lobby)
-			LockUIList(MP_Lobby_Buttons);
 		else if (section == CustomUISection.MP_Saves)
 			LockUIList(MP_Saves_Buttons);
 	}
@@ -183,8 +132,6 @@ public static class CustomUIManager
 			UnlockUIList(MP_Main_Buttons);
 		else if (section == CustomUISection.MP_Host)
 			UnlockUIList(MP_Host_Buttons);
-		else if (section == CustomUISection.MP_Lobby)
-			UnlockUIList(MP_Lobby_Buttons);
 		else if (section == CustomUISection.MP_Saves)
 			UnlockUIList(MP_Saves_Buttons);
 	}

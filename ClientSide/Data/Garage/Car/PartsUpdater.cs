@@ -160,6 +160,12 @@ public static class PartsUpdater
 
 	public static IEnumerator UpdateBodyParts(ModCarPart carPart, int carLoaderID)
 	{
+		while (!ClientData.GameReady)
+			yield return new WaitForSeconds(0.25f);
+
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+		
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var _car))
 			while (!_car.isReady)
 				yield return new WaitForSeconds(0.25f);
