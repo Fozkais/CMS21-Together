@@ -40,7 +40,7 @@
         <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\UI_Host.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\UI_Lobby.cs"/>
+        <Compile Include="ClientSide\Data\CustomUI\UI_Lobby.cs" />
         <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs"/>
         <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs"/>
         <Compile Include="ClientSide\Data\GameData.cs"/>
@@ -73,12 +73,6 @@
         <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
-        <Compile Include="ClientSide\Data\NewUI\UIActions.cs" />
-        <Compile Include="ClientSide\Data\NewUI\UICore.cs" />
-        <Compile Include="ClientSide\Data\NewUI\UICustomPanel.cs" />
-        <Compile Include="ClientSide\Data\NewUI\UIElements.cs" />
-        <Compile Include="ClientSide\Data\NewUI\UIMenu.cs" />
-        <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
         <Compile Include="ClientSide\Data\Player\Inventory.cs" />
         <Compile Include="ClientSide\Data\Player\Movement.cs" />

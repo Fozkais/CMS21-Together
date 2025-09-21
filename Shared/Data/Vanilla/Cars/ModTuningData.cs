@@ -10,18 +10,6 @@ public class ModTuningData
 	public short[] Values;
 	public float TuningValue;
 
-	
-	public ModTuningData() {}
-	public ModTuningData(ModTuningData data)
-	{
-		if (data != null)
-		{
-			IsTuned = data.IsTuned;
-			Values = data.Values;
-			TuningValue = data.TuningValue;
-		}
-	}
-	
 	public ModTuningData(TuningData data)
 	{
 		if (data != null)

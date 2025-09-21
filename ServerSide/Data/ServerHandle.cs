@@ -52,19 +52,7 @@ public static class ServerHandle
 
 		
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] {username} connected successfully.");
-
-		ServerData.Instance.connectedClients[fromClient] = new UserData(username, fromClient, playerID);
-		Dictionary<int, ModNewCarData> parksCars = new Dictionary<int, ModNewCarData>();
-		for (var i = 0; i < SavesManager.currentSave.carsOnParking.Count; i++)
-		{
-			var carData = SavesManager.currentSave.carsOnParking[i];
-			if (carData != null && !String.IsNullOrEmpty(carData.carToLoad))
-			{
-				parksCars.Add(i, new ModNewCarData(carData));
-			}
-		}
-		ServerSend.StartPacket(fromClient, (Gamemode)SavesManager.currentSave.Difficulty, parksCars);
-		
+		Server.Instance.clients[fromClient].SendToLobby(username, playerID);
 		
 		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Any(s => s.id == playerID))
 			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(s => s.id == playerID));

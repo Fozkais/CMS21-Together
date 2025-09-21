@@ -382,14 +382,14 @@ public static class ServerSend
 		}
 	}
 
-	public static void StartPacket(int fromClient, Gamemode gamemode, Dictionary<int, ModNewCarData> parkCars)
+	public static void StartPacket(Gamemode gamemode, Dictionary<int, ModNewCarData> parkCars)
 	{
 		using (var packet = new Packet((int)PacketTypes.start))
 		{
 			packet.Write(gamemode);
 			packet.Write(parkCars);
 			
-			SendData(fromClient, packet);
+			SendDataToAll(1, packet);
 		}
 	}
 

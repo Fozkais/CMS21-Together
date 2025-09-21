@@ -13,8 +13,10 @@ namespace CMS21Together.ClientSide.Data.Garage;
 
 public static class GarageResync
 {
-	public static void ClearOutdatedCars()
+	public static IEnumerator ResyncCars()
 	{
+		yield return new WaitForEndOfFrame();
+		MelonLogger.Msg("Remove all car !");
 		List<ModCar> carsToCheck = ClientData.Instance.loadedCars.Values.ToList();
 		for (int i = 0; i < carsToCheck.Count; i++)
 		{
@@ -23,7 +25,10 @@ public static class GarageResync
 			{
 				CarSpawnHooks.listenToDelete = false;
 				GameData.Instance.carLoaders[car.carLoaderID].DeleteCar();
+				yield return new WaitForEndOfFrame();
 				ClientData.Instance.loadedCars.Remove(car.carLoaderID);
+				ClientSend.ResyncCar(car.carLoaderID);
+				MelonLogger.Msg($"Asked resync for {car.carLoaderID} ({car.carID}) to server!");
 			}
 		}
 
@@ -33,10 +38,21 @@ public static class GarageResync
 	{
 		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForSeconds(0.5f);
+		while (!NotificationCenter.IsGameReady)
+			yield return new WaitForSeconds(0.25f);
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.5f);
-		ClearOutdatedCars();
-		ClientSend.AskFullSync();
+		
+		MelonCoroutines.Start(ResyncCars());
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncTools();
+		/*yield return new WaitForEndOfFrame();
+		ClientSend.ResyncPark();*/
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncUpgrade();
+		yield return new WaitForEndOfFrame();
+		ClientSend.ResyncEngineStandPacket(true);
+		ClientSend.ResyncEngineStandPacket(false);
 	}
 
 

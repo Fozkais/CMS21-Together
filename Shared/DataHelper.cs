@@ -9,7 +9,7 @@ using SeekOrigin = Il2CppSystem.IO.SeekOrigin;
 
 namespace CMS21Together.Shared;
 
-public class DataHelper 
+public class DataHelper // TODO: Finish This!
 {
 	public static Stream LoadContent(string assemblyPath)
 	{
@@ -60,31 +60,31 @@ public class DataHelper
 		return newStream;
 	}
 
-	public static ProfileData Copy(ProfileData data)
+	public static ProfileData Copy(ProfileData data) // TODO: check for otherDatatypes
 	{
 		var copy = new ProfileData();
 		copy.Name = data.Name;
-		copy.machines = data.machines;
+		copy.machines = data.machines; //  TODO: check this
 		copy.Difficulty = data.Difficulty;
-		copy.inventoryData = data.inventoryData;
+		copy.inventoryData = data.inventoryData; //  TODO: check this
 		copy.jobsData = data.jobsData;
 		copy.jukeboxData = data.jukeboxData;
 		copy.saveVersion = data.saveVersion;
 		copy.unlockedPosition = data.unlockedPosition;
-		copy.warehouseData = data.warehouseData;
+		copy.warehouseData = data.warehouseData; //  TODO: check this
 		copy.BuildVersion = data.BuildVersion;
-		copy.carLiftersData = data.carLiftersData;
-		copy.carLoaderData = data.carLoaderData;
+		copy.carLiftersData = data.carLiftersData; //  TODO: check this
+		copy.carLoaderData = data.carLoaderData; //  TODO: check this
 		copy.carsInGarage = new Il2CppReferenceArray<NewCarData>(data.carsInGarage.Length);
 		for (var i = 0; i < data.carsInGarage.Length; i++) copy.carsInGarage[i] = Copy(data.carsInGarage[i]);
 		copy.carsOnParking = new Il2CppReferenceArray<NewCarData>(data.carsOnParking.Length);
 		for (var i = 0; i < data.carsOnParking.Length; i++) copy.carsOnParking[i] = Copy(data.carsOnParking[i]);
 		copy.FinishedTutorial = data.FinishedTutorial;
-		copy.garageCustomizationData = data.garageCustomizationData;
-		copy.globalDataWrapper = data.globalDataWrapper;
+		copy.garageCustomizationData = data.garageCustomizationData; //  TODO: check this
+		copy.globalDataWrapper = data.globalDataWrapper; //  TODO: check this
 		copy.LastSave = data.LastSave;
-		copy.PaintshopData = data.PaintshopData;
-		copy.PlayerData = data.PlayerData;
+		copy.PaintshopData = data.PaintshopData; //  TODO: check this
+		copy.PlayerData = data.PlayerData; //  TODO: check this
 		copy.PlayTime = data.PlayTime;
 		copy.TopSpeed = data.TopSpeed;
 		copy.BestRaceTime = data.BestRaceTime;
@@ -92,7 +92,7 @@ public class DataHelper
 		copy.upgradeForPointsData = data.upgradeForPointsData;
 		copy.WindowTintData = data.WindowTintData;
 		copy.LastUID = data.LastUID;
-		copy.ShopListItemsData = data.ShopListItemsData;
+		copy.ShopListItemsData = data.ShopListItemsData; //  TODO: check this
 
 		return copy;
 	}

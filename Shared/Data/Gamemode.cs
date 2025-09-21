@@ -5,8 +5,8 @@ namespace CMS21Together.Shared.Data;
 [Serializable]
 public enum Gamemode
 {
-	Normal,
-	Expert,
 	Sandbox,
-	Easy
+	Easy,
+	Normal,
+	Expert
 }

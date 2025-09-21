@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using CMS.UI.Controls;
 using CMS21Together.ServerSide;
-using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
@@ -214,10 +211,12 @@ public static class UI_Saves
 					MelonCoroutines.Start(Server.Instance.CloseServer());
 					Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
 				}
+
+				UI_Lobby.saveIndex = index + 4;
 				SavesManager.LoadSave(SavesManager.ModSaves[index + 4]);
 
-				SavesManager.StartGame(index + 4);
-				//TODO: Implement Custom Pause menu to copy serverID !!!!
+				CustomUIManager.DisableUI(CustomUISection.MP_Saves);
+				CustomUIManager.EnableUI(CustomUISection.MP_Lobby);
 			};
 			CustomUIBuilder.CreateNewInputWindow(position, size, new[] { a1, a2 }, new[] { "Close", "Confirm" }, InputFieldType.username);
 		}

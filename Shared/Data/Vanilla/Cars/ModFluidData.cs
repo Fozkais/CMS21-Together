@@ -9,17 +9,6 @@ public class ModFluidData
 	public float Condition;
 	public ModCarFluid CarFluid;
 
-	public ModFluidData() {}
-	public ModFluidData(ModFluidData data)
-	{
-		if (data== null) return;
-		
-		Level = data.Level;
-		Condition = data.Condition;
-		if (data.CarFluid != null)
-			CarFluid = new ModCarFluid(data.CarFluid);
-	}
-	
 	public ModFluidData(FluidData data)
 	{
 		Level = data.Level;

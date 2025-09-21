@@ -29,6 +29,11 @@ public static class SceneManager
 
 			ClientData.GameReady = false;
 		}
+		else if (newSceneName == "garage" || newSceneName == "Christmas" || newSceneName == "Easter")
+		{
+			if (ClientData.GameReady)
+				MelonCoroutines.Start(GarageResync.ResyncGarage());
+		}
 		else
 		{
 			foreach (ModCar loadedCar in ClientData.Instance.loadedCars.Values)

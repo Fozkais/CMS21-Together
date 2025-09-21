@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using Newtonsoft.Json;
 
 namespace CMS21Together.Shared;
 
@@ -89,18 +87,29 @@ public class Packet : IDisposable
 	{
 		if (obj == null)
 			return null;
+		var bf = new BinaryFormatter();
+		var ms = new MemoryStream();
+		bf.Serialize(ms, obj);
 
-		string json = JsonConvert.SerializeObject(obj);
-		return Encoding.UTF8.GetBytes(json);
+		return ms.ToArray();
 	}
-	
-	private T ByteArrayToObject<T>(byte[] arrBytes)
-	{
-		if (arrBytes == null || arrBytes.Length == 0)
-			return default;
 
-		string json = Encoding.UTF8.GetString(arrBytes);
-		return JsonConvert.DeserializeObject<T>(json);
+	public object ByteArrayToObject(byte[] arrBytes)
+	{
+		try
+		{
+			var memStream = new MemoryStream();
+			var binForm = new BinaryFormatter();
+			memStream.Write(arrBytes, 0, arrBytes.Length);
+			memStream.Seek(0, SeekOrigin.Begin);
+			var obj = binForm.Deserialize(memStream);
+
+			return obj;
+		}
+		catch (Exception e)
+		{
+			throw new Exception($"Could not read value: {e}");
+		}
 	}
 
 	protected virtual void Dispose(bool disposing)
@@ -173,7 +182,7 @@ public class Packet : IDisposable
 	{
 		var lenght = ReadInt(); // Get the length of the byte array
 		var array = ReadBytes(lenght); // Return the bytes
-		return ByteArrayToObject<T>(array);
+		return (T)ByteArrayToObject(array);
 	}
 
 	#endregion
