@@ -41,8 +41,7 @@ public static class CustomUIBuilder
 					ImageConversion.LoadImage(texture, buffer);
 		}
 	}
-
-
+	
 	public static void CreateSaveInfoPanel(ModSaveData saveData)
 	{
 		var saveInfoObject = new GameObject("SaveInfoWindow");
