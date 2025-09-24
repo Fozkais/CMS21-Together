@@ -84,6 +84,7 @@ public static class ApiCalls
 		if (stream == null)
 		{
 			MelonLogger.Msg("Failed to load resource stream for 'TogetherModAPI.dll'.");
+			return null;
 		}
 		
 		var assemblyData = new byte[stream.Length];

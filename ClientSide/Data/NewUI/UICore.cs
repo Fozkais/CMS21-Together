@@ -27,6 +27,9 @@ public static class UICore
 	public static GameObject MP_Host;
 	public static GameObject MP_Lobby_Parent;
 	public static GameObject MP_Saves_Parent;
+	
+	public static GameObject TMP_Window;
+	public static GameObject TMP_Info_Window;
 
 	public static void InitializeUI(string sceneName)
 	{
@@ -97,6 +100,7 @@ public static class UICore
 	public static GameObject CreateElement(GameObject template, Transform parent)
 	{
 		var obj = Object.Instantiate(template, parent, false);
+		obj.SetActive(true);
 		var rect = obj.GetComponent<RectTransform>();
 		
 		rect.localScale = Vector3.one;
@@ -112,7 +116,7 @@ public static class UICore
 		return obj;
 	}
 
-	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType panelType, bool disableCurrentPanel=false)
+	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType panelType, MainMenuButton btn, int index, bool disableCurrentPanel=false)
 	{
 		if (disableCurrentPanel)
 		{
@@ -126,10 +130,10 @@ public static class UICore
 		switch (panelType)
 		{
 			case UICustomPanelType.SaveInfo:
-				UICustomPanel.CreateSaveInfoPanel(null);
+				UICustomPanel.CreateSaveInfoPanel(btn, index);
 				break;
 			case UICustomPanelType.CreateSave:
-				UICustomPanel.CreateSaveInfoPanel(null);
+				UICustomPanel.CreateNewSavePanel(btn, index);
 				break;
 			case UICustomPanelType.JoinMenu:
 				break;

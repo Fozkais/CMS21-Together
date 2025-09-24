@@ -227,24 +227,25 @@ public static class SavesManager
 
 	public static void SaveModSave(int saveIndex)
 	{
-		if (!Server.Instance.isRunning) return;
-		
-		if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
-			ModSaves[saveIndex].additionnalStand = ServerData.Instance.engineStand2;
-		foreach (var id in Server.Instance.clients.Keys)
+		if (Server.Instance.isRunning)
 		{
-			if (!ServerData.Instance.connectedClients.TryGetValue(id, out var client)) break;
-			
-			string playerGuid = client.playerGUID;
-			PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.FirstOrDefault(p => playerGuid == p.id);
-			
-			Vector3Serializable pos = client.position;
-			QuaternionSerializable rot = client.rotation;
-			int lvl = client.playerLevel;
-			int exp = client.playerExp;
-			int points = client.playerSkillPoints;
-			
-			info?.UpdateStats(pos, rot, exp , lvl, points);
+			if (ServerData.Instance.engineStand2 != null && ServerData.Instance.engineStand2.engineGroupItem != null)
+				ModSaves[saveIndex].additionnalStand = ServerData.Instance.engineStand2;
+			foreach (var id in Server.Instance.clients.Keys)
+			{
+				if (!ServerData.Instance.connectedClients.TryGetValue(id, out var client)) break;
+				
+				string playerGuid = client.playerGUID;
+				PlayerInfo info = ModSaves[currentSaveIndex].playerInfos.FirstOrDefault(p => playerGuid == p.id);
+				
+				Vector3Serializable pos = client.position;
+				QuaternionSerializable rot = client.rotation;
+				int lvl = client.playerLevel;
+				int exp = client.playerExp;
+				int points = client.playerSkillPoints;
+				
+				info?.UpdateStats(pos, rot, exp , lvl, points);
+			}
 		}
 		
 		var saveFilePath = Path.Combine(SAVE_FOLDER_PATH, $"save_{saveIndex}.cms21mp");
@@ -271,13 +272,16 @@ public static class SavesManager
 		{
 			MelonLogger.Error("Error deleting  mod save file ");
 		}
-
+		
 		if (File.Exists(saveFilePath))
 		{
-			var name = Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name;
-			Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Init();
-			Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name = name;
-			Singleton<GameManager>.Instance.GameDataManager.ClearData();
+			if (Singleton<GameManager>.Instance.GameDataManager.ProfileData[index] != null)
+			{
+				var name = Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name;
+				Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Init();
+				Singleton<GameManager>.Instance.GameDataManager.ProfileData[index].Name = name;
+				Singleton<GameManager>.Instance.GameDataManager.ClearData();
+			}
 			File.Delete(saveFilePath);
 			MelonLogger.Msg($"Save file {saveFilePath} deleted");
 		}

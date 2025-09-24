@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Linq;
 using CMS.MainMenu.Controls;
+using CMS.UI.Controls;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using MelonLoader;
 using UnityEngine.Events;
+using UnityEngine.UI;
 using Object = Il2CppSystem.Object;
 
 namespace CMS21Together.ClientSide.Data.NewUI;
@@ -34,10 +39,34 @@ public static class UIActions
 		Action action = () =>
 		{
 			if (UIUtils.GetSaveName(save_index) != "New game")
-				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.SaveInfo);
+				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.SaveInfo, button, save_index);
 			else
-				UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.CreateSave);
+				UICore.ShowCustomPanel(UICore.MP_Host.transform,UICustomPanelType.CreateSave, button, save_index);
 		};
 		return action;
+	}
+
+	public static void CreateNewSave(InputField input, StringSelector selector, MainMenuButton btn, int index)
+	{
+		if (SavesManager.ModSaves.Any(s => s.Value.Name == input.text))
+		{
+			UICustomPanel.CreateInfoPanel("A save with the same name already exist.");
+			return;
+		}
+
+		SavesManager.ModSaves[index].Name = input.text;
+		SavesManager.ModSaves[index].selectedGamemode = SavesManager.GetGamemodeFromInt(selector.Current);
+		btn.text.text = input.text;
+		btn.text.OnEnable();
+		SavesManager.SaveModSave(index);
+		UnityEngine.Object.Destroy(UICore.TMP_Window);
+	}
+
+	public static void DeleteSave(MainMenuButton button, int save_index)
+	{
+		SavesManager.RemoveModSave(save_index);
+
+		button.GetComponentInChildren<Text>().text = "New Game";
+		button.OnEnable();
 	}
 }

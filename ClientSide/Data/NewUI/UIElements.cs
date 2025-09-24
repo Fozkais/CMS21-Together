@@ -51,11 +51,11 @@ public static class UIElements
 		return input;
 	}
 
-	public static StringSelector CreateSelector(Transform parent, IEnumerable<string> options)
+	public static StringSelector CreateSelector(Transform parent, List<string> options)
 	{
 		var obj = UICore.CreateElement(UICore.templateSelector, parent);
 		var dd = obj.GetComponent<StringSelector>();
-		dd.options = new List<string>(options);
+		dd.options = options;
 		return dd;
 	}
 }

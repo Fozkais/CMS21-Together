@@ -45,27 +45,24 @@ namespace CMS21Together
 
 		public override void OnSceneWasLoaded(int buildindex, string sceneName)
 		{
-			if (!isModInitialized)
-			{
-				return;
-			}
-
-			UICore.InitializeUI(sceneName);
-
+			if (!isModInitialized) return;
+			
 			if (sceneName == "Menu")
 			{
+				SavesManager.Initialize();
 				ContentManager.Instance.Initialize();
 
 				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);
 				Application.runInBackground = false;
 			}
-
+			UICore.InitializeUI(sceneName);
 			if (Client.Instance.isConnected)
 			{
+				ClientData.UserData.UpdateScene(sceneName);
+				
 				if (SceneManager.CurrentScene() == GameScene.garage && ClientData.Instance.playerPrefab == null)
 					ClientData.Instance.LoadPlayerPrefab();
 
-				ClientData.UserData.UpdateScene(sceneName);
 			}
 		}
 

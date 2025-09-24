@@ -89,14 +89,14 @@ public static class UIMenu
 		int i = 0;
 		while (i < 4)
 		{
-			var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i), null);
+			var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
 			var saveRect = saveBtn.GetComponent<RectTransform>();
 			saveRect.anchorMin = new Vector2(0f, 0.5f);
 			saveRect.anchorMax = new Vector2(0f, 0.5f);
 			saveRect.pivot = new Vector2(0f, 0.5f);
 			saveRect.sizeDelta = new Vector2(233, 44);
 			saveRect.anchoredPosition = b_pos;
-			saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i));
+			saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i + 4));
 			saveBtn.SetLocked(false);
 			b_pos.y -= 49;
 			i++;
