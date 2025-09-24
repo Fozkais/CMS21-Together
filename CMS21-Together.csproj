@@ -166,6 +166,7 @@
         <Compile Include="Shared\Data\Vanilla\ModProfileData.cs" />
         <Compile Include="Shared\Data\Vanilla\ModStats.cs" />
         <Compile Include="Shared\Data\Vector3Serializable.cs" />
+        <Compile Include="Shared\Data\VersionStatus.cs" />
         <Compile Include="Shared\SceneManager.cs" />
         <Compile Include="Shared\Packet.cs" />
         <Compile Include="Shared\PacketTypes.cs" />
@@ -199,6 +200,7 @@
         <Reference Include="Newtonsoft.Json">
           <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
         </Reference>
+        <Reference Include="System.Net.Http" />
         <Reference Include="UnhollowerBaseLib">
             <HintPath>Libs\UnhollowerBaseLib.dll</HintPath>
         </Reference>
@@ -247,8 +249,28 @@
         <Reference Include="UnityEngine.UIModule">
             <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
         </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+          <HintPath>Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+          <HintPath>Libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestModule">
+          <HintPath>Libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+          <HintPath>Libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+          <HintPath>Libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Content Include="Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll" />
+        <Content Include="Libs\UnityEngine.UnityWebRequestAudioModule.dll" />
+        <Content Include="Libs\UnityEngine.UnityWebRequestModule.dll" />
+        <Content Include="Libs\UnityEngine.UnityWebRequestTextureModule.dll" />
+        <Content Include="Libs\UnityEngine.UnityWebRequestWWWModule.dll" />
         <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
         <EmbeddedResource Include="Assets\peoples.png" />
         <EmbeddedResource Include="Assets\lobbyBorder.png" />

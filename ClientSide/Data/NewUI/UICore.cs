@@ -7,6 +7,7 @@ using CMS.MainMenu.Sections;
 using CMS.UI.Controls;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using MelonLoader;
 using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,6 +32,8 @@ public static class UICore
 	public static GameObject TMP_Window;
 	public static GameObject TMP_Info_Window;
 
+	private static bool update_notice = false;
+
 	public static void InitializeUI(string sceneName)
 	{
 		if (sceneName != "Menu") return;
@@ -46,11 +49,36 @@ public static class UICore
 		MP_Main = CreateNewPanel();
 		MP_Host = CreateNewPanel();
 		
+		
 		LoadCustomlogo();
 		GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
 		UIMenu.SetupMainMenu();
 		UIMenu.SetupMultiplayerMenu();
 		UIMenu.SetupHostMenu();
+
+		MelonCoroutines.Start(CheckModVersion());
+	}
+
+	private static IEnumerator CheckModVersion()
+	{
+		if (update_notice)
+			yield break;
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForSeconds(1);
+
+		switch (ContentManager.Instance.IsNewVersionAvailable(MainMod.ASSEMBLY_MOD_VERSION))
+		{
+			case VersionStatus.Outdated:
+				UICustomPanel.CreateInfoPanel("A new version of the mod is available !");
+				update_notice = true;
+				break;
+			case VersionStatus.Latest:
+				MelonLogger.Msg("Mod is up-to-date !");
+				break;
+			case VersionStatus.Dev:
+				UICustomPanel.CreateInfoPanel("You are using a development build !");
+				break;
+		}
 	}
 
 	private static void DestroyChildren(Transform parent)

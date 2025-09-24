@@ -164,7 +164,7 @@ public static class UICustomPanel
 		confirmRect.sizeDelta = new Vector2(133, 44);
 		confirmRect.anchoredPosition = new Vector2(-130, 5);
 		
-		MelonLogger.Msg("Notice : A save with the same name already exists"); 
+		MelonLogger.Msg("Notice : " + msg); 
 	}
 
 	public static void CreateNewSavePanel(MainMenuButton btn, int index)
