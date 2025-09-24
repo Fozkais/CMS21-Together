@@ -1,9 +1,11 @@
 ﻿using System;
 using CMS.MainMenu.Controls;
 using CMS.UI.Controls;
+using CMS.UI.Logic.Navigation;
 using CMS21Together.ClientSide.Data.CustomUI;
 using Il2CppSystem.Collections.Generic;
 using MelonLoader;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -40,6 +42,13 @@ public static class UIElements
 		}
 		else
 			btn.OnClick.AddListener(onClick);
+		btn.OnMouseHover = DelegateSupport.ConvertDelegate<Il2CppSystem.Action<int>>(
+			new Action<int>((i) =>
+			{
+				btn.transform.parent.GetComponent<ListNavigationManager>()?.DeselectCurrent();
+				btn.Select();
+			})
+		);
 		return btn;
 	}
 
@@ -48,6 +57,18 @@ public static class UIElements
 		var obj = UICore.CreateElement(UICore.templateInputField, parent);
 		var input = obj.GetComponentInChildren<InputField>();
 		input.text = defaultText;
+		return input;
+	}
+	
+	public static Image CreateImage(Transform parent, Sprite sprite)
+	{
+		var obj = UICore.CreateElement(UICore.templateImage, parent);
+		var input = obj.GetComponent<Image>();
+		var inputCanvas = obj.GetComponent<Canvas>();
+		input.sprite = sprite;
+		inputCanvas.overrideSorting = true;
+		inputCanvas.sortingOrder = 1;
+		input.material = UICore.templateImage.GetComponent<Image>().material;
 		return input;
 	}
 

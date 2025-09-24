@@ -21,6 +21,7 @@ public static class UICore
 	public static GameObject templateText;
 	public static GameObject templateInputField;
 	public static GameObject templateSelector;
+	public static GameObject templateImage;
 	
 	public static GameObject UI_Main;
 	public static GameObject V_Main;
@@ -38,6 +39,7 @@ public static class UICore
 	{
 		if (sceneName != "Menu") return;
 		
+		templateImage = GameObject.Find("Logo");
 		templateButton = GameObject.Find("MainMenuButton");
 		templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
 		templateText = templateButton.GetComponentInChildren<Text>().gameObject;

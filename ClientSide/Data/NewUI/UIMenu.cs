@@ -27,8 +27,13 @@ public static class UIMenu
 
 		var b1_texture = DataHelper.LoadCustomTexture("CMS21Together.Assets.peoples.png");
 		var b1_sprite = Sprite.Create(b1_texture, new Rect(0, 0, b1_texture.width, b1_texture.height), new Vector2(0, 0));
-		var img = multiBtn.GetComponent<Image>();
-		img.sprite = b1_sprite;
+		var imgObj = UIElements.CreateImage(multiBtn.transform, b1_sprite);
+		var imgRect = imgObj.GetComponent<RectTransform>();
+		imgRect.anchorMin = new Vector2(0.5f, 0.5f);
+		imgRect.anchorMax = new Vector2(0.5f, 0.5f);
+		imgRect.pivot = new Vector2(0f, 0.5f);
+		imgRect.sizeDelta = new Vector2(40, 40);
+		imgRect.anchoredPosition = new Vector2(-20, 0);
 		multiBtn.GetComponentInChildren<Text>().gameObject.SetActive(false);
 	}
 
