@@ -6,3 +6,8 @@
 /.json
 /obj/
 /.user
+.user
+.json
+.info
+.cache
+.props

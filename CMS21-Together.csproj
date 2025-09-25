@@ -266,6 +266,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Content Include=".gitignore" />
         <Content Include="Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll" />
         <Content Include="Libs\UnityEngine.UnityWebRequestAudioModule.dll" />
         <Content Include="Libs\UnityEngine.UnityWebRequestModule.dll" />
