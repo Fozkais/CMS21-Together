@@ -4,6 +4,7 @@ public enum UICustomPanelType
 {
 	SaveInfo,
 	CreateSave,
+	JoinAsHostMenu,
 	JoinMenu,
-	LoobyMenu
+	LobbyMenu
 }

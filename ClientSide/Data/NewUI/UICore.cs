@@ -36,6 +36,7 @@ public static class UICore
 	public static GameObject TMP_Info_Window;
 
 	private static bool update_notice = false;
+	public static int last_index_pressed;
 
 	public static void InitializeUI(string sceneName)
 	{
@@ -155,17 +156,8 @@ public static class UICore
 		return obj;
 	}
 
-	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType panelType, MainMenuButton btn, int index, bool disableCurrentPanel=false)
+	public static void ShowCustomPanel(Transform currentPanel, UICustomPanelType panelType, MainMenuButton btn, int index)
 	{
-		if (disableCurrentPanel)
-		{
-			var buttons = currentPanel.GetComponentsInChildren<MainMenuButton>().ToList();
-			foreach (MainMenuButton button in buttons)
-			{
-				button.SetLocked();
-			}
-		}
-
 		switch (panelType)
 		{
 			case UICustomPanelType.SaveInfo:
@@ -174,9 +166,12 @@ public static class UICore
 			case UICustomPanelType.CreateSave:
 				UICustomPanel.CreateNewSavePanel(btn, index);
 				break;
+			case UICustomPanelType.JoinAsHostMenu:
+				UICustomPanel.JoinAsHostPanel(btn, index);
+				break;
 			case UICustomPanelType.JoinMenu:
 				break;
-			case UICustomPanelType.LoobyMenu:
+			case UICustomPanelType.LobbyMenu:
 				break;
 		}
 	}
