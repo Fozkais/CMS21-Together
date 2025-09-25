@@ -118,6 +118,7 @@ public static class UICustomPanel
 
 	public static void CreateInfoPanel(string msg)
 	{
+		UIUtils.SwitchPanelButton(UICore.Active_Panel.transform, true);
 		if (UICore.TMP_Info_Window)
 			Object.Destroy(UICore.TMP_Window);
 		UICore.TMP_Info_Window = new GameObject("NoticeWindow");
@@ -156,7 +157,7 @@ public static class UICustomPanel
 		CreateSplitter(UICore.TMP_Info_Window.transform, new Vector2(0, -140), new(390, 2));
 		
 		var confirmBtn = UIElements.CreateButton(UICore.TMP_Info_Window.transform,
-			"Confirm", (() => { Object.Destroy(UICore.TMP_Info_Window); }));
+			"Confirm", (() => { UIUtils.SwitchPanelButton(UICore.Active_Panel.transform, false); Object.Destroy(UICore.TMP_Info_Window); }));
 		var confirmRect = confirmBtn.GetComponent<RectTransform>();
 		confirmRect.anchorMin = new Vector2(1f, 0f);
 		confirmRect.anchorMax = new Vector2(1f, 0f);

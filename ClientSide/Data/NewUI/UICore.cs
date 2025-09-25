@@ -22,6 +22,8 @@ public static class UICore
 	public static GameObject templateInputField;
 	public static GameObject templateSelector;
 	public static GameObject templateImage;
+
+	public static GameObject Active_Panel;
 	
 	public static GameObject UI_Main;
 	public static GameObject V_Main;
@@ -58,6 +60,7 @@ public static class UICore
 		UIMenu.SetupMultiplayerMenu();
 		UIMenu.SetupHostMenu();
 
+		Active_Panel = UI_Main;
 		MelonCoroutines.Start(CheckModVersion());
 	}
 
@@ -113,6 +116,12 @@ public static class UICore
 	
 	public static void ShowPanel(GameObject panelToShow)
 	{
+		UICore.Active_Panel =  panelToShow;
+		if (TMP_Window)
+			Object.Destroy(TMP_Window);
+		if (TMP_Info_Window)
+			Object.Destroy(TMP_Info_Window);
+		
 		V_Main.gameObject.SetActive(false);
 		MP_Main.gameObject.SetActive(false);
 		MP_Host.gameObject.SetActive(false);

@@ -1,4 +1,5 @@
-﻿using CMS21Together.Shared;
+﻿using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.Shared;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -123,7 +124,8 @@ public static class UIMenu
 		nextRect.sizeDelta = new Vector2(115f, 44);
 		nextRect.anchoredPosition = new Vector2(118f, 148);
 		
-		var backBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Back to menu", () => UICore.ShowPanel(UICore.MP_Main.gameObject));
+		var backBtn = UIElements.CreateButton(UICore.MP_Host.transform,
+			"Back to menu", () => { if (UICore.TMP_Window) Object.Destroy(UICore.TMP_Window); UICore.ShowPanel(UICore.MP_Main.gameObject); });
 		var backRect = backBtn.GetComponent<RectTransform>();
 		backRect.anchorMin = new Vector2(0f, 0.5f);
 		backRect.anchorMax = new Vector2(0f, 0.5f);
