@@ -170,6 +170,7 @@ public static class UICore
 				UICustomPanel.JoinAsHostPanel(btn, index);
 				break;
 			case UICustomPanelType.JoinMenu:
+				UICustomPanel.JoinPanel();
 				break;
 			case UICustomPanelType.LobbyMenu:
 				break;

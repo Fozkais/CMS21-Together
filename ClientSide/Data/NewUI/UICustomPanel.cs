@@ -333,4 +333,97 @@ public static class UICustomPanel
 		confirmRect.sizeDelta = new Vector2(133, 44);
 		confirmRect.anchoredPosition = new Vector2(120, 10);
 	}
+
+	public static void JoinPanel()
+	{
+		if (UICore.TMP_Window)
+			Object.Destroy(UICore.TMP_Window);
+		UICore.TMP_Window = new GameObject("JoinWindow");
+		UICore.TMP_Window.transform.SetParent(UICore.UI_Main.transform, false);
+
+		var panelRect = UICore.TMP_Window.AddComponent<RectTransform>();
+		panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+		panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+		panelRect.pivot = new Vector2(0.5f, 0.5f);
+		panelRect.sizeDelta = new Vector2(400, 330);
+		panelRect.anchoredPosition = Vector2.zero;
+
+		var img = UICore.TMP_Window.AddComponent<Image>();
+		img.color = new Color(.031f, .027f, .033f, 0.85f);
+
+		
+		var saveTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Join a Lobby", 24);
+		var saveTxtRect = saveTxt.GetComponent<RectTransform>();
+		saveTxtRect.anchorMin = new Vector2(0.5f, 1f);
+		saveTxtRect.anchorMax = new Vector2(0.5f, 1f);
+		saveTxtRect.pivot = new Vector2(0.5f, 1f);
+		saveTxtRect.sizeDelta = new Vector2(145, 45);
+		saveTxtRect.anchoredPosition = new Vector2(-118, 0);
+
+		CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -40), new(390, 2));
+		
+		var nameTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Username : ", 22);
+		var nameTxtRect = nameTxt.GetComponent<RectTransform>();
+		nameTxtRect.anchorMin = new Vector2(0f, 1f);
+		nameTxtRect.anchorMax = new Vector2(0f, 1f);
+		nameTxtRect.pivot = new Vector2(0f, 1f);
+		nameTxtRect.sizeDelta = new Vector2(230, 45);
+		nameTxtRect.anchoredPosition = new Vector2(10, -50);
+		
+		var nameField = UIElements.CreateInput(UICore.TMP_Window.transform, "");
+		nameField.transform.parent.GetChild(1).gameObject.SetActive(false);
+		var nameFieldRect = nameField.transform.parent.GetComponent<RectTransform>();
+		nameFieldRect.anchorMin = new Vector2(0f, 1f);
+		nameFieldRect.anchorMax = new Vector2(0f, 1f);
+		nameFieldRect.pivot = new Vector2(0f, 1f);
+		nameFieldRect.sizeDelta = new Vector2(350, 42);
+		nameFieldRect.anchoredPosition = new Vector2(20, -100);
+		var nameFieldRect2 = nameField.GetComponent<RectTransform>();
+		nameFieldRect2.anchorMin = new Vector2(0.01f, 1f);
+		nameFieldRect2.anchorMax = new Vector2(0.99f, 0.7f);
+		nameFieldRect2.sizeDelta = new Vector2(1, 46);
+		nameFieldRect2.anchoredPosition = new Vector2(0, -15);
+		
+		var addressTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Server Address : ", 22);
+		var addressTxtRect = addressTxt.GetComponent<RectTransform>();
+		addressTxtRect.anchorMin = new Vector2(0f, 1f);
+		addressTxtRect.anchorMax = new Vector2(0f, 1f);
+		addressTxtRect.pivot = new Vector2(0f, 1f);
+		addressTxtRect.sizeDelta = new Vector2(230, 45);
+		addressTxtRect.anchoredPosition = new Vector2(10, -150);
+		
+		var addressField = UIElements.CreateInput(UICore.TMP_Window.transform, "");
+		addressField.transform.parent.GetChild(1).gameObject.SetActive(false);
+		var addressFieldRect = addressField.transform.parent.GetComponent<RectTransform>();
+		addressFieldRect.anchorMin = new Vector2(0f, 1f);
+		addressFieldRect.anchorMax = new Vector2(0f, 1f);
+		addressFieldRect.pivot = new Vector2(0f, 1f);
+		addressFieldRect.sizeDelta = new Vector2(350, 42);
+		addressFieldRect.anchoredPosition = new Vector2(20, -200);
+		var addressFieldRect2 = addressField.GetComponent<RectTransform>();
+		addressFieldRect2.anchorMin = new Vector2(0.01f, 1f);
+		addressFieldRect2.anchorMax = new Vector2(0.99f, 0.7f);
+		addressFieldRect2.sizeDelta = new Vector2(1, 46);
+		addressFieldRect2.anchoredPosition = new Vector2(0, -15);
+		
+		CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -260), new(390, 2));
+		
+		var backBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
+			"Cancel", (() => { if (UICore.TMP_Window) Object.Destroy(UICore.TMP_Window); }));
+		var backRect = backBtn.GetComponent<RectTransform>();
+		backRect.anchorMin = new Vector2(0.5f, 0f);
+		backRect.anchorMax = new Vector2(0.5f, 0f);
+		backRect.pivot = new Vector2(0.5f, 0f);
+		backRect.sizeDelta = new Vector2(133, 44);
+		backRect.anchoredPosition = new Vector2(-120, 10);
+		
+		var confirmBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
+			"Confirm", null);
+		var confirmRect = confirmBtn.GetComponent<RectTransform>();
+		confirmRect.anchorMin = new Vector2(0.5f, 0f);
+		confirmRect.anchorMax = new Vector2(0.5f, 0f);
+		confirmRect.pivot = new Vector2(0.5f, 0f);
+		confirmRect.sizeDelta = new Vector2(133, 44);
+		confirmRect.anchoredPosition = new Vector2(120, 10);
+	}
 }

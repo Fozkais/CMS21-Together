@@ -1,5 +1,6 @@
 ﻿using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,7 +50,8 @@ public static class UIMenu
 		hostRect.sizeDelta = new Vector2(233, 44);
 		hostRect.anchoredPosition = new Vector2(0, 344);
 		
-		var joinBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Join a game", null);
+		var joinBtn = UIElements.CreateButton(UICore.MP_Main.transform,
+			"Join a game", () => { UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.JoinMenu, null, 0); });
 		var joinRect = joinBtn.GetComponent<RectTransform>();
 		joinRect.anchorMin = new Vector2(0, 0.5f);
 		joinRect.anchorMax = new Vector2(0f, 0.5f);
