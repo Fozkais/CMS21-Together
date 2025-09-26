@@ -56,7 +56,7 @@ public static class UIMenu
 		joinRect.anchorMin = new Vector2(0, 0.5f);
 		joinRect.anchorMax = new Vector2(0f, 0.5f);
 		joinRect.pivot = new Vector2(0f, 0.5f);
-		joinRect.sizeDelta = new Vector2(230, 45);
+		joinRect.sizeDelta = new Vector2(233, 45);
 		joinRect.anchoredPosition = new Vector2(0, 295);
 		
 		var typeBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Network type: " + ClientData.UserData.selectedNetworkType, null);

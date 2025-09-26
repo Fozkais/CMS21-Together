@@ -76,9 +76,9 @@ public class ContentManager
 
 				int cmp = local.CompareTo(remote);
 				if (cmp < 0)
-					return VersionStatus.Outdated; // local < remote
+					return VersionStatus.Outdated;
 				if (cmp > 0)
-					return VersionStatus.Dev;      // local > remote
+					return VersionStatus.Dev;
 				return VersionStatus.Latest;
 			}
 		}

@@ -77,6 +77,7 @@
         <Compile Include="ClientSide\Data\NewUI\UICore.cs" />
         <Compile Include="ClientSide\Data\NewUI\UICustomPanel.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIElements.cs" />
+        <Compile Include="ClientSide\Data\NewUI\UILobby.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIMenu.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
@@ -174,9 +175,6 @@
         <Compile Include="Shared\TogetherModManager.cs" />
         <Compile Include="Shared\SteamworksUtils.cs" />
         <Compile Include="ThreadManager.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <None Include="App.config" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="0Harmony">

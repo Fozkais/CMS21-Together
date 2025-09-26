@@ -13,7 +13,7 @@ namespace CMS21Together.ClientSide.Data.NewUI;
 
 public static class UICustomPanel
 {
-	private static void CreateSplitter(Transform parent, Vector2 pos, Vector2 size)
+	public static void CreateSplitter(Transform parent, Vector2 pos, Vector2 size)
 	{
 		var splitter = new GameObject("splitter");
 		splitter.transform.SetParent(parent, false);
@@ -325,7 +325,7 @@ public static class UICustomPanel
 		backRect.anchoredPosition = new Vector2(-120, 10);
 		
 		var confirmBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
-			"Confirm", null);
+			"Confirm", (() => { UICore.ShowPanel(UICore.MP_Lobby); UILobby.CreateLobby(true); }));
 		var confirmRect = confirmBtn.GetComponent<RectTransform>();
 		confirmRect.anchorMin = new Vector2(0.5f, 0f);
 		confirmRect.anchorMax = new Vector2(0.5f, 0f);
@@ -418,7 +418,7 @@ public static class UICustomPanel
 		backRect.anchoredPosition = new Vector2(-120, 10);
 		
 		var confirmBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
-			"Confirm", null);
+			"Confirm", (() => { UICore.ShowPanel(UICore.MP_Lobby); UILobby.CreateLobby(false); }));
 		var confirmRect = confirmBtn.GetComponent<RectTransform>();
 		confirmRect.anchorMin = new Vector2(0.5f, 0f);
 		confirmRect.anchorMax = new Vector2(0.5f, 0f);

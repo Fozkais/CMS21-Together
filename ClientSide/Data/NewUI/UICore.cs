@@ -29,8 +29,7 @@ public static class UICore
 	public static GameObject V_Main;
 	public static GameObject MP_Main;
 	public static GameObject MP_Host;
-	public static GameObject MP_Lobby_Parent;
-	public static GameObject MP_Saves_Parent;
+	public static GameObject MP_Lobby;
 	
 	public static GameObject TMP_Window;
 	public static GameObject TMP_Info_Window;
@@ -51,12 +50,13 @@ public static class UICore
 
 		UI_Main = GameObject.Find("MainButtons").transform.parent.gameObject;
 		V_Main = GameObject.Find("MainButtons").GetComponent<MainSection>().gameObject;
-		MP_Main = CreateNewPanel();
-		MP_Host = CreateNewPanel();
+		MP_Main = CreateNewPanel("MP_Main");
+		MP_Host = CreateNewPanel("MP_Host");
+		MP_Lobby = CreateNewPanel("MP_Lobby");
 		
 		
 		LoadCustomlogo();
-		GameObject.Find("Logo").gameObject.transform.localScale = new Vector3(1.25f, 1.25f, 1.25f);
+		GameObject.Find("Logo").GetComponent<RectTransform>().sizeDelta = new Vector2(250, 250);
 		UIMenu.SetupMainMenu();
 		UIMenu.SetupMultiplayerMenu();
 		UIMenu.SetupHostMenu();
@@ -115,9 +115,12 @@ public static class UICore
 		}
 	}
 	
-	public static void ShowPanel(GameObject panelToShow)
+	public static void ShowPanel(GameObject panelToShow, bool destroyChildren=false)
 	{
-		UICore.Active_Panel =  panelToShow;
+		if (destroyChildren)
+			DestroyChildren(Active_Panel.transform);
+
+		Active_Panel =  panelToShow;
 		if (TMP_Window)
 			Object.Destroy(TMP_Window);
 		if (TMP_Info_Window)
@@ -126,15 +129,17 @@ public static class UICore
 		V_Main.gameObject.SetActive(false);
 		MP_Main.gameObject.SetActive(false);
 		MP_Host.gameObject.SetActive(false);
+		MP_Lobby.gameObject.SetActive(false);
 
 		panelToShow.SetActive(true);
 	}
 
-	private static GameObject CreateNewPanel()
+	private static GameObject CreateNewPanel(string name)
 	{
 		GameObject panel = Object.Instantiate(UICore.V_Main, UICore.V_Main.transform.parent, false);
 		panel.transform.position = new Vector3(panel.transform.position.x, 0, panel.transform.position.z);
 		DestroyChildren(panel.transform);
+		panel.name = name;
 		return panel;
 	}
 	public static GameObject CreateElement(GameObject template, Transform parent)
