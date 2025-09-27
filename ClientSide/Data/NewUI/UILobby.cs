@@ -59,10 +59,10 @@ public static class UILobby
 		
 		UICustomPanel.CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -75), new(440, 2));
 		
-		AddPlayer("Test User", 1);
-		AddPlayer("Test User 2", 2);
-		AddPlayer("Test User 3", 3);
-		AddPlayer("Test User 4", 4);
+		AddPlayer("Fozkais");
+		AddPlayer("Waiting for player...", 2);
+		AddPlayer("Waiting for player...", 3);
+		AddPlayer("Waiting for player...", 4);
 		
 		CreateButtons(isHost);
 	}
@@ -112,8 +112,56 @@ public static class UILobby
 		backRect.anchoredPosition = new Vector2(0, 99);
 	}
 
-	public static void AddPlayer(string username, int index)
+	public static void AddPlayer(string username="Waiting for player...", int index=1)
 	{
+		int pos = 10 - ((index - 1) * 59);
 		
+		GameObject player = new GameObject("PlayerPanel");
+		player.transform.SetParent(UICore.TMP_Window.transform, false);
+
+		var panelRect = player.AddComponent<RectTransform>();
+		panelRect.anchorMin = new Vector2(0.5f, 0.5f);
+		panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+		panelRect.pivot = new Vector2(0.5f, 0.5f);
+		panelRect.sizeDelta = new Vector2(450, 90);
+		panelRect.anchoredPosition = new Vector2(0, pos);
+		
+		var playerNameTxt = UIElements.CreateText(player.transform, username, 18);
+		var playerNameTxtRect = playerNameTxt.GetComponent<RectTransform>();
+		playerNameTxtRect.anchorMin = new Vector2(0.5f, 1f);
+		playerNameTxtRect.anchorMax = new Vector2(0.5f, 1f);
+		playerNameTxtRect.pivot = new Vector2(0.5f, 1f);
+		playerNameTxtRect.sizeDelta = new Vector2(200, 45);
+		playerNameTxtRect.anchoredPosition = new Vector2(-115, 30);
+
+		string content = username == "Waiting for player..." ? "" : "Not Ready";
+		var playerStatusTxt = UIElements.CreateText(player.transform, content, 18);
+		var playerStatusTxtRect = playerStatusTxt.GetComponent<RectTransform>();
+		playerStatusTxtRect.anchorMin = new Vector2(0.5f, 1f);
+		playerStatusTxtRect.anchorMax = new Vector2(0.5f, 1f);
+		playerStatusTxtRect.pivot = new Vector2(0.5f, 1f);
+		playerStatusTxtRect.sizeDelta = new Vector2(200, 45);
+		playerStatusTxtRect.anchoredPosition = new Vector2(40, 28);
+		playerStatusTxt.color = Color.red;
+		
+		var backBtn = UIElements.CreateButton(player.transform, "Kick", null);
+		var backRect = backBtn.GetComponent<RectTransform>();
+		backRect.anchorMin = new Vector2(1f, 0f);
+		backRect.anchorMax = new Vector2(1f, 0f);
+		backRect.pivot = new Vector2(0.5f, 0f);
+		backRect.sizeDelta = new Vector2(100, 33);
+		backRect.anchoredPosition = new Vector2(-80, 80);
+		
+		UICustomPanel.CreateSplitter(player.transform, new Vector2(0, -20), new(440, 2));
+	}
+
+	private static void DeleteAllPlayer()
+	{
+		GameObject lobbyWindow = UICore.TMP_Window;
+
+		for (int i = lobbyWindow.transform.childCount - 1; i >= 6; i--)
+		{
+			Object.Destroy(lobbyWindow.transform.GetChild(i).gameObject);
+		}
 	}
 }
