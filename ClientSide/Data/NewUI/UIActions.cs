@@ -3,6 +3,8 @@ using System.Linq;
 using CMS.MainMenu.Controls;
 using CMS.UI.Controls;
 using CMS21Together.ClientSide.Data.CustomUI;
+using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
@@ -14,6 +16,48 @@ namespace CMS21Together.ClientSide.Data.NewUI;
 
 public static class UIActions
 {
+
+	public static void StartClient(string username, string address)
+	{
+		ClientData.UserData.username = username;
+		if (ClientData.UserData.selectedNetworkType != NetworkType.Steam)
+			ClientData.UserData.ip = address;
+		else
+			ClientData.UserData.lobbyID = address;
+		TogetherModManager.SavePreferences();
+		
+		Client.Instance.OnConnected += () =>
+		{
+			UICore.ShowPanel(UICore.MP_Lobby);
+			UILobby.CreateLobby(false);
+		};
+		Client.Instance.OnDisconnected += () =>
+		{
+			UICore.ShowPanel(UICore.MP_Main);
+			UICustomPanel.CreateInfoPanel("Failed to connect to server !");
+		};
+		Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType, address);
+	}
+	
+	public static void StartServer(string username, int save_index)
+	{
+		ClientData.UserData.username = username;
+		TogetherModManager.SavePreferences();
+		
+		Client.Instance.OnConnected += () =>
+		{
+			UICore.ShowPanel(UICore.MP_Lobby);
+			UILobby.CreateLobby(true, save_index);
+		};
+		Client.Instance.OnDisconnected += () =>
+		{
+			UICore.ShowPanel(UICore.MP_Main);
+			UICustomPanel.CreateInfoPanel("Failed to connect to server !");
+		};
+		Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
+		SavesManager.LoadSave(SavesManager.ModSaves[save_index]);
+	}
+	
 	public static UnityAction ChangeNetworkType(MainMenuButton button)
 	{
 		Action action = () =>
@@ -70,5 +114,28 @@ public static class UIActions
 
 		button.GetComponentInChildren<Text>().text = "New Game";
 		button.OnEnable();
+	}
+
+	public static UnityAction SwitchReady(MainMenuButton btn)
+	{
+		Action action = () =>
+		{
+			foreach (var i in ClientData.Instance.connectedClients.Keys)
+			{
+				var player = ClientData.Instance.connectedClients[i];
+				if (player != null)
+					if (player.playerID == ClientData.UserData.playerID)
+					{
+						player.isReady = !player.isReady;
+						ClientSend.ReadyPacket(player.isReady, i);
+						if (player.isReady)
+							btn.text.text = "Unready";
+						else
+							btn.text.text = "Ready Up";
+						btn.text.OnEnable();
+					}
+			}
+		};
+		return action;
 	}
 }

@@ -362,8 +362,7 @@ public static class ServerSend
 		using (var packet = new Packet((int)PacketTypes.userData))
 		{
 			packet.Write(userData);
-
-
+			
 			if (id == -1)
 				SendDataToAll(packet);
 			else
@@ -378,7 +377,7 @@ public static class ServerSend
 			packet.Write(id);
 			packet.Write(ready);
 
-			SendDataToAll(fromClient, packet);
+			SendDataToAll(packet);
 		}
 	}
 

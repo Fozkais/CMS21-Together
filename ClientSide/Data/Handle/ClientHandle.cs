@@ -4,6 +4,7 @@ using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
+using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.ClientSide.Data.Player;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -28,6 +29,7 @@ public static class ClientHandle
 		if (Client.Instance.networkType == NetworkType.TCP)
 			Client.Instance.udp.Connect();
 
+		Client.Instance.OnConnectedInvoke();
 		ClientSend.ConnectValidationPacket();
 	}
 
@@ -44,7 +46,7 @@ public static class ClientHandle
 		var data = packet.Read<UserData>();
 
 		ClientData.Instance.connectedClients[data.playerID] = data;
-		UI_Lobby.AddPlayerToLobby(data.username, data.playerID);
+		UILobby.RefreshPlayers();
 		//MelonLogger.Msg("[ClientHandle->UserDataPacket] Receive userData from server.");
 	}
 
@@ -60,7 +62,7 @@ public static class ClientHandle
 		var ready = packet.Read<bool>();
 
 		ClientData.Instance.connectedClients[id].isReady = ready;
-		UI_Lobby.ChangeReadyState(id, ready);
+		UILobby.RefreshPlayers();
 	}
 
 	public static void StartPacket(Packet packet)

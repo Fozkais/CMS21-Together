@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
@@ -26,12 +27,16 @@ public class Client
 	public ClientSteam steam;
 	public ClientTCP tcp;
 	public ClientUDP udp;
+	
+	public event Action OnConnected;
+	public event Action OnDisconnected;
 
 	public void ConnectToServer(NetworkType type, string ip = "")
 	{
 		networkType = type;
 		ClientData.Instance = new ClientData();
 		ConnectToServer(ip);
+		Application.runInBackground = true;
 	}
 
 	private void ConnectToServer(string ip = "")
@@ -138,6 +143,8 @@ public class Client
 		Application.runInBackground = false;
 		isConnected = false;
 
+		OnDisconnectedInvoke();
+
 		tcp.Disconnect();
 		udp.Disconnect();
 		
@@ -157,5 +164,14 @@ public class Client
 		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
+	}
+
+	public void OnConnectedInvoke()
+	{
+		OnConnected?.Invoke();
+	}
+	public void OnDisconnectedInvoke()
+	{
+		OnDisconnected?.Invoke();
 	}
 }

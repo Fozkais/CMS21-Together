@@ -1,4 +1,8 @@
-﻿using CMS21Together.Shared;
+﻿using System.Linq;
+using CMS21Together.ServerSide;
+using CMS21Together.Shared;
+using CMS21Together.Shared.Data;
+using MelonLoader;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,7 +10,7 @@ namespace CMS21Together.ClientSide.Data.NewUI;
 
 public static class UILobby
 {
-	public static void CreateLobby(bool isHost)
+	public static void CreateLobby(bool isHost, int save_index=-1)
 	{
 		if (UICore.TMP_Window)
 			Object.Destroy(UICore.TMP_Window);
@@ -41,7 +45,7 @@ public static class UILobby
 
 		UICustomPanel.CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -40), new(440, 2));
 		
-		var saveNameTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Save name: "  + "Test", 18);
+		var saveNameTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Save name: "  + SavesManager.ModSaves[save_index].Name, 18);
 		var saveNameTxtRect = saveNameTxt.GetComponent<RectTransform>();
 		saveNameTxtRect.anchorMin = new Vector2(0.5f, 1f);
 		saveNameTxtRect.anchorMax = new Vector2(0.5f, 1f);
@@ -49,7 +53,7 @@ public static class UILobby
 		saveNameTxtRect.sizeDelta = new Vector2(250, 45);
 		saveNameTxtRect.anchoredPosition = new Vector2(-90, -36.5f);
 		
-		var playerReadyTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Players Ready: " + "4/4", 18);
+		var playerReadyTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Players Ready: " + $"0/{ClientData.Instance.connectedClients.Count}", 18);
 		var playerReadyTxtRect = playerReadyTxt.GetComponent<RectTransform>();
 		playerReadyTxtRect.anchorMin = new Vector2(0.5f, 1f);
 		playerReadyTxtRect.anchorMax = new Vector2(0.5f, 1f);
@@ -59,7 +63,6 @@ public static class UILobby
 		
 		UICustomPanel.CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -75), new(440, 2));
 		
-		AddPlayer("Fozkais");
 		AddPlayer("Waiting for player...", 2);
 		AddPlayer("Waiting for player...", 3);
 		AddPlayer("Waiting for player...", 4);
@@ -78,14 +81,16 @@ public static class UILobby
 		hostRect.sizeDelta = new Vector2(233, 44);
 		hostRect.anchoredPosition = new Vector2(0, 344);
 		
-		var joinBtn = UIElements.CreateButton(UICore.MP_Lobby.transform,
-			"Ready Up", null);
+		var joinBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Ready Up", null);
 		var joinRect = joinBtn.GetComponent<RectTransform>();
 		joinRect.anchorMin = new Vector2(0, 0.5f);
 		joinRect.anchorMax = new Vector2(0f, 0.5f);
 		joinRect.pivot = new Vector2(0f, 0.5f);
 		joinRect.sizeDelta = new Vector2(233, 45);
 		joinRect.anchoredPosition = new Vector2(0, 295);
+		joinBtn.OnClick.AddListener(UIActions.SwitchReady(joinBtn));
+		joinBtn.SetLocked(false);
+		joinBtn.SetDisabled(false, true);
 		
 		var typeBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Invite via Steam", null);
 		var typeRect = typeBtn.GetComponent<RectTransform>();
@@ -103,7 +108,12 @@ public static class UILobby
 		copyIdRect.sizeDelta = new Vector2(233, 44);
 		copyIdRect.anchoredPosition = new Vector2(0, 197);
 		
-		var backBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Back to menu", () => UICore.ShowPanel(UICore.MP_Main.gameObject, true));
+		var backBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Back to menu", 
+			() =>
+			{
+				if (isHost) MelonCoroutines.Start(Server.Instance.CloseServer());
+				UICore.ShowPanel(UICore.MP_Main.gameObject, true);
+			});
 		var backRect = backBtn.GetComponent<RectTransform>();
 		backRect.anchorMin = new Vector2(0f, 0.5f);
 		backRect.anchorMax = new Vector2(0f, 0.5f);
@@ -112,7 +122,7 @@ public static class UILobby
 		backRect.anchoredPosition = new Vector2(0, 99);
 	}
 
-	public static void AddPlayer(string username="Waiting for player...", int index=1)
+	public static GameObject AddPlayer(string username="Waiting for player...", int index=1)
 	{
 		int pos = 10 - ((index - 1) * 59);
 		
@@ -153,8 +163,37 @@ public static class UILobby
 		backRect.anchoredPosition = new Vector2(-80, 80);
 		
 		UICustomPanel.CreateSplitter(player.transform, new Vector2(0, -20), new(440, 2));
+		return player;
 	}
 
+
+	public static void RefreshPlayers()
+	{
+		DeleteAllPlayer();
+		int i = 0;
+		foreach (UserData data in ClientData.Instance.connectedClients.Values)
+		{
+			var p = AddPlayer(data.username, i + 1);
+			if (data.isReady)
+			{
+				Text t = p.transform.GetChild(1).GetComponent<Text>();
+				t.text = "Ready";
+				t.color = Color.green;
+				t.OnEnable();
+			}
+			i++;
+		}
+		while (i < 4)
+		{
+			AddPlayer("Waiting for player...", i + 1);
+			i++;
+		}
+
+		int ready_player = ClientData.Instance.connectedClients.Count(p => p.Value.isReady);
+		Text t2 = UICore.TMP_Window.transform.GetChild(4).GetComponent<Text>();
+		t2.text = "Players Ready: " + $"{ready_player}/{ClientData.Instance.connectedClients.Count}";
+		t2.OnEnable();
+	}
 	private static void DeleteAllPlayer()
 	{
 		GameObject lobbyWindow = UICore.TMP_Window;

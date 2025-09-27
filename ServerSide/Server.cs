@@ -34,6 +34,8 @@ public class Server
 
 	public void StartServer(NetworkType type)
 	{
+		if (isRunning)
+			MelonCoroutines.Start(CloseServer());
 		serverID = null;
 		networkType = type;
 		ServerData.Instance = new ServerData();

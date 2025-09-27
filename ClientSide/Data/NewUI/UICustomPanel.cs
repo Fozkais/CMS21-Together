@@ -325,7 +325,15 @@ public static class UICustomPanel
 		backRect.anchoredPosition = new Vector2(-120, 10);
 		
 		var confirmBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
-			"Confirm", (() => { UICore.ShowPanel(UICore.MP_Lobby); UILobby.CreateLobby(true); }));
+			"Confirm", (() =>
+			{
+				if (nameField.text == "")
+				{
+					UICustomPanel.CreateInfoPanel("Invalid username.");
+					return;
+				}
+				UIActions.StartServer(nameField.text, index);
+			}));
 		var confirmRect = confirmBtn.GetComponent<RectTransform>();
 		confirmRect.anchorMin = new Vector2(0.5f, 0f);
 		confirmRect.anchorMax = new Vector2(0.5f, 0f);
@@ -418,7 +426,20 @@ public static class UICustomPanel
 		backRect.anchoredPosition = new Vector2(-120, 10);
 		
 		var confirmBtn = UIElements.CreateButton(UICore.TMP_Window.transform,
-			"Confirm", (() => { UICore.ShowPanel(UICore.MP_Lobby); UILobby.CreateLobby(false); }));
+			"Confirm", (() =>
+			{
+				if (nameField.text == "")
+				{
+					UICustomPanel.CreateInfoPanel("Invalid username.");
+					return;
+				}
+				if (addressField.text == "")
+				{
+					UICustomPanel.CreateInfoPanel("Invalid server address.");
+					return;
+				}
+				UIActions.StartClient(nameField.text, addressField.text);
+			}));
 		var confirmRect = confirmBtn.GetComponent<RectTransform>();
 		confirmRect.anchorMin = new Vector2(0.5f, 0f);
 		confirmRect.anchorMax = new Vector2(0.5f, 0f);
