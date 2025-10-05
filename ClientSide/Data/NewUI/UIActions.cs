@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CMS.MainMenu.Controls;
 using CMS.UI.Controls;
-using CMS.UI.Logic;
-using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.ServerSide.Data;
@@ -16,7 +14,6 @@ using MelonLoader;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Object = Il2CppSystem.Object;
 
 namespace CMS21Together.ClientSide.Data.NewUI;
 

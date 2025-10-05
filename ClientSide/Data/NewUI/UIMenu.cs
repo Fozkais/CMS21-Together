@@ -1,5 +1,4 @@
-﻿using CMS21Together.ClientSide.Data.CustomUI;
-using CMS21Together.Shared;
+﻿using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using UnityEngine;
 using UnityEngine.UI;
