@@ -21,6 +21,26 @@ public class ClientTCP
 	{
 		try
 		{
+			if (!System.Net.IPAddress.TryParse(ip, out _))
+			{
+				Client.Instance.OnDisconnectedInvoke();
+				MelonLogger.Error($"[ClientTCP->Connect] Invalid IP address: {ip}");
+				return;
+			}
+			
+			using (var testSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+			{
+				var result = testSocket.BeginConnect(ip, MainMod.PORT, null, null);
+				bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+				if (!success || !testSocket.Connected)
+				{
+					Client.Instance.OnDisconnectedInvoke();
+					MelonLogger.Error($"[ClientTCP->Connect] Cannot reach {ip}:{MainMod.PORT}");
+					return;
+				}
+				testSocket.Close();
+			}
+			
 			socket = new TcpClient
 			{
 				ReceiveBufferSize = dataBufferSize,
@@ -28,6 +48,8 @@ public class ClientTCP
 			};
 			receiveBuffer = new byte[dataBufferSize];
 
+			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Trying to connect to server...");
+			
 			if (string.IsNullOrEmpty(ip))
 				socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
 			else
@@ -35,6 +57,7 @@ public class ClientTCP
 		}
 		catch (Exception e)
 		{
+			Client.Instance.OnDisconnectedInvoke();
 			MelonLogger.Error($"[ClientTCP->Connect] Failed to connect to server : {e}");
 		}
 	}
@@ -46,6 +69,7 @@ public class ClientTCP
 			socket.EndConnect(result);
 			if (!socket.Connected)
 			{
+				Client.Instance.OnDisconnectedInvoke();
 				MelonLogger.Error("[ClientTCP->ConnectCallback] Cannot connect to server!");
 				return;
 			}
@@ -53,9 +77,11 @@ public class ClientTCP
 			stream = socket.GetStream();
 			receivedData = new Packet();
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Connection etablished with server");
 		}
 		catch (Exception e)
 		{
+			Client.Instance.OnDisconnectedInvoke();
 			MelonLogger.Error($"[ClientTCP->ConnectCallback] Failed to connect to server : {e}");
 		}
 	}
@@ -69,6 +95,7 @@ public class ClientTCP
 			var byteLength = stream.EndRead(result);
 			if (byteLength <= 0)
 			{
+				Client.Instance.OnDisconnectedInvoke();
 				MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by the server.");
 				Client.Instance.Disconnect();
 				return;
@@ -103,7 +130,7 @@ public class ClientTCP
 			packetLenght = receivedData.ReadInt();
 			if (packetLenght <= 0) return true;
 		}
-
+		
 		while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
 		{
 			var _packetBytes = receivedData.ReadBytes(packetLenght);

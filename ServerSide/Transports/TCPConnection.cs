@@ -41,6 +41,8 @@ public class TCPConnection
 	{
 		try
 		{
+			if (stream == null) return;
+			
 			var _byteLength = stream.EndRead(result);
 			if (_byteLength <= 0)
 			{
@@ -122,11 +124,25 @@ public class TCPConnection
 
 	public void Disconnect()
 	{
-		socket.Close();
-		stream.Close();
-		stream = null;
-		receivedData = null;
-		receiveBuffer = null;
-		socket = null;
+		try
+		{
+			if (socket != null)
+			{
+				if (socket.Connected) socket.Close();
+				socket = null;
+			}
+			if (stream != null)
+			{
+				stream.Close();
+				stream = null;
+			}
+			receivedData = null;
+			receiveBuffer = null;
+		}
+		catch (Exception ex)
+		{
+			MelonLogger.Error($"[TCPConnection->Disconnect] Exception: {ex}");
+		}
 	}
+
 }

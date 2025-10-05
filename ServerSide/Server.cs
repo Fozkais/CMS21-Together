@@ -25,7 +25,7 @@ public class Server
 
 	public bool isRunning;
 
-	public Dictionary<int, ServerConnection> clients = new();
+	public Dictionary<int, ServerConnection> clients;
 	public SteamSocket steam;
 	public TcpListener tcp;
 	public UdpClient udp;
@@ -34,8 +34,11 @@ public class Server
 
 	public void StartServer(NetworkType type)
 	{
+		if (isRunning)
+			MelonCoroutines.Start(CloseServer());
 		serverID = null;
 		networkType = type;
+		clients = new Dictionary<int, ServerConnection>();
 		ServerData.Instance = new ServerData();
 		InitializeServerData();
 		StartServer();
@@ -43,6 +46,14 @@ public class Server
 	
 	private void StartServer()
 	{
+		tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
+		tcp.Start();
+		tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
+
+		udp = new UdpClient(MainMod.PORT);
+		udp.BeginReceive(UDPReceiveCallback, null);
+
+		
 		if (networkType == NetworkType.Steam)
 		{
 			steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
@@ -50,31 +61,11 @@ public class Server
 				MelonLogger.Msg($"[Server] Server is running with SteamID: {steam.GetServerID()}");
 			else
 				MelonLogger.Error("[Server] Failed to create RelaySocket.");
-			
-			tcp = new TcpListener(IPAddress.Any, MainMod.PORT); // launch tcp for host and maybe other client?
-			tcp.Start();
-			tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
-
-			udp = new UdpClient(MainMod.PORT);
-			udp.BeginReceive(UDPReceiveCallback, null);
-
-			Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
 		}
-		else if (networkType == NetworkType.TCP)
-		{
-			tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
-			tcp.Start();
-			tcp.BeginAcceptTcpClient(TCPConnectCallback, null);
-
-			udp = new UdpClient(MainMod.PORT);
-			udp.BeginReceive(UDPReceiveCallback, null);
-
-			Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
-		}
-
 		Application.runInBackground = true;
 		isRunning = true;
 		MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
+		Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
 	}
 
 	public IEnumerator CloseServer()
@@ -116,9 +107,6 @@ public class Server
 			tcp.Stop();
 		if (steam != null)
 		  steam.Close();
-
-		if (clients != null)
-			clients.Clear();
 		if (packetHandlers != null)
 			packetHandlers.Clear();
 

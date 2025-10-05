@@ -72,6 +72,7 @@ public class ClientUDP
 
 			if (_data.Length < 4)
 			{
+				Client.Instance.OnDisconnectedInvoke();
 				MelonLogger.Error("[ClientUDP->ReceiveCallback] Data invalid");
 				Disconnect();
 				return;
