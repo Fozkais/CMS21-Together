@@ -134,12 +134,18 @@ public static class UIActions
 	{
 		Action action = () =>
 		{
-			if (UIMenu.save_btn_index == 0) return;
+			if (UIMenu.save_btn_index == 0)
+			{
+				button.SetDisabled(true, true);
+				return;
+			}
+			UIMenu.save_btn_index -= 4;
+
 			UIUtils.DestroySavesButton();
 			Vector2 b_pos = new Vector2(0, 344);
-			
-			int i = UIMenu.save_btn_index - 4;
-			while (i <  UIMenu.save_btn_index)
+
+			int i = UIMenu.save_btn_index;
+			while (i < UIMenu.save_btn_index + 4 && i < 16)
 			{
 				var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
 				var saveRect = saveBtn.GetComponent<RectTransform>();
@@ -149,20 +155,22 @@ public static class UIActions
 				saveRect.sizeDelta = new Vector2(233, 44);
 				saveRect.anchoredPosition = b_pos;
 				saveBtn.transform.SetSiblingIndex(i % 4);
+				
 				saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i + 4));
 				saveBtn.SetLocked(false);
 				saveBtn.SetDisabled(false, true);
+				
 				b_pos.y -= 49;
 				i++;
 			}
 
-			UIMenu.save_btn_index -= 4;
-			if (UIMenu.save_btn_index == 4)
+			if (UIMenu.save_btn_index == 0)
 				button.SetDisabled(true, true);
 			else
 				button.SetDisabled(false, true);
-			next_button.SetDisabled(false, true);
-			next_button.DoStateTransition(SelectionState.Normal, true);
+			
+			next_button.SetLocked(false);
+			next_button.SetDisabled(false);
 		};
 		return action;
 	}
@@ -171,11 +179,18 @@ public static class UIActions
 	{
 		Action action = () =>
 		{
+			if (UIMenu.save_btn_index >= 12)
+			{
+				button.SetDisabled(true, true);
+				return;
+			}
+			UIMenu.save_btn_index += 4;
+
 			UIUtils.DestroySavesButton();
 			Vector2 b_pos = new Vector2(0, 344);
 
 			int i = UIMenu.save_btn_index;
-			while (i < UIMenu.save_btn_index + 4)
+			while (i < UIMenu.save_btn_index + 4 && i < 16)
 			{
 				var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
 				var saveRect = saveBtn.GetComponent<RectTransform>();
@@ -185,20 +200,22 @@ public static class UIActions
 				saveRect.sizeDelta = new Vector2(233, 44);
 				saveRect.anchoredPosition = b_pos;
 				saveBtn.transform.SetSiblingIndex(i % 4);
+				
 				saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i + 4));
 				saveBtn.SetLocked(false);
 				saveBtn.SetDisabled(false, true);
+				
 				b_pos.y -= 49;
 				i++;
 			}
 
-			UIMenu.save_btn_index += 4;
-			if (UIMenu.save_btn_index == 16)
+			if (UIMenu.save_btn_index >= 12)
 				button.SetDisabled(true, true);
 			else
 				button.SetDisabled(false, true);
-			prev_button.SetDisabled(false, true);
-			prev_button.DoStateTransition(SelectionState.Normal, true);
+			
+			prev_button.SetLocked(false);
+			prev_button.SetDisabled(false);
 		};
 		return action;
 	}

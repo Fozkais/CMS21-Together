@@ -38,6 +38,8 @@ public static class ClientHandle
 		var message = packet.Read<string>();
 
 		MelonLogger.Msg($"[ClientHandle->DisconnectPacket] You've been disconnected from server: {message}");
+		if (ClientData.UserData.scene == GameScene.menu)
+			UICustomPanel.CreateInfoPanel($"You've been disconnected from server: {message}");
 		Client.Instance.Disconnect(true);
 	}
 

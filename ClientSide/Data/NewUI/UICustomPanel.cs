@@ -94,8 +94,8 @@ public static class UICustomPanel
 		timeTxtRect.anchorMin = new Vector2(0f, 1f);
 		timeTxtRect.anchorMax = new Vector2(0f, 1f);
 		timeTxtRect.pivot = new Vector2(0f, 1f);
-		timeTxtRect.sizeDelta = new Vector2(230, 45);
-		timeTxtRect.anchoredPosition = new Vector2(10, -112.5f);
+		timeTxtRect.sizeDelta = new Vector2(300, 45);
+		timeTxtRect.anchoredPosition = new Vector2(9.5f, -108);
 		
 		var lsaveTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Last save : " + lastSave, 20);
 		var lsaveTxtRect = lsaveTxt.GetComponent<RectTransform>();
