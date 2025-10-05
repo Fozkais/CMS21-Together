@@ -130,8 +130,7 @@ public class ClientTCP
 			packetLenght = receivedData.ReadInt();
 			if (packetLenght <= 0) return true;
 		}
-
-		MelonLogger.Msg($"[ClientTCP->HandleData] received valid packet.");
+		
 		while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
 		{
 			var _packetBytes = receivedData.ReadBytes(packetLenght);
