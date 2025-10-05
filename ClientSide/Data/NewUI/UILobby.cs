@@ -107,7 +107,13 @@ public static class UILobby
 		typeRect.anchoredPosition = new Vector2(0, 246);
 		
 		var copyIdBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, 
-			"Copy server ID", (() => { GUIUtility.systemCopyBuffer = ClientData.UserData.lobbyID; }));
+			"Copy server ID", (() =>
+			{
+				if (!Server.Instance.isRunning)
+					GUIUtility.systemCopyBuffer = ClientData.UserData.lobbyID;
+				else
+					GUIUtility.systemCopyBuffer = Server.Instance.serverID;
+			}));
 		var copyIdRect = copyIdBtn.GetComponent<RectTransform>();
 		copyIdRect.anchorMin = new Vector2(0f, 0.5f);
 		copyIdRect.anchorMax = new Vector2(0f, 0.5f);

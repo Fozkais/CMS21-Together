@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.ClientSide.Transports;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
@@ -154,13 +154,7 @@ public class Client
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 		}
 		else
-		{
-			if (CustomUIManager.currentSection == CustomUISection.MP_Lobby)
-			{
-				CustomUIManager.DisableUI(CustomUISection.MP_Lobby);
-				CustomUIManager.EnableUI(CustomUISection.MP_Main);
-			}
-		}
+			UICore.ShowPanel(UICore.MP_Main);
 		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);

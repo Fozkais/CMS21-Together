@@ -37,12 +37,6 @@
         <Compile Include="ClientSide\Client.cs"/>
         <Compile Include="ClientSide\Data\ClientData.cs"/>
         <Compile Include="ClientSide\Data\ContentManager.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\CustomUIBuilder.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\CustomUIManager.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\UI_Host.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\UI_Lobby.cs" />
-        <Compile Include="ClientSide\Data\CustomUI\UI_Main.cs"/>
-        <Compile Include="ClientSide\Data\CustomUI\UI_Saves.cs"/>
         <Compile Include="ClientSide\Data\GameData.cs"/>
         <Compile Include="ClientSide\Data\Garage\Campaign\GarageUpgradeHooks.cs"/>
         <Compile Include="ClientSide\Data\Garage\Campaign\GarageUpgradeManager.cs"/>
