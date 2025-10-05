@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using CMS.MainMenu.Controls;
 using CMS.UI.Controls;
+using CMS.UI.Logic;
 using CMS21Together.ClientSide.Data.CustomUI;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
+using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
+using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Object = Il2CppSystem.Object;
@@ -29,7 +35,13 @@ public static class UIActions
 		Client.Instance.OnConnected += () =>
 		{
 			UICore.ShowPanel(UICore.MP_Lobby);
-			UILobby.CreateLobby(false);
+			if (!Server.Instance.isRunning)
+			{
+				if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
+					UILobby.CreateLobby(false, address);
+				else
+					UILobby.CreateLobby(false, "");
+			}
 		};
 		Client.Instance.OnDisconnected += () =>
 		{
@@ -38,7 +50,6 @@ public static class UIActions
 		};
 		Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType, address);
 	}
-	
 	public static void StartServer(string username, int save_index)
 	{
 		ClientData.UserData.username = username;
@@ -47,7 +58,10 @@ public static class UIActions
 		Client.Instance.OnConnected += () =>
 		{
 			UICore.ShowPanel(UICore.MP_Lobby);
-			UILobby.CreateLobby(true, save_index);
+			if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
+				UILobby.CreateLobby(true, Server.Instance.serverID, save_index);
+			else
+				UILobby.CreateLobby(true, "", save_index);
 		};
 		Client.Instance.OnDisconnected += () =>
 		{
@@ -116,6 +130,79 @@ public static class UIActions
 		button.OnEnable();
 	}
 
+	public static UnityAction PreviousSaves(MainMenuButton button, MainMenuButton next_button)
+	{
+		Action action = () =>
+		{
+			if (UIMenu.save_btn_index == 0) return;
+			UIUtils.DestroySavesButton();
+			Vector2 b_pos = new Vector2(0, 344);
+			
+			int i = UIMenu.save_btn_index - 4;
+			while (i <  UIMenu.save_btn_index)
+			{
+				var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
+				var saveRect = saveBtn.GetComponent<RectTransform>();
+				saveRect.anchorMin = new Vector2(0f, 0.5f);
+				saveRect.anchorMax = new Vector2(0f, 0.5f);
+				saveRect.pivot = new Vector2(0f, 0.5f);
+				saveRect.sizeDelta = new Vector2(233, 44);
+				saveRect.anchoredPosition = b_pos;
+				saveBtn.transform.SetSiblingIndex(i % 4);
+				saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i + 4));
+				saveBtn.SetLocked(false);
+				saveBtn.SetDisabled(false, true);
+				b_pos.y -= 49;
+				i++;
+			}
+
+			UIMenu.save_btn_index -= 4;
+			if (UIMenu.save_btn_index == 4)
+				button.SetDisabled(true, true);
+			else
+				button.SetDisabled(false, true);
+			next_button.SetDisabled(false, true);
+			next_button.DoStateTransition(SelectionState.Normal, true);
+		};
+		return action;
+	}
+	
+	public static UnityAction NextSaves(MainMenuButton button, MainMenuButton prev_button)
+	{
+		Action action = () =>
+		{
+			UIUtils.DestroySavesButton();
+			Vector2 b_pos = new Vector2(0, 344);
+
+			int i = UIMenu.save_btn_index;
+			while (i < UIMenu.save_btn_index + 4)
+			{
+				var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
+				var saveRect = saveBtn.GetComponent<RectTransform>();
+				saveRect.anchorMin = new Vector2(0f, 0.5f);
+				saveRect.anchorMax = new Vector2(0f, 0.5f);
+				saveRect.pivot = new Vector2(0f, 0.5f);
+				saveRect.sizeDelta = new Vector2(233, 44);
+				saveRect.anchoredPosition = b_pos;
+				saveBtn.transform.SetSiblingIndex(i % 4);
+				saveBtn.OnClick.AddListener(UIActions.LoadGame(saveBtn, i + 4));
+				saveBtn.SetLocked(false);
+				saveBtn.SetDisabled(false, true);
+				b_pos.y -= 49;
+				i++;
+			}
+
+			UIMenu.save_btn_index += 4;
+			if (UIMenu.save_btn_index == 16)
+				button.SetDisabled(true, true);
+			else
+				button.SetDisabled(false, true);
+			prev_button.SetDisabled(false, true);
+			prev_button.DoStateTransition(SelectionState.Normal, true);
+		};
+		return action;
+	}
+
 	public static UnityAction SwitchReady(MainMenuButton btn)
 	{
 		Action action = () =>
@@ -137,5 +224,43 @@ public static class UIActions
 			}
 		};
 		return action;
+	}
+
+	public static void StartGame(int save_index)
+	{
+		if (ServerData.Instance == null) return;
+
+		foreach (var player in ServerData.Instance.connectedClients.Values)
+		{
+			if (player != null && !player.isReady)
+			{
+				UICustomPanel.CreateInfoPanel("All player are not ready.");
+				return;
+			}
+		}
+		MelonCoroutines.Start(GameLaunch(save_index));
+	}
+
+	private static IEnumerator GameLaunch(int save_index)
+	{
+		yield return new WaitForEndOfFrame();
+		
+		SavesManager.StartGame(save_index);
+		int i = 0;
+		Dictionary<int, ModNewCarData> parksCars = new Dictionary<int, ModNewCarData>();
+		foreach (NewCarData carData in SavesManager.currentSave.carsOnParking)
+		{
+			if (carData != null && !String.IsNullOrEmpty(carData.carToLoad))
+			{
+				parksCars.Add(i, new ModNewCarData(carData));
+			}
+			i++;	
+		}
+		ServerSend.StartPacket(SavesManager.ModSaves[save_index].selectedGamemode, parksCars);
+		
+		SavesManager.ModSaves[save_index].alreadyLoaded = true;
+		if (SavesManager.ModSaves[save_index].additionnalStand != null)
+			ServerData.Instance.engineStand2 = SavesManager.ModSaves[save_index].additionnalStand;
+		SavesManager.SaveModSave(save_index);
 	}
 }

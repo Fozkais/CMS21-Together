@@ -8,6 +8,8 @@ namespace CMS21Together.ClientSide.Data.NewUI;
 
 public static class UIMenu
 {
+	public static int save_btn_index;
+	
 	public static void SetupMainMenu()
 	{
 		var playRect = UICore.templateButton.GetComponent<RectTransform>();
@@ -109,8 +111,10 @@ public static class UIMenu
 			b_pos.y -= 49;
 			i++;
 		}
+		save_btn_index = 4;
 		
-		var prevBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Previous", null);
+		var prevBtn = UIElements.CreateButton(UICore.MP_Host.transform,
+			"Previous", null);
 		var prevRect = prevBtn.GetComponent<RectTransform>();
 		prevRect.anchorMin = new Vector2(0f, 0.5f);
 		prevRect.anchorMax = new Vector2(0f, 0.5f);
@@ -119,12 +123,17 @@ public static class UIMenu
 		prevRect.anchoredPosition = new Vector2(0, 148);
 		
 		var nextBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Next", null);
+		prevBtn.OnClick.AddListener( UIActions.PreviousSaves(prevBtn, nextBtn));
+		prevBtn.SetLocked();
+		
 		var nextRect = nextBtn.GetComponent<RectTransform>();
 		nextRect.anchorMin = new Vector2(0f, 0.5f);
 		nextRect.anchorMax = new Vector2(0f, 0.5f);
 		nextRect.pivot = new Vector2(0f, 0.5f);
 		nextRect.sizeDelta = new Vector2(115f, 44);
 		nextRect.anchoredPosition = new Vector2(118f, 148);
+		nextBtn.OnClick.AddListener( UIActions.NextSaves(nextBtn, prevBtn));
+		nextBtn.SetLocked(false);
 		
 		var backBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Back to menu",
 			() =>

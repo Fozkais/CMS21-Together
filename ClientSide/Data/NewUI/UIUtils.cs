@@ -31,4 +31,30 @@ public static class UIUtils
 		}
 	}
 
+	public static void DestroySavesButton()
+	{
+		int j = 0;
+		while (j < 4)
+		{
+			if (UICore.MP_Host.transform.childCount <= j) break;
+			
+			var saveBtn = UICore.MP_Host.transform.GetChild(j);
+			UnityEngine.Object.Destroy(saveBtn.gameObject);
+			j++;
+		}
+	}
+	
+	public static void DestroyPanelButtons(Transform panel)
+	{
+		int j = 0;
+		while (j < panel.childCount)
+		{
+			if (panel.childCount <= j) break;
+			
+			var btn = panel.transform.GetChild(j);
+			Object.Destroy(btn.gameObject);
+			j++;
+		}
+	}
+
 }

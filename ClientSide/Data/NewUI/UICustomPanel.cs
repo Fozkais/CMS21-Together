@@ -299,7 +299,7 @@ public static class UICustomPanel
 		nameTxtRect.sizeDelta = new Vector2(230, 45);
 		nameTxtRect.anchoredPosition = new Vector2(10, -50);
 		
-		var nameField = UIElements.CreateInput(UICore.TMP_Window.transform, "");
+		var nameField = UIElements.CreateInput(UICore.TMP_Window.transform, ClientData.UserData.username);
 		nameField.transform.parent.GetChild(1).gameObject.SetActive(false);
 		var nameFieldRect = nameField.transform.parent.GetComponent<RectTransform>();
 		nameFieldRect.anchorMin = new Vector2(0f, 1f);
@@ -378,7 +378,7 @@ public static class UICustomPanel
 		nameTxtRect.sizeDelta = new Vector2(230, 45);
 		nameTxtRect.anchoredPosition = new Vector2(10, -50);
 		
-		var nameField = UIElements.CreateInput(UICore.TMP_Window.transform, "");
+		var nameField = UIElements.CreateInput(UICore.TMP_Window.transform, ClientData.UserData.username);
 		nameField.transform.parent.GetChild(1).gameObject.SetActive(false);
 		var nameFieldRect = nameField.transform.parent.GetComponent<RectTransform>();
 		nameFieldRect.anchorMin = new Vector2(0f, 1f);
@@ -400,7 +400,7 @@ public static class UICustomPanel
 		addressTxtRect.sizeDelta = new Vector2(230, 45);
 		addressTxtRect.anchoredPosition = new Vector2(10, -150);
 		
-		var addressField = UIElements.CreateInput(UICore.TMP_Window.transform, "");
+		var addressField = UIElements.CreateInput(UICore.TMP_Window.transform, ClientData.UserData.ip);
 		addressField.transform.parent.GetChild(1).gameObject.SetActive(false);
 		var addressFieldRect = addressField.transform.parent.GetComponent<RectTransform>();
 		addressFieldRect.anchorMin = new Vector2(0f, 1f);

@@ -48,6 +48,8 @@ public class ClientTCP
 			};
 			receiveBuffer = new byte[dataBufferSize];
 
+			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Trying to connect to server...");
+			
 			if (string.IsNullOrEmpty(ip))
 				socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
 			else
@@ -75,6 +77,7 @@ public class ClientTCP
 			stream = socket.GetStream();
 			receivedData = new Packet();
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Connection etablished with server");
 		}
 		catch (Exception e)
 		{
@@ -128,6 +131,7 @@ public class ClientTCP
 			if (packetLenght <= 0) return true;
 		}
 
+		MelonLogger.Msg($"[ClientTCP->HandleData] received valid packet.");
 		while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
 		{
 			var _packetBytes = receivedData.ReadBytes(packetLenght);
