@@ -190,9 +190,15 @@ public static class UILobby
 		foreach (UserData data in ClientData.Instance.connectedClients.Values)
 		{
 			var p = AddPlayer(data.username, i + 1);
+			if (p == null)
+			{
+				MelonLogger.Warning($"[UILobby] AddPlayer returned null for {data.username}");
+				i++;
+				continue;
+			}
 			if (data.isReady && p.transform.childCount > 1)
 			{
-				var t = p.transform.GetChild(1).GetComponent<Text>();
+				var t = p.transform.GetChild(1)?.GetComponent<Text>();
 				if (t != null)
 				{
 					t.text = "Ready";
