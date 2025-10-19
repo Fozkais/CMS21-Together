@@ -71,14 +71,20 @@ public class ContentManager
 				string releaseName = m.Groups[1].Value;
 				string remoteVersion = releaseName.Split(' ')[0];
 
-				Version local = new Version(versionName);
-				Version remote = new Version(remoteVersion);
+				(Version localVer, int localHF) = ParseVersion(versionName);
+				(Version remoteVer, int remoteHF) = ParseVersion(remoteVersion);
 
-				int cmp = local.CompareTo(remote);
+				int cmp = localVer.CompareTo(remoteVer);
 				if (cmp < 0)
 					return VersionStatus.Outdated;
 				if (cmp > 0)
 					return VersionStatus.Dev;
+				
+				if (localHF < remoteHF)
+					return VersionStatus.Outdated;
+				if (localHF > remoteHF)
+					return VersionStatus.Dev;
+				
 				return VersionStatus.Latest;
 			}
 		}
@@ -87,5 +93,20 @@ public class ContentManager
 			MelonLogger.Msg("VersionChecker exception : " + ex);
 			return VersionStatus.Latest;
 		}
+	}
+	
+	private (Version, int) ParseVersion(string versionStr)
+	{
+		int hf = 0;
+		var m = Regex.Match(versionStr, @"^(?<ver>\d+\.\d+\.\d+)(?:hf(?<hf>\d+))?$");
+		if (m.Success)
+		{
+			if (int.TryParse(m.Groups["hf"].Value, out int tmp))
+				hf = tmp;
+			return (new Version(m.Groups["ver"].Value), hf);
+		}
+
+		// Si format non reconnu, on tente un fallback minimal
+		return (new Version(0, 0, 0), 0);
 	}
 }
