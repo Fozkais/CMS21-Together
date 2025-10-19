@@ -62,7 +62,7 @@ public class ModItem
 			Quality = item.Quality;
 			RepairAmount = item.RepairAmount;
 			TintColor = new ModColor(item.TintColor.GetColor());
-			// this.TuningData = new ModTuningData(item.tuningData);
+			TuningData = new ModTuningData(item.tuningData);
 			WashFactor = item.WashFactor;
 			WheelData = new ModWheelData(item.WheelData);
 			ID = item.ID;
