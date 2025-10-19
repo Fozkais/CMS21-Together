@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using CMS.Helpers;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data.Vanilla;
@@ -13,16 +16,53 @@ namespace CMS21Together.ClientSide.Data.Player;
 [HarmonyPatch]
 public static class Inventory
 {
-	public static List<ModItem> items = new();
-	public static List<ModGroupItem> groupItems = new();
+	public static List<ModItem> modItems = new();
+	public static List<ModGroupItem> modGroupItems = new();
 	private static bool loadSkip;
 
 	public static void Reset()
 	{
-		items.Clear();
-		groupItems.Clear();
+		modItems.Clear();
+		modGroupItems.Clear();
 		loadSkip = false;
 		
+	}
+
+	[HarmonyPatch(typeof(UIHelper), nameof(UIHelper.GetItemsForID), typeof(List<Item>), typeof(string))]
+	[HarmonyPrefix]
+	public static bool GetItemsForIDFix(List<Item> items, string id, ref List<BaseItem> __result)
+	{
+		if (!Client.Instance.isConnected) {return true;}
+
+		Item[] snapshot = items.ToArray();
+		ConcurrentBag<BaseItem> bag = new ConcurrentBag<BaseItem>();
+		Parallel.ForEach(snapshot, item =>
+		{
+			if (item.ID.IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0)
+				bag.Add(item);
+		});
+		__result = bag.ToList();
+		
+		return false;
+	}
+	
+	[HarmonyPatch(typeof(UIHelper), nameof(UIHelper.GetBaseItemsForIDExact), typeof(List<Item>), typeof(string))]
+	[HarmonyPrefix]
+	public static bool GetBaseItemsForIDExactFix(List<Item> items, string id, ref List<BaseItem> __result)
+	{
+		if (!Client.Instance.isConnected) {return true;}
+
+		Item[] snapshot = items.ToArray();
+		ConcurrentBag<BaseItem> bag = new ConcurrentBag<BaseItem>();
+		Parallel.For(0, snapshot.Length, i =>
+		{
+			var item = snapshot[i];
+			if (item.ID == id)
+				bag.Add(item);
+		});
+		__result = bag.ToList();
+		
+		return false;
 	}
 
 
@@ -31,10 +71,10 @@ public static class Inventory
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
 		if (!Client.Instance.isConnected) {return;}
-		if (items.Any(i => i.UID == item.UID)) return;
+		if (modItems.Any(i => i.UID == item.UID)) return;
 		
 		var newItem = new ModItem(item);
-		items.Add(newItem);
+		modItems.Add(newItem);
 		ClientSend.ItemPacket(newItem, InventoryAction.add);
 	}
 
@@ -43,11 +83,11 @@ public static class Inventory
 	public static void AddGroupItemHook(GroupItem group)
 	{
 		if (!Client.Instance.isConnected) {return;}
-		if (groupItems.Any(i => i.UID == group.UID)) return;
+		if (modGroupItems.Any(i => i.UID == group.UID)) return;
 
 		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
 		var newItem = new ModGroupItem(group);
-		groupItems.Add(newItem);
+		modGroupItems.Add(newItem);
 		ClientSend.GroupItemPacket(newItem, InventoryAction.add);
 	}
 
@@ -59,11 +99,11 @@ public static class Inventory
 
 		if (item == null) return;
 
-		if (items.Any(s => s.UID == item.UID))
+		if (modItems.Any(s => s.UID == item.UID))
 		{
-			var itemToRemove = items.First(s => s.UID == item.UID);
+			var itemToRemove = modItems.First(s => s.UID == item.UID);
 			ClientSend.ItemPacket(itemToRemove, InventoryAction.remove);
-			items.Remove(itemToRemove);
+			modItems.Remove(itemToRemove);
 		}
 	}
 
@@ -73,11 +113,11 @@ public static class Inventory
 	{
 		if (!Client.Instance.isConnected ) {return;}
 
-		if (groupItems.Any(s => s.UID == UId))
+		if (modGroupItems.Any(s => s.UID == UId))
 		{
-			var itemToRemove = groupItems.First(s => s.UID == UId);
+			var itemToRemove = modGroupItems.First(s => s.UID == UId);
 			ClientSend.GroupItemPacket(itemToRemove, InventoryAction.remove);
-			groupItems.Remove(itemToRemove);
+			modGroupItems.Remove(itemToRemove);
 		}
 	}
 
@@ -106,21 +146,21 @@ public static class Inventory
 			if (group != null)
 			{
 				var newItem = new ModGroupItem(group);
-				groupItems.Add(newItem);
+				modGroupItems.Add(newItem);
 				ClientSend.GroupItemPacket(newItem, InventoryAction.add);
 			}
 
-		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {groupItems.Count} groupItem.");
+		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {modGroupItems.Count} groupItem.");
 
 		foreach (var item in inventoryData.items)
 			if (item != null)
 			{
 				var newItem = new ModItem(item);
-				items.Add(newItem);
+				modItems.Add(newItem);
 				ClientSend.ItemPacket(newItem, InventoryAction.add);
 			}
 
-		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {items.Count} Item.");
+		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {modItems.Count} Item.");
 		return true;
 	}
 
@@ -131,12 +171,12 @@ public static class Inventory
 		switch (action)
 		{
 			case InventoryAction.add:
-				items.Add(item);
+				modItems.Add(item);
 				GameData.Instance.localInventory.Add(item.ToGame());
 				break;
 			case InventoryAction.remove:
-				if (items.Any(i => i.UID == item.UID))
-					items.Remove(item);
+				if (modItems.Any(i => i.UID == item.UID))
+					modItems.Remove(item);
 				GameData.Instance.localInventory.Delete(item.ToGame());
 				break;
 		}
@@ -148,12 +188,12 @@ public static class Inventory
 		switch (action)
 		{
 			case InventoryAction.add:
-				groupItems.Add(item);
+				modGroupItems.Add(item);
 				GameData.Instance.localInventory.AddGroup(item.ToGame());
 				break;
 			case InventoryAction.remove:
-				if (groupItems.Any(i => i.UID == item.UID))
-					groupItems.Remove(item);
+				if (modGroupItems.Any(i => i.UID == item.UID))
+					modGroupItems.Remove(item);
 				GameData.Instance.localInventory.DeleteGroup(item.UID);
 				break;
 		}

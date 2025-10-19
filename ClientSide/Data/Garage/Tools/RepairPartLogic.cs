@@ -36,9 +36,9 @@ public static class RepairPartLogic
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
-		if (Player.Inventory.items.Any(i => i.UID == info.Item.UID))
+		if (Player.Inventory.modItems.Any(i => i.UID == info.Item.UID))
 		{
-			ModItem item = Player.Inventory.items.First(i => i.UID == info.Item.UID);
+			ModItem item = Player.Inventory.modItems.First(i => i.UID == info.Item.UID);
 			item.Condition = (success ? info.SuccessCondition : info.FailCondition);
 			item.RepairAmount++;
 			if (isBody)
