@@ -18,19 +18,26 @@ public static class Movement
 
 		if (player.scene != ClientData.UserData.scene) return;
 		if (player.userObject == null) player.SpawnPlayer();
-		
-		if (player.lastPosition != null)
+
+		if (player.userObject)
 		{
-			var direction = (position.toVector3() - player.lastPosition.toVector3()).normalized;
-			var speed = (position.toVector3() - player.lastPosition.toVector3()).magnitude / Time.deltaTime;
-			
-			UpdateAnimations(player.userAnimator, direction, speed);
-			player.lastUpdateTime = Time.time;
-		}
-		
-		if (player.userObject != null)
-		{
-			player.userObject.transform.position = position.toVector3();
+			Vector3 targetPos = position.toVector3();
+			Vector3 curPos = player.userObject.transform.position;
+
+			if (player.lastPosition != null)
+			{
+				var direction = (targetPos - player.lastPosition.toVector3()).normalized;
+				var speed = (targetPos - player.lastPosition.toVector3()).magnitude / Time.deltaTime;
+
+				speed = Mathf.Clamp(speed, 0f, 20f);
+
+				UpdateAnimations(player.userAnimator, direction, speed);
+				player.lastUpdateTime = Time.time;
+
+				player.userObject.transform.position = Vector3.Lerp(curPos, targetPos, Time.deltaTime * 15f);
+			}
+			else
+				player.userObject.transform.position = targetPos;
 			player.lastPosition = position;
 		}
 	}
