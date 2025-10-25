@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.Shared;
 using MelonLoader;
@@ -95,9 +96,15 @@ public class ClientTCP
 			var byteLength = stream.EndRead(result);
 			if (byteLength <= 0)
 			{
-				Client.Instance.OnDisconnectedInvoke();
-				MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by the server.");
-				Client.Instance.Disconnect();
+				if (socket != null && !socket.Connected)
+				{
+					MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by server (confirmed).");
+					Client.Instance.OnDisconnectedInvoke();
+					Client.Instance.Disconnect();
+					return;
+				}
+				Thread.Sleep(100);
+				stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 				return;
 			}
 

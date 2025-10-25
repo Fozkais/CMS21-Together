@@ -44,6 +44,8 @@ public static class UIActions
 		{
 			UICore.ShowPanel(UICore.MP_Main);
 			UICustomPanel.CreateInfoPanel("Failed to connect to server !");
+			if (Server.Instance.isRunning)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
 		};
 		Client.Instance.ConnectToServer(ClientData.UserData.selectedNetworkType, address);
 	}
