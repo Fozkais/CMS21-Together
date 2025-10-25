@@ -3,6 +3,8 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.Shared;
 using MelonLoader;
 
@@ -25,6 +27,7 @@ public class ClientTCP
 			if (!System.Net.IPAddress.TryParse(ip, out _))
 			{
 				Client.Instance.OnDisconnectedInvoke();
+				UICustomPanel.CreateInfoPanel("Invalid IP address.");
 				MelonLogger.Error($"[ClientTCP->Connect] Invalid IP address: {ip}");
 				return;
 			}
@@ -78,6 +81,7 @@ public class ClientTCP
 			stream = socket.GetStream();
 			receivedData = new Packet();
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+			ClientSend.HandShake();
 			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Connection etablished with server");
 		}
 		catch (Exception e)

@@ -510,4 +510,13 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
+	public static void HandShake()
+	{
+		using (var packet = new Packet((int)PacketTypes.handshake))
+		{
+			packet.Write("HELLO_SERVER");
+			SendData(packet);
+		}
+	}
 }

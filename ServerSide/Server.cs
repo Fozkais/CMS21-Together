@@ -161,7 +161,7 @@ public class Server
 		{
 			if (!clients[i].isConnected)
 			{
-				clients[i].Connect(_client);
+				clients[i].tcp.BeginHandshake(_client);
 				MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{i}.");
 				return;
 			}
