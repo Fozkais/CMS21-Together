@@ -104,7 +104,7 @@ public class ClientTCP
 				{
 					MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by server (confirmed).");
 					Client.Instance.OnDisconnectedInvoke();
-					Client.Instance.Disconnect();
+					Client.Instance.Disconnect(true);
 					return;
 				}
 				Thread.Sleep(100);
@@ -122,12 +122,12 @@ public class ClientTCP
 		catch (IOException ioEx)
 		{
 			MelonLogger.Error($"[ClientTCP->ReceiveCallback] IOException: {ioEx.Message}");
-			Client.Instance.Disconnect();
+			Client.Instance.Disconnect(true);
 		}
 		catch (Exception ex)
 		{
 			MelonLogger.Error($"[ClientTCP->ReceiveCallback] Unexpected error: {ex.Message}");
-			Client.Instance.Disconnect();
+			Client.Instance.Disconnect(true);
 		}
 	}
 

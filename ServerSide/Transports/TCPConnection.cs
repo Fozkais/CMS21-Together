@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading;
 using CMS21Together.Shared;
 using MelonLoader;
 
@@ -53,10 +54,10 @@ public class TCPConnection
 			if (byteLength <= 0)
 			{
 				MelonLogger.Msg($"[Server->Handshake] Phantom connection ignored (id:{id})");
-				Disconnect();
+				Disconnect(true);
 				return;
 			}
-
+			
 			byte[] data = new byte[byteLength];
 			Array.Copy(receiveBuffer, data, byteLength);
 			
@@ -68,7 +69,7 @@ public class TCPConnection
 					Disconnect();
 					return;
 				}
-
+				
 				int packetLength;
 				if (packet.UnreadLength() >= 4)
 				{
@@ -84,6 +85,7 @@ public class TCPConnection
 				if (packetId == (int)PacketTypes.handshake)
 				{
 					MelonLogger.Msg($"[Server->Handshake] Handshake OK for id:{id}");
+					Thread.Sleep(150);
 					Server.Instance.clients[id].Connect(socket);
 				}
 				else
@@ -186,7 +188,7 @@ public class TCPConnection
 	}
 		
 
-	public void Disconnect()
+	public void Disconnect(bool phantom=false)
 	{
 		try
 		{
@@ -202,6 +204,8 @@ public class TCPConnection
 			}
 			receivedData = null;
 			receiveBuffer = null;
+			if (id == 1 && !phantom)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
 		}
 		catch (Exception ex)
 		{

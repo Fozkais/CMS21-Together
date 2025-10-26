@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide;
 using CMS21Together.ServerSide.Data;
+using CMS21Together.ServerSide.Transports;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
@@ -161,6 +162,7 @@ public class Server
 		{
 			if (!clients[i].isConnected)
 			{
+				clients[i].tcp = new TCPConnection(i);
 				clients[i].tcp.BeginHandshake(_client);
 				MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{i}.");
 				return;

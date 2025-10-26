@@ -68,6 +68,7 @@ public class Client
 		switch (networkType)
 		{
 			case NetworkType.TCP:
+				if (!tcp.socket.Connected) break;
 				if (reliable) tcp.Send(packet);
 				else udp.Send(packet);
 				break;
