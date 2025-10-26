@@ -55,6 +55,7 @@ public static class Movement
 	{
 		foreach (var client in ClientData.Instance.connectedClients.Values)
 		{
+			if (client == null) continue;
 			if (client.userObject == null || client.userAnimator == null) continue;
 			
 			float elapsedTime = Time.time - client.lastUpdateTime;
@@ -64,7 +65,6 @@ public static class Movement
 				client.userAnimator.SetFloat("Vertical", Mathf.Lerp(client.userAnimator.GetFloat("Vertical"), 0, Time.deltaTime * 10f));
 				client.userAnimator.SetFloat("Horizontal", Mathf.Lerp(client.userAnimator.GetFloat("Horizontal"), 0, Time.deltaTime * 10f));
 				
-				// Arrêter la rotation
 				var currentRotation = client.userObject.transform.rotation;
 				var targetRotation = client.userObject.transform.rotation;
 				client.userObject.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * 5f);

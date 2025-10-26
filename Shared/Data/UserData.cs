@@ -2,6 +2,7 @@
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.Player;
+using MelonLoader;
 using Newtonsoft.Json;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -61,14 +62,14 @@ public class UserData
 	{
 		if (ClientData.Instance.playerPrefab == null)
 		{
-			Debug.LogError("[CMS21-Together] Cannot spawn player: playerPrefab is null.");
+			MelonLogger.Error("[CMS21-Together] Cannot spawn player: playerPrefab is null.");
 			return;
 		}
 		if (playerID == ClientData.UserData.playerID)
 		{
 			if (GameData.Instance.localPlayer == null)
 			{
-				Debug.LogError("[CMS21-Together] Cannot spawn local player: localPlayer is null.");
+				MelonLogger.Error("[CMS21-Together] Cannot spawn local player: localPlayer is null.");
 				return;
 			}
 			userObject = GameData.Instance.localPlayer;
