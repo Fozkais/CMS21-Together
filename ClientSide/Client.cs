@@ -144,7 +144,6 @@ public class Client
 		Application.runInBackground = false;
 		isConnected = false;
 
-		OnDisconnectedInvoke();
 
 		tcp.Disconnect();
 		udp.Disconnect();
@@ -155,7 +154,7 @@ public class Client
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 		}
 		else
-			UICore.ShowPanel(UICore.MP_Main);
+			OnDisconnectedInvoke();
 		
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
