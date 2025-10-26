@@ -6,6 +6,7 @@ namespace CMS21Together.Shared;
 public enum PacketTypes
 {
 	connect,
+	handshake,
 	disconnect,
 	userData,
 	readyState,

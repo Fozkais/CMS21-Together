@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading;
 using CMS21Together.Shared;
 using MelonLoader;
 
@@ -31,11 +32,76 @@ public class TCPConnection
 		stream.ReadTimeout = 200;
 
 		receivedData = new Packet();
-
 		receiveBuffer = new byte[dataBufferSize];
 
 		stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 	}
+	
+	public void BeginHandshake(TcpClient tcpClient)
+	{
+		socket = tcpClient;
+		stream = socket.GetStream();
+		receiveBuffer = new byte[4096];
+		
+		stream.BeginRead(receiveBuffer, 0, receiveBuffer.Length, HandshakeCallback, null);
+	}
+
+	private void HandshakeCallback(IAsyncResult result)
+	{
+		try
+		{
+			int byteLength = stream.EndRead(result);
+			if (byteLength <= 0)
+			{
+				MelonLogger.Msg($"[Server->Handshake] Phantom connection ignored (id:{id})");
+				Disconnect(true);
+				return;
+			}
+			
+			byte[] data = new byte[byteLength];
+			Array.Copy(receiveBuffer, data, byteLength);
+			
+			using (Packet packet = new Packet(data))
+			{
+				if (packet.UnreadLength() < 8)
+				{
+					MelonLogger.Warning($"[Server->Handshake] Invalid packet received during handshake (too short)");
+					Disconnect();
+					return;
+				}
+				
+				int packetLength;
+				if (packet.UnreadLength() >= 4)
+				{
+					packetLength = packet.ReadInt();
+					if (packetLength <= 0)
+					{
+						MelonLogger.Warning($"[Server->Handshake] Invalid packet length");
+						Disconnect();
+						return;
+					}
+				}
+				int packetId = packet.ReadInt();
+				if (packetId == (int)PacketTypes.handshake)
+				{
+					MelonLogger.Msg($"[Server->Handshake] Handshake OK for id:{id}");
+					Thread.Sleep(150);
+					Server.Instance.clients[id].Connect(socket);
+				}
+				else
+				{
+					MelonLogger.Warning($"[Server->TCPConnection->HandshakeCallback] Unexpected packet during handshake for id:{id}");
+					Disconnect();
+				}
+			}
+		}
+		catch
+		{
+			MelonLogger.Warning($"[Server->TCPConnection->HandshakeCallback] Handshake failed for id:{id}");
+			Disconnect();
+		}
+	}
+
 
 	private void ReceiveCallback(IAsyncResult result)
 	{
@@ -122,7 +188,7 @@ public class TCPConnection
 	}
 		
 
-	public void Disconnect()
+	public void Disconnect(bool phantom=false)
 	{
 		try
 		{
@@ -138,6 +204,8 @@ public class TCPConnection
 			}
 			receivedData = null;
 			receiveBuffer = null;
+			if (id == 1 && !phantom)
+				MelonCoroutines.Start(Server.Instance.CloseServer());
 		}
 		catch (Exception ex)
 		{

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Threading;
 using CMS21Together.ClientSide.Data;
+using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.Shared;
 using MelonLoader;
 
@@ -24,6 +27,7 @@ public class ClientTCP
 			if (!System.Net.IPAddress.TryParse(ip, out _))
 			{
 				Client.Instance.OnDisconnectedInvoke();
+				UICustomPanel.CreateInfoPanel("Invalid IP address.");
 				MelonLogger.Error($"[ClientTCP->Connect] Invalid IP address: {ip}");
 				return;
 			}
@@ -77,6 +81,7 @@ public class ClientTCP
 			stream = socket.GetStream();
 			receivedData = new Packet();
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+			ClientSend.HandShake();
 			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Connection etablished with server");
 		}
 		catch (Exception e)
@@ -95,9 +100,15 @@ public class ClientTCP
 			var byteLength = stream.EndRead(result);
 			if (byteLength <= 0)
 			{
-				Client.Instance.OnDisconnectedInvoke();
-				MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by the server.");
-				Client.Instance.Disconnect();
+				if (socket != null && !socket.Connected)
+				{
+					MelonLogger.Warning("[ClientTCP->ReceiveCallback] Connection closed by server (confirmed).");
+					Client.Instance.OnDisconnectedInvoke();
+					Client.Instance.Disconnect(true);
+					return;
+				}
+				Thread.Sleep(100);
+				stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 				return;
 			}
 
@@ -111,12 +122,12 @@ public class ClientTCP
 		catch (IOException ioEx)
 		{
 			MelonLogger.Error($"[ClientTCP->ReceiveCallback] IOException: {ioEx.Message}");
-			Client.Instance.Disconnect();
+			Client.Instance.Disconnect(true);
 		}
 		catch (Exception ex)
 		{
 			MelonLogger.Error($"[ClientTCP->ReceiveCallback] Unexpected error: {ex.Message}");
-			Client.Instance.Disconnect();
+			Client.Instance.Disconnect(true);
 		}
 	}
 
