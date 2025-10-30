@@ -29,7 +29,7 @@ public static class SceneManager
 
 			ClientData.GameReady = false;
 		}
-		else if (newSceneName == "garage" || newSceneName == "Christmas" || newSceneName == "Easter")
+		else if (newSceneName == "garage" || newSceneName == "Christmas" || newSceneName == "Easter" || newSceneName == "Halloween")
 		{
 			if (ClientData.GameReady)
 				MelonCoroutines.Start(GarageResync.ResyncGarage());
@@ -49,7 +49,7 @@ public static class SceneManager
 		
 		if (scene == "Barn")
 			return GameScene.barn;
-		if (scene == "garage" || scene == "Christmas" || scene == "Easter")
+		if (scene == "garage" || scene == "Christmas" || scene == "Easter" || scene == "Halloween")
 		{
 			GameData.isReady = false;
 			return GameScene.garage;
