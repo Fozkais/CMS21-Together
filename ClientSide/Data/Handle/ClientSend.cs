@@ -505,7 +505,6 @@ public class ClientSend
 	{
 		using (var packet = new Packet((int)PacketTypes.parkRemove))
 		{
-			MelonLogger.Msg("Remove a car to parking");
 			packet.Write(index);
 			SendData(packet);
 		}
@@ -517,6 +516,27 @@ public class ClientSend
 		{
 			packet.Write("HELLO_SERVER");
 			SendData(packet);
+		}
+	}
+
+	public static void PlayerInCarPacket(bool isInCar, int carLoaderID)
+	{
+		using (var packet = new Packet((int)PacketTypes.playerInCar))
+		{
+			packet.Write(isInCar);
+			packet.Write(carLoaderID);
+			SendData(packet);
+		}
+	}
+
+	public static void CarEngineSoundPacket(int carLoaderID, bool isPlaying, float rpm = 0f)
+	{
+		using (var packet = new Packet((int)PacketTypes.carEngineSound))
+		{
+			packet.Write(carLoaderID);
+			packet.Write(isPlaying);
+			packet.Write(rpm);
+			SendData(packet, false); // Use UDP for sound sync (non-reliable)
 		}
 	}
 }

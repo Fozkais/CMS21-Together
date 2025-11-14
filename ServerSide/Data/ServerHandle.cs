@@ -113,30 +113,65 @@ public static class ServerHandle
 	{
 		var action = _packet.Read<InventoryAction>();
 
-
 		if (action != InventoryAction.resync)
 		{
 			var item = _packet.Read<ModItem>();
 
-			
-			if (action == InventoryAction.add && ServerData.Instance.items.All(i => i.UID != item.UID))
+			// Security Rule: Validate item is not null
+			if (item == null)
 			{
-				SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
-				ServerData.Instance.items.Add(item);
-				ServerSend.ItemPacket(fromClient, item, action);
+				MelonLogger.Warning($"[ServerHandle->ItemPacket] Received null item from client {fromClient}, skipping.");
+				return;
 			}
-			else
+
+			// Security Rule: Validate ServerData is initialized
+			if (ServerData.Instance == null || ServerData.Instance.items == null)
 			{
+				MelonLogger.Error("[ServerHandle->ItemPacket] ServerData.Instance or items is null!");
+				return;
+			}
+
+			if (action == InventoryAction.add)
+			{
+				// Business Rule: Check if item already exists to prevent duplication
+				if (ServerData.Instance.items.All(i => i.UID != item.UID))
+				{
+					// Business Logic: Increment UID counter and add item to server inventory
+					SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
+					ServerData.Instance.items.Add(item);
+					
+					// Business Logic: Broadcast item to all clients (including sender for confirmation)
+					ServerSend.ItemPacket(fromClient, item, action);
+					MelonLogger.Msg($"[ServerHandle->ItemPacket] Added item UID: {item.UID} from client {fromClient}");
+				}
+				else
+				{
+					// Security Rule: Log duplicate attempt but don't add
+					MelonLogger.Msg($"[ServerHandle->ItemPacket] Item with UID {item.UID} already exists, skipping add to prevent duplication.");
+				}
+			}
+			else if (action == InventoryAction.remove)
+			{
+				// Business Rule: Remove item if it exists
 				if (ServerData.Instance.items.Any(s => s.UID == item.UID))
 				{
 					var index = ServerData.Instance.items.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.items.Remove(ServerData.Instance.items[index]);
+					
+					// Business Logic: Broadcast removal to all clients
+					ServerSend.ItemPacket(fromClient, item, action);
+					MelonLogger.Msg($"[ServerHandle->ItemPacket] Removed item UID: {item.UID} from client {fromClient}");
 				}
-				ServerSend.ItemPacket(fromClient, item, action);
+				else
+				{
+					MelonLogger.Msg($"[ServerHandle->ItemPacket] Item with UID {item.UID} not found for removal from client {fromClient}");
+				}
 			}
 			return;
 		}
 
+		// Business Logic: Resync - send all items to requesting client
+		MelonLogger.Msg($"[ServerHandle->ItemPacket] Resyncing {ServerData.Instance.items.Count} items to client {fromClient}");
 		foreach (var modItem in ServerData.Instance.items) ServerSend.ItemPacket(fromClient, modItem, action);
 	}
 
@@ -144,28 +179,64 @@ public static class ServerHandle
 	{
 		var action = _packet.Read<InventoryAction>();
 
-
 		if (action != InventoryAction.resync)
 		{
 			var item = _packet.Read<ModGroupItem>();
 
-			if (action == InventoryAction.add && ServerData.Instance.groupItems.All(i => i.UID != item.UID))
+			// Security Rule: Validate item is not null
+			if (item == null)
 			{
-				ServerData.Instance.groupItems.Add(item);
-				ServerSend.GroupItemPacket(fromClient, item, action);
+				MelonLogger.Warning($"[ServerHandle->GroupItemPacket] Received null group item from client {fromClient}, skipping.");
+				return;
 			}
-			else
+
+			// Security Rule: Validate ServerData is initialized
+			if (ServerData.Instance == null || ServerData.Instance.groupItems == null)
 			{
+				MelonLogger.Error("[ServerHandle->GroupItemPacket] ServerData.Instance or groupItems is null!");
+				return;
+			}
+
+			if (action == InventoryAction.add)
+			{
+				// Business Rule: Check if group item already exists to prevent duplication
+				if (ServerData.Instance.groupItems.All(i => i.UID != item.UID))
+				{
+					// Business Logic: Add group item to server inventory
+					ServerData.Instance.groupItems.Add(item);
+					
+					// Business Logic: Broadcast group item to all clients (including sender for confirmation)
+					ServerSend.GroupItemPacket(fromClient, item, action);
+					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Added group item UID: {item.UID} from client {fromClient}");
+				}
+				else
+				{
+					// Security Rule: Log duplicate attempt but don't add
+					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Group item with UID {item.UID} already exists, skipping add to prevent duplication.");
+				}
+			}
+			else if (action == InventoryAction.remove)
+			{
+				// Business Rule: Remove group item if it exists
 				if (ServerData.Instance.groupItems.Any(s => s.UID == item.UID))
 				{
 					var index = ServerData.Instance.groupItems.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.groupItems.Remove(ServerData.Instance.groupItems[index]);
+					
+					// Business Logic: Broadcast removal to all clients
+					ServerSend.GroupItemPacket(fromClient, item, action);
+					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Removed group item UID: {item.UID} from client {fromClient}");
 				}
-				ServerSend.GroupItemPacket(fromClient, item, action);
+				else
+				{
+					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Group item with UID {item.UID} not found for removal from client {fromClient}");
+				}
 			}
 			return;
 		}
 
+		// Business Logic: Resync - send all group items to requesting client
+		MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Resyncing {ServerData.Instance.groupItems.Count} group items to client {fromClient}");
 		foreach (var modItem in ServerData.Instance.groupItems) ServerSend.GroupItemPacket(fromClient, modItem, action);
 	}
 
@@ -523,6 +594,39 @@ public static class ServerHandle
 				bool alt = packet.Read<bool>();
 				ServerResyncs.ResyncEngineStand(fromClient, alt);
 				break;
+			case PacketTypes.playerInCar:
+				PlayerInCarPacket(fromClient, packet);
+				break;
+			case PacketTypes.carEngineSound:
+				CarEngineSoundPacket(fromClient, packet);
+				break;
 		}
+	}
+
+	public static void PlayerInCarPacket(int fromClient, Packet _packet)
+	{
+		var isInCar = _packet.Read<bool>();
+		var carLoaderID = _packet.ReadInt();
+		
+		// Business Logic: Update player's car state on server
+		if (ServerData.Instance.connectedClients.ContainsKey(fromClient))
+		{
+			ServerData.Instance.connectedClients[fromClient].isInCar = isInCar;
+			ServerData.Instance.connectedClients[fromClient].carLoaderID = carLoaderID;
+			MelonLogger.Msg($"[ServerHandle->PlayerInCarPacket] Player {fromClient} car state: InCar={isInCar}, CarLoaderID={carLoaderID}");
+		}
+		
+		// Business Logic: Broadcast to all clients
+		ServerSend.PlayerInCarPacket(fromClient, isInCar, carLoaderID);
+	}
+
+	public static void CarEngineSoundPacket(int fromClient, Packet _packet)
+	{
+		var carLoaderID = _packet.ReadInt();
+		var isPlaying = _packet.Read<bool>();
+		var rpm = _packet.Read<float>();
+		
+		// Business Logic: Broadcast engine sound state to all clients
+		ServerSend.CarEngineSoundPacket(fromClient, carLoaderID, isPlaying, rpm);
 	}
 }
