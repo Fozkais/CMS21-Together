@@ -25,7 +25,7 @@
 
 Who never dreamed playing CMS with some friends?  Since it's not in the base game I'll add it myself ! :)
 
-**From 0.4.0, almost everything from base game is synced and core gameplay should work without any major or blocking problems, However, crashes or desynchronization requiring a restart should be expected.**
+**Even though the mod is available, it doesn't offer a seamless experience. Expect bugs, crashes, and potential loss of progress.**
 
 *Here's every planned feature state :*
 
