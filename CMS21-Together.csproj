@@ -75,6 +75,7 @@
         <Compile Include="ClientSide\Data\NewUI\UIMenu.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
+        <Compile Include="ClientSide\Data\Player\CarEnterExit.cs" />
         <Compile Include="ClientSide\Data\Player\Inventory.cs" />
         <Compile Include="ClientSide\Data\Player\Movement.cs" />
         <Compile Include="ClientSide\Data\Player\Rotation.cs" />

@@ -48,6 +48,9 @@ public class ClientData
 		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
+	private static float lastCarCheckTime = 0f;
+	private static readonly float carCheckInterval = 0.5f; // Check every 0.5 seconds
+
 	public void UpdateClient()
 	{
 		if (GameData.isReady == false && !initRoutine)
@@ -58,6 +61,13 @@ public class ClientData
 			Movement.SendPosition();
 			Movement.CheckForInactivity();
 			Rotation.SendRotation();
+			
+			// Business Logic: Periodically check if local player entered/exited a car
+			if (Time.time - lastCarCheckTime >= carCheckInterval)
+			{
+				lastCarCheckTime = Time.time;
+				CarEnterExit.CheckCarState();
+			}
 		}
 	}
 
@@ -73,19 +83,48 @@ public class ClientData
 		MelonCoroutines.Start(Stats.SendInitialStats());
 		MelonCoroutines.Start(GarageUpgradeHooks.SendInitial());
 
+		// Business Rule: Ensure player prefab is loaded before spawning players
+		if (playerPrefab == null)
+		{
+			LoadPlayerPrefab();
+			// Security Rule: Wait multiple frames to ensure prefab is fully loaded and initialized
+			yield return new WaitForEndOfFrame();
+			yield return new WaitForEndOfFrame();
+			yield return new WaitForEndOfFrame();
+			
+			// Business Rule: Verify prefab was loaded successfully
+			if (playerPrefab == null)
+			{
+				MelonLogger.Error("[ClientData->InitializeGameData] Failed to load playerPrefab after multiple attempts. Retrying...");
+				LoadPlayerPrefab();
+				yield return new WaitForEndOfFrame();
+				yield return new WaitForEndOfFrame();
+			}
+		}
+
 		yield return new WaitForSeconds(2);
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
-		GameReady = true;
-		initRoutine = false;
-		if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
-			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
-		foreach (var client in connectedClients)
+		
+		// Business Rule: Only set GameReady to true if playerPrefab is loaded
+		if (playerPrefab != null)
 		{
-			if (client.Value.scene == GameScene.garage)
-				client.Value.SpawnPlayer();
+			GameReady = true;
+			initRoutine = false;
+			if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
+				SavesManager.SaveModSave(SavesManager.currentSaveIndex);
+			foreach (var client in connectedClients)
+			{
+				if (client.Value.scene == GameScene.garage)
+					client.Value.SpawnPlayer();
+			}
+			MelonLogger.Msg("Game is ready.");
 		}
-		MelonLogger.Msg("Game is ready.");
+		else
+		{
+			MelonLogger.Error("[ClientData->InitializeGameData] Cannot set GameReady: playerPrefab is still null!");
+			initRoutine = false;
+		}
 	}
 
 	public void LoadPlayerPrefab()
@@ -95,29 +134,47 @@ public class ClientData
 		if (playerBundle)
 		{
 			GameObject player = playerBundle.LoadAsset<GameObject>("playerModel");
+			if (player == null)
+			{
+				MelonLogger.Warning("Impossible de charger l'AssetBundle !");
+				return;
+			}
+
 			var playerInstance = Object.Instantiate(player);
 
 			Material material;
 			Texture baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
-			baseTexture.filterMode = FilterMode.Bilinear;
+			if (baseTexture != null)
+			{
+				baseTexture.filterMode = FilterMode.Bilinear;
+			}
 			Texture normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
-			baseTexture.filterMode = FilterMode.Bilinear;
+			if (normalTexture != null)
+			{
+				normalTexture.filterMode = FilterMode.Bilinear;
+			}
 
 			material = new Material(Shader.Find("HDRP/Unlit"));
-			material.mainTexture = baseTexture;
-			material.SetTexture("_BumpMap", normalTexture);
+			if (baseTexture != null)
+				material.mainTexture = baseTexture;
+			if (normalTexture != null)
+				material.SetTexture("_BumpMap", normalTexture);
 
-			playerInstance.GetComponentInChildren<SkinnedMeshRenderer>().material = material;
+			var skinnedMesh = playerInstance.GetComponentInChildren<SkinnedMeshRenderer>();
+			if (skinnedMesh != null)
+			{
+				skinnedMesh.material = material;
+			}
 
 			playerInstance.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
 			playerInstance.transform.position = new Vector3(0, -10, 0);
 			playerInstance.transform.rotation = new Quaternion(0, 180, 0, 0);
 
 			playerPrefab = playerInstance;
-			Object.DontDestroyOnLoad(playerPrefab);
+			Object.DontDestroyOnLoad(playerInstance);
 
 			playerBundle.Unload(false);
-			MelonLogger.Msg("[ClientData->LoadPlayerPrefab] Loaded player model Succesfully!");
+			MelonLogger.Msg("[ClientData->LoadPlayerPrefab] Loaded player prefab successfully!");
 		}
 	}
 

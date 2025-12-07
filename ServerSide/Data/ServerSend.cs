@@ -540,4 +540,29 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet);
 		}
 	}
+
+	public static void PlayerInCarPacket(int fromClient, bool isInCar, int carLoaderID)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.playerInCar))
+		{
+			_packet.Write(fromClient);
+			_packet.Write(isInCar);
+			_packet.Write(carLoaderID);
+			
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarEngineSoundPacket(int fromClient, int carLoaderID, bool isPlaying, float rpm)
+	{
+		using (Packet _packet = new Packet((int)PacketTypes.carEngineSound))
+		{
+			_packet.Write(fromClient);
+			_packet.Write(carLoaderID);
+			_packet.Write(isPlaying);
+			_packet.Write(rpm);
+			
+			SendDataToAll(fromClient, _packet, false); // Use UDP for sound sync (non-reliable)
+		}
+	}
 }

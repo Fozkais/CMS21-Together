@@ -165,26 +165,61 @@ public static class Inventory
 			}
 		}
 
+		// Security Rule: Validate inventory data is available
 		var inventoryData = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData.inventoryData;
+		if (inventoryData == null)
+		{
+			MelonLogger.Warning("[Inventory->LoadHook] inventoryData is null, skipping load.");
+			return true;
+		}
+
+		// Business Logic: Load group items from save data
+		int loadedGroups = 0;
 		foreach (var group in inventoryData.groups)
+		{
 			if (group != null)
 			{
 				var newItem = new ModGroupItem(group);
-				modGroupItems.Add(newItem);
-				ClientSend.GroupItemPacket(newItem, InventoryAction.add);
+				
+				// Business Rule: Check if group item already exists to prevent duplication during load
+				if (!modGroupItems.Any(i => i.UID == newItem.UID))
+				{
+					modGroupItems.Add(newItem);
+					ClientSend.GroupItemPacket(newItem, InventoryAction.add);
+					loadedGroups++;
+				}
+				else
+				{
+					MelonLogger.Msg($"[Inventory->LoadHook] Group item with UID {newItem.UID} already exists, skipping load.");
+				}
 			}
+		}
 
-		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {modGroupItems.Count} groupItem.");
+		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {loadedGroups} new group items (total: {modGroupItems.Count}).");
 
+		// Business Logic: Load items from save data
+		int loadedItems = 0;
 		foreach (var item in inventoryData.items)
+		{
 			if (item != null)
 			{
 				var newItem = new ModItem(item);
-				modItems.Add(newItem);
-				ClientSend.ItemPacket(newItem, InventoryAction.add);
+				
+				// Business Rule: Check if item already exists to prevent duplication during load
+				if (!modItems.Any(i => i.UID == newItem.UID))
+				{
+					modItems.Add(newItem);
+					ClientSend.ItemPacket(newItem, InventoryAction.add);
+					loadedItems++;
+				}
+				else
+				{
+					MelonLogger.Msg($"[Inventory->LoadHook] Item with UID {newItem.UID} already exists, skipping load.");
+				}
 			}
+		}
 
-		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {modItems.Count} Item.");
+		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {loadedItems} new items (total: {modItems.Count}).");
 		return true;
 	}
 
@@ -192,16 +227,70 @@ public static class Inventory
 	{
 		yield return GameData.GameReady();
 
+		// Security Rule: Validate item is not null before processing
+		if (item == null)
+		{
+			MelonLogger.Warning("[Inventory->HandleItem] Received null item, skipping.");
+			yield break;
+		}
+
+		// Security Rule: Validate GameData is ready before accessing inventory
+		if (GameData.Instance == null || GameData.Instance.localInventory == null)
+		{
+			MelonLogger.Warning("[Inventory->HandleItem] GameData or localInventory is null, skipping.");
+			yield break;
+		}
+
 		switch (action)
 		{
 			case InventoryAction.add:
+				// Business Rule: Check if item already exists to prevent duplication
+				// This can happen when the host adds an item: AddItemHook adds it, then HandleItem receives it back from server
+				if (modItems.Any(i => i.UID == item.UID))
+				{
+					MelonLogger.Msg($"[Inventory->HandleItem] Item with UID {item.UID} already exists, skipping add to prevent duplication.");
+					yield break;
+				}
+
+				// Business Logic: Add item to modItems list and game inventory
 				modItems.Add(item);
-				GameData.Instance.localInventory.Add(item.ToGame());
+				
+				// Security Rule: Validate item conversion before adding to game inventory
+				var gameItem = item.ToGame();
+				if (gameItem != null)
+				{
+					GameData.Instance.localInventory.Add(gameItem);
+					MelonLogger.Msg($"[Inventory->HandleItem] Added item UID: {item.UID}");
+				}
+				else
+				{
+					MelonLogger.Warning($"[Inventory->HandleItem] Failed to convert ModItem to game Item for UID: {item.UID}");
+					// Business Rule: Remove from modItems if conversion failed to keep state consistent
+					modItems.Remove(item);
+				}
 				break;
 			case InventoryAction.remove:
+				// Business Rule: Only remove if item exists in modItems
 				if (modItems.Any(i => i.UID == item.UID))
+				{
 					modItems.Remove(item);
-				GameData.Instance.localInventory.Delete(item.ToGame());
+					
+					// Security Rule: Validate item conversion before removing from game inventory
+					var itemToRemove = item.ToGame();
+					if (itemToRemove != null)
+					{
+						GameData.Instance.localInventory.Delete(itemToRemove);
+						MelonLogger.Msg($"[Inventory->HandleItem] Removed item UID: {item.UID}");
+					}
+					else
+					{
+						MelonLogger.Warning($"[Inventory->HandleItem] Failed to convert ModItem to game Item for removal, UID: {item.UID}");
+					}
+				}
+				else
+				{
+					MelonLogger.Msg($"[Inventory->HandleItem] Item with UID {item.UID} not found in modItems, skipping remove.");
+				}
 				break;
 		}
 	}
@@ -209,16 +298,61 @@ public static class Inventory
 	public static IEnumerator HandleGroupItem(ModGroupItem item, InventoryAction action)
 	{
 		yield return GameData.GameReady();
+
+		// Security Rule: Validate item is not null before processing
+		if (item == null)
+		{
+			MelonLogger.Warning("[Inventory->HandleGroupItem] Received null group item, skipping.");
+			yield break;
+		}
+
+		// Security Rule: Validate GameData is ready before accessing inventory
+		if (GameData.Instance == null || GameData.Instance.localInventory == null)
+		{
+			MelonLogger.Warning("[Inventory->HandleGroupItem] GameData or localInventory is null, skipping.");
+			yield break;
+		}
+
 		switch (action)
 		{
 			case InventoryAction.add:
+				// Business Rule: Check if group item already exists to prevent duplication
+				// This can happen when the host adds an item: AddGroupItemHook adds it, then HandleGroupItem receives it back from server
+				if (modGroupItems.Any(i => i.UID == item.UID))
+				{
+					MelonLogger.Msg($"[Inventory->HandleGroupItem] Group item with UID {item.UID} already exists, skipping add to prevent duplication.");
+					yield break;
+				}
+
+				// Business Logic: Add group item to modGroupItems list and game inventory
 				modGroupItems.Add(item);
-				GameData.Instance.localInventory.AddGroup(item.ToGame());
+				
+				// Security Rule: Validate item conversion before adding to game inventory
+				var gameGroupItem = item.ToGame();
+				if (gameGroupItem != null)
+				{
+					GameData.Instance.localInventory.AddGroup(gameGroupItem);
+					MelonLogger.Msg($"[Inventory->HandleGroupItem] Added group item UID: {item.UID}");
+				}
+				else
+				{
+					MelonLogger.Warning($"[Inventory->HandleGroupItem] Failed to convert ModGroupItem to game GroupItem for UID: {item.UID}");
+					// Business Rule: Remove from modGroupItems if conversion failed to keep state consistent
+					modGroupItems.Remove(item);
+				}
 				break;
 			case InventoryAction.remove:
+				// Business Rule: Only remove if group item exists in modGroupItems
 				if (modGroupItems.Any(i => i.UID == item.UID))
+				{
 					modGroupItems.Remove(item);
-				GameData.Instance.localInventory.DeleteGroup(item.UID);
+					GameData.Instance.localInventory.DeleteGroup(item.UID);
+					MelonLogger.Msg($"[Inventory->HandleGroupItem] Removed group item UID: {item.UID}");
+				}
+				else
+				{
+					MelonLogger.Msg($"[Inventory->HandleGroupItem] Group item with UID {item.UID} not found in modGroupItems, skipping remove.");
+				}
 				break;
 		}
 	}

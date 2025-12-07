@@ -53,5 +53,7 @@ public enum PacketTypes
 	useWelder,
 	repairPart,
 	parkAdd,
-	parkRemove
+	parkRemove,
+	playerInCar,
+	carEngineSound
 }

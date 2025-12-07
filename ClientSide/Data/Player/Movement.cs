@@ -1,5 +1,6 @@
 ﻿using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.Shared.Data;
+using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
@@ -17,6 +18,25 @@ public static class Movement
 		var player = ClientData.Instance.connectedClients[id];
 
 		if (player.scene != ClientData.UserData.scene) return;
+		
+		// Business Logic: If player is in car, hide the player object instead of updating position
+		if (player.isInCar)
+		{
+			if (player.userObject != null && player.userObject.activeSelf)
+			{
+				player.userObject.SetActive(false);
+				MelonLogger.Msg($"[Movement->UpdatePosition] Hiding player {player.username} (ID: {id}) - player is in car {player.carLoaderID}");
+			}
+			return;
+		}
+		
+		// Business Logic: If player exits car, show the player object
+		if (!player.isInCar && player.userObject != null && !player.userObject.activeSelf)
+		{
+			player.userObject.SetActive(true);
+			MelonLogger.Msg($"[Movement->UpdatePosition] Showing player {player.username} (ID: {id}) - player exited car");
+		}
+		
 		if (player.userObject == null) player.SpawnPlayer();
 
 		if (player.userObject)
