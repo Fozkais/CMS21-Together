@@ -25,8 +25,8 @@ public static class GarageUpgradeManager
 			GarageUpgradeHooks.receivedInitial = true;
 			yield break;
 		}
-		
-		ClientData.Instance.garageUpgrades[upgrade.upgradeID] = upgrade;
+		string upgradeName = upgrade.upgradeID + upgrade.upgradeLevel;
+		ClientData.Instance.garageUpgrades[upgradeName] = upgrade;
 		
 		if (upgrade.upgradeID == "crane" && !upgrade.unlocked)
 			GameData.Instance.engineStandLogic2.gameObject.SetActive(false);
@@ -39,9 +39,9 @@ public static class GarageUpgradeManager
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		
-		if (upgradeTools.upgradeItems.ToArray().Any(u => u.upgradeID == upgrade.upgradeID))
+		if (upgradeTools.upgradeItems.ToArray().Any(u => u.upgradeID == upgrade.upgradeID && u.UpgradeLevel == upgrade.upgradeLevel))
 		{
-			UpgradeItem item = upgradeTools.upgradeItems.ToArray().First(u => u.upgradeID == upgrade.upgradeID);
+			UpgradeItem item = upgradeTools.upgradeItems.ToArray().First(u => u.upgradeID == upgrade.upgradeID && u.UpgradeLevel == upgrade.upgradeLevel);
 			if (upgrade.unlocked && item != null && item.upgradeState != UpgradeState.Unlocked)
 			{
 				//MelonLogger.Msg($"Unlock : {upgrade.upgradeID} , {item == null}");
