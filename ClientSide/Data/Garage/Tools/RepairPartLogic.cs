@@ -38,12 +38,21 @@ public static class RepairPartLogic
 
 		if (Player.Inventory.modItems.Any(i => i.UID == info.Item.UID))
 		{
+			// update mod item list
 			ModItem item = Player.Inventory.modItems.First(i => i.UID == info.Item.UID);
 			item.Condition = (success ? info.SuccessCondition : info.FailCondition);
 			item.RepairAmount++;
 			if (isBody)
 			{
 				item.Dent = (success ? info.DentSuccessCondition : info.DentFailCondition);
+			}
+			// update game item list to show properly on UI
+			Item gameItem = GameData.Instance.localInventory.GetItem(item.UID);
+			gameItem.Condition = item.Condition;
+			gameItem.RepairAmount = item.RepairAmount;
+			if (isBody)
+			{
+				gameItem.Dent = item.Dent;
 			}
 		}
 	}

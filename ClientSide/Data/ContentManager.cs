@@ -58,6 +58,7 @@ public class ContentManager
 			using (var client = new HttpClient())
 			{
 				client.DefaultRequestHeaders.Add("User-Agent", "MyModChecker");
+				client.Timeout = TimeSpan.FromSeconds(5);
 				string url = $"https://api.github.com/repos/Fozkais/CMS21-Together/releases/latest";
 
 				string json = client.GetStringAsync(url).Result;
