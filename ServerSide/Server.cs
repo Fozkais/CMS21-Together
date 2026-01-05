@@ -226,7 +226,9 @@ public class Server
 			{ (int)PacketTypes.newJob, ServerHandle.JobPacket },
 			{ (int)PacketTypes.jobAction, ServerHandle.JobActionPacket },
 			{ (int)PacketTypes.selectedJob, ServerHandle.SelectedJobPacket },
-			{ (int)PacketTypes.endJob, ServerHandle.EndJobPacket }
+			{ (int)PacketTypes.endJob, ServerHandle.EndJobPacket },
+			{ (int)PacketTypes.playerInCar, ServerHandle.PlayerInCarPacket },
+			{ (int)PacketTypes.carEngineSound, ServerHandle.CarEngineSoundPacket }
 		};
 	}
 }

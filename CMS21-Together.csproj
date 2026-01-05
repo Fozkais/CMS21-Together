@@ -13,6 +13,7 @@
         <FileAlignment>512</FileAlignment>
         <Deterministic>true</Deterministic>
         <LangVersion>latest</LangVersion>
+        <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <DebugSymbols>true</DebugSymbols>
@@ -75,6 +76,7 @@
         <Compile Include="ClientSide\Data\NewUI\UIMenu.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
+        <Compile Include="ClientSide\Data\Player\CarEnterExit.cs" />
         <Compile Include="ClientSide\Data\Player\Inventory.cs" />
         <Compile Include="ClientSide\Data\Player\Movement.cs" />
         <Compile Include="ClientSide\Data\Player\Rotation.cs" />

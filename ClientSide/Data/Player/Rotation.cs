@@ -24,8 +24,12 @@ public static class Rotation
 		}
 		else
 		{
+			// Business Logic: Store rotation and spawn player if not already spawned
 			player.rotation = rotation;
-			player.SpawnPlayer();
+			if (player.userObject == null)
+			{
+				player.SpawnPlayer();
+			}
 		}
 	}
 

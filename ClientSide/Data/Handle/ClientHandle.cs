@@ -12,6 +12,7 @@ using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -413,7 +414,62 @@ public static class ClientHandle
 
 		ClientData.Instance.connectedClients[id].scene = scene;
 		if (scene != SceneManager.CurrentScene())
+		{
+			// Business Logic: Destroy player when changing to different scene
 			ClientData.Instance.connectedClients[id].DestroyPlayer();
-		else if (ClientData.Instance.connectedClients[id].userObject == null) ClientData.Instance.connectedClients[id].SpawnPlayer();
+		}
+		else if (ClientData.Instance.connectedClients[id].userObject == null)
+		{
+			// Business Logic: Spawn player only if not already spawned
+			ClientData.Instance.connectedClients[id].SpawnPlayer();
+		}
+	}
+
+	public static void PlayerInCarPacket(Packet packet)
+	{
+		var id = packet.ReadInt();
+		var isInCar = packet.Read<bool>();
+		var carLoaderID = packet.ReadInt();
+
+		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
+
+		var player = ClientData.Instance.connectedClients[id];
+		player.isInCar = isInCar;
+		player.carLoaderID = carLoaderID;
+
+		// Business Logic: Hide/show player object based on car state
+		if (player.userObject != null)
+		{
+			player.userObject.SetActive(!isInCar);
+			MelonLogger.Msg($"[ClientHandle->PlayerInCarPacket] Player {player.username} (ID: {id}) car state: InCar={isInCar}, CarLoaderID={carLoaderID}");
+		}
+
+		packet.Dispose();
+	}
+
+	public static void CarEngineSoundPacket(Packet packet)
+	{
+		var playerID = packet.ReadInt();
+		var carLoaderID = packet.ReadInt();
+		var isPlaying = packet.Read<bool>();
+		var rpm = packet.Read<float>();
+
+		// Business Logic: Play/stop engine sound for remote player's car
+		if (GameData.Instance == null || GameData.Instance.carLoaders == null) return;
+		if (carLoaderID < 0 || carLoaderID >= GameData.Instance.carLoaders.Length) return;
+
+		var carLoader = GameData.Instance.carLoaders[carLoaderID];
+		if (carLoader == null) return;
+
+		// Business Logic: Find AudioSource component on car and play/stop engine sound
+		// Observation: Car engine sounds are typically on the car's AudioSource component
+		// Note: Temporarily disabled due to AudioModule reference issues - will be re-enabled when AudioModule DLL is available
+		// TODO: Re-enable engine sound playback when UnityEngine.AudioModule.dll is added to project references
+		
+		// Business Logic: For now, we'll skip engine sound playback to avoid compilation errors
+		// The engine sound synchronization can be implemented later when the AudioModule reference is available
+		MelonLogger.Msg($"[ClientHandle->CarEngineSoundPacket] Engine sound sync received for car {carLoaderID} (Playing: {isPlaying}, RPM: {rpm}) - AudioModule not available");
+
+		packet.Dispose();
 	}
 }

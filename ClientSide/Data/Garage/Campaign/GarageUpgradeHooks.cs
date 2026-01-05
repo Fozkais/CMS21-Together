@@ -63,10 +63,11 @@ public static class GarageUpgradeHooks
 		{
 			if (__instance.currentUpgradeItem.UpgradeID == "crane")
 				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
-			
-			//MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Triggered: {__instance.currentUpgradeItem.upgradeID}");
-			ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, true);
-			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[__instance.currentUpgradeItem.upgradeID]);
+				
+			string upgradeName = __instance.currentUpgradeItem.upgradeID + __instance.currentUpgradeItem.UpgradeLevel;
+			//MelonLogger.Msg($"[GarageUpgradeHooks->UnlockCurrentSelectedSkillActionHook] Triggered: {upgradeName}");
+			ClientData.Instance.garageUpgrades[upgradeName] = new GarageUpgrade(__instance.currentUpgradeItem.upgradeID, __instance.currentUpgradeItem.UpgradeLevel, true);
+			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[upgradeName]);
 		}
 	}
 
@@ -85,7 +86,7 @@ public static class GarageUpgradeHooks
 		foreach (UpgradeItem item in GameData.Instance.upgradeTools.upgradeItems)
 		{
 			//MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
-			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.upgradeState == UpgradeState.Unlocked);
+			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.UpgradeLevel, item.upgradeState == UpgradeState.Unlocked);
 			ClientSend.GarageUpgradePacket(ClientData.Instance.garageUpgrades[item.upgradeID]);
 			
 			if (item.upgradeID == "crane" && item.upgradeState != UpgradeState.Unlocked)
@@ -93,7 +94,7 @@ public static class GarageUpgradeHooks
 			else if (item.upgradeID == "crane" && item.upgradeState == UpgradeState.Unlocked)
 				GameData.Instance.engineStandLogic2.gameObject.SetActive(true);
 		}
-		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", false));
+		ClientSend.GarageUpgradePacket(new GarageUpgrade("initialSent", 0, false));
 		yield return new WaitForEndOfFrame();
 		sentInitial = true;
 		listenToUpgrades = true;
