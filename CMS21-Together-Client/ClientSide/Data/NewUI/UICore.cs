@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using CMS.MainMenu.Controls;
 using CMS.MainMenu.Sections;
 using CMS.UI.Controls;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
+using CMS21_Together_Core.Data;
 using MelonLoader;
 using UnhollowerRuntimeLib;
 using UnityEngine;
@@ -24,37 +21,37 @@ public static class UICore
 	public static GameObject templateImage;
 
 	public static GameObject Active_Panel;
-	
+
 	public static GameObject UI_Main;
 	public static GameObject V_Main;
 	public static GameObject MP_Main;
 	public static GameObject MP_Host;
 	public static GameObject MP_Lobby;
-	
+
 	public static GameObject TMP_Window;
 	public static GameObject TMP_Info_Window;
 
-	private static bool update_notice = false;
+	private static bool update_notice;
 	public static int last_index_pressed;
 
 	public static void InitializeUI(string sceneName)
 	{
 		if (sceneName != "Menu") return;
-		
+
 		templateImage = GameObject.Find("Logo");
 		templateButton = GameObject.Find("MainMenuButton");
 		templateInputField = GameObject.Find("Main").transform.GetChild(8).gameObject;
 		templateText = templateButton.GetComponentInChildren<Text>().gameObject;
 		templateSelector = GameObject.Find("MainMenuWindows").transform.GetChild(3).GetChild(0).gameObject
-									 .GetComponentInChildren<StringSelector>().gameObject;
+			.GetComponentInChildren<StringSelector>().gameObject;
 
 		UI_Main = GameObject.Find("MainButtons").transform.parent.gameObject;
 		V_Main = GameObject.Find("MainButtons").GetComponent<MainSection>().gameObject;
 		MP_Main = CreateNewPanel("MP_Main");
 		MP_Host = CreateNewPanel("MP_Host");
 		MP_Lobby = CreateNewPanel("MP_Lobby");
-		
-		
+
+
 		LoadCustomlogo();
 		GameObject.Find("Logo").GetComponent<RectTransform>().sizeDelta = new Vector2(250, 250);
 		UIMenu.SetupMainMenu();
@@ -90,12 +87,12 @@ public static class UICore
 	private static void DestroyChildren(Transform parent)
 	{
 		var toDestroy = new List<GameObject>();
-		for (int i = 0; i < parent.childCount; i++)
+		for (var i = 0; i < parent.childCount; i++)
 			toDestroy.Add(parent.GetChild(i).gameObject);
 		foreach (var go in toDestroy)
 			Object.Destroy(go);
 	}
-	
+
 	private static void LoadCustomlogo()
 	{
 		var stream = DataHelper.LoadContent("CMS21Together.Assets.cms21TogetherLogo.png");
@@ -114,18 +111,18 @@ public static class UICore
 					ImageConversion.LoadImage(texture, buffer);
 		}
 	}
-	
-	public static void ShowPanel(GameObject panelToShow, bool destroyChildren=false)
+
+	public static void ShowPanel(GameObject panelToShow, bool destroyChildren = false)
 	{
 		if (destroyChildren)
 			DestroyChildren(Active_Panel.transform);
 
-		Active_Panel =  panelToShow;
+		Active_Panel = panelToShow;
 		if (TMP_Window)
 			Object.Destroy(TMP_Window);
 		if (TMP_Info_Window)
 			Object.Destroy(TMP_Info_Window);
-		
+
 		V_Main.gameObject.SetActive(false);
 		MP_Main.gameObject.SetActive(false);
 		MP_Host.gameObject.SetActive(false);
@@ -136,18 +133,19 @@ public static class UICore
 
 	private static GameObject CreateNewPanel(string name)
 	{
-		GameObject panel = Object.Instantiate(UICore.V_Main, UICore.V_Main.transform.parent, false);
+		var panel = Object.Instantiate(V_Main, V_Main.transform.parent, false);
 		panel.transform.position = new Vector3(panel.transform.position.x, 0, panel.transform.position.z);
 		DestroyChildren(panel.transform);
 		panel.name = name;
 		return panel;
 	}
+
 	public static GameObject CreateElement(GameObject template, Transform parent)
 	{
 		var obj = Object.Instantiate(template, parent, false);
 		obj.SetActive(true);
 		var rect = obj.GetComponent<RectTransform>();
-		
+
 		rect.localScale = Vector3.one;
 		rect.localPosition = Vector3.zero;
 		rect.offsetMin = Vector2.zero;
@@ -157,7 +155,7 @@ public static class UICore
 		rect.pivot = new Vector2(0.5f, 0.5f);
 		rect.anchoredPosition = new Vector2(0, 100);
 		rect.sizeDelta = new Vector2(336, 65);
-		
+
 		return obj;
 	}
 

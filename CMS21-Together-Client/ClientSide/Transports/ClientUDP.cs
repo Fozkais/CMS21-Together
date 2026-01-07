@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using CMS21_Together_Core;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.Shared;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Transports;
@@ -41,8 +41,7 @@ public class ClientUDP
 		{
 			packet.InsertInt(ClientData.UserData.playerID);
 			if (socket != null)
-			{
-				socket.BeginSend(packet.ToArray(), packet.Length(), (ar) =>
+				socket.BeginSend(packet.ToArray(), packet.Length(), ar =>
 				{
 					try
 					{
@@ -53,7 +52,6 @@ public class ClientUDP
 						MelonLogger.Error($"[UDP]Error while writing data : {ex.Message}");
 					}
 				}, null);
-			}
 		}
 		catch (SocketException ex)
 		{

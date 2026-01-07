@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide;
@@ -52,10 +52,11 @@ public class ServerConnection
 
 	public void SendData(Packet packet, bool reliable)
 	{
-		if(connectionType == NetworkType.Steam)
-		    steam.Send(packet, reliable);
-		else
-		if (connectionType == NetworkType.TCP)
+		if (connectionType == NetworkType.Steam)
+		{
+			steam.Send(packet, reliable);
+		}
+		else if (connectionType == NetworkType.TCP)
 		{
 			if (reliable)
 				tcp.Send(packet);
@@ -76,11 +77,11 @@ public class ServerConnection
 	public void SendToLobby(string username, string playerGuid)
 	{
 		ServerData.Instance.connectedClients[id] = new UserData(username, id, playerGuid);
-		
+
 		foreach (var data in ServerData.Instance.connectedClients.Values)
 			ServerSend.UserDataPacket(data, id);
 		ServerSend.UserDataPacket(ServerData.Instance.connectedClients[id]);
-		
+
 		MelonLogger.Msg($"[ServerConnection->SendToLobby] Sent {username} to lobby!");
 	}
 }

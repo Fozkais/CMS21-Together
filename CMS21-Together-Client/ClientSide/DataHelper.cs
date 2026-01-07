@@ -7,7 +7,7 @@ using UnityEngine;
 using BinaryWriter = Il2CppSystem.IO.BinaryWriter;
 using SeekOrigin = Il2CppSystem.IO.SeekOrigin;
 
-namespace CMS21Together.Shared;
+namespace CMS21Together.ClientSide;
 
 public class DataHelper // TODO: Finish This!
 {

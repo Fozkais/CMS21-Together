@@ -1,7 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Threading;
-using CMS21Together.Shared;
+using CMS21_Together_Core;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Transports;
@@ -36,13 +36,13 @@ public class TCPConnection
 
 		stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 	}
-	
+
 	public void BeginHandshake(TcpClient tcpClient)
 	{
 		socket = tcpClient;
 		stream = socket.GetStream();
 		receiveBuffer = new byte[4096];
-		
+
 		stream.BeginRead(receiveBuffer, 0, receiveBuffer.Length, HandshakeCallback, null);
 	}
 
@@ -50,38 +50,39 @@ public class TCPConnection
 	{
 		try
 		{
-			int byteLength = stream.EndRead(result);
+			var byteLength = stream.EndRead(result);
 			if (byteLength <= 0)
 			{
 				MelonLogger.Msg($"[Server->Handshake] Phantom connection ignored (id:{id})");
 				Disconnect(true);
 				return;
 			}
-			
-			byte[] data = new byte[byteLength];
+
+			var data = new byte[byteLength];
 			Array.Copy(receiveBuffer, data, byteLength);
-			
-			using (Packet packet = new Packet(data))
+
+			using (var packet = new Packet(data))
 			{
 				if (packet.UnreadLength() < 8)
 				{
-					MelonLogger.Warning($"[Server->Handshake] Invalid packet received during handshake (too short)");
+					MelonLogger.Warning("[Server->Handshake] Invalid packet received during handshake (too short)");
 					Disconnect();
 					return;
 				}
-				
+
 				int packetLength;
 				if (packet.UnreadLength() >= 4)
 				{
 					packetLength = packet.ReadInt();
 					if (packetLength <= 0)
 					{
-						MelonLogger.Warning($"[Server->Handshake] Invalid packet length");
+						MelonLogger.Warning("[Server->Handshake] Invalid packet length");
 						Disconnect();
 						return;
 					}
 				}
-				int packetId = packet.ReadInt();
+
+				var packetId = packet.ReadInt();
 				if (packetId == (int)PacketTypes.handshake)
 				{
 					MelonLogger.Msg($"[Server->Handshake] Handshake OK for id:{id}");
@@ -108,7 +109,7 @@ public class TCPConnection
 		try
 		{
 			if (stream == null) return;
-			
+
 			var _byteLength = stream.EndRead(result);
 			if (_byteLength <= 0)
 			{
@@ -172,8 +173,7 @@ public class TCPConnection
 	public void Send(Packet packet)
 	{
 		if (socket != null)
-		{
-			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), (ar) =>
+			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), ar =>
 			{
 				try
 				{
@@ -184,11 +184,10 @@ public class TCPConnection
 					MelonLogger.Error($"Error while writing data : {ex.Message}");
 				}
 			}, null);
-		}
 	}
-		
 
-	public void Disconnect(bool phantom=false)
+
+	public void Disconnect(bool phantom = false)
 	{
 		try
 		{
@@ -197,11 +196,13 @@ public class TCPConnection
 				if (socket.Connected) socket.Close();
 				socket = null;
 			}
+
 			if (stream != null)
 			{
 				stream.Close();
 				stream = null;
 			}
+
 			receivedData = null;
 			receiveBuffer = null;
 			if (id == 1 && !phantom)
@@ -212,5 +213,4 @@ public class TCPConnection
 			MelonLogger.Error($"[TCPConnection->Disconnect] Exception: {ex}");
 		}
 	}
-
 }

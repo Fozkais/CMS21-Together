@@ -1,17 +1,11 @@
 ﻿using System.Collections;
 using System.Linq;
-using CMS.Containers;
-using CMS.Extensions;
-using CMS.FileSupport.INI;
-using CMS.PartModules;
 using CMS.UI;
 using CMS.UI.Windows;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
 using HarmonyLib;
-using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 
@@ -20,28 +14,24 @@ namespace CMS21Together.ClientSide.Data.Garage.Campaign;
 [HarmonyPatch]
 public static class JobHooks
 {
-
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Load))]
 	[HarmonyPostfix]
 	public static void LoadHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		
+
 		if (Server.Instance.isRunning)
 		{
-			foreach (Job job in __instance.jobs.ToArray())
-			{
+			foreach (var job in __instance.jobs.ToArray())
 				//MelonLogger.Msg($"[Hook->LoadHook] Sent new job.");
 				ClientSend.JobPacket(new ModJob(job));
-			}
-			
-			foreach (Job job in __instance.selectedJobs.ToArray())
-			{
+
+			foreach (var job in __instance.selectedJobs.ToArray())
 				//MelonLogger.Msg($"[Hook->LoadHook] Sent new selected job.");
 				ClientSend.SelectedJobPacket(new ModJob(job), true);
-			}
 		}
 	}
+
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateMission))]
 	[HarmonyPrefix]
 	public static bool PreGenerateMissionHook(int id, bool forTutorial)
@@ -60,10 +50,9 @@ public static class JobHooks
 	{
 		if (!Client.Instance.isConnected) return;
 		if (__instance.jobs.Count <= 0 || id == -1) return;
-		
+
 		if (Server.Instance.isRunning)
 		{
-			
 			//MelonLogger.Msg($"[Hook->GenerateMissionHook] Generated new mission : {id}");
 			var enumerator = __instance.jobs.ToArray();
 			var newJob = enumerator[__instance.jobs.Count - 1];
@@ -71,7 +60,7 @@ public static class JobHooks
 			ClientSend.JobPacket(job);
 		}
 	}
-	
+
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
 	[HarmonyPrefix]
 	public static bool PreGenerateNewJobHook()
@@ -82,13 +71,13 @@ public static class JobHooks
 			return false;
 		return true;
 	}
-	
+
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.GenerateNewJob))]
 	[HarmonyPostfix]
 	public static void GenerateNewJobHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected) return;
-		
+
 		if (__instance.jobs.Count <= 0) return;
 		//MelonLogger.Msg("[Hook->GenerateNewJobHook] Generated new job");
 		var enumerator = __instance.jobs.ToArray();
@@ -111,11 +100,11 @@ public static class JobHooks
 	{
 		while (job.carLoaderID == 0)
 			yield return new WaitForSeconds(0.2f);
-		
+
 		MelonLogger.Msg($"[Hook->AcceptOrderActionHook] Accept Order : {job.id}, {job.carLoaderID}");
 		ClientSend.JobActionPacket(new ModJob(job), true);
 	}
-	
+
 
 	[HarmonyPatch(typeof(OrdersWindow), nameof(OrdersWindow.DeclineOrderAction))]
 	[HarmonyPrefix]
@@ -126,14 +115,14 @@ public static class JobHooks
 		MelonLogger.Msg($"[Hook->DeclineOrderActionHook] Decline Order : {__instance.currentJob.id}");
 		ClientSend.JobActionPacket(new ModJob(__instance.currentJob), false);
 	}
-	
+
 	[HarmonyPatch(typeof(OrderGenerator), nameof(OrderGenerator.Update))]
 	[HarmonyPrefix]
 	public static bool UpdateHook(OrderGenerator __instance)
 	{
 		if (!Client.Instance.isConnected || Server.Instance.isRunning) return true;
 		if (!NotificationCenter.IsGameReady || !GameSettings.CanGenerateOrders) return false;
-		
+
 		var maxOrdersAmount = GlobalData.GetMaxOrdersAmount();
 		if (GlobalData.Jobs < maxOrdersAmount) __instance.orderTimer += Time.deltaTime; // enable timer and disable job generation for clients
 
@@ -148,7 +137,7 @@ public static class JobHooks
 
 		if (!carLoader.CheckCarPartsBolts())
 		{
-			UIManager.Get().ShowInfoWindow("GUI_SamochodNiezlozony", ("!" + Singleton<GameManager>.Instance.Localization.GetLocalizedValue(carLoader.GetMissingPartID())));
+			UIManager.Get().ShowInfoWindow("GUI_SamochodNiezlozony", "!" + Singleton<GameManager>.Instance.Localization.GetLocalizedValue(carLoader.GetMissingPartID()));
 			return false;
 		}
 
@@ -190,46 +179,42 @@ public static class JobHooks
 		}
 
 		WindowManager.Instance.Hide(WindowID.CarInfo, true); // hide info panel
-		
-		MelonLogger.Msg("\n - Job Info before sending it to server - " + 
-			                $"\nID:{job.id}" +
-			                $"\nIsMission:{job.IsMission}" +
-			                $"\nisCompleted:{job.IsCompleted}" +
-			                $"\nPayout:{job.TotalPayout}" +
-			                $"\nXP:{job.XP}" +
-			                $"\nMoneySpent:{job.MoneySpent}" +
-			                "\n----------------------------------------");
+
+		MelonLogger.Msg("\n - Job Info before sending it to server - " +
+		                $"\nID:{job.id}" +
+		                $"\nIsMission:{job.IsMission}" +
+		                $"\nisCompleted:{job.IsCompleted}" +
+		                $"\nPayout:{job.TotalPayout}" +
+		                $"\nXP:{job.XP}" +
+		                $"\nMoneySpent:{job.MoneySpent}" +
+		                "\n----------------------------------------");
 
 		Singleton<GameManager>.Instance.Inventory.TryAddSpecialCase(job.IsMission);
 		GlobalData.AddPlayerMoney(job.TotalPayout);
 		GlobalData.AddPlayerExp(job.XP);
-		
+
 		var modJob = new ModJob(job);
 		if (JobManager.selectedJobs.Any(j => j.id == job.id)) JobManager.selectedJobs.Remove(modJob);
 		ClientSend.EndJobPacket(modJob);
-		
+
 		Singleton<GameManager>.Instance.OrderGenerator.CancelJob(job.id);
 		if (job.IsMission)
 		{
 			GlobalData.IsStoryMissionInProgress = false;
 			GlobalData.MissionsFinished++;
 			GlobalData.CurrentMissionDone = true;
-			if (GlobalData.MissionsFinished >= GlobalData.MissionsAmount)
-			{
-				Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_allmissions", 1);
-			}
-			
+			if (GlobalData.MissionsFinished >= GlobalData.MissionsAmount) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_allmissions", 1);
 		}
-		
+
 		carLoader.DeleteCar(true);
 		GameScript.Get().SetCarLoaderOverNull();
 		GameScript.Get().GarageOnFootWithoutFader();
-		
+
 		GarageLoader.Get().Save();
 		if (job.IsCompleted) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_finish_order", 1);
 		if (job.IsCompleted && job.BonusToExp) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_exp", 1);
 		if (job.IsCompleted && job.BonusToMoney) Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_bonus_money", 1);
-		
+
 		return false;
 	}
 }

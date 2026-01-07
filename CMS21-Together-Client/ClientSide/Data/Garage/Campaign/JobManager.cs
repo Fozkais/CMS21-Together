@@ -1,13 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CMS;
-using CMS.FileSupport.INI;
-using CMS.Tutorial;
-using CMS.UI;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
 using CMS21Together.ClientSide.Data.Garage.Car;
-using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 using UnityEngine;
 
@@ -52,12 +47,12 @@ public static class JobManager
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
-		
+
 		var newJob = job.ToGame();
 		newJob.timeToEnd -= 3;
 		GameData.Instance.orderGenerator.jobs.Add(newJob);
 		if (!newJob.IsMission)
-			GameData.Instance.orderGenerator.jobs.ToArray()[GameData.Instance.orderGenerator.jobs.Count-1].StartTimer();
+			GameData.Instance.orderGenerator.jobs.ToArray()[GameData.Instance.orderGenerator.jobs.Count - 1].StartTimer();
 		GlobalData.AddJob(1);
 		UIManager.Get().UpdateJobs(GameData.Instance.orderGenerator.jobs, newJob);
 		MelonLogger.Msg($"Should have added a Mision! {newJob.id} , {newJob.IsMission}");
@@ -69,15 +64,13 @@ public static class JobManager
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
-		Job job = modJob.ToGame();
+		var job = modJob.ToGame();
 		foreach (var _job in GameData.Instance.orderGenerator.jobs.ToArray())
-		{
 			if (_job.id == modJob.id)
 			{
 				GameData.Instance.orderGenerator.CancelJob(_job.id);
 				break;
 			}
-		}
 
 		if (takeJob)
 		{

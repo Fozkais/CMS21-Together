@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using CMS21Together.Shared;
+using CMS21_Together_Core.Data;
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.Net.Http;
-using CMS21Together.Shared.Data;
 
 namespace CMS21Together.ClientSide.Data;
 
@@ -25,13 +22,8 @@ public class ContentManager
 		if (ownedContents != null) return;
 
 		if (Instance == null)
-		{
 			Instance = this;
-		}
-		else if (Instance != this)
-		{
-			MelonLogger.Msg("Instance already exists, destroying object!");
-		}
+		else if (Instance != this) MelonLogger.Msg("Instance already exists, destroying object!");
 
 		GetGameVersion();
 		CheckContent();
@@ -50,8 +42,8 @@ public class ContentManager
 
 		ownedContents = new ReadOnlyDictionary<string, bool>(ApiCalls.API_M3());
 	}
-	
-	public VersionStatus  IsNewVersionAvailable(string versionName)
+
+	public VersionStatus IsNewVersionAvailable(string versionName)
 	{
 		try
 		{
@@ -59,33 +51,34 @@ public class ContentManager
 			{
 				client.DefaultRequestHeaders.Add("User-Agent", "MyModChecker");
 				client.Timeout = TimeSpan.FromSeconds(5);
-				string url = $"https://api.github.com/repos/Fozkais/CMS21-Together/releases/latest";
+				var url = "https://api.github.com/repos/Fozkais/CMS21-Together/releases/latest";
 
-				string json = client.GetStringAsync(url).Result;
-				
+				var json = client.GetStringAsync(url).Result;
+
 				var m = Regex.Match(json, @"""name""\s*:\s*""([^""]+)""");
 				if (!m.Success)
 				{
 					MelonLogger.Msg("VersionChecker : could not find 'name' field on response");
 					return VersionStatus.Latest;
 				}
-				string releaseName = m.Groups[1].Value;
-				string remoteVersion = releaseName.Split(' ')[0];
 
-				(Version localVer, int localHF) = ParseVersion(versionName);
-				(Version remoteVer, int remoteHF) = ParseVersion(remoteVersion);
+				var releaseName = m.Groups[1].Value;
+				var remoteVersion = releaseName.Split(' ')[0];
 
-				int cmp = localVer.CompareTo(remoteVer);
+				var (localVer, localHF) = ParseVersion(versionName);
+				var (remoteVer, remoteHF) = ParseVersion(remoteVersion);
+
+				var cmp = localVer.CompareTo(remoteVer);
 				if (cmp < 0)
 					return VersionStatus.Outdated;
 				if (cmp > 0)
 					return VersionStatus.Dev;
-				
+
 				if (localHF < remoteHF)
 					return VersionStatus.Outdated;
 				if (localHF > remoteHF)
 					return VersionStatus.Dev;
-				
+
 				return VersionStatus.Latest;
 			}
 		}
@@ -95,14 +88,14 @@ public class ContentManager
 			return VersionStatus.Latest;
 		}
 	}
-	
+
 	private (Version, int) ParseVersion(string versionStr)
 	{
-		int hf = 0;
+		var hf = 0;
 		var m = Regex.Match(versionStr, @"^(?<ver>\d+\.\d+\.\d+)(?:hf(?<hf>\d+))?$");
 		if (m.Success)
 		{
-			if (int.TryParse(m.Groups["hf"].Value, out int tmp))
+			if (int.TryParse(m.Groups["hf"].Value, out var tmp))
 				hf = tmp;
 			return (new Version(m.Groups["ver"].Value), hf);
 		}

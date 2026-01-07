@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
-using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Handle;
 
@@ -75,22 +74,22 @@ public static class ClientHandle
 		var data = new ModSaveData();
 		data.selectedGamemode = gamemode;
 
-		SavesManager.LoadSave(data, parkCars,true);
+		SavesManager.LoadSave(data, parkCars, true);
 	}
-	
+
 	public static void SpawnPacket(Packet packet)
 	{
-		int playerMoney = packet.ReadInt();
-		int playerExp = packet.ReadInt();
-		int playerLevel = packet.ReadInt();
-		int skillPoints = packet.ReadInt();
-		Vector3Serializable position = packet.Read<Vector3Serializable>();
-		QuaternionSerializable rotation = packet.Read<QuaternionSerializable>();
-		Dictionary<string, List<bool>> skills = packet.Read<Dictionary<string, List<bool>>>();
-		long startItemUID = packet.Read<long>();
-		int missionFinished = packet.ReadInt();
-		bool missionInProgress = packet.Read<bool>();
-		
+		var playerMoney = packet.ReadInt();
+		var playerExp = packet.ReadInt();
+		var playerLevel = packet.ReadInt();
+		var skillPoints = packet.ReadInt();
+		var position = packet.Read<Vector3Serializable>();
+		var rotation = packet.Read<QuaternionSerializable>();
+		var skills = packet.Read<Dictionary<string, List<bool>>>();
+		var startItemUID = packet.Read<long>();
+		var missionFinished = packet.ReadInt();
+		var missionInProgress = packet.Read<bool>();
+
 		MelonCoroutines.Start(ClientData.Instance.SpawnPlayer(playerMoney, playerExp, playerLevel, position.toVector3(),
 			rotation.toQuaternion(), skillPoints, skills, startItemUID, missionFinished, missionInProgress));
 	}
@@ -171,13 +170,14 @@ public static class ClientHandle
 	{
 		GameData.Instance.tireChanger.ResetActions();
 	}
+
 	public static void WheelBalancePacket(Packet packet)
 	{
-		if(SceneManager.CurrentScene() != GameScene.garage) return;
-                
-		ModWheelBalancerActionType aType = packet.Read<ModWheelBalancerActionType>();
+		if (SceneManager.CurrentScene() != GameScene.garage) return;
+
+		var aType = packet.Read<ModWheelBalancerActionType>();
 		ModGroupItem _item = null;
-		if(aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
+		if (aType == ModWheelBalancerActionType.start || aType == ModWheelBalancerActionType.setGroup)
 			_item = packet.Read<ModGroupItem>();
 
 		if (aType == ModWheelBalancerActionType.remove)
@@ -192,24 +192,24 @@ public static class ClientHandle
 			GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(_item!.ToGame(_item), true);
 		}
 	}
-	
+
 	public static void OilBinPacket(Packet _packet)
 	{
-		int carLoaderID = _packet.ReadInt();
+		var carLoaderID = _packet.ReadInt();
 
-		if(SceneManager.CurrentScene() != GameScene.garage) return;
-                
+		if (SceneManager.CurrentScene() != GameScene.garage) return;
+
 		OilBin.listen = false;
 		GameData.Instance.carLoaders[carLoaderID].UseOilbin();
 	}
-	
+
 	public static void WelderPacket(Packet _packet)
 	{
-		int carLoaderID = _packet.ReadInt();
+		var carLoaderID = _packet.ReadInt();
 
 		MelonCoroutines.Start(Garage.Tools.WelderLogic.UseWelder(carLoaderID));
 	}
-	
+
 	public static void SetSpringClampPacket(Packet packet)
 	{
 		var item = packet.Read<ModGroupItem>();
@@ -241,19 +241,19 @@ public static class ClientHandle
 
 	public static void CarWashPacket(Packet _packet)
 	{
-		int carLoaderID = _packet.ReadInt();
-		bool interior = _packet.Read<bool>();
+		var carLoaderID = _packet.ReadInt();
+		var interior = _packet.Read<bool>();
 
 		MelonCoroutines.Start(Garage.Tools.CarWashLogic.WashCar(carLoaderID, interior));
 	}
-	
+
 	public static void CarPaintPacket(Packet _packet)
 	{
-		ModColor color = _packet.Read<ModColor>();
+		var color = _packet.Read<ModColor>();
 
 		MelonCoroutines.Start(CarPaintLogic.ChangeColor(color));
 	}
-	
+
 	public static void LoadCarPacket(Packet packet)
 	{
 		var carData = packet.Read<ModNewCarData>();
@@ -294,7 +294,7 @@ public static class ClientHandle
 	{
 		var placeNo = packet.ReadInt();
 		var carLoaderID = packet.ReadInt();
-		
+
 		MelonLogger.Msg($"[ClientHandle->CarPositionPacket] Move {carLoaderID} to {placeNo}.");
 		MelonCoroutines.Start(CarSyncManager.ChangePosition(carLoaderID, placeNo));
 	}
@@ -310,16 +310,16 @@ public static class ClientHandle
 	public static void JobPacket(Packet packet)
 	{
 		var job = packet.Read<ModJob>();
-		
+
 		//MelonLogger.Msg("[ClientHandle->JobPacket] Received a job.");
 		MelonCoroutines.Start(JobManager.AddJob(job));
 	}
 
 	public static void JobActionPacket(Packet packet)
 	{
-		ModJob job = packet.Read<ModJob>();
+		var job = packet.Read<ModJob>();
 		var takeJob = packet.Read<bool>();
-		
+
 		MelonCoroutines.Start(JobManager.JobAction(job, takeJob));
 	}
 
@@ -337,73 +337,75 @@ public static class ClientHandle
 
 		MelonCoroutines.Start(JobManager.OnJobComplete(job));
 	}
-	
+
 	public static void EngineCraneHandlePacket(Packet packet)
 	{
-		int action = packet.ReadInt();
-		int carLoaderID = packet.ReadInt();
+		var action = packet.ReadInt();
+		var carLoaderID = packet.ReadInt();
 
 		if (action == 1)
 		{
-			ModGroupItem item = packet.Read<ModGroupItem>();
+			var item = packet.Read<ModGroupItem>();
 			MelonCoroutines.Start(EngineCrane.InsertEngineIntoCar(item));
 			return;
 		}
+
 		MelonCoroutines.Start(EngineCrane.UseEngineCrane(carLoaderID));
 	}
-	
+
 	public static void EngineSetGroupPacket(Packet packet)
 	{
-		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
-		Vector3Serializable position = packet.Read<Vector3Serializable>();
-		bool alt = packet.Read<bool>();
-		
+		var engineGroup = packet.Read<ModGroupItem>();
+		var position = packet.Read<Vector3Serializable>();
+		var alt = packet.Read<bool>();
+
 		MelonCoroutines.Start(EngineStand.TakeOnEngineFromStand(engineGroup, position, alt));
 	}
+
 	public static void EngineTakeOffPacket(Packet packet)
 	{
-		bool alt = packet.Read<bool>();
-		
+		var alt = packet.Read<bool>();
+
 		MelonCoroutines.Start(EngineStand.TakeOffEngineFromStand(alt));
 	}
-	
+
 	public static void EngineStandAnglePacket(Packet packet)
 	{
 		float angle = packet.ReadInt();
-		bool alt = packet.Read<bool>();
-		
+		var alt = packet.Read<bool>();
+
 		MelonCoroutines.Start(EngineStand.IncreaseEngineStandAngle(angle, alt));
 	}
-	
+
 	public static void RepairPartPacket(Packet packet)
 	{
-		ModPartInfo info = packet.Read<ModPartInfo>();
-		bool isBody = packet.Read<bool>();
-		bool success = packet.Read<bool>();
-		
+		var info = packet.Read<ModPartInfo>();
+		var isBody = packet.Read<bool>();
+		var success = packet.Read<bool>();
+
 		MelonCoroutines.Start(RepairPartLogic.RepairAction(info, isBody, success));
 	}
-	
+
 	public static void CarFluidPacket(Packet packet)
 	{
 		var carLoaderID = packet.ReadInt();
-		ModFluidData fluid = packet.Read<ModFluidData>();
-		
+		var fluid = packet.Read<ModFluidData>();
+
 		MelonCoroutines.Start(PartsUpdater.UpdateFluid(fluid, carLoaderID));
 	}
-	
+
 	public static void AddCarToParkPacket(Packet packet)
 	{
-		ModNewCarData car = packet.Read<ModNewCarData>();
-		int index = packet.ReadInt();
-		
+		var car = packet.Read<ModNewCarData>();
+		var index = packet.ReadInt();
+
 		MelonCoroutines.Start(ParkHook.AddCarToPark(car, index));
 	}
-	
+
 	public static void RemoveCarFromParkPacket(Packet packet)
 	{
-		int index = packet.ReadInt();
-		
+		var index = packet.ReadInt();
+
 		MelonCoroutines.Start(ParkHook.RemoveCarFromPark(index));
 	}
 
@@ -414,15 +416,11 @@ public static class ClientHandle
 
 		ClientData.Instance.connectedClients[id].scene = scene;
 		if (scene != SceneManager.CurrentScene())
-		{
 			// Business Logic: Destroy player when changing to different scene
-			ClientData.Instance.connectedClients[id].DestroyPlayer();
-		}
+			ClientData.Instance.DoDestroyPlayer(ClientData.Instance.connectedClients[id]);
 		else if (ClientData.Instance.connectedClients[id].userObject == null)
-		{
 			// Business Logic: Spawn player only if not already spawned
-			ClientData.Instance.connectedClients[id].SpawnPlayer();
-		}
+			ClientData.Instance.DoSpawnPlayer(ClientData.Instance.connectedClients[id]);
 	}
 
 	public static void PlayerInCarPacket(Packet packet)
@@ -465,7 +463,7 @@ public static class ClientHandle
 		// Observation: Car engine sounds are typically on the car's AudioSource component
 		// Note: Temporarily disabled due to AudioModule reference issues - will be re-enabled when AudioModule DLL is available
 		// TODO: Re-enable engine sound playback when UnityEngine.AudioModule.dll is added to project references
-		
+
 		// Business Logic: For now, we'll skip engine sound playback to avoid compilation errors
 		// The engine sound synchronization can be implemented later when the AudioModule reference is available
 		MelonLogger.Msg($"[ClientHandle->CarEngineSoundPacket] Engine sound sync received for car {carLoaderID} (Playing: {isPlaying}, RPM: {rpm}) - AudioModule not available");

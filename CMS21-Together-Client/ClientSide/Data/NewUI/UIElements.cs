@@ -3,12 +3,9 @@ using CMS.MainMenu.Controls;
 using CMS.UI.Controls;
 using CMS.UI.Logic.Navigation;
 using Il2CppSystem.Collections.Generic;
-using MelonLoader;
 using UnhollowerRuntimeLib;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
-using Button = UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
 
 namespace CMS21Together.ClientSide.Data.NewUI;
@@ -40,9 +37,12 @@ public static class UIElements
 			btn.SetLocked();
 		}
 		else
+		{
 			btn.OnClick.AddListener(onClick);
+		}
+
 		btn.OnMouseHover = DelegateSupport.ConvertDelegate<Il2CppSystem.Action<int>>(
-			new Action<int>((i) =>
+			new Action<int>(i =>
 			{
 				btn.transform.parent.GetComponent<ListNavigationManager>()?.DeselectCurrent();
 				btn.Select();
@@ -58,7 +58,7 @@ public static class UIElements
 		input.text = defaultText;
 		return input;
 	}
-	
+
 	public static Image CreateImage(Transform parent, Sprite sprite)
 	{
 		var obj = UICore.CreateElement(UICore.templateImage, parent);

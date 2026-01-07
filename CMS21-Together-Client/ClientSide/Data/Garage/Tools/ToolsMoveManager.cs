@@ -1,6 +1,6 @@
 ﻿using System.Collections;
+using CMS21_Together_Core.Data.Vanilla.Cars;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data.Vanilla.Cars;
 using HarmonyLib;
 using UnityEngine;
 using TM = ToolsMoveManager;
@@ -22,7 +22,7 @@ public static class ToolsMoveManager
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
-		
+
 		listenToMove = false;
 		if (place == ModCarPlace.none)
 			GameData.Instance.toolsMoveManager.SetOnDefaultPosition(tool);

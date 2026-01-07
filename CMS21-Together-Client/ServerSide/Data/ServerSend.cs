@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using CMS21Together.ClientSide.Data;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
+using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
-using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
 
@@ -34,7 +33,7 @@ public static class ServerSend
 			SendData(id, packet);
 		}
 	}
-	
+
 	public static void PositionPacket(int fromClient, Vector3Serializable position)
 	{
 		using (var packet = new Packet((int)PacketTypes.position))
@@ -102,7 +101,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID, bool resync=false)
+	public static void LoadCarPacket(int fromClient, ModNewCarData carData, int carLoaderID, bool resync = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.loadCar))
 		{
@@ -116,7 +115,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID, bool resync=false)
+	public static void BodyPartPacket(int fromClient, ModCarPart carPart, int carLoaderID, bool resync = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.bodyPart))
 		{
@@ -132,7 +131,7 @@ public static class ServerSend
 		//MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent BodyPart.");
 	}
 
-	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID, bool resync=false)
+	public static void PartScriptPacket(int fromClient, ModPartScript partScript, int carLoaderID, bool resync = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.partScript))
 		{
@@ -145,7 +144,7 @@ public static class ServerSend
 				SendData(fromClient, packet);
 		}
 
-	//	MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
+		//	MelonLogger.Msg("[ServerSend->PartScriptPacket] Sent PartScript.");
 	}
 
 	public static void DeleteCarPacket(int fromClient, int carLoaderID)
@@ -169,7 +168,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade, bool resync=false)
+	public static void GarageUpgradePacket(int fromClient, GarageUpgrade upgrade, bool resync = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.garageUpgrade))
 		{
@@ -244,7 +243,7 @@ public static class ServerSend
 		}
 	}
 
-	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound, bool resync=false)
+	public static void ToolsMovePacket(int fromClient, ModIOSpecialType tool, ModCarPlace place, bool playSound, bool resync = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.toolMove))
 		{
@@ -307,7 +306,179 @@ public static class ServerSend
 			SendDataToAll(fromClient, packet);
 		}
 	}
-	
+
+	public static void WheelBalancerPacket(int fromClient, ModWheelBalancerActionType aType, ModGroupItem item = null)
+	{
+		using (var _packet = new Packet((int)PacketTypes.wheelBalance))
+		{
+			_packet.Write(aType);
+			if (item != null) _packet.Write(item);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void SendOilBin(int fromClient, int carLoaderID)
+	{
+		using (var _packet = new Packet((int)PacketTypes.oilBinUse))
+		{
+			_packet.Write(carLoaderID);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position, bool useAlt, bool resync = false)
+	{
+		using (var _packet = new Packet((int)PacketTypes.engineStandSetGroup))
+		{
+			_packet.Write(engineGroup);
+			_packet.Write(position);
+			_packet.Write(useAlt);
+
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
+		}
+	}
+
+	public static void EngineStandTakeOffPacket(int fromClient, bool alt)
+	{
+		using (var _packet = new Packet((int)PacketTypes.engineStandTakeOff))
+		{
+			_packet.Write(alt);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void IncreaseStandAnglePacket(int fromClient, float val, bool alt)
+	{
+		using (var _packet = new Packet((int)PacketTypes.engineStandAngle))
+		{
+			_packet.Write(val);
+			_packet.Write(alt);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void EngineCraneHandlePacket(int fromClient, int action, int carLoaderID, ModGroupItem item = null)
+	{
+		using (var _packet = new Packet((int)PacketTypes.engineCrane))
+		{
+			_packet.Write(action);
+			_packet.Write(carLoaderID);
+			if (action == 1) _packet.Write(item);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarFluidPacket(int fromClient, int carLoaderID, ModFluidData fluid)
+	{
+		using (var _packet = new Packet((int)PacketTypes.carFluid))
+		{
+			_packet.Write(carLoaderID);
+			_packet.Write(fluid);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarWashPacket(int fromClient, int loaderID, bool interior)
+	{
+		using (var _packet = new Packet((int)PacketTypes.carWash))
+		{
+			_packet.Write(loaderID);
+			_packet.Write(interior);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarPaintPacket(int fromClient, ModColor color)
+	{
+		using (var _packet = new Packet((int)PacketTypes.carPaint))
+		{
+			_packet.Write(color);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void WelderPacket(int fromClient, int loaderID)
+	{
+		using (var _packet = new Packet((int)PacketTypes.useWelder))
+		{
+			_packet.Write(loaderID);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void RepairPartPacket(int fromClient, ModPartInfo info, bool isBody, bool success)
+	{
+		using (var _packet = new Packet((int)PacketTypes.repairPart))
+		{
+			_packet.Write(info);
+			_packet.Write(isBody);
+			_packet.Write(success);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void AddCarToParkPacket(int fromClient, ModNewCarData car, int index, bool resync = false)
+	{
+		using (var _packet = new Packet((int)PacketTypes.parkAdd))
+		{
+			_packet.Write(car);
+			_packet.Write(index);
+
+			if (!resync)
+				SendDataToAll(fromClient, _packet);
+			else
+				SendData(fromClient, _packet);
+		}
+	}
+
+	public static void RemoveCarFromParkPacket(int fromClient, int index)
+	{
+		using (var _packet = new Packet((int)PacketTypes.parkRemove))
+		{
+			_packet.Write(index);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void PlayerInCarPacket(int fromClient, bool isInCar, int carLoaderID)
+	{
+		using (var _packet = new Packet((int)PacketTypes.playerInCar))
+		{
+			_packet.Write(fromClient);
+			_packet.Write(isInCar);
+			_packet.Write(carLoaderID);
+
+			SendDataToAll(fromClient, _packet);
+		}
+	}
+
+	public static void CarEngineSoundPacket(int fromClient, int carLoaderID, bool isPlaying, float rpm)
+	{
+		using (var _packet = new Packet((int)PacketTypes.carEngineSound))
+		{
+			_packet.Write(fromClient);
+			_packet.Write(carLoaderID);
+			_packet.Write(isPlaying);
+			_packet.Write(rpm);
+
+			SendDataToAll(fromClient, _packet, false); // Use UDP for sound sync (non-reliable)
+		}
+	}
+
 
 	#region Functions
 
@@ -362,7 +533,7 @@ public static class ServerSend
 		using (var packet = new Packet((int)PacketTypes.userData))
 		{
 			packet.Write(userData);
-			
+
 			if (id == -1)
 				SendDataToAll(packet);
 			else
@@ -387,182 +558,10 @@ public static class ServerSend
 		{
 			packet.Write(gamemode);
 			packet.Write(parkCars);
-			
+
 			SendDataToAll(1, packet);
 		}
 	}
 
 	#endregion
-
-	public static void WheelBalancerPacket(int fromClient, ModWheelBalancerActionType aType, ModGroupItem item=null)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.wheelBalance))
-		{
-			_packet.Write(aType);
-			if(item != null)   {_packet.Write(item);}
-
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void SendOilBin(int fromClient, int carLoaderID)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.oilBinUse))
-		{
-			_packet.Write(carLoaderID);
-
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void EngineStandSetGroupPacket(int fromClient, ModGroupItem engineGroup, Vector3Serializable position, bool useAlt, bool resync=false)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.engineStandSetGroup))
-		{
-			_packet.Write(engineGroup);
-			_packet.Write(position);
-			_packet.Write(useAlt);
-
-			if (!resync)
-				SendDataToAll(fromClient, _packet);
-			else
-				SendData(fromClient, _packet);
-		}
-	}
-
-	public static void EngineStandTakeOffPacket(int fromClient, bool alt)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.engineStandTakeOff))
-		{
-			_packet.Write(alt);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void IncreaseStandAnglePacket(int fromClient, float val, bool alt)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.engineStandAngle))
-		{
-			_packet.Write(val);
-			_packet.Write(alt);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void EngineCraneHandlePacket(int fromClient, int action, int carLoaderID, ModGroupItem item = null)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.engineCrane))
-		{
-			_packet.Write(action);
-			_packet.Write(carLoaderID);
-			if (action == 1) _packet.Write(item);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void CarFluidPacket(int fromClient, int carLoaderID, ModFluidData fluid)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.carFluid))
-		{
-			_packet.Write(carLoaderID);
-			_packet.Write(fluid);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void CarWashPacket(int fromClient, int loaderID, bool interior)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.carWash))
-		{
-			_packet.Write(loaderID);
-			_packet.Write(interior);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void CarPaintPacket(int fromClient, ModColor color)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.carPaint))
-		{
-			_packet.Write(color);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void WelderPacket(int fromClient, int loaderID)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.useWelder))
-		{
-			_packet.Write(loaderID);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void RepairPartPacket(int fromClient, ModPartInfo info, bool isBody, bool success)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.repairPart))
-		{
-			_packet.Write(info);
-			_packet.Write(isBody);
-			_packet.Write(success);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void AddCarToParkPacket(int fromClient, ModNewCarData car, int index, bool resync = false)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.parkAdd))
-		{
-			_packet.Write(car);
-			_packet.Write(index);
-			
-			if (!resync)
-				SendDataToAll(fromClient, _packet);
-			else
-				SendData(fromClient, _packet);
-		}
-	}
-
-	public static void RemoveCarFromParkPacket(int fromClient, int index)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.parkRemove))
-		{
-			_packet.Write(index);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void PlayerInCarPacket(int fromClient, bool isInCar, int carLoaderID)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.playerInCar))
-		{
-			_packet.Write(fromClient);
-			_packet.Write(isInCar);
-			_packet.Write(carLoaderID);
-			
-			SendDataToAll(fromClient, _packet);
-		}
-	}
-
-	public static void CarEngineSoundPacket(int fromClient, int carLoaderID, bool isPlaying, float rpm)
-	{
-		using (Packet _packet = new Packet((int)PacketTypes.carEngineSound))
-		{
-			_packet.Write(fromClient);
-			_packet.Write(carLoaderID);
-			_packet.Write(isPlaying);
-			_packet.Write(rpm);
-			
-			SendDataToAll(fromClient, _packet, false); // Use UDP for sound sync (non-reliable)
-		}
-	}
 }

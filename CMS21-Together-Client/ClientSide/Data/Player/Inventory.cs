@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CMS.Helpers;
+using CMS21_Together_Core.Data.Vanilla;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
-using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
 
@@ -25,7 +25,6 @@ public static class Inventory
 		modItems.Clear();
 		modGroupItems.Clear();
 		loadSkip = false;
-		
 	}
 
 	[HarmonyPatch(typeof(UIHelper), nameof(UIHelper.GetItemsForID))]
@@ -38,36 +37,36 @@ public static class Inventory
 
 		var array = items.ToArray();
 		var snapshot = new List<string>();
-		for (int i = 0; i < array.Count; i++)
+		for (var i = 0; i < array.Count; i++)
 			snapshot.Add(array[i].ID);
-		
+
 		var matches = new ConcurrentBag<int>();
 		Parallel.For(0, snapshot.Count, i =>
 		{
 			if (snapshot[i].IndexOf(id, StringComparison.OrdinalIgnoreCase) >= 0)
 				matches.Add(i);
 		});
-		
+
 		var newRes = new Il2CppSystem.Collections.Generic.List<BaseItem>();
-		foreach (int index in matches)
+		foreach (var index in matches)
 			newRes.Add(array[index]);
 
 		__result = newRes;
 		return false;
 	}
-	
+
 	[HarmonyPatch(typeof(UIHelper), nameof(UIHelper.GetBaseItemsForIDExact))]
 	[HarmonyPrefix]
 	public static bool GetBaseItemsForIDExactFix(Il2CppSystem.Collections.Generic.List<Item> items,
 		string id, ref Il2CppSystem.Collections.Generic.List<BaseItem> __result)
 	{
-		if (!Client.Instance.isConnected) {return true;}
+		if (!Client.Instance.isConnected) return true;
 
 		var array = items.ToArray();
 		var snapshotIds = new string[items.Count];
-		for (int i = 0; i < array.Count; i++)
+		for (var i = 0; i < array.Count; i++)
 			snapshotIds[i] = array[i]?.ID;
-		
+
 		var matchedIndices = new ConcurrentBag<int>();
 		Parallel.For(0, snapshotIds.Length, i =>
 		{
@@ -75,9 +74,9 @@ public static class Inventory
 			if (idValue != null && idValue == id)
 				matchedIndices.Add(i);
 		});
-		
+
 		var resultList = new Il2CppSystem.Collections.Generic.List<BaseItem>();
-		foreach (int index in matchedIndices)
+		foreach (var index in matchedIndices)
 		{
 			var item = array[index];
 			if (item != null)
@@ -85,7 +84,7 @@ public static class Inventory
 		}
 
 		__result = resultList;
-		
+
 		return false;
 	}
 
@@ -94,9 +93,9 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
-		if (!Client.Instance.isConnected) {return;}
+		if (!Client.Instance.isConnected) return;
 		if (modItems.Any(i => i.UID == item.UID)) return;
-		
+
 		var newItem = new ModItem(item);
 		modItems.Add(newItem);
 		ClientSend.ItemPacket(newItem, InventoryAction.add);
@@ -106,7 +105,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void AddGroupItemHook(GroupItem group)
 	{
-		if (!Client.Instance.isConnected) {return;}
+		if (!Client.Instance.isConnected) return;
 		if (modGroupItems.Any(i => i.UID == group.UID)) return;
 
 		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
@@ -119,7 +118,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void RemoveItemHook(Item item, global::Inventory __instance)
 	{
-		if (!Client.Instance.isConnected) {return;}
+		if (!Client.Instance.isConnected) return;
 
 		if (item == null) return;
 
@@ -135,7 +134,7 @@ public static class Inventory
 	[HarmonyPrefix]
 	public static void RemoveGroupItemHook(long UId)
 	{
-		if (!Client.Instance.isConnected ) {return;}
+		if (!Client.Instance.isConnected) return;
 
 		if (modGroupItems.Any(s => s.UID == UId))
 		{
@@ -174,13 +173,12 @@ public static class Inventory
 		}
 
 		// Business Logic: Load group items from save data
-		int loadedGroups = 0;
+		var loadedGroups = 0;
 		foreach (var group in inventoryData.groups)
-		{
 			if (group != null)
 			{
 				var newItem = new ModGroupItem(group);
-				
+
 				// Business Rule: Check if group item already exists to prevent duplication during load
 				if (!modGroupItems.Any(i => i.UID == newItem.UID))
 				{
@@ -193,18 +191,16 @@ public static class Inventory
 					MelonLogger.Msg($"[Inventory->LoadHook] Group item with UID {newItem.UID} already exists, skipping load.");
 				}
 			}
-		}
 
 		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {loadedGroups} new group items (total: {modGroupItems.Count}).");
 
 		// Business Logic: Load items from save data
-		int loadedItems = 0;
+		var loadedItems = 0;
 		foreach (var item in inventoryData.items)
-		{
 			if (item != null)
 			{
 				var newItem = new ModItem(item);
-				
+
 				// Business Rule: Check if item already exists to prevent duplication during load
 				if (!modItems.Any(i => i.UID == newItem.UID))
 				{
@@ -217,7 +213,6 @@ public static class Inventory
 					MelonLogger.Msg($"[Inventory->LoadHook] Item with UID {newItem.UID} already exists, skipping load.");
 				}
 			}
-		}
 
 		MelonLogger.Msg($"[Inventory->LoadHook] Loaded {loadedItems} new items (total: {modItems.Count}).");
 		return true;
@@ -254,7 +249,7 @@ public static class Inventory
 
 				// Business Logic: Add item to modItems list and game inventory
 				modItems.Add(item);
-				
+
 				// Security Rule: Validate item conversion before adding to game inventory
 				var gameItem = item.ToGame();
 				if (gameItem != null)
@@ -268,13 +263,14 @@ public static class Inventory
 					// Business Rule: Remove from modItems if conversion failed to keep state consistent
 					modItems.Remove(item);
 				}
+
 				break;
 			case InventoryAction.remove:
 				// Business Rule: Only remove if item exists in modItems
 				if (modItems.Any(i => i.UID == item.UID))
 				{
 					modItems.Remove(item);
-					
+
 					// Security Rule: Validate item conversion before removing from game inventory
 					var itemToRemove = item.ToGame();
 					if (itemToRemove != null)
@@ -291,6 +287,7 @@ public static class Inventory
 				{
 					MelonLogger.Msg($"[Inventory->HandleItem] Item with UID {item.UID} not found in modItems, skipping remove.");
 				}
+
 				break;
 		}
 	}
@@ -326,7 +323,7 @@ public static class Inventory
 
 				// Business Logic: Add group item to modGroupItems list and game inventory
 				modGroupItems.Add(item);
-				
+
 				// Security Rule: Validate item conversion before adding to game inventory
 				var gameGroupItem = item.ToGame();
 				if (gameGroupItem != null)
@@ -340,6 +337,7 @@ public static class Inventory
 					// Business Rule: Remove from modGroupItems if conversion failed to keep state consistent
 					modGroupItems.Remove(item);
 				}
+
 				break;
 			case InventoryAction.remove:
 				// Business Rule: Only remove if group item exists in modGroupItems
@@ -353,6 +351,7 @@ public static class Inventory
 				{
 					MelonLogger.Msg($"[Inventory->HandleGroupItem] Group item with UID {item.UID} not found in modGroupItems, skipping remove.");
 				}
+
 				break;
 		}
 	}

@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using CMS;
+﻿using System;
+using System.Collections;
 using CMS21Together.ClientSide.Data.Handle;
 using HarmonyLib;
 using MelonLoader;
@@ -12,16 +12,19 @@ public static class CarWashLogic
 {
 	public static bool listen = true;
 
-	public static void Reset() => listen = true;
-	
+	public static void Reset()
+	{
+		listen = true;
+	}
+
 	[HarmonyPatch(typeof(CarLoader), nameof(CarLoader.TweenExteriorDustWash))]
 	[HarmonyPostfix]
 	public static void DTweenExteriorDustWashHook(float targetDust, float targetWash, float time, CarLoader __instance)
 	{
 		// Business Rule: Only sync if connected and listening flag is enabled
-		if(!Client.Instance.isConnected || !listen) 
-		{ 
-			listen = true; 
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
 			return;
 		}
 
@@ -33,8 +36,8 @@ public static class CarWashLogic
 			return;
 		}
 
-		int carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		
+		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+
 		// Business Rule: Validate carLoaderID is within valid range
 		if (carLoaderID < 0 || carLoaderID >= 5)
 		{
@@ -44,15 +47,15 @@ public static class CarWashLogic
 
 		ClientSend.CarWashPacket(carLoaderID);
 	}
-	
+
 	[HarmonyPatch(typeof(InteriorDetailingToolkitLogic), nameof(InteriorDetailingToolkitLogic.DoWorkAnim))]
 	[HarmonyPrefix]
 	public static void DoWorkAnimHook(CarLoader carLoader)
 	{
 		// Business Rule: Only sync if connected and listening flag is enabled
-		if(!Client.Instance.isConnected || !listen) 
-		{ 
-			listen = true; 
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
 			return;
 		}
 
@@ -63,8 +66,8 @@ public static class CarWashLogic
 			return;
 		}
 
-		int carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
-		
+		var carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
+
 		// Business Rule: Validate carLoaderID is within valid range
 		if (carLoaderID < 0 || carLoaderID >= 5)
 		{
@@ -77,8 +80,8 @@ public static class CarWashLogic
 	}
 
 	/// <summary>
-	/// Handles car wash synchronization from server.
-	/// Applies wash effect to the specified car loader.
+	///     Handles car wash synchronization from server.
+	///     Applies wash effect to the specified car loader.
 	/// </summary>
 	/// <param name="carLoaderID">The ID of the car loader to wash (0-4)</param>
 	/// <param name="interior">Whether to wash interior (true) or exterior (false)</param>
@@ -93,6 +96,7 @@ public static class CarWashLogic
 				MelonLogger.Warning("[CarWashLogic->WashCar] Client disconnected while waiting for game ready.");
 				yield break;
 			}
+
 			yield return new WaitForSeconds(0.25f);
 		}
 
@@ -154,7 +158,7 @@ public static class CarWashLogic
 				MelonLogger.Msg($"[CarWashLogic->WashCar] Interior wash applied to carLoaderID: {carLoaderID}");
 			}
 		}
-		catch (System.Exception ex)
+		catch (Exception ex)
 		{
 			// Security Rule: Catch and log any exceptions during wash operation
 			MelonLogger.Error($"[CarWashLogic->WashCar] Exception during wash operation: {ex.Message}\n{ex.StackTrace}");

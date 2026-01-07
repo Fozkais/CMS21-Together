@@ -1,5 +1,5 @@
-﻿using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data;
+﻿using CMS21_Together_Core.Data;
+using CMS21Together.ClientSide.Data.Handle;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
@@ -26,10 +26,7 @@ public static class Rotation
 		{
 			// Business Logic: Store rotation and spawn player if not already spawned
 			player.rotation = rotation;
-			if (player.userObject == null)
-			{
-				player.SpawnPlayer();
-			}
+			if (player.userObject == null) ClientData.Instance.DoSpawnPlayer(player);
 		}
 	}
 

@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using CMS.Managers;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -14,20 +15,23 @@ public static class CarPaintLogic
 {
 	public static bool listen = true;
 
-	public static void Reset() => listen = true;
-	
+	public static void Reset()
+	{
+		listen = true;
+	}
+
 	/// <summary>
-	/// Hook for when player paints a car locally.
-	/// Sends paint color to server for synchronization.
+	///     Hook for when player paints a car locally.
+	///     Sends paint color to server for synchronization.
 	/// </summary>
 	[HarmonyPatch(typeof(PaintshopManager), nameof(PaintshopManager.MakePaintEffects))]
 	[HarmonyPostfix]
 	public static void MakePaintEffectsHook(PaintshopManager __instance)
 	{
 		// Business Rule: Only sync if connected and listening flag is enabled
-		if(!Client.Instance.isConnected || !listen) 
-		{ 
-			listen = true; 
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
 			return;
 		}
 
@@ -47,7 +51,7 @@ public static class CarPaintLogic
 
 		// Observation: Extract color from paintshop state
 		var color = __instance.paintshopState.Selected.Color;
-		
+
 		// Business Rule: Validate color is not null
 		if (color == null)
 		{
@@ -60,8 +64,8 @@ public static class CarPaintLogic
 	}
 
 	/// <summary>
-	/// Handles car paint synchronization from server.
-	/// Applies paint color to the car in paintshop position (position 5).
+	///     Handles car paint synchronization from server.
+	///     Applies paint color to the car in paintshop position (position 5).
 	/// </summary>
 	/// <param name="color">The color to apply to the car</param>
 	public static IEnumerator ChangeColor(ModColor color)
@@ -75,6 +79,7 @@ public static class CarPaintLogic
 				MelonLogger.Warning("[CarPaintLogic->ChangeColor] Client disconnected while waiting for game ready.");
 				yield break;
 			}
+
 			yield return new WaitForSeconds(0.25f);
 		}
 
@@ -111,14 +116,12 @@ public static class CarPaintLogic
 
 		// Business Rule: Find car in paintshop position (position 5)
 		ModCar carInPaintshop = null;
-		foreach (ModCar car in ClientData.Instance.loadedCars.Values)
-		{
+		foreach (var car in ClientData.Instance.loadedCars.Values)
 			if (car != null && car.carPosition == 5)
 			{
 				carInPaintshop = car;
 				break;
 			}
-		}
 
 		// Business Rule: Validate car is in paintshop position
 		if (carInPaintshop == null)
@@ -141,7 +144,7 @@ public static class CarPaintLogic
 		{
 			// Business Logic: Convert ModColor to game color and apply
 			var gameColor = color.ToGame();
-			
+
 			// Security Rule: Validate converted color is not null
 			if (gameColor == null)
 			{
@@ -152,13 +155,13 @@ public static class CarPaintLogic
 			// Business Logic: Set selected color and update paintshop
 			GameData.Instance.paintshopManager.paintshopState.SetSelectedColor(gameColor);
 			GameData.Instance.paintshopManager.UpdateColor(gameColor);
-			
+
 			// Business Logic: Start paint effects coroutine
 			MainMod.StartCoroutine(GameData.Instance.paintshopManager.MakePaintEffects());
-			
+
 			MelonLogger.Msg($"[CarPaintLogic->ChangeColor] Car painted successfully with color: {gameColor}");
 		}
-		catch (System.Exception ex)
+		catch (Exception ex)
 		{
 			// Security Rule: Catch and log any exceptions during paint operation
 			MelonLogger.Error($"[CarPaintLogic->ChangeColor] Exception during paint operation: {ex.Message}\n{ex.StackTrace}");

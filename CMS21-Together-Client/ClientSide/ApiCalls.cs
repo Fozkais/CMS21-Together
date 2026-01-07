@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using MelonLoader;
-using UnityEngine;
 
-namespace CMS21Together.Shared;
+namespace CMS21Together.ClientSide;
 
 public static class ApiCalls
 {
 	private static readonly Assembly APIAssembly = LoadAssembly();
 	public static readonly bool useSteam = API_M4();
+
 	public static Dictionary<string, bool> API_M3()
 	{
 		var className = "TogetherModAPI.MainApi";
@@ -24,7 +22,7 @@ public static class ApiCalls
 
 		return null;
 	}
-	
+
 	public static bool API_M4()
 	{
 		var className = "TogetherModAPI.MainApi";
@@ -33,11 +31,9 @@ public static class ApiCalls
 		if (myClassType != null)
 		{
 			var apiMethod1 = myClassType.GetMethod("StaticMethod4", BindingFlags.Static | BindingFlags.Public);
-			if (apiMethod1 != null)
-			{
-				return (bool)apiMethod1.Invoke(null, null);
-			}
+			if (apiMethod1 != null) return (bool)apiMethod1.Invoke(null, null);
 		}
+
 		return true;
 	}
 
@@ -86,7 +82,7 @@ public static class ApiCalls
 			MelonLogger.Msg("Failed to load resource stream for 'TogetherModAPI.dll'.");
 			return null;
 		}
-		
+
 		var assemblyData = new byte[stream.Length];
 		stream.Read(assemblyData, 0, assemblyData.Length);
 

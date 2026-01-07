@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using CMS21Together.Shared;
+using CMS21_Together_Core;
+using CMS21Together.ClientSide;
 using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
@@ -9,65 +10,63 @@ namespace CMS21Together.ServerSide.Transports;
 
 public class SteamConnection
 {
-	 public readonly int id;
-	 public Connection connection;
-	 public bool isConnected;
+	public readonly int id;
+	public Connection connection;
+	public bool isConnected;
 
-	 public SteamConnection(int _id)
-	 {
-	     isConnected = false;
-	     id = _id;
-	 }
-	 public void Send(Packet packet, bool reliable=true)
-	 {
-	     SendType type = reliable ? SendType.Reliable : SendType.Unreliable;
+	public SteamConnection(int _id)
+	{
+		isConnected = false;
+		id = _id;
+	}
 
-	     byte[] data = packet.ToArray();
-	     IntPtr _data = SteamworksUtils.ConvertByteArrayToIntPtr(data);
+	public void Send(Packet packet, bool reliable = true)
+	{
+		var type = reliable ? SendType.Reliable : SendType.Unreliable;
 
-	     Result res = connection.SendMessage(_data, data.Length, type);
-	     if(res != Result.OK)
-	         MelonLogger.Error($"[SteamConnection->Send] Could not send packet:{res.ToString()}.");
+		var data = packet.ToArray();
+		var _data = SteamworksUtils.ConvertByteArrayToIntPtr(data);
 
-	     if (_data != IntPtr.Zero) Marshal.FreeHGlobal(_data);
-	 }
+		var res = connection.SendMessage(_data, data.Length, type);
+		if (res != Result.OK)
+			MelonLogger.Error($"[SteamConnection->Send] Could not send packet:{res.ToString()}.");
 
-	 public void Disconnect()
-	 {
-	     if (isConnected)
-	     {
-	         isConnected = false;
-	         connection.Close();
-	     }
-	 }
+		if (_data != IntPtr.Zero) Marshal.FreeHGlobal(_data);
+	}
 
-	 public void HandleData(byte[] data)
-	 {
-	     int _packetLenght = 0;
-	     Packet receivedData = new Packet();
+	public void Disconnect()
+	{
+		if (isConnected)
+		{
+			isConnected = false;
+			connection.Close();
+		}
+	}
 
-	     receivedData.SetBytes(data);
-	     if (receivedData.UnreadLength() >= 4)
-	     {
-	         _packetLenght = receivedData.ReadInt();
-	         if (_packetLenght <= 0)
-	         {
-	             return;
-	         }
-	     }
+	public void HandleData(byte[] data)
+	{
+		var _packetLenght = 0;
+		var receivedData = new Packet();
 
-	     while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
-	     {
-	         byte[] _packetBytes = receivedData.ReadBytes(_packetLenght);
-	         ThreadManager.ExecuteOnMainThread<Exception>(ex =>
-	         {
-	             using (Packet _packet = new Packet(_packetBytes))
-	             {
-	                 int _packetId = _packet.ReadInt();
-	                 if (Server.packetHandlers.ContainsKey(_packetId))
-	                     Server.packetHandlers[_packetId](id, _packet);
-	             }
-	         }, null);
-	     }
-	 }
+		receivedData.SetBytes(data);
+		if (receivedData.UnreadLength() >= 4)
+		{
+			_packetLenght = receivedData.ReadInt();
+			if (_packetLenght <= 0) return;
+		}
+
+		while (_packetLenght > 0 && _packetLenght <= receivedData.UnreadLength())
+		{
+			var _packetBytes = receivedData.ReadBytes(_packetLenght);
+			ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+			{
+				using (var _packet = new Packet(_packetBytes))
+				{
+					var _packetId = _packet.ReadInt();
+					if (Server.packetHandlers.ContainsKey(_packetId))
+						Server.packetHandlers[_packetId](id, _packet);
+				}
+			}, null);
+		}
+	}
 }

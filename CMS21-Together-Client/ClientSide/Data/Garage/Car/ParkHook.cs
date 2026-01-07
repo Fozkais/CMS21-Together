@@ -1,8 +1,7 @@
 ﻿using System.Collections;
+using CMS21_Together_Core.Data.Vanilla.Cars;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data.Vanilla.Cars;
 using HarmonyLib;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Garage.Car;
@@ -17,22 +16,23 @@ public static class ParkHook
 	public static void SaveCarInParkingHook(NewCarData carData, int index, GameDataManager __instance)
 	{
 		if (!Client.Instance.isConnected || !listen) { listen = true; return;}
-		
+
 		MelonCoroutines.Start(AddCarToParkHook(carData, index));
 	}*/
 
 	private static IEnumerator AddCarToParkHook(NewCarData carData, int index)
 	{
 		yield return new WaitForEndOfFrame();
-		int i = 0;
+		var i = 0;
 		while (i < 10)
 		{
 			yield return new WaitForSeconds(0.10f);
 			i++;
 		}
+
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		
+
 		ClientSend.AddCarToParkPacket(new ModNewCarData(carData), index);
 	}
 
@@ -62,7 +62,7 @@ public static class ParkHook
 		yield return new WaitForEndOfFrame();
 
 		listen = false;
-		
-		GameManager.Instance.GameDataManager.SaveCarInParking(default(NewCarData), index);
+
+		GameManager.Instance.GameDataManager.SaveCarInParking(default, index);
 	}
 }

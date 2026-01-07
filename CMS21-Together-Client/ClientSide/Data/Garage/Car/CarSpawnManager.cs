@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections;
 using CMS;
-using CMS.PartModules;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla.Cars;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
 using UnityEngine;
 
@@ -20,11 +16,11 @@ public static class CarSpawnManager
 
 		var car = new ModCar(carLoaderID, carData.carToLoad, carData.configVersion, placeNo, carData.customerCar);
 		ClientSend.LoadCarPacket(new ModNewCarData(carData, placeNo), carLoaderID);
-		
+
 		while (!GameData.Instance.carLoaders[carLoaderID].IsCarLoaded()) yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
-		
+
 		if (!ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
 		{
 			ClientData.Instance.loadedCars.Add(carLoaderID, car);
@@ -46,9 +42,9 @@ public static class CarSpawnManager
 		while (!carLoader.IsCarLoaded()) yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
 		yield return YieldInstructions.WaitForEndOfFrame;
-		
+
 		var car = new ModCar(carLoaderID, name, carLoader.ConfigVersion, carLoader.placeNo, carLoader.customerCar);
-		
+
 		if (carLoader.customerCar)
 			ClientSend.LoadJobCarPacket(car);
 
@@ -57,16 +53,16 @@ public static class CarSpawnManager
 		{
 			ClientData.Instance.loadedCars.Add(carLoaderID, car);
 			MelonCoroutines.Start(PartsReferencer.GetPartReferences(ClientData.Instance.loadedCars[carLoaderID]));
-			
+
 			while (!ClientData.Instance.loadedCars[carLoaderID].isReady)
 				yield return new WaitForSeconds(0.25f);
 			yield return new WaitForEndOfFrame();
 			carLoader.SaveCarToFile();
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForEndOfFrame();
-			NewCarData carData = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
-			ModNewCarData modCarData = new ModNewCarData(carData, carLoader.placeNo, carLoader.orderConnection);
-			
+			var carData = GameManager.Instance.GameDataManager.CurrentProfileData.carsInGarage[Helper.GetIndexFromCarLoaderName(carLoader.name)];
+			var modCarData = new ModNewCarData(carData, carLoader.placeNo, carLoader.orderConnection);
+
 			ClientSend.LoadCarPacket(modCarData, carLoaderID);
 		}
 	}
@@ -84,7 +80,7 @@ public static class CarSpawnManager
 		var carData = data.ToGame();
 
 		yield return new WaitForEndOfFrame();
-		
+
 		CarSpawnHooks.listenToSimpleLoad = false;
 		if (data.jobID != -1)
 			carLoader.SetCustomerCar(true, data.jobID);

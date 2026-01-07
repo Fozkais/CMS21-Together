@@ -37,14 +37,14 @@ public static class CarSyncHooks
 
 		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
 		MelonLogger.Msg($"Move {__instance.carToLoad} to {no}.");
-		if (! ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
+		if (!ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
 			return true;
 		if (no == -1)
 			return false;
-		
+
 		var car = ClientData.Instance.loadedCars[carLoaderID];
 		car.carPosition = no;
-		
+
 		ClientSend.CarPositionPacket(carLoaderID, no);
 		return true;
 	}

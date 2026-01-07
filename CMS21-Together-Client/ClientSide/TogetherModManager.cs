@@ -1,9 +1,9 @@
 ﻿using System.IO;
+using CMS21_Together_Core.Data;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.Shared.Data;
 using Newtonsoft.Json;
 
-namespace CMS21Together.Shared;
+namespace CMS21Together.ClientSide;
 
 public static class TogetherModManager
 {
@@ -30,17 +30,17 @@ public static class TogetherModManager
 		}
 		else
 		{
-			string serializedData = JsonConvert.SerializeObject(ClientData.UserData);
+			var serializedData = JsonConvert.SerializeObject(ClientData.UserData);
 			if (!Directory.Exists(ModFolderPath)) Directory.CreateDirectory(ModFolderPath);
 			File.WriteAllText(userDataPath, serializedData);
 		}
-		
+
 		return ClientData.UserData;
 	}
 
 	public static void SavePreferences()
 	{
-		string serializedPreferences = JsonConvert.SerializeObject(ClientData.UserData);
+		var serializedPreferences = JsonConvert.SerializeObject(ClientData.UserData);
 		if (!Directory.Exists(ModFolderPath)) Directory.CreateDirectory(ModFolderPath);
 
 		File.WriteAllText(userDataPath, serializedPreferences);

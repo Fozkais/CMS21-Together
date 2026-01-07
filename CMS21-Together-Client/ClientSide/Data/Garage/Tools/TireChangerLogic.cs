@@ -1,8 +1,7 @@
-﻿using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data.Vanilla;
+﻿using CMS21_Together_Core.Data.Vanilla;
+using CMS21Together.ClientSide.Data.Handle;
 using HarmonyLib;
-
-using TireC= TireChangerLogic;
+using TireC = TireChangerLogic;
 
 namespace CMS21Together.ClientSide.Data.Garage.Tools;
 

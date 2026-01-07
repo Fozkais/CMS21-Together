@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using CMS21Together.ClientSide.Data.Garage.Tools;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
 using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Data.Handle;
@@ -85,7 +84,7 @@ public class ClientSend
 		}
 	}
 
-	public static void StatPacket(int diff, ModStats type, bool initial=false)
+	public static void StatPacket(int diff, ModStats type, bool initial = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.stat))
 		{
@@ -96,7 +95,7 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
 	public static void ExpPacket(int exp, int level)
 	{
 		using (var packet = new Packet((int)PacketTypes.exp))
@@ -107,7 +106,7 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
 	public static void PointPacket(int availablePoints)
 	{
 		using (var packet = new Packet((int)PacketTypes.point))
@@ -318,7 +317,7 @@ public class ClientSend
 		}
 	}
 
-	public static void SendWheelBalancer(int action, GroupItem items=null)
+	public static void SendWheelBalancer(int action, GroupItem items = null)
 	{
 		using (var packet = new Packet((int)PacketTypes.wheelBalance))
 		{
@@ -335,7 +334,7 @@ public class ClientSend
 			packet.Write(ClientData.UserData.playerGUID);
 			packet.Write(id);
 			packet.Write(skill);
-			
+
 			SendData(packet);
 		}
 	}
@@ -346,8 +345,8 @@ public class ClientSend
 		{
 			packet.Write(action);
 			packet.Write(carLoaderID);
-			if(action == 1) packet.Write(modGroupItem);
-			
+			if (action == 1) packet.Write(modGroupItem);
+
 			SendData(packet);
 		}
 	}
@@ -358,7 +357,7 @@ public class ClientSend
 		{
 			packet.Write(val);
 			packet.Write(useAlt);
-			
+
 			SendData(packet);
 		}
 	}
@@ -370,7 +369,7 @@ public class ClientSend
 			packet.Write(engineGroupItem);
 			packet.Write(position);
 			packet.Write(useAlt);
-			
+
 			SendData(packet);
 		}
 	}
@@ -380,7 +379,7 @@ public class ClientSend
 		using (var packet = new Packet((int)PacketTypes.engineStandTakeOff))
 		{
 			packet.Write(useAlt);
-			
+
 			SendData(packet);
 		}
 	}
@@ -412,7 +411,7 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
 	public static void ResyncTools()
 	{
 		using (var packet = new Packet((int)PacketTypes.resync))
@@ -421,7 +420,7 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
-	
+
 	public static void ResyncUpgrade()
 	{
 		using (var packet = new Packet((int)PacketTypes.resync))
@@ -431,7 +430,7 @@ public class ClientSend
 		}
 	}
 
-	public static void CarWashPacket(int carLoaderID, bool interior=false)
+	public static void CarWashPacket(int carLoaderID, bool interior = false)
 	{
 		using (var packet = new Packet((int)PacketTypes.carWash))
 		{
@@ -459,7 +458,7 @@ public class ClientSend
 		}
 	}
 
-	public static void RepairPart(ModPartInfo modPartInfo,  bool isBody, bool success)
+	public static void RepairPart(ModPartInfo modPartInfo, bool isBody, bool success)
 	{
 		using (var packet = new Packet((int)PacketTypes.repairPart))
 		{
@@ -480,6 +479,7 @@ public class ClientSend
 			SendData(packet);
 		}
 	}
+
 	public static void ResyncPark()
 	{
 		using (var packet = new Packet((int)PacketTypes.resync))

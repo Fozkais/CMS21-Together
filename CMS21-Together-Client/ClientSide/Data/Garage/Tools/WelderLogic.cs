@@ -2,7 +2,6 @@
 using CMS;
 using CMS21Together.ClientSide.Data.Handle;
 using HarmonyLib;
-using MelonLoader;
 using UnityEngine;
 using WelderL = WelderLogic;
 
@@ -12,14 +11,18 @@ namespace CMS21Together.ClientSide.Data.Garage.Tools;
 public static class WelderLogic
 {
 	public static bool listen = true;
-	
+
 	[HarmonyPatch(typeof(WelderL), nameof(WelderL.DoWorkAnim))]
 	[HarmonyPrefix]
 	public static void DoWorkAnimFix(CarLoader carLoader, WelderL __instance)
 	{
-		if (!Client.Instance.isConnected || !listen) { listen = true; return; }
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
+			return;
+		}
 
-		int carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
+		var carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
 
 		ClientSend.WelderPacket(carLoaderID);
 	}
@@ -31,35 +34,36 @@ public static class WelderLogic
 		yield return new WaitForEndOfFrame();
 
 		listen = false;
-		WelderL l = GameData.Instance.welderLogic;
-		CarLoader carLoader = GameData.Instance.carLoaders[carLoaderID];
+		var l = GameData.Instance.welderLogic;
+		var carLoader = GameData.Instance.carLoaders[carLoaderID];
 
 		StartAnimFix(carLoader, l);
 		carLoader.TweenCondition("body", 1f, l.effectTime);
 		carLoader.SetDent(carLoader.GetCarPart("body"), 1f);
 		carLoader.SetDent(carLoader.GetCarPart("details"), 1f);
 		yield return FinishAnimFix(carLoader, l);
-		l.EnableInteractiveObjects(true);
+		l.EnableInteractiveObjects();
 	}
 
 	private static void StartAnimFix(CarLoader carLoader, WelderL l)
 	{
 		l.interactiveObject.enabled = false;
-		carLoader.CloseCar(true);
+		carLoader.CloseCar();
 		carLoader.EnableIO(false);
-		CarLifter connectedLifter = carLoader.GetConnectedLifter();
+		var connectedLifter = carLoader.GetConnectedLifter();
 		if (connectedLifter != null)
 		{
 			connectedLifter.ButtonDown.enabled = false;
 			connectedLifter.ButtonUp.enabled = false;
 		}
+
 		l.carCollider = carLoader.GetModel().transform.Find("body");
-		ParticleSystem.MainModule main = l.particles.main;
+		var main = l.particles.main;
 		main.duration = l.effectTime;
-		float num = 1f / l.carCollider.lossyScale.x;
+		var num = 1f / l.carCollider.lossyScale.x;
 		main.startSize = 0.02f * num;
 		l.particles.limitVelocityOverLifetime.limit = 3f * num;
-		ParticleSystem.VelocityOverLifetimeModule velocityOverLifetime = l.particles.velocityOverLifetime;
+		var velocityOverLifetime = l.particles.velocityOverLifetime;
 		velocityOverLifetime.x = new ParticleSystem.MinMaxCurve(num, -num);
 		velocityOverLifetime.y = new ParticleSystem.MinMaxCurve(1.5f * num, 0f);
 		velocityOverLifetime.z = new ParticleSystem.MinMaxCurve(num, -num);
@@ -74,19 +78,17 @@ public static class WelderLogic
 
 	private static IEnumerator FinishAnimFix(CarLoader carLoader, WelderL l)
 	{
-		while (l.particles.IsAlive())
-		{
-			yield return YieldInstructions.WaitForEndOfFrame;
-		}
+		while (l.particles.IsAlive()) yield return YieldInstructions.WaitForEndOfFrame;
 		l.shapeModule.meshRenderer = null;
 		yield return YieldInstructions.WaitForEndOfFrame;
 		carLoader.EnableIO(true);
-		CarLifter connectedLifter = carLoader.GetConnectedLifter();
+		var connectedLifter = carLoader.GetConnectedLifter();
 		if (connectedLifter != null)
 		{
 			connectedLifter.ButtonDown.enabled = true;
 			connectedLifter.ButtonUp.enabled = true;
 		}
+
 		l.interactiveObject.enabled = true;
 		yield break;
 	}

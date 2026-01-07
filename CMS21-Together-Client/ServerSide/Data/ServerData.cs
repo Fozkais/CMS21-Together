@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
 using MelonLoader;
 
 namespace CMS21Together.ServerSide.Data;
@@ -15,17 +12,16 @@ namespace CMS21Together.ServerSide.Data;
 public class ServerData
 {
 	public static ServerData Instance;
-	public Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
-	
+	public Dictionary<int, ModNewCarData> CarOnPark = new();
+
 	public Dictionary<int, ModCarInfo> CarPartInfo = new();
 	public Dictionary<int, ModNewCarData> CarSpawnDatas = new();
-	public Dictionary<int, ModNewCarData> CarOnPark = new();
-	public ModEngineStand engineStand = new(null);
-	public ModEngineStand engineStand2 = new(null);
-	public float engineStandAngle;
-	public float engineStand2Angle;
 
 	public Dictionary<int, UserData> connectedClients = new();
+	public ModEngineStand engineStand = new(null);
+	public ModEngineStand engineStand2 = new(null);
+	public float engineStand2Angle;
+	public float engineStandAngle;
 
 	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
 	public List<ModGroupItem> groupItems = new();
@@ -37,6 +33,7 @@ public class ServerData
 
 	public GarageTool springClamp = new();
 	public GarageTool tireChanger = new();
+	public Dictionary<ModIOSpecialType, ModCarPlace> toolsPosition = new();
 	public GarageTool wheelBalancer = new();
 
 	public void SetGarageUpgrade(GarageUpgrade upgrade)
@@ -60,7 +57,7 @@ public class ServerData
 			MelonLogger.Msg("received a enginestand part.");
 			return;
 		}
-		
+
 		if (!Instance.CarPartInfo.ContainsKey(carLoaderID))
 			Instance.CarPartInfo.Add(carLoaderID, new ModCarInfo());
 
@@ -138,7 +135,7 @@ public class ServerData
 		if (Instance.CarPartInfo.ContainsKey(carData.carLoaderID)) return;
 
 		Instance.CarPartInfo[carData.carLoaderID] = new ModCarInfo();
-		ModCarInfo data = Instance.CarPartInfo[carData.carLoaderID];
+		var data = Instance.CarPartInfo[carData.carLoaderID];
 
 		data.carToLoad = carData.carID;
 		data.carLoaderID = carData.carLoaderID;
@@ -267,29 +264,22 @@ public class ServerData
 
 	public void SetCarColor(ModColor color)
 	{
-		foreach (ModCarInfo car in CarPartInfo.Values)
-		{
+		foreach (var car in CarPartInfo.Values)
 			if (car.placeNo == 5)
-			{
 				CarSpawnDatas[car.carLoaderID].color = color;
-			}
-		}
 	}
 
 	public void UpdatePartInfo(ModPartInfo info, bool isBody, bool success)
 	{
 		if (items.Any(i => i.UID == info.Item.UID))
 		{
-			ModItem item = items.First(i => i.UID == info.Item.UID);
-			item.Condition = (success ? info.SuccessCondition : info.FailCondition);
+			var item = items.First(i => i.UID == info.Item.UID);
+			item.Condition = success ? info.SuccessCondition : info.FailCondition;
 			item.RepairAmount++;
-			if (isBody)
-			{
-				item.Dent = (success ? info.DentSuccessCondition : info.DentFailCondition);
-			}
+			if (isBody) item.Dent = success ? info.DentSuccessCondition : info.DentFailCondition;
 		}
 	}
-	
+
 	public void SetCarWash(int loaderID, bool interior)
 	{
 		if (!CarPartInfo.TryGetValue(loaderID, out var car))
@@ -297,41 +287,39 @@ public class ServerData
 
 		if (interior)
 		{
-			foreach (KeyValuePair<int, ModCarPart> part in car.BodyPartsReferences)
-			{
+			foreach (var part in car.BodyPartsReferences)
 				if (!part.Value.unmounted)
 				{
-						part.Value.washFactor = 1;
-						part.Value.Dust = 0;
-					
+					part.Value.washFactor = 1;
+					part.Value.Dust = 0;
 				}
-			}
-			ModCarPart detailsPart = GetCarPart(loaderID, "details");
+
+			var detailsPart = GetCarPart(loaderID, "details");
 			if (detailsPart != null)
 			{
 				detailsPart.Dust = 0;
-				ModCarPart details2 = GetCarPart(loaderID, "details2");
+				var details2 = GetCarPart(loaderID, "details2");
 				if (details2 != null) details2.Dust = 0;
-				ModCarPart details3 = GetCarPart(loaderID, "details3");
+				var details3 = GetCarPart(loaderID, "details3");
 				if (details3 != null) details3.Dust = 0;
 			}
 		}
 		else
 		{
 			string[] interiorParts = { "benchFront", "bench", "steeringWheel", "seatLeft", "seatRight", "details", "details2", "details3" };
-			foreach (string partName in interiorParts)
+			foreach (var partName in interiorParts)
 			{
-				ModCarPart part = GetCarPart(loaderID, partName);
+				var part = GetCarPart(loaderID, partName);
 				if (part != null && !part.unmounted)
 				{
 					part.condition = 1;
 					part.Dust = 0;
 					if (partName == "details")
 					{
-						ModCarPart details2 = GetCarPart(loaderID, "details2");
+						var details2 = GetCarPart(loaderID, "details2");
 						if (details2 != null) details2.Dust = 0;
 
-						ModCarPart details3 = GetCarPart(loaderID, "details3");
+						var details3 = GetCarPart(loaderID, "details3");
 						if (details3 != null) details3.Dust = 0;
 					}
 				}
@@ -349,11 +337,11 @@ public class ServerData
 	{
 		if (!CarPartInfo.ContainsKey(loaderID))
 			return;
-		
-		ModCarPart part = GetCarPart(loaderID, "body");
+
+		var part = GetCarPart(loaderID, "body");
 		part.condition = 1;
 		part.dent = 1;
-		ModCarPart part2 = GetCarPart(loaderID, "details");
+		var part2 = GetCarPart(loaderID, "details");
 		part2.dent = 1;
 	}
 
@@ -369,7 +357,6 @@ public class ServerData
 	}
 }
 
-
 public class GarageTool
 {
 	public bool additionalState;
@@ -379,14 +366,14 @@ public class GarageTool
 
 public class ModCarInfo
 {
+	public Dictionary<int, ModCarPart> BodyPartsReferences = new();
 	public int carLoaderID;
 	public string carToLoad;
 	public int configVersion;
 	public bool customerCar;
-	public int placeNo;
-	public Dictionary<int, ModCarPart> BodyPartsReferences = new();
 	public Dictionary<int, ModPartScript> DriveshaftPartsReferences = new();
 	public Dictionary<int, ModPartScript> EnginePartsReferences = new();
 	public Dictionary<int, Dictionary<int, ModPartScript>> OtherPartsReferences = new();
+	public int placeNo;
 	public Dictionary<int, Dictionary<int, ModPartScript>> SuspensionPartsReferences = new();
 }

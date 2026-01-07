@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
 using CMS21Together.ClientSide.Data.Garage.Campaign;
 using CMS21Together.ClientSide.Data.Garage.Car;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using MelonLoader;
 using UnityEngine;
 
@@ -19,22 +18,26 @@ public class ClientData
 	public static ClientData Instance;
 	public static UserData UserData;
 	public static bool GameReady;
-	private bool initRoutine;
+
+	private static float lastCarCheckTime;
+	private static readonly float carCheckInterval = 0.5f; // Check every 0.5 seconds
 
 	public Dictionary<int, UserData> connectedClients = new();
-	public Gamemode gamemode;
-	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
-	public Dictionary<int, ModCar> loadedCars = new();
 	public ModEngineStand engineStand;
 	public ModEngineStand engineStand2;
+	public Gamemode gamemode;
+	public Dictionary<string, GarageUpgrade> garageUpgrades = new();
+	private bool initRoutine;
+	public Dictionary<int, ModCar> loadedCars = new();
 	public GameObject playerPrefab;
-	public int scrap, money ,exp, level;
+	public int scrap, money, exp, level;
+
 	public ClientData()
 	{
 		GameReady = false;
 		initRoutine = false;
 		GameData.Instance = null;
-		
+
 		Player.Inventory.Reset();
 		CarSpawnHooks.Reset();
 		JobManager.Reset();
@@ -43,17 +46,14 @@ public class ClientData
 		Garage.Tools.ToolsMoveManager.Reset();
 		Garage.Tools.CarWashLogic.Reset();
 		CarPaintLogic.Reset();
-		engineStand = new(null);
-		engineStand2 = new(null);
+		engineStand = new ModEngineStand(null);
+		engineStand2 = new ModEngineStand(null);
 		garageUpgrades = new Dictionary<string, GarageUpgrade>();
 	}
 
-	private static float lastCarCheckTime = 0f;
-	private static readonly float carCheckInterval = 0.5f; // Check every 0.5 seconds
-
 	public void UpdateClient()
 	{
-		if (GameData.isReady == false && !initRoutine)
+		if (!GameData.isReady && !initRoutine)
 			MelonCoroutines.Start(InitializeGameData());
 
 		if (GameReady)
@@ -61,7 +61,7 @@ public class ClientData
 			Movement.SendPosition();
 			Movement.CheckForInactivity();
 			Rotation.SendRotation();
-			
+
 			// Business Logic: Periodically check if local player entered/exited a car
 			if (Time.time - lastCarCheckTime >= carCheckInterval)
 			{
@@ -76,7 +76,7 @@ public class ClientData
 		initRoutine = true;
 		while (SceneManager.CurrentScene() != GameScene.garage)
 			yield return new WaitForEndOfFrame();
-		
+
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		GameData.Instance = new GameData();
@@ -91,7 +91,7 @@ public class ClientData
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForEndOfFrame();
-			
+
 			// Business Rule: Verify prefab was loaded successfully
 			if (playerPrefab == null)
 			{
@@ -105,7 +105,7 @@ public class ClientData
 		yield return new WaitForSeconds(2);
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
-		
+
 		// Business Rule: Only set GameReady to true if playerPrefab is loaded
 		if (playerPrefab != null)
 		{
@@ -114,16 +114,80 @@ public class ClientData
 			if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
 				SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 			foreach (var client in connectedClients)
-			{
 				if (client.Value.scene == GameScene.garage)
-					client.Value.SpawnPlayer();
-			}
+					DoSpawnPlayer(client.Value);
 			MelonLogger.Msg("Game is ready.");
 		}
 		else
 		{
 			MelonLogger.Error("[ClientData->InitializeGameData] Cannot set GameReady: playerPrefab is still null!");
 			initRoutine = false;
+		}
+	}
+	
+	public void DoDestroyPlayer(UserData player)
+	{
+		if (player.userObject == null) return;
+		Object.Destroy(player.userObject);
+		player.userObject = null;
+	}
+
+	public void DoSpawnPlayer(UserData player)
+	{
+		if (player.userObject != null)
+		{
+			MelonLogger.Warning($"[UserData->SpawnPlayer] Player {player.username} (ID: {player.playerID}) already spawned. Skipping duplicate spawn.");
+			return;
+		}
+
+		if (ClientData.Instance.playerPrefab == null)
+		{
+			MelonLogger.Error("[CMS21-Together] Cannot spawn player: playerPrefab is null.");
+			return;
+		}
+		if (player.playerID == ClientData.UserData.playerID)
+		{
+			if (GameData.Instance.localPlayer == null)
+			{
+				MelonLogger.Error("[CMS21-Together] Cannot spawn local player: localPlayer is null.");
+				return;
+			}
+			player.userObject = GameData.Instance.localPlayer;
+		}
+		else
+		{
+			// Security Rule: Validate GameData.Instance and localPlayer before accessing
+			if (GameData.Instance == null || GameData.Instance.localPlayer == null)
+			{
+				MelonLogger.Warning($"[UserData->SpawnPlayer] GameData.Instance or localPlayer is null. Cannot spawn player {player.username}. Will retry later.");
+				return;
+			}
+
+			// Security Rule: Validate localPlayer has Collider component
+			var localPlayerCollider = GameData.Instance.localPlayer.GetComponent<Collider>();
+			if (localPlayerCollider == null)
+			{
+				MelonLogger.Warning($"[UserData->SpawnPlayer] Local player has no Collider component. Cannot set up collision ignore for {player.username}.");
+			}
+
+			// Business Logic: Instantiate player prefab at correct position and rotation
+			player.userObject = Object.Instantiate(ClientData.Instance.playerPrefab, player.position.toVector3(), player.rotation.toQuaternion());
+			player.userObject.AddComponent<InfoBillboard>();
+			player.userAnimator = player.userObject.GetComponent<Animator>();
+			player.userObject.name = player.username;
+			
+			// Security Rule: Only ignore collision if both colliders exist
+			var userObjectCollider = player.userObject.GetComponent<Collider>();
+			if (localPlayerCollider != null && userObjectCollider != null)
+			{
+				Physics.IgnoreCollision(localPlayerCollider, userObjectCollider);
+			}
+			else
+			{
+				MelonLogger.Warning($"[UserData->SpawnPlayer] One or both players missing Collider. Collision ignore not set for {player.username}.");
+			}
+			
+			MelonLogger.Msg($"[UserData->SpawnPlayer] Spawned player {player.username} (ID: {player.playerID}) at position {player.position.toVector3()}");
 		}
 	}
 
@@ -133,7 +197,7 @@ public class ClientData
 
 		if (playerBundle)
 		{
-			GameObject player = playerBundle.LoadAsset<GameObject>("playerModel");
+			var player = playerBundle.LoadAsset<GameObject>("playerModel");
 			if (player == null)
 			{
 				MelonLogger.Warning("Impossible de charger l'AssetBundle !");
@@ -143,16 +207,10 @@ public class ClientData
 			var playerInstance = Object.Instantiate(player);
 
 			Material material;
-			Texture baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
-			if (baseTexture != null)
-			{
-				baseTexture.filterMode = FilterMode.Bilinear;
-			}
-			Texture normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
-			if (normalTexture != null)
-			{
-				normalTexture.filterMode = FilterMode.Bilinear;
-			}
+			var baseTexture = playerBundle.LoadAsset<Texture>("tex_base");
+			if (baseTexture != null) baseTexture.filterMode = FilterMode.Bilinear;
+			var normalTexture = playerBundle.LoadAsset<Texture>("tex_normal");
+			if (normalTexture != null) normalTexture.filterMode = FilterMode.Bilinear;
 
 			material = new Material(Shader.Find("HDRP/Unlit"));
 			if (baseTexture != null)
@@ -161,10 +219,7 @@ public class ClientData
 				material.SetTexture("_BumpMap", normalTexture);
 
 			var skinnedMesh = playerInstance.GetComponentInChildren<SkinnedMeshRenderer>();
-			if (skinnedMesh != null)
-			{
-				skinnedMesh.material = material;
-			}
+			if (skinnedMesh != null) skinnedMesh.material = material;
 
 			playerInstance.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
 			playerInstance.transform.position = new Vector3(0, -10, 0);
@@ -183,7 +238,7 @@ public class ClientData
 	{
 		while (!GameReady)
 			yield return new WaitForSeconds(0.1f);
-		
+
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
@@ -207,17 +262,17 @@ public class ClientData
 			UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
 			GlobalData.PlayerMoney = _money;
 			UIManager.Get().StatsContainer.Refresh(StatType.Money, true);
-			
+
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 			if (skills != null)
 			{
 				GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
-				foreach (KeyValuePair<string, List<bool>> skill in skills)
+				foreach (var skill in skills)
 				{
-					int lvl = 0;
-					foreach (bool unlocked in skill.Value)
+					var lvl = 0;
+					foreach (var unlocked in skill.Value)
 					{
-						if(unlocked)
+						if (unlocked)
 							GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
 						lvl++;
 					}
@@ -227,7 +282,7 @@ public class ClientData
 
 		GlobalData.MissionsFinished = missionFinished;
 		GlobalData.IsStoryMissionInProgress = missionInProgress;
-		
+
 		if (pos != Vector3.zero)
 			GameData.Instance.localPlayer.transform.position = pos;
 		if (rot != Quaternion.identity)
@@ -239,7 +294,7 @@ public class ClientData
 			yield return new WaitForSeconds(0.25f);
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.5f);
-		
+
 		ClientSend.ResyncEngineStandPacket(true);
 	}
 }

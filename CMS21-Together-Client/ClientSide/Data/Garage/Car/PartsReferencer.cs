@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using CMS21Together.Shared.Data;
+using CMS21_Together_Core.Data;
 using MelonLoader;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ public static class PartsReferencer
 	public static IEnumerator GetPartReferences(ModCar car)
 	{
 		if (car.needResync) yield break;
-		
+
 		while (!GameData.isReady)
 			yield return new WaitForSeconds(0.25f);
 

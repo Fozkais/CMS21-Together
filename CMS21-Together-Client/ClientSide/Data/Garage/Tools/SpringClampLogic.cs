@@ -1,8 +1,7 @@
 ﻿using System.Collections;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using UnityEngine;
 

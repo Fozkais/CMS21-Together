@@ -1,9 +1,9 @@
 ﻿using System.Collections;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -14,33 +14,39 @@ namespace CMS21Together.ClientSide.Data.Garage.Car;
 public static class PartUpdateHooks
 {
 	public static bool listen = true;
-	
+
 	[HarmonyPatch(typeof(FluidsData), nameof(FluidsData.SetLevel))]
 	[HarmonyPostfix]
 	public static void SetLevelAltHook(float level, CarFluidType carFluidType, int id, FluidsData __instance)
 	{
-		if (!Client.Instance.isConnected || !listen) {listen = true; return;}
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
+			return;
+		}
 
 		if (carFluidType == CarFluidType.EngineOil && __instance.Oil.CarFluid != null)
 		{
-			int carLoaderID = __instance.Oil.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			var carLoaderID = __instance.Oil.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
 			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance.Oil));
 		}
-
 	}
-	
+
 	[HarmonyPatch(typeof(FluidData), nameof(FluidData.SetLevel))]
 	[HarmonyPostfix]
 	public static void SetLevelHook(float level, FluidData __instance)
 	{
-		if (!Client.Instance.isConnected || !listen) {listen = true; return;}
+		if (!Client.Instance.isConnected || !listen)
+		{
+			listen = true;
+			return;
+		}
 
 		if (__instance != null && __instance.CarFluid != null)
 		{
-			int carLoaderID = __instance.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			var carLoaderID = __instance.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
 			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance));
 		}
-
 	}
 
 	[HarmonyPatch(typeof(PartScript), nameof(PartScript.DoMount))]
@@ -95,15 +101,12 @@ public static class PartUpdateHooks
 			else
 				stand = ClientData.Instance.engineStand;
 			foreach (var kvp in stand.partReferences)
-			{
 				if (kvp.Value == partScript)
 				{
 					MelonLogger.Msg($"Sending part:{partScript.id} , {kvp.Key}.");
 					MelonCoroutines.Start(SendPartUpdate(null, EngineStand.useAlt ? -2 : -1, kvp.Key, null, ModPartType.engineStand));
 					break;
 				}
-			}
-			
 		}
 	}
 
@@ -112,7 +115,7 @@ public static class PartUpdateHooks
 	public static void HideHook(PartScript __instance) // best way i've found to detect when a partScript is unmounted
 	{
 		if (!Client.Instance.isConnected) return;
-		
+
 		if (__instance.GetComponentInParent<CarLoaderOnCar>())
 		{
 			var carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
@@ -124,14 +127,11 @@ public static class PartUpdateHooks
 		else // engine stand
 		{
 			foreach (var kvp in ClientData.Instance.engineStand.partReferences)
-			{
 				if (kvp.Value == __instance)
 				{
 					MelonCoroutines.Start(SendPartUpdate(null, -1, kvp.Key, null, ModPartType.engineStand));
 					break;
 				}
-			}
-
 		}
 	}
 

@@ -13,7 +13,6 @@ public static class CarSyncManager
 		yield return new WaitForEndOfFrame();
 
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
-		{
 			if (placeNo != car.carPosition)
 			{
 				MelonLogger.Msg($"Change {car.carID} position to {placeNo}.");
@@ -21,7 +20,6 @@ public static class CarSyncManager
 				CarSyncHooks.listenToChangePosition = false;
 				GameData.Instance.carLoaders[carLoaderID].ChangePosition(placeNo);
 			}
-		}
 	}
 
 	public static IEnumerator DeleteCar(int carLoaderID)

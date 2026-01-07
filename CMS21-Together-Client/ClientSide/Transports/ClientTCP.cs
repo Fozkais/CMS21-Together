@@ -1,11 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using CMS21_Together_Core;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.NewUI;
-using CMS21Together.Shared;
 using MelonLoader;
 
 namespace CMS21Together.ClientSide.Transports;
@@ -24,27 +25,28 @@ public class ClientTCP
 	{
 		try
 		{
-			if (!System.Net.IPAddress.TryParse(ip, out _))
+			if (!IPAddress.TryParse(ip, out _))
 			{
 				Client.Instance.OnDisconnectedInvoke();
 				UICustomPanel.CreateInfoPanel("Invalid IP address.");
 				MelonLogger.Error($"[ClientTCP->Connect] Invalid IP address: {ip}");
 				return;
 			}
-			
+
 			using (var testSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
 			{
 				var result = testSocket.BeginConnect(ip, MainMod.PORT, null, null);
-				bool success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+				var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
 				if (!success || !testSocket.Connected)
 				{
 					Client.Instance.OnDisconnectedInvoke();
 					MelonLogger.Error($"[ClientTCP->Connect] Cannot reach {ip}:{MainMod.PORT}");
 					return;
 				}
+
 				testSocket.Close();
 			}
-			
+
 			socket = new TcpClient
 			{
 				ReceiveBufferSize = dataBufferSize,
@@ -52,8 +54,8 @@ public class ClientTCP
 			};
 			receiveBuffer = new byte[dataBufferSize];
 
-			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Trying to connect to server...");
-			
+			MelonLogger.Msg("[ClientTCP->ConnectCallback] Trying to connect to server...");
+
 			if (string.IsNullOrEmpty(ip))
 				socket.BeginConnect(ClientData.UserData.ip, MainMod.PORT, ConnectCallback, socket);
 			else
@@ -82,7 +84,7 @@ public class ClientTCP
 			receivedData = new Packet();
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 			ClientSend.HandShake();
-			MelonLogger.Msg($"[ClientTCP->ConnectCallback] Connection etablished with server");
+			MelonLogger.Msg("[ClientTCP->ConnectCallback] Connection etablished with server");
 		}
 		catch (Exception e)
 		{
@@ -107,6 +109,7 @@ public class ClientTCP
 					Client.Instance.Disconnect(true);
 					return;
 				}
+
 				Thread.Sleep(100);
 				stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 				return;
@@ -116,7 +119,7 @@ public class ClientTCP
 			Array.Copy(receiveBuffer, data, byteLength);
 			receivedData.Reset(HandleData(data));
 			Array.Clear(receiveBuffer, 0, receiveBuffer.Length);
-			
+
 			stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 		}
 		catch (IOException ioEx)
@@ -141,7 +144,7 @@ public class ClientTCP
 			packetLenght = receivedData.ReadInt();
 			if (packetLenght <= 0) return true;
 		}
-		
+
 		while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
 		{
 			var _packetBytes = receivedData.ReadBytes(packetLenght);
@@ -174,8 +177,7 @@ public class ClientTCP
 	public void Send(Packet packet)
 	{
 		if (socket != null)
-		{
-			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), (ar) =>
+			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), ar =>
 			{
 				try
 				{
@@ -186,7 +188,6 @@ public class ClientTCP
 					MelonLogger.Error($"[TCP]Error while writing data : {ex.Message}");
 				}
 			}, null);
-		}
 	}
 
 	public void Disconnect()

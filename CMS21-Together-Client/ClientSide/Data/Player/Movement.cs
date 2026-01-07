@@ -1,5 +1,5 @@
-﻿using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.Shared.Data;
+﻿using CMS21_Together_Core.Data;
+using CMS21Together.ClientSide.Data.Handle;
 using MelonLoader;
 using UnityEngine;
 
@@ -18,7 +18,7 @@ public static class Movement
 		var player = ClientData.Instance.connectedClients[id];
 
 		if (player.scene != ClientData.UserData.scene) return;
-		
+
 		// Business Logic: If player is in car, hide the player object instead of updating position
 		if (player.isInCar)
 		{
@@ -27,22 +27,23 @@ public static class Movement
 				player.userObject.SetActive(false);
 				MelonLogger.Msg($"[Movement->UpdatePosition] Hiding player {player.username} (ID: {id}) - player is in car {player.carLoaderID}");
 			}
+
 			return;
 		}
-		
+
 		// Business Logic: If player exits car, show the player object
 		if (!player.isInCar && player.userObject != null && !player.userObject.activeSelf)
 		{
 			player.userObject.SetActive(true);
 			MelonLogger.Msg($"[Movement->UpdatePosition] Showing player {player.username} (ID: {id}) - player exited car");
 		}
-		
-		if (player.userObject == null) player.SpawnPlayer();
+
+		if (player.userObject == null) ClientData.Instance.DoSpawnPlayer(player);
 
 		if (player.userObject)
 		{
-			Vector3 targetPos = position.toVector3();
-			Vector3 curPos = player.userObject.transform.position;
+			var targetPos = position.toVector3();
+			var curPos = player.userObject.transform.position;
 
 			if (player.lastPosition != null)
 			{
@@ -57,7 +58,10 @@ public static class Movement
 				player.userObject.transform.position = Vector3.Lerp(curPos, targetPos, Time.deltaTime * 15f);
 			}
 			else
+			{
 				player.userObject.transform.position = targetPos;
+			}
+
 			player.lastPosition = position;
 		}
 	}
@@ -70,21 +74,21 @@ public static class Movement
 		animator.SetFloat("Vertical", Mathf.Lerp(animator.GetFloat("Vertical"), verticalSpeed, Time.deltaTime * 10f));
 		animator.SetFloat("Horizontal", Mathf.Lerp(animator.GetFloat("Horizontal"), horizontalSpeed, Time.deltaTime * 10f));
 	}
-	
+
 	public static void CheckForInactivity()
 	{
 		foreach (var client in ClientData.Instance.connectedClients.Values)
 		{
 			if (client == null) continue;
 			if (client.userObject == null || client.userAnimator == null) continue;
-			
-			float elapsedTime = Time.time - client.lastUpdateTime;
-			
-			if (elapsedTime > 0.15f) 
+
+			var elapsedTime = Time.time - client.lastUpdateTime;
+
+			if (elapsedTime > 0.15f)
 			{
 				client.userAnimator.SetFloat("Vertical", Mathf.Lerp(client.userAnimator.GetFloat("Vertical"), 0, Time.deltaTime * 10f));
 				client.userAnimator.SetFloat("Horizontal", Mathf.Lerp(client.userAnimator.GetFloat("Horizontal"), 0, Time.deltaTime * 10f));
-				
+
 				var currentRotation = client.userObject.transform.rotation;
 				var targetRotation = client.userObject.transform.rotation;
 				client.userObject.transform.rotation = Quaternion.Slerp(currentRotation, targetRotation, Time.deltaTime * 5f);

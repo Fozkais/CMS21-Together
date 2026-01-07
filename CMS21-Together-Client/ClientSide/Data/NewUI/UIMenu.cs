@@ -1,5 +1,4 @@
-﻿using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
+﻿using CMS21_Together_Core.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,7 +7,7 @@ namespace CMS21Together.ClientSide.Data.NewUI;
 public static class UIMenu
 {
 	public static int save_btn_index;
-	
+
 	public static void SetupMainMenu()
 	{
 		var playRect = UICore.templateButton.GetComponent<RectTransform>();
@@ -17,9 +16,9 @@ public static class UIMenu
 		playRect.pivot = new Vector2(1f, 0.5f);
 		playRect.sizeDelta = new Vector2(180, 44);
 		playRect.anchoredPosition = new Vector2(64, 40);
-		
+
 		var multiBtn = UIElements.CreateButton(UICore.templateButton.transform.parent,
-			"",  () => { UICore.ShowPanel(UICore.MP_Main.gameObject); });
+			"", () => { UICore.ShowPanel(UICore.MP_Main.gameObject); });
 
 		var multiRect = multiBtn.GetComponent<RectTransform>();
 		multiRect.anchorMin = new Vector2(0.5f, 0.5f);
@@ -50,7 +49,7 @@ public static class UIMenu
 		hostRect.pivot = new Vector2(0f, 0.5f);
 		hostRect.sizeDelta = new Vector2(233, 44);
 		hostRect.anchoredPosition = new Vector2(0, 344);
-		
+
 		var joinBtn = UIElements.CreateButton(UICore.MP_Main.transform,
 			"Join a game", () => { UICore.ShowCustomPanel(UICore.MP_Host.transform, UICustomPanelType.JoinMenu, null, 0); });
 		var joinRect = joinBtn.GetComponent<RectTransform>();
@@ -59,7 +58,7 @@ public static class UIMenu
 		joinRect.pivot = new Vector2(0f, 0.5f);
 		joinRect.sizeDelta = new Vector2(233, 45);
 		joinRect.anchoredPosition = new Vector2(0, 295);
-		
+
 		var typeBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Network type: " + ClientData.UserData.selectedNetworkType, null);
 		var typeRect = typeBtn.GetComponent<RectTransform>();
 		typeRect.anchorMin = new Vector2(0f, 0.5f);
@@ -70,7 +69,7 @@ public static class UIMenu
 		typeBtn.OnClick.AddListener(UIActions.ChangeNetworkType(typeBtn));
 		if (ApiCalls.useSteam)
 			typeBtn.SetLocked(false);
-		
+
 		var settingBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Mod settings", null);
 		var settingRect = settingBtn.GetComponent<RectTransform>();
 		settingRect.anchorMin = new Vector2(0, 0.5f);
@@ -78,7 +77,7 @@ public static class UIMenu
 		settingRect.pivot = new Vector2(0f, 0.5f);
 		settingRect.sizeDelta = new Vector2(233, 44);
 		settingRect.anchoredPosition = new Vector2(0, 148);
-		
+
 		var backBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Back to menu", () => UICore.ShowPanel(UICore.V_Main.gameObject));
 		var backRect = backBtn.GetComponent<RectTransform>();
 		backRect.anchorMin = new Vector2(0f, 0.5f);
@@ -92,10 +91,9 @@ public static class UIMenu
 
 	public static void SetupHostMenu()
 	{
+		var b_pos = new Vector2(0, 344);
 
-		Vector2 b_pos = new Vector2(0, 344);
-		
-		int i = 0;
+		var i = 0;
 		while (i < 4)
 		{
 			var saveBtn = UIElements.CreateButton(UICore.MP_Host.transform, UIUtils.GetSaveName(i + 4), null);
@@ -110,8 +108,9 @@ public static class UIMenu
 			b_pos.y -= 49;
 			i++;
 		}
+
 		save_btn_index = 4;
-		
+
 		var prevBtn = UIElements.CreateButton(UICore.MP_Host.transform,
 			"Previous", null);
 		var prevRect = prevBtn.GetComponent<RectTransform>();
@@ -120,20 +119,20 @@ public static class UIMenu
 		prevRect.pivot = new Vector2(0f, 0.5f);
 		prevRect.sizeDelta = new Vector2(115f, 44);
 		prevRect.anchoredPosition = new Vector2(0, 148);
-		
+
 		var nextBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Next", null);
-		prevBtn.OnClick.AddListener( UIActions.PreviousSaves(prevBtn, nextBtn));
+		prevBtn.OnClick.AddListener(UIActions.PreviousSaves(prevBtn, nextBtn));
 		prevBtn.SetLocked();
-		
+
 		var nextRect = nextBtn.GetComponent<RectTransform>();
 		nextRect.anchorMin = new Vector2(0f, 0.5f);
 		nextRect.anchorMax = new Vector2(0f, 0.5f);
 		nextRect.pivot = new Vector2(0f, 0.5f);
 		nextRect.sizeDelta = new Vector2(115f, 44);
 		nextRect.anchoredPosition = new Vector2(118f, 148);
-		nextBtn.OnClick.AddListener( UIActions.NextSaves(nextBtn, prevBtn));
+		nextBtn.OnClick.AddListener(UIActions.NextSaves(nextBtn, prevBtn));
 		nextBtn.SetLocked(false);
-		
+
 		var backBtn = UIElements.CreateButton(UICore.MP_Host.transform, "Back to menu",
 			() =>
 			{
@@ -150,5 +149,4 @@ public static class UIMenu
 
 		UICore.MP_Host.SetActive(false);
 	}
-
 }

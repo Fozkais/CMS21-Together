@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using CMS.UI.Logic.Upgrades;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -13,8 +12,8 @@ namespace CMS21Together.ClientSide.Data.Player;
 [HarmonyPatch]
 public static class Stats
 {
-	private static bool sentInitial = false;
-	private static bool receivedInitial = false;
+	private static bool sentInitial;
+	private static bool receivedInitial;
 	public static bool listentoAddMoney = true;
 	public static bool listentoAddScrap = true;
 
@@ -38,7 +37,7 @@ public static class Stats
 
 		ClientSend.StatPacket(GlobalData.PlayerMoney, ModStats.money, true);
 		ClientSend.StatPacket(GlobalData.PlayerScraps, ModStats.scrap, true);
-		
+
 		sentInitial = true;
 		listentoAddMoney = true;
 		listentoAddScrap = true;
@@ -66,6 +65,7 @@ public static class Stats
 					listentoAddScrap = true;
 					break;
 			}
+
 			if (listentoAddMoney && listentoAddScrap) receivedInitial = true;
 			yield break;
 		}
@@ -95,18 +95,18 @@ public static class Stats
 		MelonLogger.Msg($"Send XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ClientSend.ExpPacket(GlobalData.PlayerExp, GlobalData.PlayerLevel);
 	}
-	
+
 	[HarmonyPatch(typeof(UpgradeSystem), nameof(UpgradeSystem.AddPoints))]
 	[HarmonyPostfix]
 	public static void AddPointsHook(UpgradeSystem __instance)
 	{
 		if (!Client.Instance.isConnected) return;
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
-		
+
 		MelonLogger.Msg($"Send Point Packet : {__instance.AvailablePoints}");
 		ClientSend.PointPacket(__instance.AvailablePoints);
 	}
-	
+
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerMoney))]
 	[HarmonyPostfix]
 	public static void AddPlayerMoneyHook(int money)
@@ -116,6 +116,7 @@ public static class Stats
 			if (sentInitial || receivedInitial) listentoAddMoney = true;
 			return;
 		}
+
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
 		ClientData.Instance.money = GlobalData.PlayerMoney;
@@ -131,6 +132,7 @@ public static class Stats
 			if (sentInitial || receivedInitial) listentoAddScrap = true;
 			return;
 		}
+
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
 		ClientData.Instance.scrap = GlobalData.PlayerScraps;

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
 using CMS21Together.ClientSide;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
@@ -16,22 +16,22 @@ using UnityEngine;
 namespace CMS21Together.ServerSide;
 
 //[RegisterTypeInIl2Cpp]
-public class Server 
+public class Server
 {
 	public delegate void packetHandler(int fromClient, Packet packet);
 
 	public static Server Instance;
 	public static Dictionary<int, packetHandler> packetHandlers;
-	public NetworkType networkType;
-
-	public bool isRunning;
 
 	public Dictionary<int, ServerConnection> clients;
+
+	public bool isRunning;
+	public NetworkType networkType;
+
+	public string serverID;
 	public SteamSocket steam;
 	public TcpListener tcp;
 	public UdpClient udp;
-
-	public string serverID;
 
 	public void StartServer(NetworkType type)
 	{
@@ -44,7 +44,7 @@ public class Server
 		InitializeServerData();
 		StartServer();
 	}
-	
+
 	private void StartServer()
 	{
 		tcp = new TcpListener(IPAddress.Any, MainMod.PORT);
@@ -54,7 +54,7 @@ public class Server
 		udp = new UdpClient(MainMod.PORT);
 		udp.BeginReceive(UDPReceiveCallback, null);
 
-		
+
 		if (networkType == NetworkType.Steam)
 		{
 			steam = SteamNetworkingSockets.CreateRelaySocket<SteamSocket>();
@@ -63,6 +63,7 @@ public class Server
 			else
 				MelonLogger.Error("[Server] Failed to create RelaySocket.");
 		}
+
 		Application.runInBackground = true;
 		isRunning = true;
 		MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
@@ -74,32 +75,33 @@ public class Server
 		if (!isRunning) yield break;
 
 		MelonLogger.Msg("[Server->CloseServer] Saving players infos...");
-		ModSaveData save = SavesManager.ModSaves[SavesManager.currentSaveIndex];
+		var save = SavesManager.ModSaves[SavesManager.currentSaveIndex];
 		foreach (var id in clients.Keys)
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
-			
-			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = save.playerInfos.First(p => playerGuid == p.id);
-			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
-			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
-			int lvl = ServerData.Instance.connectedClients[id].playerExp;
-			int exp = ServerData.Instance.connectedClients[id].playerLevel;
-			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
+
+			var playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
+			var info = save.playerInfos.First(p => playerGuid == p.id);
+			var pos = ServerData.Instance.connectedClients[id].position;
+			var rot = ServerData.Instance.connectedClients[id].rotation;
+			var lvl = ServerData.Instance.connectedClients[id].playerExp;
+			var exp = ServerData.Instance.connectedClients[id].playerLevel;
+			var points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
 			if (save.playerInfos.Any(p => playerGuid == p.id))
-				info.UpdateStats(pos, rot, exp , lvl, points);
+				info.UpdateStats(pos, rot, exp, lvl, points);
 			if (id != 1) // dont send to host
 				ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
+
 		save.missionFinished = GlobalData.MissionsFinished;
 		save.storyMissionInProgress = GlobalData.IsStoryMissionInProgress;
 		save.money = GlobalData.PlayerMoney;
-		
+
 		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);
 		MelonLogger.Msg("[Server->CloseServer] Successfully Saved players infos!");
-		
+
 		isRunning = false;
 		Application.runInBackground = false;
 		if (udp != null)
@@ -107,7 +109,7 @@ public class Server
 		if (tcp != null)
 			tcp.Stop();
 		if (steam != null)
-		  steam.Close();
+			steam.Close();
 		if (packetHandlers != null)
 			packetHandlers.Clear();
 
@@ -158,8 +160,7 @@ public class Server
 
 		MelonLogger.Msg($"[Server->TCPConnectCallback] Incoming connection from {_client.Client.RemoteEndPoint}...");
 
-		for (int i = 1; i <= MainMod.MAX_PLAYER; i++)
-		{
+		for (var i = 1; i <= MainMod.MAX_PLAYER; i++)
 			if (!clients[i].isConnected)
 			{
 				clients[i].tcp = new TCPConnection(i);
@@ -167,7 +168,7 @@ public class Server
 				MelonLogger.Msg($"[Server->TCPConnectCallback] Connecting client with id:{i}.");
 				return;
 			}
-		}
+
 		MelonLogger.Warning($"[Server->TCPConnectCallback] {_client.Client.RemoteEndPoint} failed to connect: Server full!");
 	}
 

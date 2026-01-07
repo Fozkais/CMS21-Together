@@ -1,20 +1,18 @@
-using System.Collections.Generic;
-using CMS21Together.ClientSide;
+using System;
+using CMS21_Together_Core.Data;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Garage;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ServerSide;
-using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
 
-namespace CMS21Together.Shared;
+namespace CMS21Together.ClientSide;
 
 [HarmonyPatch]
 public static class SceneManager
 {
-	[HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.SelectSceneToLoad),
-		new []{typeof(string), typeof(SceneType), typeof(bool), typeof(bool)})]
+	[HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.SelectSceneToLoad), typeof(string), typeof(SceneType), typeof(bool), typeof(bool))]
 	[HarmonyPrefix]
 	public static void SelectSceneToLoadHook(string newSceneName, SceneType sceneType, bool useFader, bool saveGame)
 	{
@@ -34,13 +32,13 @@ public static class SceneManager
 		{
 			// Business Rule: Disconnect and cleanup when returning to menu
 			MelonLogger.Msg("[SceneManager->SelectSceneToLoadHook] Going to menu! Disconnecting...");
-			
+
 			// Security Rule: Stop outdoor operations before disconnecting
 			StopOutdoorOperations();
-			
+
 			if (Server.Instance != null && Server.Instance.isRunning)
 				MelonCoroutines.Start(Server.Instance.CloseServer());
-			
+
 			if (Client.Instance.isConnected)
 				Client.Instance.Disconnect();
 
@@ -64,16 +62,12 @@ public static class SceneManager
 			{
 				// Security Rule: Stop outdoor operations before scene change
 				StopOutdoorOperations();
-				
-				foreach (ModCar loadedCar in ClientData.Instance.loadedCars.Values)
-				{
+
+				foreach (var loadedCar in ClientData.Instance.loadedCars.Values)
 					// Security Rule: Validate car is not null before accessing properties
 					if (loadedCar != null)
-					{
 						loadedCar.needResync = true;
-					}
-				}
-				
+
 				MelonLogger.Msg($"[SceneManager->SelectSceneToLoadHook] Marked {ClientData.Instance.loadedCars.Count} cars for resync.");
 			}
 			else
@@ -84,7 +78,7 @@ public static class SceneManager
 	}
 
 	/// <summary>
-	/// Stops any ongoing outdoor operations (car wash, paint) to prevent crashes during scene changes.
+	///     Stops any ongoing outdoor operations (car wash, paint) to prevent crashes during scene changes.
 	/// </summary>
 	private static void StopOutdoorOperations()
 	{
@@ -96,13 +90,13 @@ public static class SceneManager
 			{
 				// Business Logic: Reset car wash and paint logic flags
 				// Note: Using full namespace path for IL2CPP compatibility
-				CMS21Together.ClientSide.Data.Garage.Tools.CarWashLogic.Reset();
-				CMS21Together.ClientSide.Data.Garage.Tools.CarPaintLogic.Reset();
-				
+				ClientSide.Data.Garage.Tools.CarWashLogic.Reset();
+				CarPaintLogic.Reset();
+
 				MelonLogger.Msg("[SceneManager->StopOutdoorOperations] Stopped outdoor operations (car wash, paint).");
 			}
 		}
-		catch (System.Exception ex)
+		catch (Exception ex)
 		{
 			// Security Rule: Log but don't crash if stopping operations fails
 			MelonLogger.Warning($"[SceneManager->StopOutdoorOperations] Error stopping outdoor operations: {ex.Message}");
@@ -110,8 +104,8 @@ public static class SceneManager
 	}
 
 	/// <summary>
-	/// Updates the current scene based on scene name.
-	/// Resets GameData readiness when entering garage.
+	///     Updates the current scene based on scene name.
+	///     Resets GameData readiness when entering garage.
 	/// </summary>
 	/// <param name="scene">The name of the scene being loaded</param>
 	/// <returns>The corresponding GameScene enum value</returns>
@@ -125,24 +119,24 @@ public static class SceneManager
 		}
 
 		MelonLogger.Msg($"[SceneManager->UpdateScene] Changed scene: {scene}!");
-		
+
 		// Business Rule: Map scene names to GameScene enum values
 		if (scene == "Barn")
 			return GameScene.barn;
-		
+
 		if (scene == "garage" || scene == "Christmas" || scene == "Easter" || scene == "Halloween")
 		{
 			// Business Rule: Reset GameData readiness when entering garage
 			GameData.isReady = false;
 			return GameScene.garage;
 		}
-		
+
 		if (scene == "Junkyard")
 			return GameScene.junkyard;
-		
+
 		if (scene == "Auto_salon")
 			return GameScene.auto_salon;
-		
+
 		if (scene == "Menu")
 			return GameScene.menu;
 

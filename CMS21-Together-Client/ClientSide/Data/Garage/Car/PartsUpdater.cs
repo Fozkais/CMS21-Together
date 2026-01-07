@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using CMS21Together.ClientSide.Data.Garage.Tools;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
 using MelonLoader;
 using UnityEngine;
 
@@ -18,32 +16,34 @@ public static class PartsUpdater
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		
+
 		if (carLoaderID == -1)
 		{
 			while (!ClientData.Instance.engineStand.isHandled)
 				yield return new WaitForSeconds(.15f);
 			yield return new WaitForEndOfFrame();
-			
+
 			MelonLogger.Msg($"[PartsUpdater->UpdatePartScripts]{partScript.id} for es 1");
 			UpdatePartScript(partScript, ClientData.Instance.engineStand.partReferences[partScript.partID], -1);
 			yield break;
 		}
+
 		if (carLoaderID == -2)
 		{
-			int counter = 0;
+			var counter = 0;
 			while (counter < 25 && !ClientData.Instance.engineStand2.isHandled)
 			{
 				yield return new WaitForSeconds(.5f);
 				counter++;
 			}
+
 			yield return new WaitForEndOfFrame();
-			
+
 			MelonLogger.Msg($"[PartsUpdater->UpdatePartScripts] {partScript.id} for es 2");
 			UpdatePartScript(partScript, ClientData.Instance.engineStand2.partReferences[partScript.partID], -2);
 			yield break;
 		}
-		
+
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var _car))
 			while (!_car.isReady)
 				yield return new WaitForSeconds(0.25f);
@@ -88,7 +88,7 @@ public static class PartsUpdater
 			return;
 		}
 
-		if(carLoaderID != -1 && carLoaderID != -2)
+		if (carLoaderID != -1 && carLoaderID != -2)
 			if (!string.IsNullOrEmpty(part.tunedID) && !string.IsNullOrEmpty(reference.tunedID))
 				if (reference.tunedID != part.tunedID)
 					GameData.Instance.carLoaders[carLoaderID].TunePart(reference.id, part.tunedID);
@@ -139,7 +139,7 @@ public static class PartsUpdater
 		}
 		else
 		{
-			if (reference.IsUnmounted == false)
+			if (!reference.IsUnmounted)
 			{
 				if (carLoaderID != -1 && carLoaderID != -2)
 					reference.HideBySavegame(false, GameData.Instance.carLoaders[carLoaderID]);
@@ -149,13 +149,11 @@ public static class PartsUpdater
 		}
 
 		if (part.unmountWith != null)
-		{
 			for (var index = 0; index < part.unmountWith.Count; index++)
 			{
 				var partScript = part.unmountWith[index];
 				UpdatePartScript(partScript, reference.unmountWith.ToArray()[index], carLoaderID);
 			}
-		}
 	}
 
 	public static IEnumerator UpdateBodyParts(ModCarPart carPart, int carLoaderID)

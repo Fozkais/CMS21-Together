@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Vanilla;
+using CMS21_Together_Core.Data.Vanilla.Cars;
+using CMS21_Together_Core.Data.Vanilla.GarageTool;
+using CMS21_Together_Core.Data.Vanilla.Jobs;
+using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
-using CMS21Together.Shared.Data.Vanilla;
-using CMS21Together.Shared.Data.Vanilla.Cars;
-using CMS21Together.Shared.Data.Vanilla.GarageTool;
-using CMS21Together.Shared.Data.Vanilla.Jobs;
 using MelonLoader;
 using UnityEngine;
 
@@ -25,7 +24,7 @@ public static class ServerHandle
 		var content = packet.Read<ReadOnlyDictionary<string, bool>>();
 		var gameVersion = packet.Read<string>();
 		var modVersion = packet.Read<string>();
-		string playerID = packet.Read<string>();
+		var playerID = packet.Read<string>();
 
 		//MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
 
@@ -50,15 +49,17 @@ public static class ServerHandle
 			return;
 		}
 
-		
+
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] {username} connected successfully.");
 		Server.Instance.clients[fromClient].SendToLobby(username, playerID);
-		
+
 		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Any(s => s.id == playerID))
+		{
 			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(s => s.id == playerID));
+		}
 		else
 		{
-			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
+			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(new PlayerInfo(playerID, Vector3.zero, Quaternion.identity, 0, 1, 0));
 			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		}
 	}
@@ -71,7 +72,9 @@ public static class ServerHandle
 			Server.Instance.clients[fromclient].Disconnect();
 		}
 		else
+		{
 			MelonLogger.Msg($"[ServerHandle->DisconnectPacket] a unknown client with id:{fromclient} as disconnected from server.");
+		}
 	}
 
 	public static void ReadyPacket(int fromClient, Packet packet)
@@ -83,12 +86,12 @@ public static class ServerHandle
 
 		ServerSend.ReadyPacket(fromClient, ready, id);
 	}
-	
+
 	public static void SkillChangePacket(int fromClient, Packet packet)
 	{
-		string playerID = packet.Read<string>();
-		string id = packet.Read<string>();
-		List<bool> skill = packet.Read<List<bool>>();
+		var playerID = packet.Read<string>();
+		var id = packet.Read<string>();
+		var skill = packet.Read<List<bool>>();
 
 		SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
 	}
@@ -139,7 +142,7 @@ public static class ServerHandle
 					// Business Logic: Increment UID counter and add item to server inventory
 					SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
 					ServerData.Instance.items.Add(item);
-					
+
 					// Business Logic: Broadcast item to all clients (including sender for confirmation)
 					ServerSend.ItemPacket(fromClient, item, action);
 					MelonLogger.Msg($"[ServerHandle->ItemPacket] Added item UID: {item.UID} from client {fromClient}");
@@ -157,7 +160,7 @@ public static class ServerHandle
 				{
 					var index = ServerData.Instance.items.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.items.Remove(ServerData.Instance.items[index]);
-					
+
 					// Business Logic: Broadcast removal to all clients
 					ServerSend.ItemPacket(fromClient, item, action);
 					MelonLogger.Msg($"[ServerHandle->ItemPacket] Removed item UID: {item.UID} from client {fromClient}");
@@ -167,6 +170,7 @@ public static class ServerHandle
 					MelonLogger.Msg($"[ServerHandle->ItemPacket] Item with UID {item.UID} not found for removal from client {fromClient}");
 				}
 			}
+
 			return;
 		}
 
@@ -204,7 +208,7 @@ public static class ServerHandle
 				{
 					// Business Logic: Add group item to server inventory
 					ServerData.Instance.groupItems.Add(item);
-					
+
 					// Business Logic: Broadcast group item to all clients (including sender for confirmation)
 					ServerSend.GroupItemPacket(fromClient, item, action);
 					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Added group item UID: {item.UID} from client {fromClient}");
@@ -222,7 +226,7 @@ public static class ServerHandle
 				{
 					var index = ServerData.Instance.groupItems.FindIndex(s => s.UID == item.UID);
 					ServerData.Instance.groupItems.Remove(ServerData.Instance.groupItems[index]);
-					
+
 					// Business Logic: Broadcast removal to all clients
 					ServerSend.GroupItemPacket(fromClient, item, action);
 					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Removed group item UID: {item.UID} from client {fromClient}");
@@ -232,6 +236,7 @@ public static class ServerHandle
 					MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Group item with UID {item.UID} not found for removal from client {fromClient}");
 				}
 			}
+
 			return;
 		}
 
@@ -269,21 +274,21 @@ public static class ServerHandle
 
 		ServerSend.StatPacket(fromClient, value, type, initial);
 	}
-	
+
 	public static void ExpPacket(int fromClient, Packet packet)
 	{
-		int exp = packet.ReadInt();
-		int lvl = packet.ReadInt();
-		
+		var exp = packet.ReadInt();
+		var lvl = packet.ReadInt();
+
 		//MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
 		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
 	}
-	
+
 	public static void PointPacket(int fromClient, Packet packet)
 	{
-		int points = packet.ReadInt();
-		
+		var points = packet.ReadInt();
+
 		//MelonLogger.Msg($"Received PointPacket Packet : {points}");
 		ServerData.Instance.connectedClients[fromClient].playerSkillPoints = points;
 	}
@@ -330,12 +335,12 @@ public static class ServerHandle
 		ServerData.Instance.UpdatePartScripts(partScript, carLoaderID);
 		ServerSend.PartScriptPacket(fromClient, partScript, carLoaderID);
 	}
-	
+
 	public static void CarFluidPacket(int fromClient, Packet packet)
 	{
 		var carLoaderID = packet.ReadInt();
-		ModFluidData fluid = packet.Read<ModFluidData>();
-		
+		var fluid = packet.Read<ModFluidData>();
+
 		ServerData.Instance.UpdateFluid(fluid, carLoaderID);
 		ServerSend.CarFluidPacket(fromClient, carLoaderID, fluid);
 	}
@@ -376,7 +381,7 @@ public static class ServerHandle
 
 	public static void JobActionPacket(int fromClient, Packet packet)
 	{
-		ModJob job = packet.Read<ModJob>();
+		var job = packet.Read<ModJob>();
 		var takeJob = packet.Read<bool>();
 
 		//MelonLogger.Msg("SV: Received JobAction!");
@@ -388,7 +393,7 @@ public static class ServerHandle
 	{
 		var job = packet.Read<ModJob>();
 		var action = packet.Read<bool>();
-		
+
 		//MelonLogger.Msg("cl: Received SelectedJobPacket!");
 		ServerData.Instance.UpdateSelectedJobs(job, action);
 		ServerSend.SelectedJobPacket(fromClient, job, action);
@@ -421,7 +426,7 @@ public static class ServerHandle
 
 		ServerSend.ToolsMovePacket(_fromClient, tool, place, playSound);
 	}
-	
+
 
 	public static void SetSpringClampPacket(int fromClient, Packet packet)
 	{
@@ -454,131 +459,135 @@ public static class ServerHandle
 		ServerData.Instance.SetTireChangerState(true, null);
 		ServerSend.ClearTireChangerPacket(fromClient);
 	}
-	
+
 	public static void OilBin(int _fromclient, Packet _packet)
 	{
-		int loaderID = _packet.ReadInt();
+		var loaderID = _packet.ReadInt();
 
 		ServerSend.SendOilBin(_fromclient, loaderID);
 	}
 
 	public static void WheelBalancePacket(int fromClient, Packet packet)
 	{
-		int aType = packet.ReadInt();
+		var aType = packet.ReadInt();
 		ModGroupItem item;
-                
-		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.start ||(ModWheelBalancerActionType)aType == ModWheelBalancerActionType.setGroup)
+
+		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.start || (ModWheelBalancerActionType)aType == ModWheelBalancerActionType.setGroup)
 		{
 			item = packet.Read<ModGroupItem>();
 			ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType, item);
 			return;
 		}
+
 		ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType);
 	}
-	
+
 
 	public static void EngineCraneHandlePacket(int fromClient, Packet packet)
 	{
-		int action = packet.ReadInt();
-		int carLoaderID = packet.ReadInt();
+		var action = packet.ReadInt();
+		var carLoaderID = packet.ReadInt();
 		ModGroupItem item;
 		if (action == 1)
 		{
 			item = packet.Read<ModGroupItem>();
-			
-			ServerSend.EngineCraneHandlePacket(fromClient, action, carLoaderID, item);			
+
+			ServerSend.EngineCraneHandlePacket(fromClient, action, carLoaderID, item);
 			return;
 		}
+
 		ServerSend.EngineCraneHandlePacket(fromClient, action, carLoaderID);
 	}
+
 	public static void EngineStandSetGroupPacket(int fromClient, Packet packet)
 	{
-		ModGroupItem engineGroup = packet.Read<ModGroupItem>();
-		Vector3Serializable position = packet.Read<Vector3Serializable>();
-		bool alt = packet.Read<bool>();
+		var engineGroup = packet.Read<ModGroupItem>();
+		var position = packet.Read<Vector3Serializable>();
+		var alt = packet.Read<bool>();
 
 		MelonLogger.Msg("SV: received new engine");
 		ServerData.Instance.SetEngineOnStand(engineGroup, position, alt);
 		ServerSend.EngineStandSetGroupPacket(fromClient, engineGroup, position, alt);
 	}
-	
-	
+
+
 	public static void EngineStandTakeOffPacket(int fromClient, Packet packet)
 	{
-		bool alt = packet.Read<bool>();
-		
+		var alt = packet.Read<bool>();
+
 		ServerData.Instance.ClearEngineFromStand(alt);
 		ServerSend.EngineStandTakeOffPacket(fromClient, alt);
-	}	
+	}
+
 	public static void EngineStandAnglePacket(int fromClient, Packet packet)
 	{
-		float val = packet.Read<float>();
-		bool alt = packet.Read<bool>();
-		
+		var val = packet.Read<float>();
+		var alt = packet.Read<bool>();
+
 		ServerData.Instance.IncreaseStandAngle(val, alt);
 		ServerSend.IncreaseStandAnglePacket(fromClient, val, alt);
 	}
-	
+
 	public static void CarWashPacket(int fromClient, Packet packet)
 	{
-		int loaderID = packet.ReadInt();
-		bool interior = packet.Read<bool>();
-		
-		ServerData.Instance.SetCarWash(loaderID, interior); 
+		var loaderID = packet.ReadInt();
+		var interior = packet.Read<bool>();
+
+		ServerData.Instance.SetCarWash(loaderID, interior);
 		ServerSend.CarWashPacket(fromClient, loaderID, interior);
 	}
-	
+
 	public static void WelderPacket(int fromClient, Packet packet)
 	{
-		int loaderID = packet.ReadInt();
-		
+		var loaderID = packet.ReadInt();
+
 		ServerData.Instance.SetWelder(loaderID);
 		ServerSend.WelderPacket(fromClient, loaderID);
 	}
-	
+
 	public static void CarPaintPacket(int fromClient, Packet packet)
 	{
-		ModColor color = packet.Read<ModColor>();
-		
+		var color = packet.Read<ModColor>();
+
 		ServerData.Instance.SetCarColor(color);
 		ServerSend.CarPaintPacket(fromClient, color);
 	}
-	
+
 	public static void AddCarToParkPacket(int fromClient, Packet packet)
 	{
-		ModNewCarData car = packet.Read<ModNewCarData>();
-		int index = packet.ReadInt();
-		
+		var car = packet.Read<ModNewCarData>();
+		var index = packet.ReadInt();
+
 		ServerData.Instance.AddCarToPark(car, index);
 		ServerSend.AddCarToParkPacket(fromClient, car, index);
 	}
-	
+
 	public static void RemoveCarFromParkPacket(int fromClient, Packet packet)
 	{
-		int index = packet.ReadInt();
-		
+		var index = packet.ReadInt();
+
 		ServerData.Instance.RemoveCarFromPark(index);
 		ServerSend.RemoveCarFromParkPacket(fromClient, index);
 	}
-	
+
 	public static void RepairPartPacket(int fromClient, Packet packet)
 	{
-		ModPartInfo info = packet.Read<ModPartInfo>();
-		bool isBody = packet.Read<bool>();
-		bool success = packet.Read<bool>();
-		
+		var info = packet.Read<ModPartInfo>();
+		var isBody = packet.Read<bool>();
+		var success = packet.Read<bool>();
+
 		ServerData.Instance.UpdatePartInfo(info, isBody, success);
 		ServerSend.RepairPartPacket(fromClient, info, isBody, success);
 	}
-	
+
 	public static void ResyncPacket(int fromClient, Packet packet)
 	{
-		PacketTypes resyncType = packet.Read<PacketTypes>();
+		var resyncType = packet.Read<PacketTypes>();
 
 		switch (resyncType)
 		{
 			case PacketTypes.loadCar:
-				int carLoaderID = packet.ReadInt();
+				var carLoaderID = packet.ReadInt();
 				ServerResyncs.ResyncCar(fromClient, carLoaderID);
 				break;
 			case PacketTypes.parkAdd:
@@ -591,7 +600,7 @@ public static class ServerHandle
 				ServerResyncs.ResyncUpgrade(fromClient);
 				break;
 			case PacketTypes.engineStandSetGroup:
-				bool alt = packet.Read<bool>();
+				var alt = packet.Read<bool>();
 				ServerResyncs.ResyncEngineStand(fromClient, alt);
 				break;
 			case PacketTypes.playerInCar:
@@ -607,7 +616,7 @@ public static class ServerHandle
 	{
 		var isInCar = _packet.Read<bool>();
 		var carLoaderID = _packet.ReadInt();
-		
+
 		// Business Logic: Update player's car state on server
 		if (ServerData.Instance.connectedClients.ContainsKey(fromClient))
 		{
@@ -615,7 +624,7 @@ public static class ServerHandle
 			ServerData.Instance.connectedClients[fromClient].carLoaderID = carLoaderID;
 			MelonLogger.Msg($"[ServerHandle->PlayerInCarPacket] Player {fromClient} car state: InCar={isInCar}, CarLoaderID={carLoaderID}");
 		}
-		
+
 		// Business Logic: Broadcast to all clients
 		ServerSend.PlayerInCarPacket(fromClient, isInCar, carLoaderID);
 	}
@@ -625,7 +634,7 @@ public static class ServerHandle
 		var carLoaderID = _packet.ReadInt();
 		var isPlaying = _packet.Read<bool>();
 		var rpm = _packet.Read<float>();
-		
+
 		// Business Logic: Broadcast engine sound state to all clients
 		ServerSend.CarEngineSoundPacket(fromClient, carLoaderID, isPlaying, rpm);
 	}

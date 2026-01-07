@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.ClientSide.Data.NewUI;
 using CMS21Together.ClientSide.Transports;
-using CMS21Together.Shared;
-using CMS21Together.Shared.Data;
 using MelonLoader;
 using Steamworks;
 using UnityEngine;
-using SceneManager = UnityEngine.SceneManagement.SceneManager;
 
 namespace CMS21Together.ClientSide;
 
@@ -27,7 +25,7 @@ public class Client
 	public ClientSteam steam;
 	public ClientTCP tcp;
 	public ClientUDP udp;
-	
+
 	public event Action OnConnected;
 	public event Action OnDisconnected;
 
@@ -45,14 +43,13 @@ public class Client
 
 		if (networkType == NetworkType.Steam)
 		{
-			SteamId lobbyID = new SteamId();
+			var lobbyID = new SteamId();
 			lobbyID.Value = SteamworksUtils.ConvertServerID(ip);
 			MelonLogger.Msg($"LobbyID : {ip} ConvertedID : {lobbyID.Value}.");
-			
-		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
+
+			steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
 		}
-		else
-		if (networkType == NetworkType.TCP)
+		else if (networkType == NetworkType.TCP)
 		{
 			tcp = new ClientTCP();
 			udp = new ClientUDP();
@@ -73,8 +70,8 @@ public class Client
 				else udp.Send(packet);
 				break;
 			case NetworkType.Steam:
-			    steam.Send(packet, reliable);
-			    break;
+				steam.Send(packet, reliable);
+				break;
 		}
 	}
 
@@ -136,7 +133,7 @@ public class Client
 		};
 	}
 
-	public void Disconnect(bool fromServer=false)
+	public void Disconnect(bool fromServer = false)
 	{
 		if (!isConnected) return;
 
@@ -149,15 +146,17 @@ public class Client
 
 		tcp.Disconnect();
 		udp.Disconnect();
-		
-		if (SceneManager.GetActiveScene().name != "Menu")
+
+		if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().name != "Menu")
 		{
 			var manager = NotificationCenter.m_instance;
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 		}
 		else
+		{
 			OnDisconnectedInvoke();
-		
+		}
+
 		MelonLogger.Msg("[Client->Disconnect] Disconnected from server.");
 		ApiCalls.API_M2(ContentManager.Instance.ownedContents);
 	}
@@ -166,6 +165,7 @@ public class Client
 	{
 		OnConnected?.Invoke();
 	}
+
 	public void OnDisconnectedInvoke()
 	{
 		OnDisconnected?.Invoke();
