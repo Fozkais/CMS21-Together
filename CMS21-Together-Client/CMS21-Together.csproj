@@ -304,5 +304,11 @@
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj">
+        <Project>{4f57c271-97f2-4bad-8add-c0657ba91cda}</Project>
+        <Name>CMS21-Together-Core</Name>
+      </ProjectReference>
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
