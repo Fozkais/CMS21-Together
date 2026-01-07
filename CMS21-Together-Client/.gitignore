@@ -1,0 +1,15 @@
+/bin/
+/obj/
+/.idea
+/.info
+/.cache
+/.json
+
+/.user
+.user
+.json
+.info
+.cache
+.props
+App.config
+/CMS21-Together.sln.DotSettings.user
