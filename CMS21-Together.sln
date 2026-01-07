@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS21-Together-Server", "CM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS21-Together", "CMS21-Together-Client\CMS21-Together.csproj", "{7EFF228F-6F77-4526-ACBC-D0832CA33C77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMS21-Together-Core", "CMS21-Together-Core\CMS21-Together-Core.csproj", "{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,6 +19,10 @@ Global
 		{23D76579-5F8A-4938-87E1-3D7B33571E3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23D76579-5F8A-4938-87E1-3D7B33571E3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23D76579-5F8A-4938-87E1-3D7B33571E3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
