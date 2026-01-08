@@ -116,7 +116,6 @@ public class ClientTCP
                 if (packetLength <= 0) return true;
             }
         }
-
         if (packetLength <= 1) return true;
         return false;
     }
