@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Network;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.NewUI;
@@ -147,16 +148,22 @@ public class ClientTCP
 
 		while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
 		{
-			var _packetBytes = receivedData.ReadBytes(packetLenght);
+			var packetBytes = receivedData.ReadBytes(packetLenght);
 			ThreadManager.ExecuteOnMainThread<Exception>(_ =>
 			{
-				using (var _packet = new Packet(_packetBytes))
+				using (var packet = new Packet(packetBytes))
 				{
-					var _packetId = _packet.ReadInt();
-					if (Client.PacketHandlers.ContainsKey(_packetId))
-						Client.PacketHandlers[_packetId](_packet);
-					else
-						MelonLogger.Error($"[ClientTCP->HandleData] packet with id:{_packetId} is not valid.");
+					PacketTypes packetId = (PacketTypes)packet.ReadInt();
+					
+					try 
+					{
+						object dataObj = packet.Read<object>();
+						PacketRouter.Dispatch(packetId, dataObj, 0); 
+					}
+					catch (Exception ex)
+					{
+						MelonLogger.Error($"Error while routing packet ID {packetId}: {ex.Message}");
+					}
 				}
 			}, null);
 

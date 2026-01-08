@@ -13,6 +13,7 @@ public enum PacketTypes
 	start,
 
 	spawn,
+	movement,
 	position,
 	rotation,
 	item,
