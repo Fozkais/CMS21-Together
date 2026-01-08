@@ -12,6 +12,7 @@ namespace CMS21_Together_Server.Network.Transport
         private NetworkStream stream;
         private Packet receivedData;
         private byte[] receiveBuffer;
+        
 
         public Tcp(int id)
         {

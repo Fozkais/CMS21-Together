@@ -7,13 +7,22 @@ namespace CMS21_Together_Server.Network
 	{
 		public int ID;
 		public Tcp Tcp;
-		// public UDP udp;
+		public Udp Udp;
+
 		public bool isConnected;
+		public Action OnConnectedSuccessfully;
 
 		public Client(int clientId)
 		{
 			ID = clientId;
 			Tcp = new Tcp(ID);
+			Udp = new Udp(ID);
+			OnConnectedSuccessfully += OnConnected;
+		}
+
+		private void OnConnected()
+		{
+			Console.WriteLine($"Client[{ID}] connected successfully!");
 		}
 
 		public void Disconnect()

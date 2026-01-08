@@ -42,20 +42,9 @@ namespace CMS21Together
 			
 			if (Input.GetKeyDown(KeyCode.F5))
 			{
-				LoggerInstance.Msg("Tentative de connexion au local...");
+				LoggerInstance.Msg("Local Connection Attempt...");
 				Client.Instance.ConnectToServer("127.0.0.1");
 			}
-			
-			if (Input.GetKeyDown(KeyCode.F6))
-			{
-				LoggerInstance.Msg("Envoi du Handshake...");
-				Client.Instance.SendToServer(new HandshakePacket 
-				{ 
-					username = "TestUser",
-				});
-			}
-			
-			
 			ThreadManager.UpdateThread();
 		}
 

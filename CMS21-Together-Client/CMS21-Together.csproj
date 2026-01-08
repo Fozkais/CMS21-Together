@@ -39,6 +39,7 @@
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Transport\ClientTCP.cs" />
+        <Compile Include="Network\Transport\ClientUDP.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Include="ThreadManager.cs" />
     </ItemGroup>

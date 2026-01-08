@@ -44,6 +44,7 @@
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Server.cs" />
         <Compile Include="Network\Transport\TCP.cs" />
+        <Compile Include="Network\Transport\UDP.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

@@ -10,11 +10,14 @@ public class Client
 {
 	public static Client Instance;
 	public ClientTCP tcp;
+	public ClientUDP udp;
+	public int id;
 
 	public static void Init()
 	{
 		Instance = new Client();
 		Instance.tcp = new ClientTCP();
+		Instance.udp = new ClientUDP();
 	}
 
 	public void ConnectToServer(string ip = "127.0.0.1")
@@ -28,7 +31,7 @@ public class Client
 		PacketTypes id = PacketRouter.GetPacketId(packetData);
 		using (Packet packet = new Packet((int)id))
 		{
-			packet.Write(packetData); // Sérialisation auto via ton Core/Packet.cs
+			packet.Write(packetData);
 			tcp.SendData(packet);
 		}
 	}

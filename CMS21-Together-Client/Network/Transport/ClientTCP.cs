@@ -91,10 +91,7 @@ public class ClientTCP
         while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
         {
             byte[] packetBytes = receivedData.ReadBytes(packetLength);
-
-            // ---------------------------------------------------------
-            // IMPORTANT : On passe sur le Thread Principal via ton ThreadManager
-            // ---------------------------------------------------------
+            
             ThreadManager.ExecuteOnMainThread<object>((_) =>
             {
                 using (Packet packet = new Packet(packetBytes))
@@ -111,7 +108,6 @@ public class ClientTCP
                     }
                 }
             }, null); 
-            // ---------------------------------------------------------
 
             packetLength = 0;
             if (receivedData.UnreadLength() >= 4)
@@ -131,7 +127,7 @@ public class ClientTCP
         {
             if (socket != null)
             {
-                packet.WriteLength(); // Ajoute la longueur au début
+                packet.WriteLength();
                 byte[] buffer = packet.ToArray();
                 stream.BeginWrite(buffer, 0, buffer.Length, null, null);
             }

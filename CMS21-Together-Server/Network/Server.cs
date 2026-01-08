@@ -14,7 +14,8 @@ namespace CMS21_Together_Server.Network
         public static int Port { get; private set; }
         public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
         
-        private static TcpListener tcpListener;
+        private static TcpListener  tcpListener;
+        private static UdpClient udpListener;
         private static bool isRunning;
 
         public static void Start(int maxPlayers, int port)
@@ -34,6 +35,9 @@ namespace CMS21_Together_Server.Network
             tcpListener = new TcpListener(IPAddress.Any, Port);
             tcpListener.Start();
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
+            
+            udpListener = new UdpClient(Port);
+            udpListener.BeginReceive(UDPReceiveCallback, null);
         }
 
         private static void TcpConnectCallback(IAsyncResult result)
@@ -54,7 +58,16 @@ namespace CMS21_Together_Server.Network
                     {
                         Clients[i].Tcp.Connect(client);
                         Clients[i].isConnected = true;
-                        Console.WriteLine($"Client connected on slot {i}");
+                        
+                        SendToClient(new ConnectPacket()
+                        {
+                            gameVersion = "",
+                            playerGuid = "",
+                            username = "",
+                            message = "Welcome to server!",
+                            modVersion = Program.MOD_VERSION,
+                            playerID = Clients[i].ID
+                        }, Clients[i].ID);
                         return;
                     }
                 }
@@ -68,6 +81,42 @@ namespace CMS21_Together_Server.Network
                 Console.WriteLine($"Error TCPConnect: {e.Message}");
             }
         }
+        
+        private static void UDPReceiveCallback(IAsyncResult _result)
+        {
+            try
+            {
+                IPEndPoint _clientEndPoint = new IPEndPoint(IPAddress.Any, 0);
+                byte[] _data = udpListener.EndReceive(_result, ref _clientEndPoint);
+                
+                udpListener.BeginReceive(UDPReceiveCallback, null);
+                if (_data.Length < 4) return;
+
+                using (Packet _packet = new Packet(_data))
+                {
+                    int _clientId = _packet.ReadInt();
+                    if (_clientId == 0) return; 
+
+                    if (Clients.TryGetValue(_clientId, out Client client))
+                    {
+                        if (client.Udp.endPoint == null)
+                        {
+                            client.Udp.Connect(_clientEndPoint);
+                            return;
+                        }
+                        
+                        if (client.Udp.endPoint.ToString() == _clientEndPoint.ToString())
+                        {
+                            client.Udp.HandleData(_packet);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error on UDP Receive: {e.Message}");
+            }
+        }
 
         private static void InitializeServerData()
         {
@@ -77,13 +126,32 @@ namespace CMS21_Together_Server.Network
             }
         }
         
-        public static void SendToClient<T>(T packetData, int clientID) where T : INetworkData
+        public static void SendToClient<T>(T packetData, int clientID, bool reliable=true) where T : INetworkData
         {
             PacketTypes id = PacketRouter.GetPacketId(packetData);
             using (Packet packet = new Packet((int)id))
             {
                 packet.Write(packetData);
-                Clients[clientID].Tcp.SendData(packet);
+                if (reliable)
+                    Clients[clientID].Tcp.SendData(packet);
+                else
+                    Clients[clientID].Udp.SendData(packet);
+            }
+        }
+        
+        public static void SendUDPData(IPEndPoint _clientEndPoint, Packet _packet)
+        {
+            try
+            {
+                if (_clientEndPoint != null)
+                {
+                    _packet.WriteLength();
+                    udpListener.BeginSend(_packet.ToArray(), _packet.Length(), _clientEndPoint, null, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error on UDP Send: {e.Message}");
             }
         }
 
@@ -99,6 +167,7 @@ namespace CMS21_Together_Server.Network
                 Console.WriteLine($"Sent Disconect to client ID: {client.ID}");
             }
             tcpListener.Stop();
+            udpListener?.Close();
             Console.WriteLine("Server Stopped. Press Enter to close...");
         }
 	}
