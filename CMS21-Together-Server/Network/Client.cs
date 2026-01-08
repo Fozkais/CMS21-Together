@@ -5,20 +5,22 @@ namespace CMS21_Together_Server.Network
 {
 	public class Client
 	{
-		public int id;
-		public TCP tcp;
+		public int ID;
+		public Tcp Tcp;
 		// public UDP udp;
+		public bool isConnected;
 
-		public Client(int _clientId)
+		public Client(int clientId)
 		{
-			id = _clientId;
-			tcp = new TCP(id);
+			ID = clientId;
+			Tcp = new Tcp(ID);
 		}
 
 		public void Disconnect()
 		{
-			Console.WriteLine($"Client {id} disconnected.");
-			tcp.Disconnect();
+			Console.WriteLine($"Client {ID} disconnected.");
+			Tcp.Disconnect();
+			isConnected = false;
 		}
 	}
 }

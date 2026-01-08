@@ -74,9 +74,7 @@
         <Content Include="Libs\UnityEngine.UnityWebRequestWWWModule.dll" />
         <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
         <EmbeddedResource Include="Assets\peoples.png" />
-        <EmbeddedResource Include="Assets\lobbyBorder.png" />
         <EmbeddedResource Include="Assets\player.assets" />
-        <EmbeddedResource Include="Assets\TogetherModAPI.dll" />
         <EmbeddedResource Include="Assets\engineStand.assets" />
     </ItemGroup>
     <ItemGroup>

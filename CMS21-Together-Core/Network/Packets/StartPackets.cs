@@ -28,4 +28,7 @@ public class ConnectPacket : INetworkData
 
 [Serializable]
 [NetworkPacket(PacketTypes.disconnect)]
-public class DisconnectPacket : INetworkData { }
+public class DisconnectPacket : INetworkData
+{
+	public string message;
+}

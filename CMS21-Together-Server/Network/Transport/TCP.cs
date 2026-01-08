@@ -5,115 +5,116 @@ using CMS21_Together_Core.Network;
 
 namespace CMS21_Together_Server.Network.Transport
 {
-	public class TCP
+	public class Tcp
 	{
-		public TcpClient socket;
+		public TcpClient Socket;
         private readonly int id;
         private NetworkStream stream;
         private Packet receivedData;
         private byte[] receiveBuffer;
 
-        public TCP(int _id)
+        public Tcp(int id)
         {
-            id = _id;
+            this.id = id;
         }
 
-        public void Connect(TcpClient _socket)
+        public void Connect(TcpClient socket)
         {
-            socket = _socket;
-            socket.ReceiveBufferSize = 4096;
-            socket.SendBufferSize = 4096;
+            Socket = socket;
+            Socket.ReceiveBufferSize = 4096;
+            Socket.SendBufferSize = 4096;
 
-            stream = socket.GetStream();
+            stream = Socket.GetStream();
             receivedData = new Packet();
             receiveBuffer = new byte[4096];
 
             stream.BeginRead(receiveBuffer, 0, 4096, ReceiveCallback, null);
         }
 
-        private void ReceiveCallback(IAsyncResult _result)
+        private void ReceiveCallback(IAsyncResult result)
         {
             try
             {
-                int _byteLength = stream.EndRead(_result);
-                if (_byteLength <= 0)
+                int byteLength = stream.EndRead(result);
+                if (byteLength <= 0)
                 {
-                    Server.clients[id].Disconnect();
+                    Server.Clients[id].Disconnect();
                     return;
                 }
 
-                byte[] _data = new byte[_byteLength];
-                Array.Copy(receiveBuffer, _data, _byteLength);
+                byte[] data = new byte[byteLength];
+                Array.Copy(receiveBuffer, data, byteLength);
 
                 // Gestion de la fragmentation des paquets
-                receivedData.Reset(HandleData(_data)); 
+                receivedData.Reset(HandleData(data)); 
                 
                 stream.BeginRead(receiveBuffer, 0, 4096, ReceiveCallback, null);
             }
             catch (Exception)
             {
-                Server.clients[id].Disconnect();
+                Server.Clients[id].Disconnect();
             }
         }
 
-        private bool HandleData(byte[] _data)
+        private bool HandleData(byte[] data)
         {
-            int _packetLength = 0;
+            int packetLength = 0;
 
-            receivedData.SetBytes(_data);
+            receivedData.SetBytes(data);
 
             if (receivedData.UnreadLength() >= 4)
             {
-                _packetLength = receivedData.ReadInt();
-                if (_packetLength <= 0) return true;
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0) return true;
             }
 
-            while (_packetLength > 0 && _packetLength <= receivedData.UnreadLength())
+            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
             {
-                byte[] _packetBytes = receivedData.ReadBytes(_packetLength);
+                byte[] packetBytes = receivedData.ReadBytes(packetLength);
 
                 // --- NOUVEAU SYSTÈME AVEC PACKET ROUTER ---
-                using (Packet _packet = new Packet(_packetBytes))
+                using (Packet packet = new Packet(packetBytes))
                 {
-                    int _packetId = _packet.ReadInt();
+                    int packetId = packet.ReadInt();
 
                     try 
                     {
                         // On lit l'objet complet (si tes packets sont des classes sérialisées)
                         // Note: Assure-toi que Packet.Read<object>() existe et utilise BinaryFormatter comme avant
-                        object packetData = _packet.Read<object>(); 
+                        object packetData = packet.Read<object>(); 
                         
                         // On dispatch via le Router
                         // On passe 'id' (l'ID du client) pour savoir QUI a envoyé le message
-                        PacketRouter.Dispatch((PacketTypes)_packetId, packetData, id);
+                        PacketRouter.Dispatch((PacketTypes)packetId, packetData, id);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error packet {_packetId}: {ex.Message}");
+                        Console.WriteLine($"Error packet {packetId}: {ex.Message}");
                     }
                 }
                 // ------------------------------------------
 
-                _packetLength = 0;
+                packetLength = 0;
                 if (receivedData.UnreadLength() >= 4)
                 {
-                    _packetLength = receivedData.ReadInt();
-                    if (_packetLength <= 0) return true;
+                    packetLength = receivedData.ReadInt();
+                    if (packetLength <= 0) return true;
                 }
             }
 
-            if (_packetLength <= 1) return true;
+            if (packetLength <= 1) return true;
 
             return false;
         }
 
-        public void SendData(Packet _packet)
+        public void SendData(Packet packet)
         {
             try
             {
-                if (socket != null)
+                if (Socket != null)
                 {
-                    stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                    packet.WriteLength();
+                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
                 }
             }
             catch (Exception e)
@@ -124,11 +125,11 @@ namespace CMS21_Together_Server.Network.Transport
 
         public void Disconnect()
         {
-            socket?.Close();
+            Socket?.Close();
             stream = null;
             receivedData = null;
             receiveBuffer = null;
-            socket = null;
+            Socket = null;
         }
 	}
 }

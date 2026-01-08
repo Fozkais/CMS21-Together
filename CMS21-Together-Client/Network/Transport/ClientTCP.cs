@@ -144,11 +144,12 @@ public class ClientTCP
 
     public void Disconnect()
     {
+        if (socket == null) return;
         socket?.Close();
         stream = null;
         receivedData = null;
         receiveBuffer = null;
         socket = null;
-        MelonLogger.Msg("Disconnected from server.");
+        MelonLogger.Msg("TCP Connection closed.");
     }
 }

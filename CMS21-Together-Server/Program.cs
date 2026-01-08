@@ -12,36 +12,23 @@ namespace CMS21_Together_Server
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("- CMS21 Together Server v1.0 -");
-			try 
-			{
-				// Attempt to initialize
-				PacketRouter.Initialize(Assembly.GetExecutingAssembly());
-			}
-			catch (ReflectionTypeLoadException ex)
-			{
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine("!!! FATAL ERROR: MISSING DEPENDENCIES IN CORE !!!");
-				foreach (Exception loaderEx in ex.LoaderExceptions)
-				{
-					Console.WriteLine($"- {loaderEx.Message}");
-				}
-				Console.ResetColor();
-				Console.ReadLine();
-				return;
-			}
+			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 
 			Server.Start(4, 7777);
 			Console.WriteLine("Server started. Listening port 7777");
 			
 			bool isRunning = true;
+			bool wantToExit = false;
 			while (isRunning)
 			{
 				string cmd = Console.ReadLine();
 				if (cmd == "exit")
 				{
-					isRunning = false;
+					wantToExit = true;
 					Server.Stop();
 				}
+				if (Console.ReadLine() == "" && wantToExit)
+					isRunning = false;
 			}
 		}
 	}
