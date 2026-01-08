@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 
 namespace CMS21_Together_Core.Data;
 
@@ -11,16 +10,11 @@ public class QuaternionSerializable
 	public float z;
 	public float w;
 
-	public QuaternionSerializable(Quaternion rotation)
+	public QuaternionSerializable()
 	{
-		x = rotation.x;
-		y = rotation.y;
-		z = rotation.z;
-		w = rotation.w;
-	}
-
-	public Quaternion toQuaternion()
-	{
-		return new Quaternion(x, y, z, w);
+		x = 0;
+		y = 0;
+		z = 0;
+		w = 0;
 	}
 }

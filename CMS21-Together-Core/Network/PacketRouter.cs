@@ -9,36 +9,58 @@ public static class PacketRouter
 	private static Dictionary<PacketTypes, MethodInfo> _handlers = new Dictionary<PacketTypes, MethodInfo>();
     private static Dictionary<Type, PacketTypes> _packetMap = new Dictionary<Type, PacketTypes>();
 
-    public static void Initialize(Assembly assemblyToScan)
+    /// <summary>
+    /// Initializes the router by scanning the Core assembly (for Packets) 
+    /// and the specified assembly (for Handlers).
+    /// </summary>
+    /// <param name="handlerAssembly">The assembly containing the Logic/Handlers (Client or Server)</param>
+    public static void Initialize(Assembly handlerAssembly)
     {
         _handlers.Clear();
         _packetMap.Clear();
+        
+        ScanAssembly(Assembly.GetAssembly(typeof(PacketRouter)));
 
-        var types = assemblyToScan.GetTypes();
+        // 2. Scan Logic Assembly (To find Handlers in Client or Server)
+        ScanAssembly(handlerAssembly);
+        
+        Console.WriteLine($"[PacketRouter] {_handlers.Count} handlers and {_packetMap.Count} packets registered.");
+    }
+
+    private static void ScanAssembly(Assembly assembly)
+    {
+        if (assembly == null) return;
+
+        var types = assembly.GetTypes();
 
         foreach (var type in types)
         {
+            // A. Register Packet Data Classes (Found mostly in Core)
             var packetAttr = type.GetCustomAttribute<NetworkPacket>();
             if (packetAttr != null)
             {
-                _packetMap[type] = packetAttr.Type;
+                if (!_packetMap.ContainsKey(type))
+                {
+                    _packetMap[type] = packetAttr.Type;
+                }
             }
-            
-            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance))
+
+            // B. Register Packet Handlers (Found mostly in Server/Client)
+            // We scan static methods
+            foreach (var method in type.GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static))
             {
                 var handlerAttr = method.GetCustomAttribute<PacketHandler>();
                 if (handlerAttr != null)
                 {
                     if (_handlers.ContainsKey(handlerAttr.Type))
-                    { 
-                        Console.WriteLine($"[PacketRouter] found multiple handlers for type {handlerAttr.Type}.");
+                    {
+                        Console.WriteLine($"[PacketRouter] Warning: Multiple handlers found for packet {handlerAttr.Type}. Ignoring duplicate in {assembly.GetName().Name}.");
                         continue;
                     }
                     _handlers.Add(handlerAttr.Type, method);
                 }
             }
         }
-        Console.WriteLine($"[PacketRouter] {_handlers.Count} handlers and {_packetMap.Count} packet registered.");
     }
     
     public static PacketTypes GetPacketId<T>(T packetData) where T : INetworkData

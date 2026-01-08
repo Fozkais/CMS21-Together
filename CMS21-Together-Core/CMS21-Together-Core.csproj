@@ -35,69 +35,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="ConvertExtentions.cs" />
-        <Compile Include="Data\ButtonState.cs" />
-        <Compile Include="Data\CustomUISection.cs" />
-        <Compile Include="Data\Gamemode.cs" />
-        <Compile Include="Data\GameScene.cs" />
-        <Compile Include="Data\ModCar.cs" />
-        <Compile Include="Data\ModSaveData.cs" />
-        <Compile Include="Data\NetworkType.cs" />
-        <Compile Include="Data\PlayerInfo.cs" />
         <Compile Include="Data\QuaternionSerializable.cs" />
-        <Compile Include="Data\UICustomPanelType.cs" />
-        <Compile Include="Data\UserData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModBodyPartData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModBonusPartData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModCarFluid.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModCarFluidType.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModCarInfoData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModCarPart.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModCarPlace.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModFluidData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModFluidsData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModGearboxData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModHeadLampAlignmentData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModLicencePlatesData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModMountObject.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModMountObjectData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModNewCarData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModNewCarLifterData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModNewCarLoaderData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModPartData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModPartScript.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModPartType.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModTuningData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModWheelData.cs" />
-        <Compile Include="Data\Vanilla\Cars\ModWheelsAlignmentData.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModEngineData.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModEngineStand.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModIOSpecialType.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModNewMachines.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModNewUnlockedPosition.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModToolsData.cs" />
-        <Compile Include="Data\Vanilla\GarageTool\ModWheelBalancerActionType.cs" />
-        <Compile Include="Data\Vanilla\GarageUpgrade.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModJob.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModJobPart.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModJobTask.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModNewJobPart.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModNewJobsData.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModNewJobTaskWrapper.cs" />
-        <Compile Include="Data\Vanilla\Jobs\ModNewJobWrapper.cs" />
-        <Compile Include="Data\Vanilla\ModColor.cs" />
-        <Compile Include="Data\Vanilla\ModDifficultyLevel.cs" />
-        <Compile Include="Data\Vanilla\ModGroupItem.cs" />
-        <Compile Include="Data\Vanilla\ModItem.cs" />
-        <Compile Include="Data\Vanilla\ModLifterState.cs" />
-        <Compile Include="Data\Vanilla\ModLPData.cs" />
-        <Compile Include="Data\Vanilla\ModNewGlobalDataWrapper.cs" />
-        <Compile Include="Data\Vanilla\ModNewInventoryData.cs" />
-        <Compile Include="Data\Vanilla\ModNewUpgradeSystemData.cs" />
-        <Compile Include="Data\Vanilla\ModPaintData.cs" />
-        <Compile Include="Data\Vanilla\ModPaintType.cs" />
-        <Compile Include="Data\Vanilla\ModPartInfo.cs" />
-        <Compile Include="Data\Vanilla\ModProfileData.cs" />
-        <Compile Include="Data\Vanilla\ModStats.cs" />
         <Compile Include="Data\Vector3Serializable.cs" />
         <Compile Include="Data\VersionStatus.cs" />
         <Compile Include="Network\Attributes.cs" />
@@ -110,127 +48,15 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include=".gitignore" />
-      <Content Include="Libs\0Harmony.dll" />
-      <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
-      <Content Include="Libs\Assembly-CSharp.dll" />
       <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
-      <Content Include="Libs\Il2Cppmscorlib.dll" />
-      <Content Include="Libs\MelonLoader.dll" />
       <Content Include="Libs\Newtonsoft.Json.dll" />
-      <Content Include="Libs\UnhollowerBaseLib.dll" />
-      <Content Include="Libs\UnityEngine.AnimationModule.dll" />
-      <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
-      <Content Include="Libs\UnityEngine.AudioModule.dll" />
-      <Content Include="Libs\UnityEngine.CoreModule.dll" />
-      <Content Include="Libs\UnityEngine.dll" />
-      <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
-      <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
-      <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
-      <Content Include="Libs\UnityEngine.InputModule.dll" />
-      <Content Include="Libs\UnityEngine.JSONSerializeModule.dll" />
-      <Content Include="Libs\UnityEngine.ParticleSystemModule.dll" />
-      <Content Include="Libs\UnityEngine.PhysicsModule.dll" />
-      <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
-      <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
-      <Content Include="Libs\UnityEngine.UI.dll" />
-      <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
-      <Content Include="Libs\UnityEngine.UIModule.dll" />
-      <Content Include="Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll" />
-      <Content Include="Libs\UnityEngine.UnityWebRequestAudioModule.dll" />
-      <Content Include="Libs\UnityEngine.UnityWebRequestModule.dll" />
-      <Content Include="Libs\UnityEngine.UnityWebRequestTextureModule.dll" />
-      <Content Include="Libs\UnityEngine.UnityWebRequestWWWModule.dll" />
     </ItemGroup>
     <ItemGroup>
-      <Reference Include="0Harmony">
-        <HintPath>Libs\0Harmony.dll</HintPath>
-      </Reference>
-      <Reference Include="Assembly-CSharp">
-        <HintPath>Libs\Assembly-CSharp.dll</HintPath>
-      </Reference>
-      <Reference Include="Assembly-CSharp-firstpass">
-        <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
-      </Reference>
       <Reference Include="Facepunch.Steamworks.Win64">
         <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
       </Reference>
-      <Reference Include="Il2Cppmscorlib">
-        <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
-      </Reference>
-      <Reference Include="MelonLoader">
-        <HintPath>Libs\MelonLoader.dll</HintPath>
-      </Reference>
       <Reference Include="Newtonsoft.Json">
         <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
-      </Reference>
-      <Reference Include="UnhollowerBaseLib">
-        <HintPath>Libs\UnhollowerBaseLib.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine">
-        <HintPath>Libs\UnityEngine.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AnimationModule">
-        <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AssetBundleModule">
-        <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AudioModule">
-        <HintPath>Libs\UnityEngine.AudioModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.CoreModule">
-        <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.ImageConversionModule">
-        <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.IMGUIModule">
-        <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.InputLegacyModule">
-        <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.InputModule">
-        <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.JSONSerializeModule">
-        <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.ParticleSystemModule">
-        <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.PhysicsModule">
-        <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.TextCoreModule">
-        <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.TextRenderingModule">
-        <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UI">
-        <HintPath>Libs\UnityEngine.UI.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UIElementsModule">
-        <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UIModule">
-        <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
       </Reference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

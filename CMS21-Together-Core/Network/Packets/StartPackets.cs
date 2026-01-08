@@ -4,9 +4,18 @@ using CMS21_Together_Core.Data;
 
 namespace CMS21_Together_Core.Network.Packets;
 
+
+[Serializable]
+[NetworkPacket(PacketTypes.handshake)]
+public class HandshakePacket : INetworkData
+{
+	public string username;
+}
+
+
 [Serializable]
 [NetworkPacket(PacketTypes.connect)]
-public class ConnectPacket
+public class ConnectPacket : INetworkData
 {
 	public string playerGuid;
 	public int playerID;
@@ -19,4 +28,4 @@ public class ConnectPacket
 
 [Serializable]
 [NetworkPacket(PacketTypes.disconnect)]
-public class DisconnectPacket { }
+public class DisconnectPacket : INetworkData { }
