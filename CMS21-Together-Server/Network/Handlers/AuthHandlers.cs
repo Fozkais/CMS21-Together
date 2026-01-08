@@ -10,7 +10,7 @@ namespace CMS21_Together_Server.Network.Handlers
 		[PacketHandler(PacketTypes.handshake)]
 		public static void OnHandshake(long clientId, HandshakePacket packet)
 		{
-			Console.WriteLine($"Reçu handshake de {packet.username} (Client {clientId})");
+			Console.WriteLine($"Reiceved handshake from {packet.username} (Client {clientId})");
 		}
 	}
 }

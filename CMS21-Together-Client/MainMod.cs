@@ -1,14 +1,7 @@
-﻿using CMS21_Together_Core.Data;
-using CMS21Together.ClientSide;
-using CMS21Together.ClientSide.Data;
-using CMS21Together.ClientSide.Data.Handle;
-using CMS21Together.ClientSide.Data.NewUI;
-using CMS21Together.ClientSide.Data.Player;
-using CMS21Together.ServerSide;
-using Il2CppSystem.Collections;
+﻿using CMS21_Together_Core.Network;
+using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Network;
 using MelonLoader;
-using Steamworks;
-using UnhollowerRuntimeLib;
 using UnityEngine;
 
 // ReSharper disable All
@@ -29,68 +22,41 @@ namespace CMS21Together
 
 		public override void OnLateInitializeMelon()
 		{
-			Client.Instance = new Client();
-			Server.Instance = new Server();
-			ContentManager.Instance = new ContentManager();
-
-			ClientData.UserData = TogetherModManager.LoadUserData();
-			if (ApiCalls.useSteam)
-			{
-				SteamClient.Init(1190000);
-				SteamNetworkingUtils.InitRelayNetworkAccess();
-			}
-
 			isModInitialized = true;
+			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
+			Client.Init();
+			
 			LoggerInstance.Msg("Together Mod Initialized!");
+			LoggerInstance.Msg("Press F5 to start connection");
 		}
 
 		public override void OnSceneWasLoaded(int buildindex, string sceneName)
 		{
 			if (!isModInitialized) return;
-
-			if (sceneName == "Menu")
-			{
-				SavesManager.Initialize();
-				ContentManager.Instance.Initialize();
-
-				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);
-				Application.runInBackground = false;
-			}
-
-			UICore.InitializeUI(sceneName);
-			if (Client.Instance.isConnected)
-			{
-				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);
-				ClientSend.SceneChangePacket(ClientData.UserData.scene);
-
-				if (SceneManager.CurrentScene() == GameScene.garage && ClientData.Instance.playerPrefab == null)
-					ClientData.Instance.LoadPlayerPrefab();
-			}
 		}
 
 		public override void OnUpdate()
 		{
-			if (!isModInitialized || !Client.Instance.isConnected)
+			if (!isModInitialized )
 				return;
-
-			if (SceneManager.CurrentScene() == GameScene.garage)
-				ClientData.Instance.UpdateClient();
-
-
-			if (ApiCalls.useSteam)
+			
+			if (Input.GetKeyDown(KeyCode.F5))
 			{
-				SteamClient.RunCallbacks();
-				if (Client.Instance.steam != null) Client.Instance.steam.Receive();
-				if (Server.Instance.steam != null) Server.Instance.steam.Receive();
+				LoggerInstance.Msg("Tentative de connexion au local...");
+				Client.Instance.ConnectToServer("127.0.0.1");
 			}
-
+			
+			if (Input.GetKeyDown(KeyCode.F6))
+			{
+				LoggerInstance.Msg("Envoi du Handshake...");
+				Client.Instance.SendToServer(new HandshakePacket 
+				{ 
+					username = "TestUser",
+				});
+			}
+			
+			
 			ThreadManager.UpdateThread();
-		}
-
-
-		public static void StartCoroutine(IEnumerator routine)
-		{
-			GameManager.Instance.StartCoroutine(routine);
 		}
 
 		public override void OnLateUpdate()
@@ -103,15 +69,12 @@ namespace CMS21Together
 
 		public override void OnInitializeMelon()
 		{
-			ClassInjector.RegisterTypeInIl2Cpp<InfoBillboard>();
+			
 		}
 
 		public override void OnApplicationQuit()
 		{
 			isClosing = true;
-			TogetherModManager.SavePreferences();
-			if (Server.Instance.isRunning)
-				MelonCoroutines.Start(Server.Instance.CloseServer());
 		}
 	}
 }
