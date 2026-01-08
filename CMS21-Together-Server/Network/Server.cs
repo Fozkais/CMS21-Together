@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21_Together_Server.Network.Transport;
 
 namespace CMS21_Together_Server.Network
 {
@@ -15,6 +17,7 @@ namespace CMS21_Together_Server.Network
         public static Dictionary<int, Client> Clients = new Dictionary<int, Client>();
         
         private static TcpListener  tcpListener;
+        public static SteamTransport steamTransport { get; private set; }
         private static UdpClient udpListener;
         private static bool isRunning;
 
@@ -38,6 +41,86 @@ namespace CMS21_Together_Server.Network
             
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
+
+            if (Program.USE_STEAM)
+            {
+                steamTransport = new SteamTransport();
+                steamTransport.Initialize(7777);
+                
+                steamTransport.OnClientConnected += HandleSteamConnection;
+                steamTransport.OnDataReceived += HandleSteamData;
+            }
+        }
+
+        private static int GetIDFromSteamID(long steamID)
+        {
+            for (int i = 1; i <= MaxPlayers; i++)
+            {
+                if (Clients[i].isConnected && Clients[i].SteamID == steamID)
+                    return i;
+            }
+            return -1;
+        }
+
+        private static void HandleSteamData(long steamID, byte[] data)
+        {
+            int packetLength = 0;
+
+            int id = GetIDFromSteamID(steamID);
+            if (id == -1) return;
+            
+            Packet receivedData = new Packet(data);
+            if (receivedData.UnreadLength() >= 4)
+            {
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0) return ;
+            }
+
+            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
+            {
+                byte[] packetBytes = receivedData.ReadBytes(packetLength);
+                
+                using (Packet packet = new Packet(packetBytes))
+                {
+                    int packetId = packet.ReadInt();
+
+                    try 
+                    {
+                        object packetData = packet.Read<object>(); 
+                        
+                        PacketRouter.Dispatch((PacketTypes)packetId, packetData, id);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error packet {packetId}: {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private static void HandleSteamConnection(long steamId)
+        {
+            for (int i = 1; i <= MaxPlayers; i++)
+            {
+                if (!Clients[i].isConnected)
+                {
+                    Clients[i].SteamID = steamId; 
+                    Clients[i].ConnectionType = NetworkType.Steam;
+                    Clients[i].isConnected = true; 
+            
+                    SendToClient(new ConnectPacket()
+                    {
+                        gameVersion = "",
+                        playerGuid = "",
+                        username = "",
+                        message = "Welcome to server!",
+                        modVersion = Program.MOD_VERSION,
+                        playerID = Clients[i].ID
+                    }, Clients[i].ID);
+                    return;
+                }
+            }
+            // Rejeter la connexion si plein TODO
         }
 
         private static void TcpConnectCallback(IAsyncResult result)
@@ -132,10 +215,17 @@ namespace CMS21_Together_Server.Network
             using (Packet packet = new Packet((int)id))
             {
                 packet.Write(packetData);
-                if (reliable)
-                    Clients[clientID].Tcp.SendData(packet);
+                if (Clients[clientID].ConnectionType == NetworkType.DirectIP)
+                {
+                    if (reliable)
+                        Clients[clientID].Tcp.SendData(packet);
+                    else
+                        Clients[clientID].Udp.SendData(packet);
+                }
                 else
-                    Clients[clientID].Udp.SendData(packet);
+                {
+                    steamTransport.SendToClient(Clients[clientID].SteamID, packet.ToArray(), reliable);
+                }
             }
         }
         

@@ -2,6 +2,7 @@
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 
 // ReSharper disable All
@@ -23,6 +24,9 @@ namespace CMS21Together
 		public override void OnLateInitializeMelon()
 		{
 			isModInitialized = true;
+			
+			SteamClient.Init(1190000);
+			SteamNetworkingUtils.InitRelayNetworkAccess();
 			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
 			Client.Init();
 			
@@ -45,6 +49,10 @@ namespace CMS21Together
 				LoggerInstance.Msg("Local Connection Attempt...");
 				Client.Instance.ConnectToServer("127.0.0.1");
 			}
+			
+			SteamClient.RunCallbacks();
+			if (Client.Instance.isConnected && Client.Instance.steam != null) Client.Instance.steam.Receive();
+			
 			ThreadManager.UpdateThread();
 		}
 

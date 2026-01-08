@@ -1,4 +1,5 @@
 ﻿using System;
+using CMS21_Together_Core.Data;
 using CMS21_Together_Server.Network.Transport;
 
 namespace CMS21_Together_Server.Network
@@ -6,6 +7,9 @@ namespace CMS21_Together_Server.Network
 	public class Client
 	{
 		public int ID;
+		public long SteamID { get; set; }
+		public NetworkType ConnectionType;
+		
 		public Tcp Tcp;
 		public Udp Udp;
 
@@ -19,6 +23,8 @@ namespace CMS21_Together_Server.Network
 			Udp = new Udp(ID);
 			OnConnectedSuccessfully += OnConnected;
 		}
+
+		
 
 		private void OnConnected()
 		{

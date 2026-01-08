@@ -35,6 +35,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="ConvertExtentions.cs" />
+        <Compile Include="Data\NetworkType.cs" />
         <Compile Include="Data\QuaternionSerializable.cs" />
         <Compile Include="Data\Vector3Serializable.cs" />
         <Compile Include="Data\VersionStatus.cs" />

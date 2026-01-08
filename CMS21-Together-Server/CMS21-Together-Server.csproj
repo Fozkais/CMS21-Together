@@ -15,7 +15,7 @@
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PlatformTarget>x64</PlatformTarget>
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>
         <Optimize>false</Optimize>
@@ -23,6 +23,7 @@
         <DefineConstants>DEBUG;TRACE</DefineConstants>
         <ErrorReport>prompt</ErrorReport>
         <WarningLevel>4</WarningLevel>
+        <Prefer32bit>false</Prefer32bit>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,6 +35,9 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
+        <Reference Include="Facepunch.Steamworks.Win64">
+          <HintPath>..\CMS21-Together-Core\Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+        </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
@@ -43,6 +47,7 @@
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Server.cs" />
+        <Compile Include="Network\Transport\SteamTransport.cs" />
         <Compile Include="Network\Transport\TCP.cs" />
         <Compile Include="Network\Transport\UDP.cs" />
         <Compile Include="Program.cs"/>
@@ -54,7 +59,7 @@
     <ItemGroup>
       <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj">
         <Project>{4f57c271-97f2-4bad-8add-c0657ba91cda}</Project>
-        <Name>CMS21-Together-Core</Name>
+        <Name>CMS21-Together-Core</Name><PlatformTarget>x64</PlatformTarget>
       </ProjectReference>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>

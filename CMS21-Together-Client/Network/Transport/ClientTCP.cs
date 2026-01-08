@@ -4,7 +4,7 @@ using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using MelonLoader;
 
-namespace CMS21Together.Network;
+namespace CMS21Together.Network.Transport;
 
 public class ClientTCP
 {
