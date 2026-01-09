@@ -10,12 +10,14 @@ namespace CMS21_Together_Server.Data
         public int MaxPlayers { get; }
         public bool UseSteam { get; }
         public string GsltToken { get; }
+        public int LogLevel { get; }
         
-        private ServerConfig(int maxPlayers, bool useSteam, string gsltToken)
+        private ServerConfig(int maxPlayers, bool useSteam, string gsltToken, int logLevel)
         {
             MaxPlayers = maxPlayers;
             UseSteam = useSteam;
             GsltToken = gsltToken;
+            LogLevel = logLevel;
         }
 
         public static ServerConfig LoadOrCreate()
@@ -28,7 +30,7 @@ namespace CMS21_Together_Server.Data
                 CreateDefaultConfig(filePath);
                 
                 // Return default values
-                return new ServerConfig(4,true, string.Empty);
+                return new ServerConfig(4,true, string.Empty, 0);
             }
 
             Logger.Info($"Loading configuration from '{ConfigFileName}'...");
@@ -51,6 +53,12 @@ namespace CMS21_Together_Server.Data
                     sw.WriteLine("# Required for persistent ServerID. Leave empty \"\" for anonymous login.");
                     sw.WriteLine("# Generate one here: https://steamcommunity.com/dev/managegameservers");
                     sw.WriteLine("GSLT_Token = \"\"");
+                    sw.WriteLine("");
+                    sw.WriteLine("# Log Level Configuration");
+                    sw.WriteLine("# 0 = Base (Info, Warn, Error, Success)");
+                    sw.WriteLine("# 1 = Debug (Show all internal messages)");
+                    sw.WriteLine("log_level = 0");
+                    sw.WriteLine("");
                 }
                 Logger.Info($"Created default configuration file at: {path}");
                 Logger.Warn("Please edit the config file to add your GSLT token if needed.");
@@ -66,6 +74,7 @@ namespace CMS21_Together_Server.Data
             int maxPlayers = 4;
             bool useSteam = true;
             string gsltToken = string.Empty;
+            int logLevel = 0;
 
             try
             {
@@ -103,6 +112,10 @@ namespace CMS21_Together_Server.Data
                     {
                         gsltToken = value.Replace("\"", "");
                     }
+                    else if (key.Equals("log_level", StringComparison.OrdinalIgnoreCase))
+                    {
+                        int.TryParse(value, out logLevel);
+                    }
                 }
 
                 Logger.Success("Configuration loaded successfully.");
@@ -112,7 +125,7 @@ namespace CMS21_Together_Server.Data
                 Logger.Error($"Error reading configuration file: {ex.Message}. Using defaults.");
             }
 
-            return new ServerConfig(maxPlayers, useSteam, gsltToken);
+            return new ServerConfig(maxPlayers, useSteam, gsltToken, logLevel);
         }
 	}
 }

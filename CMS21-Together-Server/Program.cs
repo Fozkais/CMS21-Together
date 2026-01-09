@@ -39,11 +39,14 @@ namespace CMS21_Together_Server
 		public static void Main(string[] args)
 		{
 			SetupLogging();
-			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
+			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 			
 			Config = ServerConfig.LoadOrCreate();
-
+			
+			Logger.CurrentLogLevel = Config.LogLevel;
+			Logger.Info($"Log Level set to: {Logger.CurrentLogLevel}");
+			
 			Server.Start(Config.MaxPlayers, PORT);
 			Logger.Info($"Server started. Listening port {PORT}");
 			

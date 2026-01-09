@@ -133,6 +133,7 @@ namespace CMS21_Together_Server.Network
                     }
                 }
             }
+            catch (ObjectDisposedException) { }
             catch (Exception e)
             {
                 Logger.Error($"Error on UDP Receive: {e.Message}");
@@ -185,6 +186,8 @@ namespace CMS21_Together_Server.Network
 
         public static void Stop()
         {
+            isRunning = false;
+            
             foreach (Client client in Clients.Values)
             {
                 if (!client.isConnected) continue;
@@ -197,7 +200,7 @@ namespace CMS21_Together_Server.Network
             tcpListener.Stop();
             udpListener?.Close();
             steamTransport?.Shutdown();
-            Logger.Info("Server Stopped. Press Enter to close...");
+            Logger.Info("Server Stopped.");
         }
 	}
 }

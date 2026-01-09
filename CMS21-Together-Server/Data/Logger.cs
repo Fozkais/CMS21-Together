@@ -4,6 +4,8 @@ namespace CMS21_Together_Server.Data
 {
 	public static class Logger
 	{
+		public static int CurrentLogLevel { get; set; } = 0;
+		
 		public static void Info(string message)
 		{
 			WriteLog("INFO", message, ConsoleColor.Cyan);
@@ -26,11 +28,13 @@ namespace CMS21_Together_Server.Data
 
 		public static void Debug(string message)
 		{
+			if (CurrentLogLevel < 1) return;
 			WriteLog("DEBUG", message, ConsoleColor.DarkGray);
 		}
 		
 		public static void DebugNoLine(string message, string prefix="")
 		{
+			if (CurrentLogLevel < 1) return;
 			WriteLogSameLine(prefix, message, ConsoleColor.DarkGray);
 		}
 
