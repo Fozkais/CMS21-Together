@@ -16,7 +16,6 @@ namespace CMS21_Together_Server.Network.Transport
     {
         public static SteamTransport Initialize(int port)
         {
-            SteamTransport transport;
             try 
             {
                 SteamServer.Init(1190000, new SteamServerInit("CMS21", "CMS21 Mod")
@@ -30,7 +29,7 @@ namespace CMS21_Together_Server.Network.Transport
                 SteamServer.LogOnAnonymous();
 
                 int timeout = 0;
-               Logger.DebugNoLine("Waiting for Steam Response", true);
+               Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
                 while (timeout < 100 && GetServerSteamID() < 90200000000000000)
                 {
                     SteamServer.RunCallbacks();
@@ -41,7 +40,7 @@ namespace CMS21_Together_Server.Network.Transport
                 }
                 Console.WriteLine("");
                 
-                transport = SteamNetworkingSockets.CreateRelaySocket<SteamTransport>(port);
+                var transport = SteamNetworkingSockets.CreateRelaySocket<SteamTransport>(port);
                 
                 Logger.Info($"Steam server ID: {GetServerSteamID()}");
                 return transport;

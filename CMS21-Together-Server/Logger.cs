@@ -29,18 +29,18 @@ namespace CMS21_Together_Server
 			WriteLog("DEBUG", message, ConsoleColor.DarkGray);
 		}
 		
-		public static void DebugNoLine(string message, bool prefix=false)
+		public static void DebugNoLine(string message, string prefix="")
 		{
 			WriteLogSameLine(prefix, message, ConsoleColor.DarkGray);
 		}
 
-		private static void WriteLogSameLine(bool prefix, string message, ConsoleColor color)
+		private static void WriteLogSameLine(string prefix, string message, ConsoleColor color)
 		{
 			ConsoleColor originalColor = Console.ForegroundColor;
 			Console.ForegroundColor = color;
 
 			string logLine = message;
-			if (prefix)
+			if (prefix != "")
 				logLine = $"[{DateTime.Now:HH:mm:ss}] [{prefix}] {message}";
 			Console.Write(logLine);
 			
