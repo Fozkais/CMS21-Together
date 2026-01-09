@@ -25,14 +25,14 @@ namespace CMS21_Together_Server.Network
         {
             if (isRunning)
             {
-                Console.WriteLine("Server is already running.");
+                Logger.Info("Server is already running.");
                 return;
             }
             isRunning = true;
             MaxPlayers = maxPlayers;
             Port = port;
 
-            Console.WriteLine("Starting TCP socket...");
+            Logger.Debug("Starting TCP socket...");
             InitializeServerData();
 
             tcpListener = new TcpListener(IPAddress.Any, Port);
@@ -70,7 +70,7 @@ namespace CMS21_Together_Server.Network
                 TcpClient client = tcpListener.EndAcceptTcpClient(result);
                 tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
 
-                Console.WriteLine($"Pending connection: {client.Client.RemoteEndPoint}...");
+                Logger.Debug($"Pending connection: {client.Client.RemoteEndPoint}...");
 
                 for (int i = 1; i <= MaxPlayers; i++)
                 {
@@ -92,13 +92,13 @@ namespace CMS21_Together_Server.Network
                     }
                 }
 
-                Console.WriteLine($"Connection refused : Server full.");
+                Logger.Debug($"Connection refused : Server full.");
                 client.Close();
             }
             catch (ObjectDisposedException) { return; }
             catch (Exception e)
             {
-                Console.WriteLine($"Error TCPConnect: {e.Message}");
+                Logger.Error($"Error TCPConnect: {e.Message}");
             }
         }
         
@@ -134,7 +134,7 @@ namespace CMS21_Together_Server.Network
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error on UDP Receive: {e.Message}");
+                Logger.Error($"Error on UDP Receive: {e.Message}");
             }
         }
 
@@ -178,7 +178,7 @@ namespace CMS21_Together_Server.Network
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error on UDP Send: {e.Message}");
+                Logger.Error($"Error on UDP Send: {e.Message}");
             }
         }
 
@@ -191,12 +191,12 @@ namespace CMS21_Together_Server.Network
                 {
                     message = "Server is closing."
                 }, client.ID);
-                Console.WriteLine($"Sent Disconect to client ID: {client.ID}");
+                Logger.Debug($"Sent Disconect to client ID: {client.ID}");
             }
             tcpListener.Stop();
             udpListener?.Close();
             steamTransport?.Shutdown();
-            Console.WriteLine("Server Stopped. Press Enter to close...");
+            Logger.Info("Server Stopped. Press Enter to close...");
         }
 	}
 }

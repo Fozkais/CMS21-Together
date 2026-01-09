@@ -30,25 +30,25 @@ namespace CMS21_Together_Server.Network.Transport
                 SteamServer.LogOnAnonymous();
 
                 int timeout = 0;
-                while (timeout < 100 || GetServerSteamID() < 90200000000000000)
+               Logger.DebugNoLine("Waiting for Steam Response", true);
+                while (timeout < 100 && GetServerSteamID() < 90200000000000000)
                 {
                     SteamServer.RunCallbacks();
-                    Thread.Sleep(50);
+                    Thread.Sleep(25);
                     timeout++;
                     
-                    if (timeout % 20 == 0) Console.Write(".");
+                    if (timeout % 20 == 0)  Logger.DebugNoLine(".");
                 }
                 Console.WriteLine("");
                 
                 transport = SteamNetworkingSockets.CreateRelaySocket<SteamTransport>(port);
                 
-                Console.WriteLine("[Steam] Steam server started!");
-                Console.WriteLine($"Steam server ID: '{GetServerSteamID()}'");
+                Logger.Info($"Steam server ID: {GetServerSteamID()}");
                 return transport;
             }
             catch (Exception e)
             {
-                Console.WriteLine($"[Steam] Erreur Init: {e.Message}");
+                Logger.Error($"Steam Server Init Error: {e.Message}");
             }
             return null;
         }
@@ -73,7 +73,7 @@ namespace CMS21_Together_Server.Network.Transport
 
             Result res = conn.SendMessage(_data, data.Length, type);
             if(res != Result.OK)
-                Console.WriteLine($"[SteamConnection->Send] Could not send packet:{res.ToString()}.");
+                Logger.Debug($"[SteamConnection->Send] Could not send packet:{res.ToString()}.");
 
             if (_data != IntPtr.Zero) Marshal.FreeHGlobal(_data);
         }
@@ -85,17 +85,17 @@ namespace CMS21_Together_Server.Network.Transport
             {
                 if (Server.Clients.Values.All(c => c.isConnected))
                 {
-                    Console.WriteLine($"[SteamTransport->OnConnectionChanged] Incoming connection {clientID} would exceed max connection count. Rejecting.");
+                    Logger.Debug($"[SteamTransport->OnConnectionChanged] Incoming connection {clientID} would exceed max connection count. Rejecting.");
                     connection.Close(false, 0, "Max Connection Exceeded");
                     return;
                 }
 
                 Result result = connection.Accept();
                 if (result == Result.OK)
-                    Console.WriteLine($"[SteamTransport->OnConnectionChanged] Accepted connection for {clientID}");
+                    Logger.Debug($"[SteamTransport->OnConnectionChanged] Accepted connection for {clientID}");
                 else
                 {
-                    Console.WriteLine($"[SteamTransport->OnConnectionChanged] Client {clientID} couldn't be accepted: {result.ToString()}");
+                    Logger.Debug($"[SteamTransport->OnConnectionChanged] Client {clientID} couldn't be accepted: {result.ToString()}");
                     connection.Close(false, 0, result.ToString());
                 }
             }
@@ -122,19 +122,15 @@ namespace CMS21_Together_Server.Network.Transport
         public override void OnConnected(Connection connection, ConnectionInfo info)
         {
             base.OnConnected(connection, info);
-            Console.WriteLine($"[Steam] Nouveau client : {info.Identity.SteamId}");
         }
 
         public override void OnDisconnected(Connection connection, ConnectionInfo info)
         {
             base.OnDisconnected(connection, info);
-            Console.WriteLine($"[Steam] Client déconnecté : {info.Identity.SteamId}");
         }
 
         public override void OnMessage(Connection connection, NetIdentity identity, IntPtr data, int size, long messageNum, long recvTime, int channel)
         {
-            Console.WriteLine("Received a packet from clients !");
-            
             byte[] byteData = SteamNetworkUtils.ConvertIntPtrToByteArray(data, size);
             int packetLength = 0;
 
@@ -164,7 +160,7 @@ namespace CMS21_Together_Server.Network.Transport
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error packet {packetId}: {ex.Message}");
+                        Logger.Error($"Error packet {packetId}: {ex.Message}");
                     }
                 }
             }
@@ -179,16 +175,12 @@ namespace CMS21_Together_Server.Network.Transport
 
         public static ulong GetServerSteamID()
         {
-            // On récupère l'instance active créée par Facepunch
             IntPtr serverPtr = GetSteamGameServerPointer();
-
             if (serverPtr == IntPtr.Zero)
             {
-                Console.WriteLine("[Erreur] Pointeur SteamGameServer nul. SteamServer.Init a-t-il été appelé ?");
+                Logger.Error("SteamGameServer ptr is null. SteamServer.Init as been called?");
                 return 0;
             }
-
-            // On appelle la fonction avec le bon contexte
             return GetSteamID_Native(serverPtr);
         }
 	}

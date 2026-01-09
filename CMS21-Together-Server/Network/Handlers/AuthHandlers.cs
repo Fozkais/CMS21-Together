@@ -10,14 +10,14 @@ namespace CMS21_Together_Server.Network.Handlers
 		[PacketHandler(PacketTypes.handshake)]
 		public static void OnHandshake(long clientId, HandshakePacket packet)
 		{
-			Console.WriteLine($"Reiceved handshake from {packet.username} (Client {clientId})");
+			Logger.Debug($"Reiceved handshake from {packet.username} (Client {clientId})");
 		}
 		
 		[PacketHandler(PacketTypes.connect)]
 		public static void OnConnected(long clientId, ConnectPacket packet)
 		{
-			Console.WriteLine($"Reiceved Connection callback from {packet.username}");
-			Console.WriteLine($"Received info: {packet.modVersion}, {packet.username}, {packet.playerID}");
+			Logger.Debug($"Reiceved Connection callback from {packet.username}");
+			Logger.Debug($"Received info: {packet.modVersion}, {packet.username}, {packet.playerID}");
 			
 			if (packet.modVersion != Program.MOD_VERSION)
 				Server.SendToClient(new DisconnectPacket()

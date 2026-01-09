@@ -72,28 +72,22 @@ namespace CMS21_Together_Server.Network.Transport
             while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
             {
                 byte[] packetBytes = receivedData.ReadBytes(packetLength);
-
-                // --- NOUVEAU SYSTÈME AVEC PACKET ROUTER ---
+                
                 using (Packet packet = new Packet(packetBytes))
                 {
                     int packetId = packet.ReadInt();
 
                     try 
                     {
-                        // On lit l'objet complet (si tes packets sont des classes sérialisées)
-                        // Note: Assure-toi que Packet.Read<object>() existe et utilise BinaryFormatter comme avant
-                        object packetData = packet.Read<object>(); 
                         
-                        // On dispatch via le Router
-                        // On passe 'id' (l'ID du client) pour savoir QUI a envoyé le message
+                        object packetData = packet.Read<object>(); 
                         PacketRouter.Dispatch((PacketTypes)packetId, packetData, id);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error packet {packetId}: {ex.Message}");
+                        Logger.Error($"Error packet {packetId}: {ex.Message}");
                     }
                 }
-                // ------------------------------------------
 
                 packetLength = 0;
                 if (receivedData.UnreadLength() >= 4)
@@ -119,7 +113,7 @@ namespace CMS21_Together_Server.Network.Transport
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Erreur sending TCP data to {id} : {e.Message}");
+                Logger.Error($"Erreur sending TCP data to {id} : {e.Message}");
             }
         }
 

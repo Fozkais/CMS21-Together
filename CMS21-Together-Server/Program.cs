@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using CMS21_Together_Core;
@@ -17,13 +18,33 @@ namespace CMS21_Together_Server
 
 		public const bool USE_STEAM = true;
 		
+		static void SetupLogging()
+		{
+			string logDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Log");
+			if (!Directory.Exists(logDirectory))
+			{
+				Directory.CreateDirectory(logDirectory);
+			}
+			
+			string timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+			string uniqueLogFileName = $"Log_{timestamp}.txt";
+			string uniqueLogPath = Path.Combine(logDirectory, uniqueLogFileName);
+			
+			string latestLogPath = Path.Combine(logDirectory, "Latest.txt");
+			
+			MultiTextWriter multiWriter = new MultiTextWriter(Console.Out, uniqueLogPath, latestLogPath);
+			Console.SetOut(multiWriter);
+		}
+		
 		public static void Main(string[] args)
 		{
-			Console.WriteLine($"- CMS21 Together Server v{SERVER_VERSION} -");
+			SetupLogging();
+			
+			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
 			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 
 			Server.Start(MAX_PLAYERS, PORT);
-			Console.WriteLine($"Server started. Listening port {PORT}");
+			Logger.Info($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;
 			while (isRunning)

@@ -18,7 +18,7 @@ namespace CMS21_Together_Server.Network.Transport
 		public void Connect(IPEndPoint _endPoint)
 		{
 			endPoint = _endPoint;
-			Console.WriteLine($"Client {id} connected with UDP by {endPoint}");
+			Logger.Debug($"Client {id} connected with UDP by {endPoint}");
 		}
 
 		public void SendData(Packet _packet)
@@ -41,7 +41,7 @@ namespace CMS21_Together_Server.Network.Transport
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"Error UDP Packet {_packetId}: {ex.Message}");
+					Logger.Error($"Error UDP Packet {_packetId}: {ex.Message}");
 				}
 			}
 		}

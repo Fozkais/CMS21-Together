@@ -44,6 +44,8 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Logger.cs" />
+        <Compile Include="MultiTextWriter.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Server.cs" />

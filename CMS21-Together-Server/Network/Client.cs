@@ -31,12 +31,12 @@ namespace CMS21_Together_Server.Network
 
 		private void OnConnected()
 		{
-			Console.WriteLine($"Client[{ID}] connected successfully!");
+			Logger.Debug($"Client[{ID}] connected successfully!");
 		}
 
 		public void Disconnect()
 		{
-			Console.WriteLine($"Client {ID} disconnected.");
+			Logger.Debug($"Client {ID} disconnected.");
 			Tcp.Disconnect();
 			isConnected = false;
 		}
