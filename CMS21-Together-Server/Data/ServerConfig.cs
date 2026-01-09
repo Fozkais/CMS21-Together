@@ -58,7 +58,6 @@ namespace CMS21_Together_Server.Data
                     sw.WriteLine("# 0 = Base (Info, Warn, Error, Success)");
                     sw.WriteLine("# 1 = Debug (Show all internal messages)");
                     sw.WriteLine("log_level = 0");
-                    sw.WriteLine("");
                 }
                 Logger.Info($"Created default configuration file at: {path}");
                 Logger.Warn("Please edit the config file to add your GSLT token if needed.");

@@ -35,10 +35,11 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="ConvertExtentions.cs" />
-        <Compile Include="Data\NetworkType.cs" />
+        <Compile Include="Data\Enum\Gamemode.cs" />
+        <Compile Include="Data\Enum\NetworkType.cs" />
+        <Compile Include="Data\Enum\VersionStatus.cs" />
         <Compile Include="Data\QuaternionSerializable.cs" />
         <Compile Include="Data\Vector3Serializable.cs" />
-        <Compile Include="Data\VersionStatus.cs" />
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />
         <Compile Include="Network\Packets\MovementPacket.cs" />

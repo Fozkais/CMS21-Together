@@ -38,15 +38,18 @@
         <Reference Include="Facepunch.Steamworks.Win64">
           <HintPath>..\CMS21-Together-Core\Libs\Facepunch.Steamworks.Win64.dll</HintPath>
         </Reference>
+        <Reference Include="Newtonsoft.Json">
+          <HintPath>..\CMS21-Together-Core\Libs\Newtonsoft.Json.dll</HintPath>
+        </Reference>
         <Reference Include="System"/>
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Data\Logger.cs" />
-        <Compile Include="Data\MultiTextWriter.cs" />
         <Compile Include="Data\ServerConfig.cs" />
+        <Compile Include="Logger\Logger.cs" />
+        <Compile Include="Logger\MultiTextWriter.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Server.cs" />
