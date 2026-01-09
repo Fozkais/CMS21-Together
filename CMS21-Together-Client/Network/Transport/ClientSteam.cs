@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
@@ -125,10 +126,16 @@ public class ClientSteam : ConnectionManager
 	public void Send(Packet _packet, bool reliable)
 	{
 		MelonLogger.Msg("Sent a packet to server.");
+
+		IntPtr data = SteamNetworkUtils.ConvertByteArrayToIntPtr(_packet.ToArray());
 		
 		SendType sendType = reliable ? SendType.Reliable : SendType.Unreliable;
-		Result res = Connection.SendMessage(SteamNetworkUtils.ConvertByteArrayToIntPtr(_packet.ToArray()), _packet.Length(), sendType);
+		Result res = Connection.SendMessage(data, _packet.Length(), sendType);
 		if(res != Result.OK)
 			MelonLogger.Error($"[ClientSteam->SendData] Issue while sending data:{res}");
+		if (data != IntPtr.Zero)
+		{
+			Marshal.FreeHGlobal(data); 
+		}
 	}
 }
