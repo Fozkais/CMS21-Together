@@ -114,7 +114,6 @@ namespace CMS21_Together_Server.Network.Transport
             {
                 if (Socket != null)
                 {
-                    packet.WriteLength();
                     stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
                 }
             }

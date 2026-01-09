@@ -26,21 +26,24 @@ namespace CMS21_Together_Server
 			Console.WriteLine($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;
-			bool wantToExit = false;
 			while (isRunning)
 			{
-				if (USE_STEAM && Server.steamTransport.isInitialized)
-					Server.steamTransport.Update();
-				
-				string cmd = Console.ReadLine();
-				if (cmd == "exit")
+				if (USE_STEAM && Server.steamTransport != null)
 				{
-					wantToExit = true;
-					Server.Stop();
+					Server.steamTransport.Update();
 				}
-				if (Console.ReadLine() == "" && wantToExit)
-					isRunning = false;
+				
+				if (Console.KeyAvailable)
+				{
+					string cmd = Console.ReadLine();
+					if (cmd == "exit")
+					{
+						isRunning = false;
+					}
+				}
+				Thread.Sleep(10);
 			}
+			Server.Stop();
 		}
 	}
 }

@@ -33,7 +33,6 @@ public class ClientUDP
     {
         try
         {
-            _packet.WriteLength();
             _packet.InsertInt(Client.Instance.id); 
 
             byte[] _data = _packet.ToArray();

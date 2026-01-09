@@ -126,7 +126,6 @@ public class ClientTCP
         {
             if (socket != null)
             {
-                packet.WriteLength();
                 byte[] buffer = packet.ToArray();
                 stream.BeginWrite(buffer, 0, buffer.Length, null, null);
             }

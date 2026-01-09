@@ -1,6 +1,7 @@
 ﻿using System;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Server.Network.Transport;
+using Steamworks.Data;
 
 namespace CMS21_Together_Server.Network
 {
@@ -12,6 +13,8 @@ namespace CMS21_Together_Server.Network
 		
 		public Tcp Tcp;
 		public Udp Udp;
+		
+		public Connection steamConnection;
 
 		public bool isConnected;
 		public Action OnConnectedSuccessfully;

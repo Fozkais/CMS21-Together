@@ -43,6 +43,7 @@
         <Compile Include="Network\PacketRouter.cs" />
         <Compile Include="Network\Packets\MovementPacket.cs" />
         <Compile Include="Network\Packets\StartPackets.cs" />
+        <Compile Include="Network\SteamNetworkUtils.cs" />
         <Compile Include="Packet.cs" />
         <Compile Include="PacketTypes.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />

@@ -49,6 +49,7 @@
         <Content Include="Libs\0Harmony.dll" />
         <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
         <Content Include="Libs\Assembly-CSharp.dll" />
+        <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
         <Content Include="Libs\Il2Cppmscorlib.dll" />
         <Content Include="Libs\MelonLoader.dll" />
         <Content Include="Libs\UnhollowerBaseLib.dll" />
@@ -109,7 +110,7 @@
         <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
       </Reference>
       <Reference Include="Facepunch.Steamworks.Win64">
-        <HintPath>..\CMS21-Together-Core\Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+        <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
       </Reference>
       <Reference Include="Il2Cppmscorlib">
         <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>

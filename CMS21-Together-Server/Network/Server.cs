@@ -44,11 +44,7 @@ namespace CMS21_Together_Server.Network
 
             if (Program.USE_STEAM)
             {
-                steamTransport = new SteamTransport();
-                steamTransport.Initialize(7777);
-                
-                steamTransport.OnClientConnected += HandleSteamConnection;
-                steamTransport.OnDataReceived += HandleSteamData;
+                steamTransport = SteamTransport.Initialize(7777);
             }
         }
 
@@ -61,67 +57,8 @@ namespace CMS21_Together_Server.Network
             }
             return -1;
         }
-
-        private static void HandleSteamData(long steamID, byte[] data)
-        {
-            int packetLength = 0;
-
-            int id = GetIDFromSteamID(steamID);
-            if (id == -1) return;
-            
-            Packet receivedData = new Packet(data);
-            if (receivedData.UnreadLength() >= 4)
-            {
-                packetLength = receivedData.ReadInt();
-                if (packetLength <= 0) return ;
-            }
-
-            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
-            {
-                byte[] packetBytes = receivedData.ReadBytes(packetLength);
-                
-                using (Packet packet = new Packet(packetBytes))
-                {
-                    int packetId = packet.ReadInt();
-
-                    try 
-                    {
-                        object packetData = packet.Read<object>(); 
-                        
-                        PacketRouter.Dispatch((PacketTypes)packetId, packetData, id);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error packet {packetId}: {ex.Message}");
-                    }
-                }
-            }
-        }
-
-        private static void HandleSteamConnection(long steamId)
-        {
-            for (int i = 1; i <= MaxPlayers; i++)
-            {
-                if (!Clients[i].isConnected)
-                {
-                    Clients[i].SteamID = steamId; 
-                    Clients[i].ConnectionType = NetworkType.Steam;
-                    Clients[i].isConnected = true; 
-            
-                    SendToClient(new ConnectPacket()
-                    {
-                        gameVersion = "",
-                        playerGuid = "",
-                        username = "",
-                        message = "Welcome to server!",
-                        modVersion = Program.MOD_VERSION,
-                        playerID = Clients[i].ID
-                    }, Clients[i].ID);
-                    return;
-                }
-            }
-            // Rejeter la connexion si plein TODO
-        }
+        
+        
 
         private static void TcpConnectCallback(IAsyncResult result)
         {
@@ -215,6 +152,7 @@ namespace CMS21_Together_Server.Network
             using (Packet packet = new Packet((int)id))
             {
                 packet.Write(packetData);
+                packet.WriteLength();
                 if (Clients[clientID].ConnectionType == NetworkType.DirectIP)
                 {
                     if (reliable)
@@ -224,7 +162,7 @@ namespace CMS21_Together_Server.Network
                 }
                 else
                 {
-                    steamTransport.SendToClient(Clients[clientID].SteamID, packet.ToArray(), reliable);
+                    steamTransport.SendData(Clients[clientID].steamConnection, packet.ToArray(), reliable);
                 }
             }
         }
@@ -235,7 +173,6 @@ namespace CMS21_Together_Server.Network
             {
                 if (_clientEndPoint != null)
                 {
-                    _packet.WriteLength();
                     udpListener.BeginSend(_packet.ToArray(), _packet.Length(), _clientEndPoint, null, null);
                 }
             }
@@ -258,6 +195,7 @@ namespace CMS21_Together_Server.Network
             }
             tcpListener.Stop();
             udpListener?.Close();
+            steamTransport?.Shutdown();
             Console.WriteLine("Server Stopped. Press Enter to close...");
         }
 	}

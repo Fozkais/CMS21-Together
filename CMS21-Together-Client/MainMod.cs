@@ -17,27 +17,22 @@ namespace CMS21Together
 		public const string ASSEMBLY_MOD_VERSION = "0.5.0" + ASSEMBLY_HOTFIX_VERSION;
 		public const string ASSEMBLY_HOTFIX_VERSION = "";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION + ASSEMBLY_HOTFIX_VERSION;
-
-		public static bool isClosing;
+		
 		public bool isModInitialized;
 
 		public override void OnLateInitializeMelon()
 		{
-			isModInitialized = true;
-			
 			SteamClient.Init(1190000);
 			SteamNetworkingUtils.InitRelayNetworkAccess();
+			
 			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
 			Client.Init();
 			
 			LoggerInstance.Msg("Together Mod Initialized!");
-			LoggerInstance.Msg("Press F5 to start connection");
+			isModInitialized = true;
 		}
 
-		public override void OnSceneWasLoaded(int buildindex, string sceneName)
-		{
-			if (!isModInitialized) return;
-		}
+		public override void OnSceneWasLoaded(int buildindex, string sceneName) { }
 
 		public override void OnUpdate()
 		{
@@ -49,29 +44,21 @@ namespace CMS21Together
 				LoggerInstance.Msg("Local Connection Attempt...");
 				Client.Instance.ConnectToServer("127.0.0.1");
 			}
+			if (Input.GetKeyDown(KeyCode.F6))
+			{
+				LoggerInstance.Msg("Steam Connection Attempt...");
+				Client.Instance.ConnectToSteamServer();
+			}
 			
 			SteamClient.RunCallbacks();
-			if (Client.Instance.isConnected && Client.Instance.steam != null) Client.Instance.steam.Receive();
-			
+			if (Client.Instance.isConnected) Client.Instance.steam.Receive();
 			ThreadManager.UpdateThread();
 		}
 
-		public override void OnLateUpdate()
-		{
-			if (!isModInitialized)
-			{
-				return;
-			}
-		}
+		public override void OnLateUpdate() { }
 
-		public override void OnInitializeMelon()
-		{
-			
-		}
+		public override void OnInitializeMelon() { }
 
-		public override void OnApplicationQuit()
-		{
-			isClosing = true;
-		}
+		public override void OnApplicationQuit() { }
 	}
 }
