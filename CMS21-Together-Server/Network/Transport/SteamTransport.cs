@@ -28,45 +28,50 @@ namespace CMS21_Together_Server.Network.Transport
                     VersionString = Program.SERVER_VERSION
                 });
 
-                int timeout = 0;
-                if (Program.Config.GsltToken != string.Empty)
+                bool isConnectedToSteam = false;
+                Action onConnected = () => 
                 {
+                    isConnectedToSteam = true;
+                };
+                SteamServer.OnSteamServersConnected += onConnected;
+                int timeout = 0;
+                
+                if (Program.Config.GsltToken != string.Empty)
                     LogOn(Program.Config.GsltToken);
-                    Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
-                    while (timeout < 300 && GetServerSteamID() < 85000000000000000)
-                    {
-                        SteamServer.RunCallbacks();
-                        Thread.Sleep(25);
-                        timeout++;
-                    
-                        if (timeout % 20 == 0)  Logger.DebugNoLine(".");
-                    }
-                    Console.WriteLine("");
-                    if (GetServerSteamID() > 85000000000000000)
-                        Logger.Success("Logged to Steam Successfully!");
-                }
                 else
                 {
                     Logger.Warn("GSLT Token not set. Login as Anonymous");
                     Logger.Warn("Without GSLT Token server ID will not be persistent.");
-                    Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
+                   
                     SteamServer.LogOnAnonymous();
-                    while (timeout < 300 && GetServerSteamID() < 90200000000000000)
-                    {
-                        SteamServer.RunCallbacks();
-                        Thread.Sleep(25);
-                        timeout++;
+                }
+                
+                Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
+                while (timeout < 50 && !isConnectedToSteam)
+                {
+                    SteamServer.RunCallbacks();
+                    Thread.Sleep(100);
+                    timeout++;
                     
-                        if (timeout % 20 == 0)  Logger.DebugNoLine(".");
-                    }
-                    Console.WriteLine("");
-                    if (GetServerSteamID() > 90200000000000000)
-                        Logger.Success("Logged to Steam Successfully!");
+                    if (timeout % 10 == 0)  Logger.DebugNoLine(".");
+                }
+                Console.WriteLine("");
+                SteamServer.OnSteamServersConnected -= onConnected;
+                
+                if (isConnectedToSteam)
+                {
+                    ulong steamID = GetServerSteamID();
+                    Logger.Success($"Steam connection established! SteamID: {steamID}");
+                }
+                else
+                {
+                    Logger.Warn("Timeout reached. Steam connection could not be established in time.");
+                    Logger.Warn("Server will continue over DirectIp.");
+                    SteamServer.Shutdown();
+                    return null;
                 }
                 
                 var transport = SteamNetworkingSockets.CreateRelaySocket<SteamTransport>(port);
-                
-                Logger.Info($"Steam server ID: {GetServerSteamID()}");
                 return transport;
             }
             catch (Exception e)
@@ -221,7 +226,7 @@ namespace CMS21_Together_Server.Network.Transport
             try
             {
                 Marshal.Copy(tokenBytes, 0, tokenPtr, tokenBytes.Length);
-                Logger.Info("Logging on to Steam with GSLT...");
+                Logger.Debug("Logging on to Steam with GSLT...");
                 SteamNative.LogOn_Native(serverPtr, tokenPtr);
             }
             catch (Exception ex)
