@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
+using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Network;
 using Steamworks;
 
@@ -14,9 +15,8 @@ namespace CMS21_Together_Server
 		public const string SERVER_VERSION = "1.0";
 		public const string MOD_VERSION = "0.5.0";
 		public const int PORT = 7777;
-		public const int MAX_PLAYERS = 4;
 
-		public const bool USE_STEAM = true;
+		public static ServerConfig Config { get; private set; }
 		
 		static void SetupLogging()
 		{
@@ -39,17 +39,18 @@ namespace CMS21_Together_Server
 		public static void Main(string[] args)
 		{
 			SetupLogging();
-			
-			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
 			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
+			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
+			
+			Config = ServerConfig.LoadOrCreate();
 
-			Server.Start(MAX_PLAYERS, PORT);
+			Server.Start(Config.MaxPlayers, PORT);
 			Logger.Info($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;
 			while (isRunning)
 			{
-				if (USE_STEAM && Server.steamTransport != null)
+				if (Config.UseSteam && Server.steamTransport != null)
 				{
 					Server.steamTransport.Update();
 				}

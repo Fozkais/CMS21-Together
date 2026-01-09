@@ -1,5 +1,6 @@
 ﻿using System;
 using CMS21_Together_Core.Data;
+using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Network.Transport;
 using Steamworks.Data;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CMS21_Together_Server
+namespace CMS21_Together_Server.Data
 {
 	public static class Logger
 	{

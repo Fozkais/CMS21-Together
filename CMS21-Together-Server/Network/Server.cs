@@ -6,6 +6,7 @@ using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Network.Transport;
 
 namespace CMS21_Together_Server.Network
@@ -42,7 +43,7 @@ namespace CMS21_Together_Server.Network
             udpListener = new UdpClient(Port);
             udpListener.BeginReceive(UDPReceiveCallback, null);
 
-            if (Program.USE_STEAM)
+            if (Program.Config.UseSteam)
             {
                 steamTransport = SteamTransport.Initialize(7777);
             }

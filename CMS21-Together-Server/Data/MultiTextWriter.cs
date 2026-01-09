@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace CMS21_Together_Server
+namespace CMS21_Together_Server.Data
 {
 	public class MultiTextWriter : TextWriter
 	{

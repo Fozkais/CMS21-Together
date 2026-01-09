@@ -2,6 +2,7 @@
 using System.Net;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
+using CMS21_Together_Server.Data;
 
 namespace CMS21_Together_Server.Network.Transport
 {

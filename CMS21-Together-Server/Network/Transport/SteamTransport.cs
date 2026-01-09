@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21_Together_Server.Data;
 using Steamworks;
 using Steamworks.Data;
 
@@ -25,20 +27,42 @@ namespace CMS21_Together_Server.Network.Transport
                     Secure = false,
                     VersionString = Program.SERVER_VERSION
                 });
-                
-                SteamServer.LogOnAnonymous();
 
                 int timeout = 0;
-               Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
-                while (timeout < 100 && GetServerSteamID() < 90200000000000000)
+                if (Program.Config.GsltToken != string.Empty)
                 {
-                    SteamServer.RunCallbacks();
-                    Thread.Sleep(25);
-                    timeout++;
+                    LogOn(Program.Config.GsltToken);
+                    Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
+                    while (timeout < 300 && GetServerSteamID() < 85000000000000000)
+                    {
+                        SteamServer.RunCallbacks();
+                        Thread.Sleep(25);
+                        timeout++;
                     
-                    if (timeout % 20 == 0)  Logger.DebugNoLine(".");
+                        if (timeout % 20 == 0)  Logger.DebugNoLine(".");
+                    }
+                    Console.WriteLine("");
+                    if (GetServerSteamID() > 85000000000000000)
+                        Logger.Success("Logged to Steam Successfully!");
                 }
-                Console.WriteLine("");
+                else
+                {
+                    Logger.Warn("GSLT Token not set. Login as Anonymous");
+                    Logger.Warn("Without GSLT Token server ID will not be persistent.");
+                    Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
+                    SteamServer.LogOnAnonymous();
+                    while (timeout < 300 && GetServerSteamID() < 90200000000000000)
+                    {
+                        SteamServer.RunCallbacks();
+                        Thread.Sleep(25);
+                        timeout++;
+                    
+                        if (timeout % 20 == 0)  Logger.DebugNoLine(".");
+                    }
+                    Console.WriteLine("");
+                    if (GetServerSteamID() > 90200000000000000)
+                        Logger.Success("Logged to Steam Successfully!");
+                }
                 
                 var transport = SteamNetworkingSockets.CreateRelaySocket<SteamTransport>(port);
                 
@@ -164,23 +188,50 @@ namespace CMS21_Together_Server.Network.Transport
                 }
             }
         }
-        
-        [DllImport("steam_api64", CallingConvention = CallingConvention.Cdecl, EntryPoint = "SteamAPI_SteamGameServer_v013")]
-        public static extern IntPtr GetSteamGameServerPointer();
-
-        // 2. La fonction GetSteamID qui prend ce pointeur en argument
-        [DllImport("steam_api64", CallingConvention = CallingConvention.Cdecl, EntryPoint = "SteamAPI_ISteamGameServer_GetSteamID")]
-        public static extern ulong GetSteamID_Native(IntPtr instancePtr);
-
         public static ulong GetServerSteamID()
         {
-            IntPtr serverPtr = GetSteamGameServerPointer();
+            IntPtr serverPtr = SteamNative.GetSteamGameServerPointer();
             if (serverPtr == IntPtr.Zero)
             {
                 Logger.Error("SteamGameServer ptr is null. SteamServer.Init as been called?");
                 return 0;
             }
-            return GetSteamID_Native(serverPtr);
+            return SteamNative.GetSteamID_Native(serverPtr);
         }
-	}
+        
+        public static void LogOn(string token)
+        {
+            IntPtr serverPtr = SteamNative.GetSteamGameServerPointer();
+
+            if (serverPtr == IntPtr.Zero)
+            {
+                Logger.Error("SteamGameServer ptr is null. SteamServer.Init has likely not been called.");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(token))
+            {
+                Logger.Error("LogOn called with an empty or null token.");
+                return;
+            }
+            
+            byte[] tokenBytes = Encoding.UTF8.GetBytes(token + "\0");
+            IntPtr tokenPtr = Marshal.AllocHGlobal(tokenBytes.Length);
+
+            try
+            {
+                Marshal.Copy(tokenBytes, 0, tokenPtr, tokenBytes.Length);
+                Logger.Info("Logging on to Steam with GSLT...");
+                SteamNative.LogOn_Native(serverPtr, tokenPtr);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"Error while trying to LogOn: {ex.Message}");
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(tokenPtr);
+            }
+        }
+    }
 }
