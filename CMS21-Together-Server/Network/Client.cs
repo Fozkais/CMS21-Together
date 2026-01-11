@@ -1,5 +1,6 @@
 ﻿using System;
 using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Network.Transport;
 using Steamworks.Data;
@@ -27,9 +28,7 @@ namespace CMS21_Together_Server.Network
 			Udp = new Udp(ID);
 			OnConnectedSuccessfully += OnConnected;
 		}
-
 		
-
 		private void OnConnected()
 		{
 			Logger.Debug($"Client[{ID}] connected successfully!");

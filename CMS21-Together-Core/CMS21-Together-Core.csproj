@@ -37,9 +37,11 @@
         <Compile Include="ConvertExtentions.cs" />
         <Compile Include="Data\Enum\Gamemode.cs" />
         <Compile Include="Data\Enum\NetworkType.cs" />
+        <Compile Include="Data\Enum\SpecialGroup.cs" />
         <Compile Include="Data\Enum\VersionStatus.cs" />
-        <Compile Include="Data\QuaternionSerializable.cs" />
-        <Compile Include="Data\Vector3Serializable.cs" />
+        <Compile Include="Data\GameType\PartProperty.cs" />
+        <Compile Include="Data\GameType\QuaternionSerializable.cs" />
+        <Compile Include="Data\GameType\Vector3Serializable.cs" />
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />
         <Compile Include="Network\Packets\MovementPacket.cs" />
@@ -52,6 +54,9 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include=".gitignore" />
+      <Content Include="Data\item_database.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
       <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
       <Content Include="Libs\Newtonsoft.Json.dll" />
     </ItemGroup>

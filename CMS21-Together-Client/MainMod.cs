@@ -1,5 +1,4 @@
 ﻿using CMS21_Together_Core.Network;
-using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using MelonLoader;
 using Steamworks;

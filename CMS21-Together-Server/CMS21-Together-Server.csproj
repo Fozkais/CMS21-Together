@@ -47,6 +47,7 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Data\GameDataManager.cs" />
         <Compile Include="Data\ServerConfig.cs" />
         <Compile Include="Logger\Logger.cs" />
         <Compile Include="Logger\MultiTextWriter.cs" />

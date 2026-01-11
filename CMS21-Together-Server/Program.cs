@@ -43,9 +43,16 @@ namespace CMS21_Together_Server
 			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 			
 			Config = ServerConfig.LoadOrCreate();
-			
 			Logger.CurrentLogLevel = Config.LogLevel;
 			Logger.Info($"Log Level set to: {Logger.CurrentLogLevel}");
+			
+			GameDataManager.Initialize();
+			if (!GameDataManager.isInitialized)
+			{
+				Logger.Error("Game Data Initialization failed. Closing..");
+				Thread.Sleep(5 * 1000);
+				return;
+			}
 			
 			Server.Start(Config.MaxPlayers, PORT);
 			Logger.Info($"Server started. Listening port {PORT}");

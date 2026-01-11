@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Server.Data;
@@ -48,18 +49,6 @@ namespace CMS21_Together_Server.Network
                 steamTransport = SteamTransport.Initialize(7777);
             }
         }
-
-        private static int GetIDFromSteamID(long steamID)
-        {
-            for (int i = 1; i <= MaxPlayers; i++)
-            {
-                if (Clients[i].isConnected && Clients[i].SteamID == steamID)
-                    return i;
-            }
-            return -1;
-        }
-        
-        
 
         private static void TcpConnectCallback(IAsyncResult result)
         {

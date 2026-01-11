@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using MelonLoader;

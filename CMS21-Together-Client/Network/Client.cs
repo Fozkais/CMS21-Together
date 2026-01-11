@@ -1,6 +1,7 @@
 ﻿using System;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
+using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21Together.Network.Transport;
 using MelonLoader;
@@ -32,6 +33,8 @@ public class Client
 
 	public void ConnectToServer(string ip = "127.0.0.1")
 	{
+		if (isConnected) return;
+		
 		NetworkType = NetworkType.DirectIP;
 		tcp.Connect(ip, MainMod.PORT);
 		Application.runInBackground = true;
@@ -40,6 +43,8 @@ public class Client
 
 	public void ConnectToSteamServer()
 	{
+		if (isConnected) return;
+		
 		NetworkType = NetworkType.Steam;
 		SteamNetworkingUtils.DebugLevel = NetDebugOutput.Error;
 		isConnected = true;
