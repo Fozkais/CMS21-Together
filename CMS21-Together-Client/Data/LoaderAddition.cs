@@ -5,6 +5,8 @@ using CMS.Garage.Customization;
 using CMS.Managers;
 using CMS.UI;
 using CMS.UI.Windows;
+using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Network;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using MelonLoader;
@@ -68,9 +70,8 @@ public static class LoaderAddition
 		yield break;
 	}
 
-	private static IEnumerator CustomLoad(GarageLoader __instance)
-	{ 
-		MelonLogger.Msg("Run Custom Load method !!");
+	private static IEnumerator VanillaLoad(GarageLoader __instance)
+	{
 		__instance.isReady = false;
 		NotificationCenter.IsGameReady = false;
 		ScreenFader screenFader = ScreenFader.Get();
@@ -230,6 +231,56 @@ public static class LoaderAddition
 				i = num + 1;
 			}
 		}*/
+	}
+
+	private static IEnumerator CustomLoad(GarageLoader __instance)
+	{
+		yield return VanillaLoad(__instance);
+		
+		ScreenFader screenFader = ScreenFader.Get();
+		DLCErrorWindow dlcErrorWindow = WindowManager.Instance.GetWindowByID<DLCErrorWindow>(WindowID.DLCError);
+		ProfileData currentProfileData = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
+		PlayerData profileData = currentProfileData.PlayerData;
+		
+		MelonLogger.Msg("Run Custom Load method !!");
+
+		Client.Instance.Send(new AskForSync());
+		
+		float timeoutDuration = 15.0f;
+		float waitStartTime = Time.realtimeSinceStartup;
+		bool timedOut = false;
+		
+		while (!ClientData.IsInitialSyncFinished)
+		{
+			if (Time.realtimeSinceStartup - waitStartTime > timeoutDuration)
+			{
+				MelonLogger.Error("Connection timed out during initial sync!");
+				timedOut = true;
+				break;
+			}
+			
+			if (!Client.Instance.IsConnected)
+			{
+				MelonLogger.Error("Disconnected from server during loading!");
+				timedOut = true;
+				break;
+			}
+			
+			yield return YieldInstructions.WaitForEndOfFrame;
+		}
+
+		if (timedOut)
+		{
+			ClientData.IsInitialSyncFinished = false;
+			Client.Instance.Disconnect();
+			
+			//TODO: Show timeout message
+			var manager = NotificationCenter.m_instance;
+			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
+			yield break;
+		}
+		
+		MelonLogger.Msg("Game synced successfully.");
 		
 		SceneLoader.BlockProgress = false; // needed to end loading
 		NotificationCenter.IsGameReady = true; // needed to end loading

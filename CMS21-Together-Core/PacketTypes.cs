@@ -10,6 +10,7 @@ public enum PacketTypes
 	Disconnect,
 	
 	// World State Sync
+	AskForSync,
 	WorldState, // Gamemode, Money, Lvl/Exp
 	GarageState, // Garage Upgrade, Garage Customization
 	CarData, // Individual carInfo (sent 1 time for every carLoader)

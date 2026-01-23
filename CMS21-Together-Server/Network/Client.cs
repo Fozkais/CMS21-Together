@@ -44,7 +44,6 @@ namespace CMS21_Together_Server.Network
 			ConnectionValid = true;
 			Logger.Debug($"Client[{ID}] connected successfully!");
 			Server.SendToClient(new HeartbeatPacket(), ID);
-			Server.SendToClient(ServerGameState.CurrentState.WorldState, ID);
 		}
 
 		public void Update()

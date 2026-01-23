@@ -74,7 +74,7 @@ public class ClientSteam : ConnectionManager
 	{
 		base.OnMessage(data, size, messageNum, recvTime, channel);
 
-		MelonLogger.Msg("Received a packet from server!");
+		//MelonLogger.Msg("Received a packet from server!");
 		
 		byte[] byteData = SteamNetworkUtils.ConvertIntPtrToByteArray(data, size);
 		
@@ -124,7 +124,7 @@ public class ClientSteam : ConnectionManager
 	
 	public void Send(Packet _packet, bool reliable)
 	{
-		MelonLogger.Msg("Sent a packet to server.");
+		//MelonLogger.Msg("Sent a packet to server.");
 
 		IntPtr data = SteamNetworkUtils.ConvertByteArrayToIntPtr(_packet.ToArray());
 		
