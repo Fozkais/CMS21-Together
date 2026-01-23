@@ -83,7 +83,7 @@ public static class LoaderAddition
 			__instance.StartCoroutine(BenchmarkManager.Get().StartBenchmark());
 			yield break;
 		}
-		global::UnityEngine.Object.Destroy(__instance.GetComponent<BenchmarkManager>());
+		Object.Destroy(__instance.GetComponent<BenchmarkManager>());
 		Camera mainCamera = Camera.main;
 		while (!mainCamera.GetComponent<FPSCamera>().IsReady)
 		{
@@ -139,7 +139,7 @@ public static class LoaderAddition
 			{
 				yield return YieldInstructions.WaitForEndOfFrame;
 			}
-			if (!(car.GetSaveName() != GlobalData.SelectedCarLoader) && GlobalData.NewMileage != 0)
+			if (car.GetSaveName() == GlobalData.SelectedCarLoader && GlobalData.NewMileage != 0)
 			{
 				CarLoader carLoader = car;
 				carLoader.CarInfoData = carLoader.CarInfoData with { Mileage = carLoader.CarInfoData.Mileage + GlobalData.NewMileage };
@@ -153,7 +153,7 @@ public static class LoaderAddition
 		Helper.ClearCacheForIDs();
 		ProfileData currentProfileData = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
 		PlayerData profileData = currentProfileData.PlayerData;
-		CharacterController characterController = global::UnityEngine.Object.FindObjectOfType<CharacterController>();
+		CharacterController characterController = Object.FindObjectOfType<CharacterController>();
 		if (!profileData.IsDefault())
 		{
 			characterController.transform.position = profileData.GetPosition();

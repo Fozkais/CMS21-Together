@@ -12,6 +12,9 @@ public class AskForSync : INetworkData { }
 public class WorldState : INetworkData
 {
 	public Gamemode Gamemode;
+	public int Money;
+	public int Level;
+	public int Exp;
 }
 
 [Serializable]

@@ -36,6 +36,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="Data\ClientData.cs" />
+        <Compile Include="Data\DataUtils.cs" />
         <Compile Include="Data\LoaderAddition.cs" />
         <Compile Include="Data\ModGameManager.cs" />
         <Compile Include="Data\SaveUtils.cs" />

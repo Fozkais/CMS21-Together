@@ -34,7 +34,7 @@
         <WarningLevel>4</WarningLevel>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="ConvertExtentions.cs" />
+        <Compile Include="Data\DataHelper.cs" />
         <Compile Include="Data\Enum\Gamemode.cs" />
         <Compile Include="Data\Enum\NetworkType.cs" />
         <Compile Include="Data\Enum\SpecialGroup.cs" />

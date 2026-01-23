@@ -15,6 +15,13 @@ public static class WorldStatesPackets
 		difficultyManager.SetDifficultyLevel((DifficultyLevel)packet.Gamemode);
 		difficultyManager.ActivateDifficultyLevel();
 		
+		GlobalData.SetPlayerMoney(packet.Money);
+		GlobalData.PlayerLevel = packet.Level - 1;
+		GlobalData.PlayerExp = packet.Exp;
+		int statValue = Singleton<GameManager>.Instance.PlatformManager.GetStatValue("stat_level");
+		Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_level", GlobalData.RealPlayerLevel - statValue);
+		UIManager.Get().RefreshStatsUICoroutine(StatType.Experience, true);
+		
 		ClientData.IsWorldStateSynced = true;
 	}
 	

@@ -43,5 +43,6 @@ public static class AuthHandler
 	{
 		MelonLogger.Msg($"[Received From Server] Disconnected from server : {packet.message}");
 		Client.Instance.Disconnect();
+		NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
 	}
 }

@@ -23,7 +23,10 @@ namespace CMS21_Together_Server.Data
 		{
 			CurrentState = new ModGameState();
 
-			CurrentState.WorldState.Gamemode = Gamemode.Sandbox;
+			CurrentState.WorldState.Gamemode = Gamemode.Normal;
+			CurrentState.WorldState.Money = 12500;
+			CurrentState.WorldState.Level = 8;
+			CurrentState.WorldState.Exp = 480;
 			Logger.Info("New game created.");
 		}
 
