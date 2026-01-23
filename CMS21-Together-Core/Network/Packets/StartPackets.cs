@@ -6,18 +6,14 @@ namespace CMS21_Together_Core.Network.Packets;
 
 
 [Serializable]
-[NetworkPacket(PacketTypes.handshake)]
-public class HandshakePacket : INetworkData
-{
-	public string username;
-}
+[NetworkPacket(PacketTypes.Heartbeat)]
+public class HeartbeatPacket : INetworkData { }
 
 
 [Serializable]
-[NetworkPacket(PacketTypes.connect)]
+[NetworkPacket(PacketTypes.Connect)]
 public class ConnectPacket : INetworkData
 {
-	public string playerGuid;
 	public int playerID;
 	public string username;
 	
@@ -27,7 +23,7 @@ public class ConnectPacket : INetworkData
 }
 
 [Serializable]
-[NetworkPacket(PacketTypes.disconnect)]
+[NetworkPacket(PacketTypes.Disconnect)]
 public class DisconnectPacket : INetworkData
 {
 	public string message;

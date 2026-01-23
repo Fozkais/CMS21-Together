@@ -47,14 +47,14 @@ namespace CMS21_Together_Server.Network.Transport
                     SteamServer.LogOnAnonymous();
                 }
                 
-                Logger.DebugNoLine("Waiting for Steam Response", "DEBUG");
+                Logger.DebugNoNL("Waiting for Steam Response", "DEBUG");
                 while (timeout < 50 && !isConnectedToSteam)
                 {
                     SteamServer.RunCallbacks();
                     Thread.Sleep(100);
                     timeout++;
                     
-                    if (timeout % 10 == 0)  Logger.DebugNoLine(".");
+                    if (timeout % 10 == 0)  Logger.DebugNoNL(".");
                 }
                 Console.WriteLine("");
                 SteamServer.OnSteamServersConnected -= onConnected;
@@ -112,7 +112,7 @@ namespace CMS21_Together_Server.Network.Transport
             ulong clientID = info.Identity.SteamId.Value;
             if (info.State == ConnectionState.Connecting)
             {
-                if (Server.Clients.Values.All(c => c.isConnected))
+                if (Server.Clients.Values.All(c => c.IsConnected))
                 {
                     Logger.Debug($"[SteamTransport->OnConnectionChanged] Incoming connection {clientID} would exceed max connection count. Rejecting.");
                     connection.Close(false, 0, "Max Connection Exceeded");
@@ -131,14 +131,13 @@ namespace CMS21_Together_Server.Network.Transport
             else if (info.State == ConnectionState.Connected)
             {
                 OnConnected(connection, info);
-                Client client = Server.Clients.Values.First(c => !c.isConnected);
-                client.isConnected = true;
+                Client client = Server.Clients.Values.First(c => !c.IsConnected);
+                client.IsConnected = true;
                 client.ConnectionType = NetworkType.Steam;
-                client.steamConnection = connection;
+                client.SteamConnection = connection;
                 Server.SendToClient(new ConnectPacket()
                 {
                     gameVersion = "",
-                    playerGuid = "",
                     username = "",
                     message = "Welcome to server!",
                     modVersion = Program.MOD_VERSION,
@@ -163,7 +162,7 @@ namespace CMS21_Together_Server.Network.Transport
             byte[] byteData = SteamNetworkUtils.ConvertIntPtrToByteArray(data, size);
             int packetLength = 0;
 
-            int id = Server.Clients.Values.First(c => c.steamConnection == connection).ID;
+            int id = Server.Clients.Values.First(c => c.SteamConnection == connection).ID;
             if (id == -1) return;
             
             Packet receivedData = new Packet();

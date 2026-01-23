@@ -16,6 +16,8 @@ namespace CMS21_Together_Server
 		public const string MOD_VERSION = "0.5.0";
 		public const int PORT = 7777;
 
+		public const int CONNECTION_TIMEOUT = 10;
+
 		public static ServerConfig Config { get; private set; }
 		
 		static void SetupLogging()
@@ -50,21 +52,18 @@ namespace CMS21_Together_Server
 			if (!GameDataManager.isInitialized)
 			{
 				Logger.Error("Game Data Initialization failed. Closing..");
-				Thread.Sleep(5 * 1000);
+				Exit();
 				return;
 			}
 			
 			Server.Start(Config.MaxPlayers, PORT);
+			ServerGameState.CreateNewSession();
 			Logger.Info($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;
 			while (isRunning)
 			{
-				if (Config.UseSteam && Server.steamTransport != null)
-				{
-					Server.steamTransport.Update();
-				}
-				
+				Server.Update();
 				if (Console.KeyAvailable)
 				{
 					string cmd = Console.ReadLine();
@@ -75,7 +74,14 @@ namespace CMS21_Together_Server
 				}
 				Thread.Sleep(10);
 			}
+			Exit();
+		}
+
+		private static void Exit()
+		{
 			Server.Stop();
+			Logger.Info("Press Any key to exit..");
+			Console.ReadKey();
 		}
 	}
 }

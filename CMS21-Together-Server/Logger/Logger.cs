@@ -32,7 +32,7 @@ namespace CMS21_Together_Server.Data
 			WriteLog("DEBUG", message, ConsoleColor.DarkGray);
 		}
 		
-		public static void DebugNoLine(string message, string prefix="")
+		public static void DebugNoNL(string message, string prefix="")
 		{
 			if (CurrentLogLevel < 1) return;
 			WriteLogSameLine(prefix, message, ConsoleColor.DarkGray);

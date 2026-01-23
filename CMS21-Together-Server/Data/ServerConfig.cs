@@ -50,6 +50,7 @@ namespace CMS21_Together_Server.Data
                     sw.WriteLine("use_steam = True");
                     sw.WriteLine("");
                     sw.WriteLine("# Game Server Login Token (GSLT)");
+                    sw.WriteLine("# Please have in mind that if you dont own the game you cant use this (only anonymous will work)");
                     sw.WriteLine("# Required for persistent ServerID. Leave empty \"\" for anonymous login.");
                     sw.WriteLine("# Generate one here: https://steamcommunity.com/dev/managegameservers");
                     sw.WriteLine("GSLT_Token = \"\"");

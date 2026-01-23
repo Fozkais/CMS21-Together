@@ -12,7 +12,6 @@ namespace CMS21_Together_Server.Data
 		public static Dictionary<string, PartProperty> itemsDatabase;
 		public static bool isInitialized { get; private set; }
 		
-		
 		public static void Initialize()
 		{
 			itemsDatabase = LoadItemDataBase();

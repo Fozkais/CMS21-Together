@@ -64,15 +64,14 @@ namespace CMS21_Together_Server.Network
 
                 for (int i = 1; i <= MaxPlayers; i++)
                 {
-                    if (!Clients[i].isConnected)
+                    if (!Clients[i].IsConnected)
                     {
                         Clients[i].Tcp.Connect(client);
-                        Clients[i].isConnected = true;
+                        Clients[i].IsConnected = true;
                         
                         SendToClient(new ConnectPacket()
                         {
                             gameVersion = "",
-                            playerGuid = "",
                             username = "",
                             message = "Welcome to server!",
                             modVersion = Program.MOD_VERSION,
@@ -153,7 +152,7 @@ namespace CMS21_Together_Server.Network
                 }
                 else
                 {
-                    steamTransport.SendData(Clients[clientID].steamConnection, packet.ToArray(), reliable);
+                    steamTransport.SendData(Clients[clientID].SteamConnection, packet.ToArray(), reliable);
                 }
             }
         }
@@ -175,11 +174,12 @@ namespace CMS21_Together_Server.Network
 
         public static void Stop()
         {
+            if (!isRunning) return;
             isRunning = false;
             
             foreach (Client client in Clients.Values)
             {
-                if (!client.isConnected) continue;
+                if (!client.IsConnected) continue;
                 SendToClient(new DisconnectPacket()
                 {
                     message = "Server is closing."
@@ -191,5 +191,20 @@ namespace CMS21_Together_Server.Network
             steamTransport?.Shutdown();
             Logger.Info("Server Stopped.");
         }
-	}
+
+        public static void Update()
+        {
+            if (!isRunning) return;
+            if (Program.Config.UseSteam && steamTransport != null)
+                steamTransport.Update();
+            
+            foreach (var client in Clients.Values)
+            {
+                if (client.IsConnected)
+                {
+                    client.Update();
+                }
+            }
+        }
+    }
 }

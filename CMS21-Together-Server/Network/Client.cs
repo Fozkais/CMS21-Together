@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Threading;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
+using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Network.Transport;
 using Steamworks.Data;
@@ -11,34 +13,65 @@ namespace CMS21_Together_Server.Network
 	{
 		public int ID;
 		public long SteamID { get; set; }
+
 		public NetworkType ConnectionType;
 		
 		public Tcp Tcp;
 		public Udp Udp;
 		
-		public Connection steamConnection;
+		public Connection SteamConnection;
 
-		public bool isConnected;
+		public bool IsConnected;
 		public Action OnConnectedSuccessfully;
+
+		public float LastHeartbeatTime { get; set; }
+		private float lastHeartbeatTime;
+		private bool ConnectionValid;
 
 		public Client(int clientId)
 		{
 			ID = clientId;
-			Tcp = new Tcp(ID);
-			Udp = new Udp(ID);
+			if (ConnectionType == NetworkType.DirectIP)
+			{
+				Tcp = new Tcp(ID);
+				Udp = new Udp(ID);
+			}
 			OnConnectedSuccessfully += OnConnected;
 		}
 		
 		private void OnConnected()
 		{
+			ConnectionValid = true;
 			Logger.Debug($"Client[{ID}] connected successfully!");
+			Server.SendToClient(new HeartbeatPacket(), ID);
+			Server.SendToClient(ServerGameState.CurrentState.WorldState, ID);
+		}
+
+		public void Update()
+		{
+			if (!ConnectionValid) return;
+			
+			if (ServerTime.Time - lastHeartbeatTime >= 3)
+			{
+				lastHeartbeatTime = ServerTime.Time;
+				Server.SendToClient(new HeartbeatPacket(), ID, false);
+			}
+			
+			if (ServerTime.Time - LastHeartbeatTime > Program.CONNECTION_TIMEOUT)
+			{
+				// Log in English
+				Logger.Warn($"Client[{ID}] timed out (No response for {Program.CONNECTION_TIMEOUT}s).");
+				Disconnect();
+			}
 		}
 
 		public void Disconnect()
 		{
 			Logger.Debug($"Client {ID} disconnected.");
 			Tcp.Disconnect();
-			isConnected = false;
+			IsConnected = false;
+			ConnectionValid = false;
+			lastHeartbeatTime = 0;
 		}
 	}
 }

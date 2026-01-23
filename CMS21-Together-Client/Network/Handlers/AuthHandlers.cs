@@ -10,34 +10,35 @@ namespace CMS21Together.Network.Handlers;
 
 public static class AuthHandler
 {
-	[PacketHandler(PacketTypes.handshake)]
-	public static void HandleHandshake(long senderId, HandshakePacket packet)
+	[PacketHandler(PacketTypes.Heartbeat)]
+	public static void HandleHeartbeat(long senderId, HeartbeatPacket packet)
 	{
-		MelonLogger.Msg($"[Received From Server] Message: {packet.username}");
+		if (!Client.Instance.IsConnectionValid)
+			Client.Instance.OnConnectionValidated.Invoke();
+		Client.Instance.Send(new HeartbeatPacket(), false);
 	}
 	
-	[PacketHandler(PacketTypes.connect)]
+	[PacketHandler(PacketTypes.Connect)]
 	public static void HandleConnect(long senderId, ConnectPacket packet)
 	{
 		MelonLogger.Msg($"Server compatible with mod version {packet.modVersion}");
 		MelonLogger.Msg($"Received message from server: {packet.message}");
-		Client.Instance.id = packet.playerID;
+		Client.Instance.ID = packet.playerID;
 		if (Client.Instance.NetworkType == NetworkType.DirectIP)
 		{
-			Client.Instance.udp.Connect(((IPEndPoint)Client.Instance.tcp.socket.Client.LocalEndPoint).Port);
+			Client.Instance.UDP.Connect(((IPEndPoint)Client.Instance.Tcp.socket.Client.LocalEndPoint).Port);
 			Client.Instance.Send(new ConnectPacket()
 			{
 				gameVersion = "",
 				message = "",
-				playerGuid = "",
 				modVersion = MainMod.ASSEMBLY_MOD_VERSION,
-				playerID = Client.Instance.id,
+				playerID = Client.Instance.ID,
 				username = $"TestUser{packet.playerID}"
 			});
 		}
 	}
 	
-	[PacketHandler(PacketTypes.disconnect)]
+	[PacketHandler(PacketTypes.Disconnect)]
 	public static void HandleDisconnect(long senderId, DisconnectPacket packet)
 	{
 		MelonLogger.Msg($"[Received From Server] Disconnected from server : {packet.message}");

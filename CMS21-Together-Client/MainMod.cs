@@ -10,7 +10,6 @@ namespace CMS21Together
 {
 	public class MainMod : MelonMod
 	{
-		public const int MAX_SAVE_COUNT = 22;
 		public const int MAX_PLAYER = 4;
 		public const int PORT = 7777;
 		public const string ASSEMBLY_MOD_VERSION = "0.5.0" + ASSEMBLY_HOTFIX_VERSION;
@@ -50,7 +49,7 @@ namespace CMS21Together
 			}
 			
 			SteamClient.RunCallbacks();
-			if (Client.Instance.isConnected) Client.Instance.steam.Receive();
+			if (Client.Instance.IsConnected) Client.Instance.Steam.Receive();
 			ThreadManager.UpdateThread();
 		}
 

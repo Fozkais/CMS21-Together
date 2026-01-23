@@ -3,6 +3,7 @@ using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
+using CMS21Together.Data;
 using CMS21Together.Network.Transport;
 using MelonLoader;
 using Steamworks;
@@ -13,43 +14,46 @@ namespace CMS21Together.Network;
 public class Client
 {
 	public static Client Instance;
-	public ClientTCP tcp;
-	public ClientUDP udp;
-	public ClientSteam steam;
-	public int id;
+	public ClientTCP Tcp;
+	public ClientUDP UDP;
+	public ClientSteam Steam;
+	public int ID;
 
 	public NetworkType NetworkType;
-	public ulong serverID = 90279787059618820;
+	public ulong ServerID = 85568392935755356;
 
-	public bool isConnected { get; private set; }
+	public bool IsConnected { get; private set; }
+	public bool IsConnectionValid;
+	public Action OnConnectionValidated;
 	
 	public static void Init()
 	{
 		Instance = new Client();
-		Instance.isConnected = false;
-		Instance.tcp = new ClientTCP();
-		Instance.udp = new ClientUDP();
+		Instance.IsConnected = false;
+		Instance.Tcp = new ClientTCP();
+		Instance.UDP = new ClientUDP();
 	}
 
 	public void ConnectToServer(string ip = "127.0.0.1")
 	{
-		if (isConnected) return;
+		if (IsConnected) return;
 		
 		NetworkType = NetworkType.DirectIP;
-		tcp.Connect(ip, MainMod.PORT);
+		Tcp.Connect(ip, MainMod.PORT);
 		Application.runInBackground = true;
-		isConnected = true;
+		OnConnectionValidated += OnConnectionSuccessful;
+		IsConnected = true;
 	}
 
 	public void ConnectToSteamServer()
 	{
-		if (isConnected) return;
+		if (IsConnected) return;
 		
 		NetworkType = NetworkType.Steam;
 		SteamNetworkingUtils.DebugLevel = NetDebugOutput.Error;
-		isConnected = true;
-		steam = ClientSteam.ConnectToServer(serverID);
-	
+		IsConnected = true;
+		Steam = ClientSteam.ConnectToServer(ServerID);
+		OnConnectionValidated += OnConnectionSuccessful;
 		Application.runInBackground = true;
 	}
         
@@ -63,23 +67,30 @@ public class Client
 			if (NetworkType == NetworkType.DirectIP)
 			{
 				if (reliable)
-					tcp.SendData(packet);
+					Tcp.SendData(packet);
 				else
-					udp.SendData(packet);
+					UDP.SendData(packet);
 			}
 			else
-				steam.Send(packet, reliable);
+				Steam.Send(packet, reliable);
 		}
+	}
+	
+	private void OnConnectionSuccessful()
+	{
+		IsConnectionValid = true;
+		
+		ModGameManager.StartGame();
 	}
 
 	public void Disconnect()
 	{
-		if (tcp.socket != null)
-			tcp.Disconnect();
-		if (steam.Connected)
-			steam.Close();
+		if (Tcp.socket != null)
+			Tcp.Disconnect();
+		if (Steam.Connected)
+			Steam.Close();
 		Application.runInBackground = false;
-		isConnected = false;
+		IsConnected = false;
 		MelonLogger.Msg("Disconnected from server.");
 	}
 }

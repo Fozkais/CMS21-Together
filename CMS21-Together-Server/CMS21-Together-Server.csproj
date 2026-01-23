@@ -49,6 +49,8 @@
     <ItemGroup>
         <Compile Include="Data\GameDataManager.cs" />
         <Compile Include="Data\ServerConfig.cs" />
+        <Compile Include="Data\ServerGameState.cs" />
+        <Compile Include="Data\ServerTime.cs" />
         <Compile Include="Logger\Logger.cs" />
         <Compile Include="Logger\MultiTextWriter.cs" />
         <Compile Include="Network\Client.cs" />

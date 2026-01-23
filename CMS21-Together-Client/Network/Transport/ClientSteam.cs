@@ -58,10 +58,9 @@ public class ClientSteam : ConnectionManager
 		{
 			gameVersion = "",
 			message = "",
-			playerGuid = "",
 			modVersion = MainMod.ASSEMBLY_MOD_VERSION,
-			playerID = Client.Instance.id,
-			username = $"TestUser{Client.Instance.id}"
+			playerID = Client.Instance.ID,
+			username = $"TestUser{Client.Instance.ID}"
 		});
 	}
 

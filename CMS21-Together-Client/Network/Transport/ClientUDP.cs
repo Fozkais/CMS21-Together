@@ -33,7 +33,7 @@ public class ClientUDP
     {
         try
         {
-            _packet.InsertInt(Client.Instance.id); 
+            _packet.InsertInt(Client.Instance.ID); 
 
             byte[] _data = _packet.ToArray();
             socket.BeginSend(_data, _data.Length, null, null);

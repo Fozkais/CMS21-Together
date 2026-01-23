@@ -5,56 +5,14 @@ namespace CMS21_Together_Core;
 [Serializable]
 public enum PacketTypes
 {
-	connect,
-	handshake,
-	disconnect,
-	userData,
-	readyState,
-	start,
-
-	spawn,
-	movement,
-	position,
-	rotation,
-	item,
-	groupItem,
-	stat,
-	lifter,
-	loadJobCar,
-	loadCar,
-	bodyPart,
-	partScript,
-	deleteCar,
-	carPosition,
-	garageUpgrade,
-	newJob,
-	jobAction,
-	selectedJob,
-	sceneChange,
-	contentInfo,
-	toolMove,
-	setSpringClamp,
-	clearSpringClamp,
-	setTireChanger,
-	clearTireChanger,
-	wheelBalance,
-	endJob,
-	oilBinUse,
-	engineCrane,
-	skillChange,
-	engineStandAngle,
-	engineStandSetGroup,
-	engineStandTakeOff,
-	carFluid,
-	exp,
-	point,
-	resync,
-	carWash,
-	carPaint,
-	useWelder,
-	repairPart,
-	parkAdd,
-	parkRemove,
-	playerInCar,
-	carEngineSound
+	Connect,
+	Heartbeat,
+	Disconnect,
+	
+	// World State Sync
+	WorldState, // Gamemode, Money, Lvl/Exp
+	GarageState, // Garage Upgrade, Garage Customization
+	CarData, // Individual carInfo (sent 1 time for every carLoader)
+	InventoryData, // Item & GroupItem
+	SyncEnd // Signal that initial load is complete
 }

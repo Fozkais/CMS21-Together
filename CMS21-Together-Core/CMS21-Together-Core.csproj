@@ -42,10 +42,11 @@
         <Compile Include="Data\GameType\PartProperty.cs" />
         <Compile Include="Data\GameType\QuaternionSerializable.cs" />
         <Compile Include="Data\GameType\Vector3Serializable.cs" />
+        <Compile Include="Data\ModGameState.cs" />
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />
-        <Compile Include="Network\Packets\MovementPacket.cs" />
         <Compile Include="Network\Packets\StartPackets.cs" />
+        <Compile Include="Network\Packets\WorldStatesPackets.cs" />
         <Compile Include="Network\SteamNetworkUtils.cs" />
         <Compile Include="Packet.cs" />
         <Compile Include="PacketTypes.cs" />
