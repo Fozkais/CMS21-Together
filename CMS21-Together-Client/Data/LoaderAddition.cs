@@ -244,6 +244,7 @@ public static class LoaderAddition
 		
 		MelonLogger.Msg("Run Custom Load method !!");
 
+		ClientData.Reset();
 		Client.Instance.Send(new AskForSync());
 		
 		float timeoutDuration = 15.0f;
@@ -279,7 +280,7 @@ public static class LoaderAddition
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 			yield break;
 		}
-		
+		new GameData();
 		MelonLogger.Msg("Game synced successfully.");
 		
 		SceneLoader.BlockProgress = false; // needed to end loading

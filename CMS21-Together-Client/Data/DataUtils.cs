@@ -1,7 +1,9 @@
 ﻿
 
 using System;
+using System.Reflection;
 using Il2CppSystem.IO;
+using MelonLoader;
 using MemoryStream = System.IO.MemoryStream;
 using Stream = System.IO.Stream;
 
@@ -9,10 +11,22 @@ namespace CMS21Together.Data;
 
 public static class DataUtils
 {
+	public static Stream LoadContent(string assemblyPath)
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		
+		var stream = assembly.GetManifestResourceStream(assemblyPath);
+
+		return stream;
+	}
+	
 	public static Il2CppSystem.IO.Stream ConvertStreamToIL2CPP(Stream sourceStream)
 	{
 		if (sourceStream == null)
-			throw new ArgumentNullException(nameof(sourceStream));
+		{
+			MelonLogger.Error("[ConvertStreamToIL2CPP] parameter: sourceStream cannot be null.");
+			return null;
+		}
 		
 		byte[] serializedData;
 		var memoryStream = new MemoryStream();

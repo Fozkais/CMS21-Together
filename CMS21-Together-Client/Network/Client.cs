@@ -50,7 +50,6 @@ public class Client
 		if (IsConnected) return;
 		
 		NetworkType = NetworkType.Steam;
-		SteamNetworkingUtils.DebugLevel = NetDebugOutput.Error;
 		IsConnected = true;
 		Steam = ClientSteam.ConnectToServer(ServerID);
 		OnConnectionValidated += OnConnectionSuccessful;
@@ -80,6 +79,7 @@ public class Client
 	{
 		IsConnectionValid = true;
 		
+		ModGameManager.LoadPlayerPrefab();
 		ModGameManager.StartGame();
 	}
 

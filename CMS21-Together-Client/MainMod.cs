@@ -1,4 +1,6 @@
-﻿using CMS21_Together_Core.Network;
+﻿using System;
+using CMS21_Together_Core.Network;
+using CMS21Together.Data;
 using CMS21Together.Network;
 using MelonLoader;
 using Steamworks;
@@ -17,17 +19,33 @@ namespace CMS21Together
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION + ASSEMBLY_HOTFIX_VERSION;
 		
 		public bool isModInitialized;
+		public static bool IsSteamAvailable { get; private set; }
 
 		public override void OnLateInitializeMelon()
 		{
-			SteamClient.Init(1190000);
-			SteamNetworkingUtils.InitRelayNetworkAccess();
+			InitializeSteam();
 			
 			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
 			Client.Init();
 			
 			LoggerInstance.Msg("Together Mod Initialized!");
 			isModInitialized = true;
+		}
+		
+		private void InitializeSteam()
+		{
+			try 
+			{
+				SteamClient.Init(1190000);
+				SteamNetworkingUtils.InitRelayNetworkAccess();
+				IsSteamAvailable = true;
+				MelonLogger.Msg("Steamworks initialized successfully.");
+			}
+			catch (Exception)
+			{
+				IsSteamAvailable = false;
+				MelonLogger.Warning("Steamworks could not be initialized (Non-Steam version or Steam not running). Steam features will be disabled.");
+			}
 		}
 
 		public override void OnSceneWasLoaded(int buildindex, string sceneName) { }
@@ -42,14 +60,20 @@ namespace CMS21Together
 				LoggerInstance.Msg("Local Connection Attempt...");
 				Client.Instance.ConnectToServer("127.0.0.1");
 			}
-			if (Input.GetKeyDown(KeyCode.F6))
+			if (Input.GetKeyDown(KeyCode.F6) && IsSteamAvailable)
 			{
 				LoggerInstance.Msg("Steam Connection Attempt...");
 				Client.Instance.ConnectToSteamServer();
 			}
 			
-			SteamClient.RunCallbacks();
-			if (Client.Instance.IsConnected) Client.Instance.Steam.Receive();
+			if (Client.Instance.IsConnectionValid)
+				ClientData.Update();
+
+			if (IsSteamAvailable)
+			{
+				SteamClient.RunCallbacks();
+				if (Client.Instance.IsConnected) Client.Instance.Steam.Receive();
+			}
 			ThreadManager.UpdateThread();
 		}
 

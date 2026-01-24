@@ -15,5 +15,7 @@ public enum PacketTypes
 	GarageState, // Garage Upgrade, Garage Customization
 	CarData, // Individual carInfo (sent 1 time for every carLoader)
 	InventoryData, // Item & GroupItem
-	SyncEnd // Signal that initial load is complete
+	SyncEnd, // Signal that initial load is complete
+	
+	Movement // Position/Velocity & Rotation
 }

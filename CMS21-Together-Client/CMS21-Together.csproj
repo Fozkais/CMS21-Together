@@ -37,12 +37,16 @@
     <ItemGroup>
         <Compile Include="Data\ClientData.cs" />
         <Compile Include="Data\DataUtils.cs" />
+        <Compile Include="Data\GameData.cs" />
         <Compile Include="Data\LoaderAddition.cs" />
         <Compile Include="Data\ModGameManager.cs" />
+        <Compile Include="Data\PlayerInstance.cs" />
+        <Compile Include="Data\Player\Movement.cs" />
         <Compile Include="Data\SaveUtils.cs" />
         <Compile Include="MainMod.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
+        <Compile Include="Network\Handlers\PlayerHandlers.cs" />
         <Compile Include="Network\Handlers\WorldStatesPackets.cs" />
         <Compile Include="Network\Transport\ClientSteam.cs" />
         <Compile Include="Network\Transport\ClientTCP.cs" />

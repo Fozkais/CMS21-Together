@@ -57,7 +57,7 @@ namespace CMS21_Together_Server
 			}
 			
 			Server.Start(Config.MaxPlayers, PORT);
-			ServerGameState.CreateNewSession();
+			ServerGameState.TryLoadSession(null);
 			Logger.Info($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;

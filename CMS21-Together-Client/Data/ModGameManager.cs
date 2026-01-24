@@ -13,12 +13,6 @@ public static class ModGameManager
 	
 	public static void StartGame()
 	{
-		if (!LoadPlayerPrefab())
-		{
-			Client.Instance.Disconnect();
-			return;
-		}
-		
 		SaveUtils.ExtendProfileDataSize();
 		GameManager manager = Singleton<GameManager>.Instance;
 
@@ -42,54 +36,46 @@ public static class ModGameManager
 		NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("garage", SceneType.Garage, true, false));
 	}
 
-	private static bool LoadPlayerPrefab()
+	public static void LoadPlayerPrefab()
 	{
 		AssetBundle bundle = AssetBundle.LoadFromStream
-		(DataUtils.ConvertStreamToIL2CPP(DataHelper.LoadContent("CMS21Together.Assets.player.assets")));
+		(DataUtils.ConvertStreamToIL2CPP(DataUtils.LoadContent("CMS21Together.Assets.player.assets")));
 		
-		if (!bundle) return false;
-
+		if (!bundle) return;
 		GameObject prefab = bundle.LoadAsset<GameObject>("playerModel");
 		if (!prefab)
 		{
 			MelonLogger.Warning("Cannot load bundle.");
-			return false;
+			return;
 		}
 
-		Material material = new Material(Shader.Find("HDRP/Lit"));
-		if (!material)
-		{
-			MelonLogger.Warning("Cannot create material.");
-			return false;
-		}
+		Material material = new Material(Shader.Find("HDRP/Unlit"));
 		
+
 		Texture baseTexture = bundle.LoadAsset<Texture>("tex_base");
-		if (!baseTexture)
+		if (baseTexture)
 		{
-			MelonLogger.Warning("Cannot create base texture.");
-			return false;
+			baseTexture.filterMode = FilterMode.Bilinear;
+			material.mainTexture = baseTexture;
+		}
+    
+		Texture normalTexture = bundle.LoadAsset<Texture>("tex_normal");
+		if (normalTexture) 
+		{
+			normalTexture.filterMode = FilterMode.Bilinear;
+			material.SetTexture("_BumpMap", normalTexture);
 		}
 		
-		Texture normalTexture = bundle.LoadAsset<Texture>("tex_normal");
-		if (!normalTexture)
-		{
-			MelonLogger.Warning("Cannot create normal texture.");
-			return false;
-		}
-
-		baseTexture.filterMode = FilterMode.Bilinear;
-		normalTexture.filterMode = FilterMode.Bilinear;
-		material.mainTexture = baseTexture;
-		material.SetTexture("_BumpMap", normalTexture);
 		SkinnedMeshRenderer renderer = prefab.GetComponentInChildren<SkinnedMeshRenderer>();
 		if (renderer) renderer.material = material;
 
+		prefab.transform.position = new Vector3(0, -10, 0);
 		prefab.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
-		prefab.transform.rotation = new Quaternion(0, 180, 0, 0);
+		prefab.transform.rotation = Quaternion.Euler(0, 180, 0);
 
-		PlayerPrefab = prefab;
+		PlayerPrefab = Object.Instantiate(prefab);
 		Object.DontDestroyOnLoad(PlayerPrefab);
 		bundle.Unload(false);
-		return true;
+		PlayerPrefab.SetActive(false);
 	}
 }

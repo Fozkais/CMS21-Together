@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network.Packets;
@@ -11,7 +12,7 @@ namespace CMS21_Together_Server.Data
 
 		public static void TryLoadSession(string path)
 		{
-			if (File.Exists(path))
+			if (path != null && File.Exists(path))
 			{
 				//TODO: Load ModGameState from file
 				return;

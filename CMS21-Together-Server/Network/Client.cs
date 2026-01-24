@@ -41,6 +41,10 @@ namespace CMS21_Together_Server.Network
 		
 		private void OnConnected()
 		{
+			float currentTime = ServerTime.Time;
+    
+			lastHeartbeatTime = currentTime; 
+			LastHeartbeatTime = currentTime;
 			ConnectionValid = true;
 			Logger.Debug($"Client[{ID}] connected successfully!");
 			Server.SendToClient(new HeartbeatPacket(), ID);
@@ -71,6 +75,7 @@ namespace CMS21_Together_Server.Network
 			IsConnected = false;
 			ConnectionValid = false;
 			lastHeartbeatTime = 0;
+			LastHeartbeatTime = 0;
 		}
 	}
 }

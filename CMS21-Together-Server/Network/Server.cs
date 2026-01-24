@@ -135,6 +135,17 @@ namespace CMS21_Together_Server.Network
                 Clients.Add(i, new Client(i));
             }
         }
+
+        public static void SendToClients<T>(T packetData, int exceptClient, bool reliable = true) where T : INetworkData
+        {
+            foreach (Client client in Clients.Values)
+            {
+                if (client.IsConnected && client.ID != exceptClient)
+                {
+                    SendToClient(packetData, client.ID, reliable);
+                }
+            }
+        }
         
         public static void SendToClient<T>(T packetData, int clientID, bool reliable=true) where T : INetworkData
         {

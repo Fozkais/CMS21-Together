@@ -6,4 +6,5 @@ public class ModGameState
 {
 	public WorldState WorldState = new WorldState();
 	public GarageState GarageState = new GarageState();
+	public PlayerState PlayerState = new PlayerState();
 }
