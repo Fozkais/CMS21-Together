@@ -11,9 +11,9 @@ namespace CMS21_Together_Server.Network.Handlers
 		[PacketHandler(PacketTypes.Movement)]
 		public static void OnMovementUpdate(long clientId, MovementPacket packet)
 		{
-			ServerGameState.CurrentState.PlayerState.Positions[(int)clientId] = packet.Position;
-			ServerGameState.CurrentState.PlayerState.Velocities[(int)clientId] = packet.Velocity;
-			ServerGameState.CurrentState.PlayerState.Rotations[(int)clientId] = packet.Rotation;
+			GameDataManager.CurrentState.PlayerState.Positions[(int)clientId] = packet.Position;
+			GameDataManager.CurrentState.PlayerState.Velocities[(int)clientId] = packet.Velocity;
+			GameDataManager.CurrentState.PlayerState.Rotations[(int)clientId] = packet.Rotation;
 
 			packet.SenderId = (int)clientId;
 			Server.SendToClients(packet, (int)clientId, false);

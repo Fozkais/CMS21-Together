@@ -1,0 +1,171 @@
+{
+  "MoneyUpgrades": [
+    {
+      "ID": "paintshop",
+      "Costs": [15000, 7500, 7500],
+      "UnlockedLevels": [false, false, false]
+    },
+    {
+      "ID": "scraps",
+      "Costs": [2500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "dyno",
+      "Costs": [20000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "warehouse",
+      "Costs": [750],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "path_test",
+      "Costs": [10000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "car_wash",
+      "Costs": [1750],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_tablet",
+      "Costs": [500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_obd",
+      "Costs": [1500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_fuel",
+      "Costs": [300],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_electronic",
+      "Costs": [150],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "garage_upgrade",
+      "Costs": [10000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "garage_customization",
+      "Costs": [1000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "lifter",
+      "Costs": [2500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_cylinder",
+      "Costs": [300],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "unlock_tires",
+      "Costs": [150],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "brake_lathe",
+      "Costs": [1750],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "repair_parts",
+      "Costs": [1500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "welder",
+      "Costs": [5000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "battery",
+      "Costs": [550],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "crane",
+      "Costs": [2000],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "repair_body",
+      "Costs": [2500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "bus_upgrade",
+      "Costs": [2500],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "windowtint",
+      "Costs": [200],
+      "UnlockedLevels": [false]
+    }
+  ],
+  "PointUpgrades": [
+    {
+      "ID": "fast_movement",
+      "Costs": [1, 2, 3, 4, 5, 6],
+      "UnlockedLevels": [false, false, false, false, false, false]
+    },
+    {
+      "ID": "fix",
+      "Costs": [1, 2, 3, 4, 5, 6],
+      "UnlockedLevels": [false, false, false, false, false, false]
+    },
+    {
+      "ID": "fast_mount",
+      "Costs": [1, 2, 3, 4, 5, 6],
+      "UnlockedLevels": [false, false, false, false, false, false]
+    },
+    {
+      "ID": "fast_partremove",
+      "Costs": [1, 2, 3, 4, 5, 6],
+      "UnlockedLevels": [false, false, false, false, false, false]
+    },
+    {
+      "ID": "shop_discount",
+      "Costs": [1, 3, 5],
+      "UnlockedLevels": [false, false, false]
+    },
+    {
+      "ID": "cheaper_parking",
+      "Costs": [2],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "expected_price",
+      "Costs": [4],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "luck",
+      "Costs": [6],
+      "UnlockedLevels": [false]
+    },
+    {
+      "ID": "fast_examine",
+      "Costs": [1, 2, 3, 4, 5, 6],
+      "UnlockedLevels": [false, false, false, false, false, false]
+    }
+  ],
+  "PointsPerLevel": [
+    1, 1, 1, 2, 2, 2, 3, 3, 3, 4,
+    4, 4, 4, 4, 4, 5, 5, 5, 5, 5,
+    5, 6, 6, 6, 6, 6, 6, 6, 6, 6
+  ]
+}

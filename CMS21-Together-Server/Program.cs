@@ -48,8 +48,8 @@ namespace CMS21_Together_Server
 			Logger.CurrentLogLevel = Config.LogLevel;
 			Logger.Info($"Log Level set to: {Logger.CurrentLogLevel}");
 			
-			GameDataManager.Initialize();
-			if (!GameDataManager.isInitialized)
+			GameDatabase.Initialize();
+			if (!GameDatabase.isInitialized)
 			{
 				Logger.Error("Game Data Initialization failed. Closing..");
 				Exit();
@@ -57,16 +57,16 @@ namespace CMS21_Together_Server
 			}
 			
 			Server.Start(Config.MaxPlayers, PORT);
-			ServerGameState.TryLoadSession(null);
+			GameDataManager.TryLoadSession(null);
 			Logger.Info($"Server started. Listening port {PORT}");
 			
 			bool isRunning = true;
 			while (isRunning)
 			{
-				if (ServerTime.Time - ServerGameState.lastAutoSaveTime >= ServerGameState.AutoSaveInterval)
+				if (ServerTime.Time - GameDataManager.lastAutoSaveTime >= GameDataManager.AutoSaveInterval)
 				{
-					ServerGameState.lastAutoSaveTime = ServerTime.Time;
-					ServerGameState.SaveSession();
+					GameDataManager.lastAutoSaveTime = ServerTime.Time;
+					GameDataManager.SaveSession();
 				}
 				Server.Update();
 				if (Console.KeyAvailable)

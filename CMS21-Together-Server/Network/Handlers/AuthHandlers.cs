@@ -34,8 +34,8 @@ namespace CMS21_Together_Server.Network.Handlers
 		[PacketHandler(PacketTypes.AskForSync)]
 		public static void OnAskForSync(long clientId, AskForSync packet)
 		{
-			Server.SendToClient(ServerGameState.CurrentState.WorldState, (int)clientId);
-			Server.SendToClient(ServerGameState.CurrentState.GarageState, (int)clientId);
+			Server.SendToClient(GameDataManager.CurrentState.WorldState, (int)clientId);
+			Server.SendToClient(GameDataManager.CurrentState.GarageState, (int)clientId);
 			Server.SendToClient(new SyncEnd(), (int)clientId);
 		}
 	}

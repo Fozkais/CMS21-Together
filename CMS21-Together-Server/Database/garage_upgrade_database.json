@@ -1,0 +1,122 @@
+[
+  {
+    "upgradeID": "garage_customization",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "paintshop",
+    "upgradeLevel": 2,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "car_wash",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "path_test",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "lifter",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "paintshop",
+    "upgradeLevel": 1,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "scraps",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "warehouse",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "garage_upgrade",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "paintshop",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "dyno",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_tablet",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_obd",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_fuel",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_electronic",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_cylinder",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "unlock_tires",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "brake_lathe",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "repair_parts",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "welder",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "battery",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "crane",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "repair_body",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  },
+  {
+    "upgradeID": "windowtint",
+    "upgradeLevel": 0,
+    "relatedUpgradeIDs": []
+  }
+]

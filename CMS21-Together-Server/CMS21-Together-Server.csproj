@@ -47,9 +47,9 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Data\GameDataManager.cs" />
+        <Compile Include="Data\GameDatabase.cs" />
         <Compile Include="Data\ServerConfig.cs" />
-        <Compile Include="Data\ServerGameState.cs" />
+        <Compile Include="Data\GameDataManager.cs" />
         <Compile Include="Data\ServerTime.cs" />
         <Compile Include="Logger\Logger.cs" />
         <Compile Include="Logger\MultiTextWriter.cs" />
@@ -65,6 +65,15 @@
     </ItemGroup>
     <ItemGroup>
       <Content Include=".gitignore" />
+      <Content Include="Database\garage_upgrade_database.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Database\item_database.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Database\player_upgrade_database.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj">
