@@ -63,6 +63,11 @@ namespace CMS21_Together_Server
 			bool isRunning = true;
 			while (isRunning)
 			{
+				if (ServerTime.Time - ServerGameState.lastAutoSaveTime >= ServerGameState.AutoSaveInterval)
+				{
+					ServerGameState.lastAutoSaveTime = ServerTime.Time;
+					ServerGameState.SaveSession();
+				}
 				Server.Update();
 				if (Console.KeyAvailable)
 				{

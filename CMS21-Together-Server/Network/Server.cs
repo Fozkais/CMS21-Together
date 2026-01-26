@@ -188,15 +188,11 @@ namespace CMS21_Together_Server.Network
             if (!isRunning) return;
             isRunning = false;
             
-            foreach (Client client in Clients.Values)
+            SendToClients(new DisconnectPacket()
             {
-                if (!client.IsConnected) continue;
-                SendToClient(new DisconnectPacket()
-                {
-                    message = "Server is closing."
-                }, client.ID);
-                Logger.Debug($"Sent Disconect to client ID: {client.ID}");
-            }
+                message = "Server is closing."
+            }, -1);
+            
             tcpListener.Stop();
             udpListener?.Close();
             steamTransport?.Shutdown();

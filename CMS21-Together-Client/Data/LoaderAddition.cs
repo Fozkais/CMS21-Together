@@ -21,6 +21,8 @@ public static class LoaderAddition
 	[HarmonyPatch(typeof(GarageLoader), nameof(GarageLoader.Start))]
 	public static bool GarageStartOverride(GarageLoader __instance)
 	{
+		if (!Client.Instance.IsConnected) return true;
+		
 		MelonCoroutines.Start(CustomPrepareGame(__instance));
 		return false;
 	}
@@ -170,31 +172,6 @@ public static class LoaderAddition
 		{
 			windowByID.Load();
 		}
-		DifficultyLevel difficultyLevel = difficultyManager.GetDifficultyLevel();
-		if (difficultyLevel == DifficultyLevel.Easy || difficultyLevel == DifficultyLevel.Normal)
-		{
-			if (selectedProfileName.Equals("cms2021promo") && GlobalData.PlayerExp == 0)
-			{
-				GlobalData.AddPlayerExp(50000, true);
-				GlobalData.AddPlayerMoney(500000);
-			}
-			if (selectedProfileName.Equals("cms2021stage1") && GlobalData.PlayerExp == 0)
-			{
-				GlobalData.AddPlayerExp(2000, true);
-				GlobalData.AddPlayerMoney(4000);
-			}
-			if (selectedProfileName.Equals("cms2021stage2") && GlobalData.PlayerExp == 0)
-			{
-				GlobalData.AddPlayerExp(8000, true);
-				GlobalData.AddPlayerMoney(50000);
-			}
-			if (selectedProfileName.Equals("cms2021stage3") && GlobalData.PlayerExp == 0)
-			{
-				GlobalData.AddPlayerExp(13000, true);
-				GlobalData.AddPlayerMoney(150000);
-			}
-		}
-		UIManager.Get().RefreshAllStats();
 		/*NewCarLifterData[] carLiftersData = currentProfileData.carLiftersData;
 		if (carLiftersData != null && carLiftersData.Length != 0)
 		{
