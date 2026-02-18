@@ -22,8 +22,8 @@ public class WorldState : INetworkData
 [NetworkPacket(PacketTypes.GarageState)]
 public class GarageState : INetworkData
 {
-	public Dictionary<string, int> GarageUpgradeLevels = new Dictionary<string, int>();
-	public Dictionary<string, int> PlayerUpgradeLevels = new Dictionary<string, int>();
+	public Dictionary<string, bool[]> GarageUpgradeLevels = new Dictionary<string, bool[]>();
+	public Dictionary<string, bool[]> PlayerUpgradeLevels = new Dictionary<string, bool[]>();
 }
 
 [Serializable]

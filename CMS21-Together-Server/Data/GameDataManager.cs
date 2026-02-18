@@ -53,12 +53,15 @@ namespace CMS21_Together_Server.Data
 			CurrentState.WorldState.Level = 8;
 			CurrentState.WorldState.Exp = 480;
 			
-			foreach (var id in GameDatabase.GarageUpgrades.Keys)
-				CurrentState.GarageState.GarageUpgradeLevels[id] = 0;
 			foreach (var upg in GameDatabase.PlayerUpgrades.MoneyUpgrades)
-				CurrentState.GarageState.PlayerUpgradeLevels[upg.ID] = 0;
+			{
+				CurrentState.GarageState.GarageUpgradeLevels[upg.ID] = upg.UnlockedLevels.ToArray();
+			}
 			foreach (var upg in GameDatabase.PlayerUpgrades.PointUpgrades)
-				CurrentState.GarageState.PlayerUpgradeLevels[upg.ID] = 0;
+			{
+				CurrentState.GarageState.PlayerUpgradeLevels[upg.ID] = upg.UnlockedLevels.ToArray();
+			}
+			
 			SaveSession();
 		}
 

@@ -22,7 +22,7 @@ public static class LoaderAddition
 	public static bool GarageStartOverride(GarageLoader __instance)
 	{
 		if (!Client.Instance.IsConnected) return true;
-		
+
 		MelonCoroutines.Start(CustomPrepareGame(__instance));
 		return false;
 	}
@@ -221,10 +221,14 @@ public static class LoaderAddition
 		
 		MelonLogger.Msg("Run Custom Load method !!");
 
+		yield return new WaitForEndOfFrame();
+		_ = new GameData();
+		yield return new WaitForEndOfFrame();
+		
 		ClientData.Reset();
 		Client.Instance.Send(new AskForSync());
 		
-		float timeoutDuration = 15.0f;
+		float timeoutDuration = 30.0f;
 		float waitStartTime = Time.realtimeSinceStartup;
 		bool timedOut = false;
 		
@@ -257,7 +261,6 @@ public static class LoaderAddition
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 			yield break;
 		}
-		new GameData();
 		MelonLogger.Msg("Game synced successfully.");
 		
 		SceneLoader.BlockProgress = false; // needed to end loading
@@ -279,12 +282,6 @@ public static class LoaderAddition
 			dlcErrorWindow.ModeToSetAfterClosing = gameMode.Garage;
 			dlcErrorWindow.EnablePieMenuAfterClosing = true;
 			WindowManager.Instance.ShowAfterWindowClose(WindowID.DLCError, WindowID.ExamineReport);
-			canOpenPieMenu = false;
-		}
-		if (profileData.IsDefault())
-		{
-			WindowManager.Instance.EnableWindowOpening(WindowID.Intro);
-			WindowManager.Instance.Show(WindowID.Intro, false);
 			canOpenPieMenu = false;
 		}
 		__instance.isReady = true; // needed to end loading
