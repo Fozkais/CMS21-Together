@@ -1,10 +1,8 @@
-﻿using CMS21_Together_Core.Data;
-using CMS21Together.Network;
-using Il2CppSystem.IO;
+﻿using Il2CppSystem.IO;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 public static class ModGameManager
 {

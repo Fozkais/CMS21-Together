@@ -1,10 +1,9 @@
 ﻿using System;
-using CMS21_Together_Core.Data.GameType;
 using MelonLoader;
 using UnhollowerRuntimeLib;
 using UnityEngine;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 [RegisterTypeInIl2Cpp]
 public class PlayerInstance : MonoBehaviour

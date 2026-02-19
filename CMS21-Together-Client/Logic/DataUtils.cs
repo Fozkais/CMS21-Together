@@ -1,13 +1,10 @@
-﻿
-
-using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Il2CppSystem.IO;
 using MelonLoader;
 using MemoryStream = System.IO.MemoryStream;
 using Stream = System.IO.Stream;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 public static class DataUtils
 {

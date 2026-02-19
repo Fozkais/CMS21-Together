@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network;
-using CMS21Together.Data;
+using CMS21Together.Logic;
 using CMS21Together.Network;
 using MelonLoader;
 using Newtonsoft.Json;
@@ -40,9 +41,26 @@ namespace CMS21Together
 		
 		private void InitializeSteam()
 		{
+			string dllPath = Path.Combine(Directory.GetCurrentDirectory(), "UserLibs", "steam_api64.dll");
+
+			if (!File.Exists(dllPath))
+			{
+				IsSteamAvailable = false;
+				MelonLogger.Warning("Steam DLL not found in UserLibs. Switching to Non-Steam mode.");
+				return;
+			}
+			
 			try 
 			{
 				SteamClient.Init(1190000);
+				if (!SteamClient.IsValid || SteamClient.AppId.Value != 1190000)
+				{
+					IsSteamAvailable = false;
+					SteamClient.Shutdown();
+					MelonLogger.Warning("Steam environment invalid or emulated. Features disabled.");
+					return;
+				}
+				
 				SteamNetworkingUtils.InitRelayNetworkAccess();
 				IsSteamAvailable = true;
 				MelonLogger.Msg("Steamworks initialized successfully.");
@@ -50,6 +68,7 @@ namespace CMS21Together
 			catch (Exception)
 			{
 				IsSteamAvailable = false;
+				SteamClient.Shutdown();
 				MelonLogger.Warning("Steamworks could not be initialized (Non-Steam version or Steam not running). Steam features will be disabled.");
 			}
 		}

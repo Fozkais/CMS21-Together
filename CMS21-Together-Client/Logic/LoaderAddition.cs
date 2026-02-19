@@ -12,7 +12,7 @@ using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 [HarmonyPatch]
 public static class LoaderAddition

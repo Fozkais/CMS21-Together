@@ -50,8 +50,16 @@ namespace CMS21_Together_Server.Data
 
 			CurrentState.WorldState.Gamemode = Gamemode.Normal;
 			CurrentState.WorldState.Money = 12500;
-			CurrentState.WorldState.Level = 8;
-			CurrentState.WorldState.Exp = 480;
+
+			int targetLevel = 8;
+			int internalLvl = targetLevel - 1;
+			
+			double capCurrent = Math.Floor(Math.Pow(internalLvl, 1.62221) * 2) * 75;
+			double capNext = Math.Floor(Math.Pow(internalLvl + 1, 1.62221) * 2) * 75;
+			int maxExpInThisLevel = (int)(capNext - capCurrent);
+
+			CurrentState.WorldState.Level = targetLevel;
+			CurrentState.WorldState.Exp = Math.Min(480, maxExpInThisLevel - 1);
 			
 			foreach (var upg in GameDatabase.PlayerUpgrades.MoneyUpgrades)
 			{

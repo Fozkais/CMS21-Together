@@ -1,7 +1,7 @@
 ﻿using CMS.UI.Logic.Upgrades;
 using UnityEngine;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 public class GameData
 {

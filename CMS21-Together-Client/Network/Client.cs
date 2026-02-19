@@ -3,7 +3,7 @@ using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
-using CMS21Together.Data;
+using CMS21Together.Logic;
 using CMS21Together.Network.Transport;
 using MelonLoader;
 using Steamworks;

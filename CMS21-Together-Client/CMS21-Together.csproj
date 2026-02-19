@@ -35,14 +35,15 @@
         <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="Data\ClientData.cs" />
-        <Compile Include="Data\DataUtils.cs" />
-        <Compile Include="Data\GameData.cs" />
-        <Compile Include="Data\LoaderAddition.cs" />
-        <Compile Include="Data\ModGameManager.cs" />
-        <Compile Include="Data\PlayerInstance.cs" />
-        <Compile Include="Data\Player\Movement.cs" />
-        <Compile Include="Data\SaveUtils.cs" />
+        <Compile Include="Logic\ClientData.cs" />
+        <Compile Include="Logic\DataUtils.cs" />
+        <Compile Include="Logic\GameData.cs" />
+        <Compile Include="Logic\Garage\GarageUpgrades.cs" />
+        <Compile Include="Logic\LoaderAddition.cs" />
+        <Compile Include="Logic\ModGameManager.cs" />
+        <Compile Include="Logic\PlayerInstance.cs" />
+        <Compile Include="Logic\Player\Movement.cs" />
+        <Compile Include="Logic\SaveUtils.cs" />
         <Compile Include="MainMod.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />

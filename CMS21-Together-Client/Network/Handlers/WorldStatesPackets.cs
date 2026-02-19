@@ -9,7 +9,8 @@ using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
-using CMS21Together.Data;
+using CMS21Together.Logic;
+using CMS21Together.Logic.Garage;
 using MelonLoader;
 using UnityEngine;
 
@@ -20,17 +21,31 @@ public static class WorldStatesPackets
 	[PacketHandler(PacketTypes.WorldState)]
 	public static void HandleWorldState(long senderId, WorldState packet)
 	{
-		DifficultyManager difficultyManager = Singleton<GameManager>.Instance.DifficultyManager;
-		difficultyManager.SetDifficultyLevel((DifficultyLevel)packet.Gamemode);
-		difficultyManager.ActivateDifficultyLevel();
+		if (packet.updateGamemode)
+		{
+			DifficultyManager difficultyManager = Singleton<GameManager>.Instance.DifficultyManager;
+			difficultyManager.SetDifficultyLevel((DifficultyLevel)packet.Gamemode);
+			difficultyManager.ActivateDifficultyLevel();
+		}
 		
-		GlobalData.SetPlayerMoney(packet.Money);
+		MelonLogger.Msg($"Received World State Sync :\nGamemode: {packet.Gamemode.ToString()}\nMoney: {packet.Money}\nLevel: {packet.Level}\n Exp:{packet.Exp}");
+		
+		GlobalData.PlayerMoney = packet.Money;
 		GlobalData.PlayerLevel = packet.Level - 1;
 		GlobalData.PlayerExp = packet.Exp;
-		int statValue = Singleton<GameManager>.Instance.PlatformManager.GetStatValue("stat_level");
-		Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_level", GlobalData.RealPlayerLevel - statValue);
-		UIManager.Get().RefreshStatsUICoroutine(StatType.Experience, true);
 		
+		var profile = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
+		if (profile != null)
+		{
+			profile.globalDataWrapper.PlayerLevel = GlobalData.PlayerLevel;
+			profile.globalDataWrapper.PlayerExp = GlobalData.PlayerExp;
+			profile.globalDataWrapper.PlayerMoney = GlobalData.PlayerMoney;
+		}
+		int currentPlatformLevel = Singleton<GameManager>.Instance.PlatformManager.GetStatValue("stat_level");
+		int levelDifference = GlobalData.RealPlayerLevel - currentPlatformLevel;
+		Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_level", levelDifference);
+
+		UIManager.Get().RefreshAllStats();
 		ClientData.IsWorldStateSynced = true;
 	}
 	
@@ -56,78 +71,12 @@ public static class WorldStatesPackets
 	    }
 	    
 	    tools.PrepareItems();
-	    MelonCoroutines.Start(SyncUpgrades(packet, tools));
+	    MelonCoroutines.Start( GarageUpgrades.SyncUpgrades(packet, tools));
 	}
-
-	private static IEnumerator SyncUpgrades(GarageState packet, GarageAndToolsTab tools)
-	{
-		yield return new WaitForEndOfFrame();
-		float timeout = 10f;
-		float timer = 0f;
-		
-		while (timer < timeout)
-		{
-			if (tools.upgradeSystem != null && tools.upgradeItems != null && tools.upgradeItems.Length > 0)
-				break;
-
-			timer += Time.deltaTime;
-			yield return null;
-		}
-        
-		if (tools.upgradeSystem == null)
-		{
-			MelonLogger.Error("Failed to sync: UpgradeSystem did not initialize in time.");
-			yield break;
-		}
-		
-		foreach (var upgradeEntry in packet.GarageUpgradeLevels)
-		{
-			foreach (var upgradeData in tools.upgradeSystem.UpgradesForMoney)
-			{
-				if (upgradeData != null && upgradeData.ID == upgradeEntry.Key)
-				{
-					for (int i = 0; i < upgradeEntry.Value.Length; i++)
-					{
-						if (upgradeData.Unlocked.Length > i)
-						{
-							upgradeData.Unlocked[i] = upgradeEntry.Value[i];
-						}
-					}
-					break;
-				}
-			}
-		}
-
-		foreach (var skillEntry in packet.PlayerUpgradeLevels)
-		{
-			foreach (var skillData in tools.upgradeSystem.UpgradesForPoints)
-			{
-				if (skillData != null && skillData.ID == skillEntry.Key)
-				{
-					for (int i = 0; i < skillEntry.Value.Length; i++)
-					{
-						if (skillData.Unlocked.Length > i)
-						{
-							skillData.Unlocked[i] = skillEntry.Value[i];
-						}
-					}
-					break;
-				}
-			}
-		}
-
-		tools.SwitchIfUnlocked();
-		tools.PrepareItems();
-
-		MelonLogger.Msg("Garage and Skills synchronized successfully!");
-		ClientData.IsGarageStateSynced = true;
-	}
-	
 	
 	[PacketHandler(PacketTypes.SyncEnd)]
 	public static void HandleSyncEnd(long senderId, SyncEnd packet)
 	{
-		// On lance la coroutine pour attendre que les états soient validés
 		MelonCoroutines.Start(WaitForSyncCompletion());
 	}
 

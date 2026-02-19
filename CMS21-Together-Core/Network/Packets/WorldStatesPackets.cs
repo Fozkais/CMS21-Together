@@ -12,6 +12,7 @@ public class AskForSync : INetworkData { }
 [NetworkPacket(PacketTypes.WorldState)]
 public class WorldState : INetworkData
 {
+	public bool updateGamemode;
 	public Gamemode Gamemode;
 	public int Money;
 	public int Level;

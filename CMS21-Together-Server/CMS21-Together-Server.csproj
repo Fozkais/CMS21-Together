@@ -55,6 +55,7 @@
         <Compile Include="Logger\MultiTextWriter.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
+        <Compile Include="Network\Handlers\GarageUpgradeHandlers.cs" />
         <Compile Include="Network\Handlers\PlayerHandlers.cs" />
         <Compile Include="Network\Server.cs" />
         <Compile Include="Network\Transport\SteamTransport.cs" />

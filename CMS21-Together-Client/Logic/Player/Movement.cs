@@ -1,10 +1,9 @@
-﻿using CMS21_Together_Core.Data;
-using CMS21_Together_Core.Data.GameType;
+﻿using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using UnityEngine;
 
-namespace CMS21Together.Data.Player;
+namespace CMS21Together.Logic.Player;
 
 public static class Movement
 {

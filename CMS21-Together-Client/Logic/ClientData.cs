@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using CMS21_Together_Core.Network.Packets;
-using CMS21Together.Data.Player;
+using CMS21Together.Logic.Player;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.Data;
+namespace CMS21Together.Logic;
 
 public static class ClientData
 {

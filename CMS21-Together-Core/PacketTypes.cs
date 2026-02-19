@@ -17,5 +17,6 @@ public enum PacketTypes
 	InventoryData, // Item & GroupItem
 	SyncEnd, // Signal that initial load is complete
 	
-	Movement // Position/Velocity & Rotation
+	Movement, // Position/Velocity & Rotation
+	UpgradeRequest, // Garage/Skill upgrade request
 }

@@ -136,7 +136,7 @@ namespace CMS21_Together_Server.Network
             }
         }
 
-        public static void SendToClients<T>(T packetData, int exceptClient, bool reliable = true) where T : INetworkData
+        public static void SendToClients<T>(T packetData, int exceptClient=-1, bool reliable = true) where T : INetworkData
         {
             foreach (Client client in Clients.Values)
             {

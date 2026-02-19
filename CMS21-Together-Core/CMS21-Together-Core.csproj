@@ -38,6 +38,7 @@
         <Compile Include="Data\Enum\GameScene.cs" />
         <Compile Include="Data\Enum\NetworkType.cs" />
         <Compile Include="Data\Enum\SpecialGroup.cs" />
+        <Compile Include="Data\Enum\UpgradeType.cs" />
         <Compile Include="Data\Enum\VersionStatus.cs" />
         <Compile Include="Data\GameType\PlayerUpgradeData.cs" />
         <Compile Include="Data\GameType\UpgradeData.cs" />
@@ -48,6 +49,7 @@
         <Compile Include="Data\PlayerState.cs" />
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />
+        <Compile Include="Network\Packets\GaragePackets.cs" />
         <Compile Include="Network\Packets\PlayerPackets.cs" />
         <Compile Include="Network\Packets\StartPackets.cs" />
         <Compile Include="Network\Packets\WorldStatesPackets.cs" />
