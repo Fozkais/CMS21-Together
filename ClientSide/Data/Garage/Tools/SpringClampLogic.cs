@@ -44,7 +44,7 @@ public static class SpringClampLogic
 	{
 		if (SceneManager.CurrentScene() != GameScene.garage) yield break;
 
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.2f);
 
 		listen = false;

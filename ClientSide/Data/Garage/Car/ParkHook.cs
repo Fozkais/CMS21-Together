@@ -47,7 +47,7 @@ public static class ParkHook
 
 	public static IEnumerator AddCarToPark(ModNewCarData car, int index)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -57,7 +57,7 @@ public static class ParkHook
 
 	public static IEnumerator RemoveCarFromPark(int index)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 

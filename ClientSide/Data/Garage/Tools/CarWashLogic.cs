@@ -85,7 +85,7 @@ public static class CarWashLogic
 	public static IEnumerator WashCar(int carLoaderID, bool interior)
 	{
 		// Business Rule: Wait for game to be ready before processing
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 		{
 			// Security Rule: Check if client disconnected during wait
 			if (!Client.Instance.isConnected)

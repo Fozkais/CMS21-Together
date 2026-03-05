@@ -32,7 +32,7 @@ public static class RepairPartLogic
 
 	public static IEnumerator RepairAction(ModPartInfo info, bool isBody, bool success)
 	{
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 

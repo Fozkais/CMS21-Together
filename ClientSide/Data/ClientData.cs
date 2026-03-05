@@ -18,7 +18,6 @@ public class ClientData
 {
 	public static ClientData Instance;
 	public static UserData UserData;
-	public static bool GameReady;
 	private bool initRoutine;
 
 	public Dictionary<int, UserData> connectedClients = new();
@@ -28,10 +27,9 @@ public class ClientData
 	public ModEngineStand engineStand;
 	public ModEngineStand engineStand2;
 	public GameObject playerPrefab;
-	public int scrap, money ,exp, level;
+
 	public ClientData()
 	{
-		GameReady = false;
 		initRoutine = false;
 		GameData.Instance = null;
 		
@@ -53,10 +51,10 @@ public class ClientData
 
 	public void UpdateClient()
 	{
-		if (GameData.isReady == false && !initRoutine)
+		if (!initRoutine)
 			MelonCoroutines.Start(InitializeGameData());
 
-		if (GameReady)
+		if (GameLoadHook.IsGameReady())
 		{
 			Movement.SendPosition();
 			Movement.CheckForInactivity();
@@ -79,20 +77,16 @@ public class ClientData
 		
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
-		GameData.Instance = new GameData();
 		MelonCoroutines.Start(Stats.SendInitialStats());
 		MelonCoroutines.Start(GarageUpgradeHooks.SendInitial());
-
-		// Business Rule: Ensure player prefab is loaded before spawning players
+		
 		if (playerPrefab == null)
 		{
 			LoadPlayerPrefab();
-			// Security Rule: Wait multiple frames to ensure prefab is fully loaded and initialized
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForEndOfFrame();
 			yield return new WaitForEndOfFrame();
 			
-			// Business Rule: Verify prefab was loaded successfully
 			if (playerPrefab == null)
 			{
 				MelonLogger.Error("[ClientData->InitializeGameData] Failed to load playerPrefab after multiple attempts. Retrying...");
@@ -106,10 +100,8 @@ public class ClientData
 		yield return new WaitForEndOfFrame();
 		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
 		
-		// Business Rule: Only set GameReady to true if playerPrefab is loaded
 		if (playerPrefab != null)
 		{
-			GameReady = true;
 			initRoutine = false;
 			if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
 				SavesManager.SaveModSave(SavesManager.currentSaveIndex);
@@ -118,7 +110,6 @@ public class ClientData
 				if (client.Value.scene == GameScene.garage)
 					client.Value.SpawnPlayer();
 			}
-			MelonLogger.Msg("Game is ready.");
 		}
 		else
 		{
@@ -181,14 +172,10 @@ public class ClientData
 	public IEnumerator SpawnPlayer(int _money, int _exp, int _level, Vector3 pos, Quaternion rot, int skillPoints, Dictionary<string,
 		List<bool>> skills, long startItemUid, int missionFinished, bool missionInProgress)
 	{
-		while (!GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.1f);
-		
-		yield return new WaitForEndOfFrame();
-		yield return new WaitForEndOfFrame();
 
 		UIDManager.LastUID = startItemUid;
-
 		MelonLogger.Msg("\nReceived Player info! : \n"
 		                + $"MissionFinished : {missionFinished}\n"
 		                + $"StoryInProgress : {missionInProgress}\n"
@@ -233,12 +220,9 @@ public class ClientData
 		if (rot != Quaternion.identity)
 			GameData.Instance.localPlayer.transform.rotation = rot;
 
-		while (SceneManager.CurrentScene() != GameScene.garage)
-			yield return new WaitForSeconds(0.5f);
-		while (!NotificationCenter.IsGameReady)
-			yield return new WaitForSeconds(0.25f);
-		while (!GameData.isReady)
-			yield return new WaitForSeconds(0.5f);
+		while (!GameLoadHook.IsGameReady())
+			yield return new WaitForSeconds(0.1f);
+		yield return new WaitForEndOfFrame();
 		
 		ClientSend.ResyncEngineStandPacket(true);
 	}

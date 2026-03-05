@@ -75,7 +75,7 @@ public static class GarageUpgradeHooks
 	{
 		if (sentInitial || !Server.Instance.isRunning) yield break;
 
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.2f);
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();

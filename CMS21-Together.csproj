@@ -68,6 +68,7 @@
         <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
+        <Compile Include="ClientSide\Data\GameLoadHook.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIActions.cs" />
         <Compile Include="ClientSide\Data\NewUI\UICore.cs" />
         <Compile Include="ClientSide\Data\NewUI\UICustomPanel.cs" />

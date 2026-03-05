@@ -26,7 +26,7 @@ public static class WelderLogic
 
 	public static IEnumerator UseWelder(int carLoaderID)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 

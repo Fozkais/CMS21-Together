@@ -14,7 +14,7 @@ public static class GarageUpgradeManager
 {
 	public static IEnumerator SetUpgrade(GarageUpgrade upgrade)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 
 		yield return new WaitForEndOfFrame();

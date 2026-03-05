@@ -10,6 +10,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data.Player;
 
@@ -225,7 +226,8 @@ public static class Inventory
 
 	public static IEnumerator HandleItem(ModItem item, InventoryAction action)
 	{
-		yield return GameData.GameReady();
+		while (!GameLoadHook.IsGameReady())
+			
 
 		// Security Rule: Validate item is not null before processing
 		if (item == null)
@@ -297,7 +299,8 @@ public static class Inventory
 
 	public static IEnumerator HandleGroupItem(ModGroupItem item, InventoryAction action)
 	{
-		yield return GameData.GameReady();
+		while (!GameLoadHook.IsGameReady())
+			yield return new WaitForSeconds(0.1f);
 
 		// Security Rule: Validate item is not null before processing
 		if (item == null)

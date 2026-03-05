@@ -16,7 +16,6 @@ namespace CMS21Together.ClientSide.Data;
 public class GameData
 {
 	public static GameData Instance;
-	public static bool isReady;
 	public CarLoader[] carLoaders;
 	public Inventory localInventory;
 
@@ -54,7 +53,6 @@ public class GameData
 			GameScript.Get().carOnScene[2]
 		};
 		LoadEngineStand();
-		isReady = true;
 		if (!Server.Instance.isRunning)
 			MelonCoroutines.Start(GarageResync.ResyncGarage());
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
@@ -97,11 +95,5 @@ public class GameData
 		
 		bundle.Unload(false);
 		MelonLogger.Msg("Loaded stand successfully !");
-	}
-	
-	public static IEnumerator GameReady()
-	{
-		while (!isReady)
-			yield return new WaitForSeconds(0.2f);
 	}
 }

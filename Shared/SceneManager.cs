@@ -29,7 +29,7 @@ public static class SceneManager
 		}
 
 		MelonLogger.Msg($"[SceneManager->SelectSceneToLoadHook] Scene change requested: {newSceneName}");
-
+		GameLoadHook.Reset();
 		if (newSceneName == "Menu")
 		{
 			// Business Rule: Disconnect and cleanup when returning to menu
@@ -43,37 +43,28 @@ public static class SceneManager
 			
 			if (Client.Instance.isConnected)
 				Client.Instance.Disconnect();
-
-			ClientData.GameReady = false;
 		}
 		else if (newSceneName == "garage" || newSceneName == "Christmas" || newSceneName == "Easter" || newSceneName == "Halloween")
 		{
-			// Business Rule: Resync garage when entering garage scene
-			if (ClientData.GameReady)
+			if (GameLoadHook.IsGameReady())
 			{
-				// Security Rule: Stop any ongoing outdoor operations before resync
 				StopOutdoorOperations();
 				MelonCoroutines.Start(GarageResync.ResyncGarage());
 			}
 		}
 		else
 		{
-			// Business Rule: Mark cars for resync when changing to other scenes (outdoor, junkyard, etc.)
-			// Security Rule: Validate ClientData.Instance before accessing loadedCars
 			if (ClientData.Instance != null && ClientData.Instance.loadedCars != null)
 			{
-				// Security Rule: Stop outdoor operations before scene change
 				StopOutdoorOperations();
 				
 				foreach (ModCar loadedCar in ClientData.Instance.loadedCars.Values)
 				{
-					// Security Rule: Validate car is not null before accessing properties
 					if (loadedCar != null)
 					{
 						loadedCar.needResync = true;
 					}
 				}
-				
 				MelonLogger.Msg($"[SceneManager->SelectSceneToLoadHook] Marked {ClientData.Instance.loadedCars.Count} cars for resync.");
 			}
 			else
@@ -82,29 +73,21 @@ public static class SceneManager
 			}
 		}
 	}
-
-	/// <summary>
-	/// Stops any ongoing outdoor operations (car wash, paint) to prevent crashes during scene changes.
-	/// </summary>
+	
 	private static void StopOutdoorOperations()
 	{
-		// Business Rule: Reset listen flags to stop ongoing operations
 		try
 		{
-			// Security Rule: Check if GameData is initialized before accessing outdoor tools
 			if (GameData.Instance != null)
 			{
-				// Business Logic: Reset car wash and paint logic flags
-				// Note: Using full namespace path for IL2CPP compatibility
 				CMS21Together.ClientSide.Data.Garage.Tools.CarWashLogic.Reset();
-				CMS21Together.ClientSide.Data.Garage.Tools.CarPaintLogic.Reset();
+				CarPaintLogic.Reset();
 				
 				MelonLogger.Msg("[SceneManager->StopOutdoorOperations] Stopped outdoor operations (car wash, paint).");
 			}
 		}
 		catch (System.Exception ex)
 		{
-			// Security Rule: Log but don't crash if stopping operations fails
 			MelonLogger.Warning($"[SceneManager->StopOutdoorOperations] Error stopping outdoor operations: {ex.Message}");
 		}
 	}
@@ -132,8 +115,6 @@ public static class SceneManager
 		
 		if (scene == "garage" || scene == "Christmas" || scene == "Easter" || scene == "Halloween")
 		{
-			// Business Rule: Reset GameData readiness when entering garage
-			GameData.isReady = false;
 			return GameScene.garage;
 		}
 		

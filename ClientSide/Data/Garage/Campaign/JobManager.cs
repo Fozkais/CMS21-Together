@@ -24,7 +24,7 @@ public static class JobManager
 
 	public static IEnumerator SelectedJob(ModJob modjob, bool action)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -49,7 +49,7 @@ public static class JobManager
 
 	public static IEnumerator AddJob(ModJob job)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 		
@@ -65,7 +65,7 @@ public static class JobManager
 
 	public static IEnumerator JobAction(ModJob modJob, bool takeJob)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -89,7 +89,7 @@ public static class JobManager
 
 	public static IEnumerator OnJobComplete(ModJob job)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 

@@ -13,7 +13,7 @@ public static class PartsReferencer
 	{
 		if (car.needResync) yield break;
 		
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 
 		yield return new WaitForSeconds(1f);

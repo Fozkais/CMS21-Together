@@ -13,7 +13,7 @@ public static class Movement
 	public static void UpdatePosition(int id, Vector3Serializable position)
 	{
 		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
-		if (!GameData.isReady) return;
+		if (!GameLoadHook.IsGameReady()) return;
 
 		var player = ClientData.Instance.connectedClients[id];
 

@@ -78,7 +78,7 @@ public static class CarSpawnHooks
 			return;
 		}
 		
-		if (!NotificationCenter.IsGameReady) return;
+		if (!GameLoadHook.IsGameReady()) return;
 		if (__instance == null || string.IsNullOrEmpty(__instance.carToLoad)) return;
 		
 		if (SceneManager.CurrentScene() != GameScene.garage) return;

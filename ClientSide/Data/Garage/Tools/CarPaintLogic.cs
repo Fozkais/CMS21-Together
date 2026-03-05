@@ -67,7 +67,7 @@ public static class CarPaintLogic
 	public static IEnumerator ChangeColor(ModColor color)
 	{
 		// Business Rule: Wait for game to be ready before processing
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 		{
 			// Security Rule: Check if client disconnected during wait
 			if (!Client.Instance.isConnected)
