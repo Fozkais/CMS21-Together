@@ -5,6 +5,8 @@ using CMS.Garage.Customization;
 using CMS.Managers;
 using CMS.UI;
 using CMS.UI.Windows;
+using CMS21Together.ClientSide.Data.Garage;
+using CMS21Together.ServerSide;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using MelonLoader;
@@ -25,7 +27,8 @@ public static class GameLoadHook
 	public static bool GarageStartOverride(GarageLoader __instance)
 	{
 		if (!Client.Instance.isConnected) return true;
-
+		
+		Reset();
 		MelonCoroutines.Start(CustomPrepareGame(__instance));
 		return false;
 	}
@@ -193,10 +196,10 @@ public static class GameLoadHook
 					if (carLifterData.lifterData == 0 && connectedCarLoader)
 					{
 						MissingWheelTypes missingWheelTypes = connectedCarLoader.GetMissingWheelTypes();
-						if (missingWheelTypes.HasFlagFast(MissingWheelTypes.FrontLeft)
-						    || missingWheelTypes.HasFlagFast(MissingWheelTypes.FrontRight)
-						    || missingWheelTypes.HasFlagFast(MissingWheelTypes.RearLeft)
-						    || missingWheelTypes.HasFlagFast(MissingWheelTypes.RearRight))
+						if (missingWheelTypes == MissingWheelTypes.FrontLeft
+						    || missingWheelTypes == MissingWheelTypes.FrontRight
+						    || missingWheelTypes == MissingWheelTypes.RearLeft
+						    || missingWheelTypes == MissingWheelTypes.RearRight)
 						{
 							cl.InstantSet(1, true);
 							goto IL_06AE;
@@ -221,20 +224,22 @@ public static class GameLoadHook
 		DLCErrorWindow dlcErrorWindow = WindowManager.Instance.GetWindowByID<DLCErrorWindow>(WindowID.DLCError);
 		ProfileData currentProfileData = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
 		PlayerData profileData = currentProfileData.PlayerData;
-		
-		MelonLogger.Msg("Run Custom Load method !!");
 
+		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 		GameData.Instance = new GameData();
 		yield return new WaitForEndOfFrame();
+		GameData.Instance.LoadEngineStand();
+		if (!Server.Instance.isRunning)
+			MelonCoroutines.Start(GarageResync.ResyncGarage());
+		yield return new WaitForEndOfFrame();
 		
-		isGameReady = true;
-		MelonLogger.Msg("Game synced successfully.");
-
+		
 		SceneLoader.BlockProgress = false; // needed to end loading
 		NotificationCenter.IsGameReady = true; // needed to end loading
 		CameraManager.Get().ChangeCamera(CameraState.FPS);
 		yield return new WaitForSeconds(2f);
+		isGameReady = true;
 		screenFader.FadeTo(2f, 1f, 0f, false, true);
 		bool canOpenPieMenu = true;
 		if (GlobalData.TestToShow == "ExamineReport")

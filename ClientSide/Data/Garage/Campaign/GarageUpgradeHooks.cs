@@ -80,10 +80,25 @@ public static class GarageUpgradeHooks
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
-		GameData.Instance.upgradeTools.PrepareItems();
+		
+		if (GameData.Instance == null) {
+			MelonLogger.Error("CRITICAL: GameData.Instance is NULL. Are you in the main menu?");
+			yield break;
+		}
+		GarageAndToolsTab tools = GameData.Instance.garageTools;
+		if (tools == null) {
+			MelonLogger.Error("CRITICAL: tools (GarageTools) is NULL!");
+			yield break;
+		}
+		if (tools.upgradeSystem == null || tools.upgradeItems == null) {
+			MelonLogger.Error($"Internal refs null: System={tools.upgradeSystem==null}, Items={tools.upgradeItems==null}");
+			yield break;
+		}
+		
+		GameData.Instance.garageTools.PrepareItems();
 		yield return new WaitForEndOfFrame();
 		
-		foreach (UpgradeItem item in GameData.Instance.upgradeTools.upgradeItems)
+		foreach (UpgradeItem item in GameData.Instance.garageTools.upgradeItems)
 		{
 			//MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
 			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.UpgradeLevel, item.upgradeState == UpgradeState.Unlocked);

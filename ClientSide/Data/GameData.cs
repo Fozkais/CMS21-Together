@@ -9,6 +9,8 @@ using CMS21Together.Shared;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using MelonLoader;
+using UnhollowerBaseLib;
+using UnhollowerRuntimeLib;
 using UnityEngine;
 
 namespace CMS21Together.ClientSide.Data;
@@ -25,7 +27,7 @@ public class GameData
 	public EngineStandLogic engineStandLogic;
 	public EngineStandLogic engineStandLogic2;
 	public TireChangerLogic tireChanger;
-	public GarageAndToolsTab upgradeTools;
+	public GarageAndToolsTab garageTools;
 	public ToolsMoveManager toolsMoveManager;
 	public WheelBalancerLogic wheelBalancer;
 	public WelderLogic welderLogic;
@@ -35,10 +37,22 @@ public class GameData
 	{
 		localPlayer = Object.FindObjectOfType<FPSInputController>().gameObject;
 		localInventory = GameScript.Get().GetComponent<Inventory>();
-		upgradeTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;
+		garageTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;
 		toolsMoveManager = Object.FindObjectOfType<ToolsMoveManager>();
 		orderGenerator = Object.FindObjectOfType<OrderGenerator>();
-		engineStandLogic = Object.FindObjectOfType<EngineStandLogic>();
+		
+		var foundObject = Object.FindObjectOfType(Il2CppType.Of<EngineStandLogic>(), true);
+		if (foundObject != null)
+		{
+			EngineStandLogic engineStand = foundObject.TryCast<EngineStandLogic>();
+			if (engineStand != null)
+				engineStandLogic = engineStand;
+			else
+				MelonLogger.Warning("EngineStandLogic couldn't be cast.");
+		}
+		else 
+			MelonLogger.Warning("EngineStandLogic not found even in inactive objects.");
+		
 		springClampLogic = Object.FindObjectOfType<SpringClampLogic>();
 		tireChanger = Object.FindObjectOfType<TireChangerLogic>();
 		wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
@@ -52,9 +66,8 @@ public class GameData
 			GameScript.Get().carOnScene[1],
 			GameScript.Get().carOnScene[2]
 		};
-		LoadEngineStand();
-		if (!Server.Instance.isRunning)
-			MelonCoroutines.Start(GarageResync.ResyncGarage());
+		
+		
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
 	
@@ -65,13 +78,14 @@ public class GameData
 		engineStandLogic2.gameObject.name = "Engine_stand_2";
 		engineStandLogic2.EngineStand = engineStandLogic2.transform.GetChild(1).transform.GetChild(3).transform;
 		
+		
 		var bundle = AssetBundle.LoadFromStream(DataHelper.DeepCopy(DataHelper.LoadContent("CMS21Together.Assets.engineStand.assets")));
 		if (bundle == null)
 		{
 			MelonLogger.Warning("Impossible de charger l'AssetBundle !");
 			return ;
 		}
-
+		
 		GameObject newObj = null;
 		Mesh mesh = bundle.LoadAsset<Mesh>("assets/assetbundles/enginestand.fbx");
 		if (mesh == null)

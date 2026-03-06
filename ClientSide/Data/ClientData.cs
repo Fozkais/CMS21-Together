@@ -72,8 +72,8 @@ public class ClientData
 	private IEnumerator InitializeGameData()
 	{
 		initRoutine = true;
-		while (SceneManager.CurrentScene() != GameScene.garage)
-			yield return new WaitForEndOfFrame();
+		while (!GameLoadHook.IsGameReady())
+			yield return new WaitForSeconds(0.1f);
 		
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
@@ -198,14 +198,14 @@ public class ClientData
 			Singleton<GameManager>.Instance.UpgradeSystem.availablePoints = skillPoints;
 			if (skills != null)
 			{
-				GameData.Instance.upgradeTools.upgradeSystem.LockUpgradesForPoints();
+				GameData.Instance.garageTools.upgradeSystem.LockUpgradesForPoints();
 				foreach (KeyValuePair<string, List<bool>> skill in skills)
 				{
 					int lvl = 0;
 					foreach (bool unlocked in skill.Value)
 					{
 						if(unlocked)
-							GameData.Instance.upgradeTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
+							GameData.Instance.garageTools.upgradeSystem.UnlockUpgrade(skill.Key, lvl);
 						lvl++;
 					}
 				}

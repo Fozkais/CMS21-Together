@@ -21,7 +21,7 @@ public static class TogetherModManager
 			if (serializedUserData.Length > 0)
 			{
 				ClientData.UserData = JsonConvert.DeserializeObject<UserData>(serializedUserData);
-				if (!ApiCalls.useSteam)
+				if (!MainMod.IsSteamAvailable)
 					ClientData.UserData.selectedNetworkType = NetworkType.TCP;
 				if (ClientData.UserData != null)
 					return ClientData.UserData;
