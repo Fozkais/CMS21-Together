@@ -66,8 +66,8 @@ public class GameData
 			GameScript.Get().carOnScene[1],
 			GameScript.Get().carOnScene[2]
 		};
-		
-		
+
+		Instance = this;
 		MelonLogger.Msg("[GameData->Initialize] GameData ready.");
 	}
 	

@@ -102,7 +102,6 @@ public class ClientData
 		
 		if (playerPrefab != null)
 		{
-			initRoutine = false;
 			if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
 				SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 			foreach (var client in connectedClients)
