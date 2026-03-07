@@ -173,19 +173,28 @@ public class ClientTCP
 
 	public void Send(Packet packet)
 	{
-		if (socket != null)
+		if (socket == null || stream == null || !socket.Connected) return;
+
+		try
 		{
-			stream.BeginWrite(packet.ToArray(), 0, packet.Length(), (ar) =>
+			byte[] _data = packet.ToArray();
+			stream.BeginWrite(_data, 0, _data.Length, (ar) =>
 			{
 				try
 				{
-					stream?.EndWrite(ar);
+					if (stream != null && stream.CanWrite)
+						stream.EndWrite(ar);
 				}
+				catch (ObjectDisposedException) { }
 				catch (Exception ex)
 				{
-					MelonLogger.Error($"[TCP]Error while writing data : {ex.Message}");
+					MelonLogger.Error($"[TCP] Error while writing data: {ex.Message}");
 				}
 			}, null);
+		}
+		catch (Exception ex)
+		{
+			MelonLogger.Error($"[TCP] Failed to begin write: {ex.Message}");
 		}
 	}
 

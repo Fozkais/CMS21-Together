@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.NewUI;
@@ -140,13 +141,15 @@ public class Client
 	{
 		if (!isConnected) return;
 
-
 		if (!fromServer)
+		{
 			ClientSend.DisconnectPacket();
+			 Thread.Sleep(100); 
+		}
+		
 		Application.runInBackground = false;
 		isConnected = false;
-
-
+		
 		tcp.Disconnect();
 		udp.Disconnect();
 		
