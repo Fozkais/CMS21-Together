@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using CMS21Together.Shared;
 using MelonLoader;
 using Steamworks;
@@ -9,6 +11,10 @@ namespace CMS21Together.ClientSide.Transports;
 
 public class ClientSteam : ConnectionManager
 {
+    private const int MAX_STEAM_PACKET_SIZE = 384 * 1024;
+    private Dictionary<string, List<byte>> assemblyBuffers = new Dictionary<string, List<byte>>();
+    private Dictionary<string, int> expectedSizes = new Dictionary<string, int>();
+    
     public override void OnConnectionChanged(ConnectionInfo info)
     {
         if (info.State == ConnectionState.Connecting)
@@ -61,41 +67,152 @@ public class ClientSteam : ConnectionManager
         
         byte[] byteData =  SteamworksUtils.ConvertIntPtrToByteArray(data, size);
         
-        int packetLenght = 0;
+        int packetLength = 0;
         Packet receivedData = new Packet();
     
         receivedData.SetBytes(byteData);
         if (receivedData.UnreadLength() >= 4)
         {
-            packetLenght = receivedData.ReadInt();
-            if (packetLenght <= 0)
+            packetLength = receivedData.ReadInt();
+            if (packetLength <= 0)
             {
                 return;
             }
         }
 
-        while (packetLenght > 0 && packetLenght <= receivedData.UnreadLength())
+        while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
         {
-           byte[] _packetBytes = receivedData.ReadBytes(packetLenght);
+           byte[] _packetBytes = receivedData.ReadBytes(packetLength);
            ThreadManager.ExecuteOnMainThread<Exception>(ex =>
            {
                using (Packet _packet = new Packet(_packetBytes))
                {
-                   int _packetId = _packet.ReadInt();
-                   if (Client.PacketHandlers.ContainsKey(_packetId))
-                       Client.PacketHandlers[_packetId](_packet);
+                   int packetId = _packet.ReadInt();
+                   if (packetId == (int)PacketTypes.fragmented)
+                   {
+                       HandleFragment(_packet);
+                   }
                    else
-                       MelonLogger.Error($"[ClientSteam->OnMessage] packet with id:{_packetId} is not valid.");
+                   {
+                       // Exécution normale du handler
+                       ExecuteHandler(packetId, _packetBytes);
+                   }
                }
            }, null);
+           
+           packetLength = 0;
+           if (receivedData.UnreadLength() >= 4)
+           {
+               packetLength = receivedData.ReadInt();
+           }
         }
+    }
+    
+    private void HandleFragment(Packet packet)
+    {
+        string transferId = packet.Read<string>();
+        int totalSize = packet.ReadInt();
+        int chunkSize = packet.ReadInt();
+        byte[] chunk = packet.ReadBytes(chunkSize);
+
+        if (!assemblyBuffers.ContainsKey(transferId))
+        {
+            assemblyBuffers[transferId] = new List<byte>();
+            expectedSizes[transferId] = totalSize;
+        }
+
+        assemblyBuffers[transferId].AddRange(chunk);
+
+        // Si on a reçu tous les morceaux pour ce transfert
+        if (assemblyBuffers[transferId].Count >= expectedSizes[transferId])
+        {
+            byte[] fullData = assemblyBuffers[transferId].ToArray();
+            
+            // Nettoyage des dictionnaires
+            assemblyBuffers.Remove(transferId);
+            expectedSizes.Remove(transferId);
+
+            using (Packet assembledPacket = new Packet(fullData))
+            {
+                int finalPacketId = assembledPacket.ReadInt();
+                ExecuteHandler(finalPacketId, fullData);
+            }
+        }
+    }
+
+    private void ExecuteHandler(int packetId, byte[] data)
+    {
+        ThreadManager.ExecuteOnMainThread<Exception>(ex =>
+        {
+            using (Packet p = new Packet(data))
+            {
+                p.ReadInt(); // On consomme l'ID pour que le handler lise les données
+                if (Client.PacketHandlers.ContainsKey(packetId))
+                    Client.PacketHandlers[packetId](p);
+                else
+                    MelonLogger.Error($"[ClientSteam->ExecuteHandler] packet with id:{packetId} is not valid.");
+            }
+        }, null);
     }
 
     public void Send(Packet _packet, bool reliable)
     {
-        SendType sendType = reliable ? SendType.Reliable : SendType.Unreliable; // Reliable=TCP , Unrealiable=UDP
-        Result res = Connection.SendMessage(SteamworksUtils.ConvertByteArrayToIntPtr(_packet.ToArray()), _packet.Length(), sendType);
-        if(res != Result.OK)
-            MelonLogger.Error($"[ClientSteam->SendData] Issue while sending data:{res}");
+        if (!Connected || Connection.Id == 0) return;
+
+        byte[] data = _packet.ToArray();
+
+        // Si le paquet est trop gros pour Steam, on le fragmente
+        if (data.Length > MAX_STEAM_PACKET_SIZE)
+        {
+            SendFragmented(data);
+            return;
+        }
+
+        // Envoi normal
+        InternalRawSend(data, reliable);
+    }
+
+    private void SendFragmented(byte[] fullData)
+    {
+        string transferId = Guid.NewGuid().ToString();
+        int totalBytes = fullData.Length;
+        int sentBytes = 0;
+
+        while (sentBytes < totalBytes)
+        {
+            int chunkSize = Math.Min(MAX_STEAM_PACKET_SIZE, totalBytes - sentBytes);
+            byte[] chunk = new byte[chunkSize];
+            Array.Copy(fullData, sentBytes, chunk, 0, chunkSize);
+
+            using (Packet fragment = new Packet((int)PacketTypes.fragmented))
+            {
+                fragment.Write(transferId);   // ID unique de ce transfert
+                fragment.Write(totalBytes);   // Taille totale attendue à la fin
+                fragment.Write(chunk.Length); // Taille de ce morceau
+                fragment.Write(chunk);
+                
+                // Un paquet fragmenté DOIT être Reliable
+                InternalRawSend(fragment.ToArray(), true);
+            }
+            sentBytes += chunkSize;
+        }
+    }
+
+    private void InternalRawSend(byte[] data, bool reliable)
+    {
+        SendType sendType = reliable ? SendType.Reliable : SendType.Unreliable;
+        IntPtr ptr = SteamworksUtils.ConvertByteArrayToIntPtr(data);
+        if (ptr == IntPtr.Zero) return;
+
+        try
+        {
+            Result res = Connection.SendMessage(ptr, data.Length, sendType);
+            if (res != Result.OK)
+                MelonLogger.Error($"[ClientSteam->InternalRawSend] Issue while sending data: {res}");
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(ptr);
+        }
     }
 }

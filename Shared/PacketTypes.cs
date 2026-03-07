@@ -5,6 +5,7 @@ namespace CMS21Together.Shared;
 [Serializable]
 public enum PacketTypes
 {
+	fragmented,
 	connect,
 	handshake,
 	disconnect,
@@ -55,5 +56,5 @@ public enum PacketTypes
 	parkAdd,
 	parkRemove,
 	playerInCar,
-	carEngineSound
+	carEngineSound,
 }
