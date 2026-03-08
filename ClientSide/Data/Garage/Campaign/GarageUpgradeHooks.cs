@@ -56,7 +56,7 @@ public static class GarageUpgradeHooks
 			return;
 		}
 		
-		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
+		if (SaveSystem.selectedSave.Difficulty == DifficultyLevel.Sandbox) return;
 
 		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
 		if (upgradeCost <= GlobalData.PlayerMoney)

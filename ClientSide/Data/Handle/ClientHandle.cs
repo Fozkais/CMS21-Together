@@ -72,10 +72,10 @@ public static class ClientHandle
 		var gamemode = packet.Read<Gamemode>();
 		var parkCars = packet.Read<Dictionary<int, ModNewCarData>>();
 
-		var data = new ModSaveData();
-		data.selectedGamemode = gamemode;
+		var data = new ModProfileExtension();
+		data.SelectedGamemode = gamemode;
 
-		SavesManager.LoadSave(data, parkCars,true);
+		SaveSystem.LoadGame(data, MainMod.MAX_SAVE_COUNT - 1);
 	}
 	
 	public static void SpawnPacket(Packet packet)

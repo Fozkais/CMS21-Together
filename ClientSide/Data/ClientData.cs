@@ -98,12 +98,10 @@ public class ClientData
 
 		yield return new WaitForSeconds(2);
 		yield return new WaitForEndOfFrame();
-		gamemode = SavesManager.GetGamemodeFromDifficulty(SavesManager.currentSave.Difficulty);
+		gamemode = SaveSystem.GetGamemodeFromDifficulty(SaveSystem.selectedSave.Difficulty);
 		
 		if (playerPrefab != null)
 		{
-			if (SavesManager.currentSaveIndex != MainMod.MAX_SAVE_COUNT)
-				SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 			foreach (var client in connectedClients)
 			{
 				if (client.Value.scene == GameScene.garage)

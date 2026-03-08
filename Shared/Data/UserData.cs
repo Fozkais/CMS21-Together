@@ -43,7 +43,7 @@ public class UserData
 		ip = "127.0.0.1";
 		lobbyID = "";
 		playerID = 1;
-		playerGUID = Guid.NewGuid().ToString();
+		playerGUID = username;
 		selectedNetworkType = NetworkType.TCP;
 	}
 

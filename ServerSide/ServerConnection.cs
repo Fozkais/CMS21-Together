@@ -73,9 +73,9 @@ public class ServerConnection
 		isConnected = false;
 	}
 
-	public void SendToLobby(string username, string playerGuid)
+	public void SendToLobby(string username)
 	{
-		ServerData.Instance.connectedClients[id] = new UserData(username, id, playerGuid);
+		ServerData.Instance.connectedClients[id] = new UserData(username, id, username);
 		
 		foreach (var data in ServerData.Instance.connectedClients.Values)
 			ServerSend.UserDataPacket(data, id);

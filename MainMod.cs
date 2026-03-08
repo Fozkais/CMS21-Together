@@ -81,7 +81,7 @@ namespace CMS21Together
 			
 			if (sceneName == "Menu")
 			{
-				SavesManager.Initialize();
+				SaveSystem.Initialize();
 				ContentManager.Instance.Initialize();
 
 				ClientData.UserData.scene = SceneManager.UpdateScene(sceneName);

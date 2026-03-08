@@ -20,16 +20,12 @@ public static class ServerSend
 		ServerData.Instance.SetPlayerInfo(id, info);
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
-			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].money);
 			packet.Write(info.playerExp);
 			packet.Write(info.playerLevel);
 			packet.Write(info.skillPoints);
 			packet.Write(info.position);
 			packet.Write(info.rotation);
 			packet.Write(info.skillsInfo);
-			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[id - 1]);
-			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].missionFinished);
-			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].storyMissionInProgress);
 
 			SendData(id, packet);
 		}

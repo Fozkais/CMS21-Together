@@ -28,7 +28,6 @@ public class ClientSend
 			packet.Write(ContentManager.Instance.ownedContents);
 			packet.Write(ContentManager.Instance.gameVersion);
 			packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
-			packet.Write(ClientData.UserData.playerGUID);
 
 			SendData(packet);
 		}

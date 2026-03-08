@@ -68,7 +68,7 @@ public static class UIActions
 			UICustomPanel.CreateInfoPanel("Failed to connect to server !");
 		};
 		Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
-		SavesManager.LoadSave(SavesManager.ModSaves[save_index]);
+		SaveSystem.LoadGame(SaveSystem.Extensions[save_index], save_index);
 	}
 	
 	public static UnityAction ChangeNetworkType(MainMenuButton button)
@@ -107,23 +107,22 @@ public static class UIActions
 
 	public static void CreateNewSave(InputField input, StringSelector selector, MainMenuButton btn, int index)
 	{
-		if (SavesManager.ModSaves.Any(s => s.Value.Name == input.text))
+		if (SaveSystem.Extensions.Any(s => s.Name == input.text))
 		{
 			UICustomPanel.CreateInfoPanel("A save with the same name already exist.");
 			return;
 		}
 
-		SavesManager.ModSaves[index].Name = input.text;
-		SavesManager.ModSaves[index].selectedGamemode = SavesManager.GetGamemodeFromInt(selector.Current);
+		SaveSystem.Extensions[index].Name = input.text;
+		SaveSystem.Extensions[index].SelectedGamemode = SaveSystem.GetGamemodeFromInt(selector.Current);
 		btn.text.text = input.text;
 		btn.text.OnEnable();
-		SavesManager.SaveModSave(index);
 		UnityEngine.Object.Destroy(UICore.TMP_Window);
 	}
 
 	public static void DeleteSave(MainMenuButton button, int save_index)
 	{
-		SavesManager.RemoveModSave(save_index);
+		SaveSystem.DeleteSave(save_index);
 
 		button.GetComponentInChildren<Text>().text = "New Game";
 		button.OnEnable();
@@ -261,10 +260,10 @@ public static class UIActions
 	{
 		yield return new WaitForEndOfFrame();
 		
-		SavesManager.StartGame(save_index);
+		SaveSystem.StartGame(save_index);
 		int i = 0;
 		Dictionary<int, ModNewCarData> parksCars = new Dictionary<int, ModNewCarData>();
-		foreach (NewCarData carData in SavesManager.currentSave.carsOnParking)
+		foreach (NewCarData carData in SaveSystem.selectedSave.carsOnParking)
 		{
 			if (carData != null && !String.IsNullOrEmpty(carData.carToLoad))
 			{
@@ -272,11 +271,8 @@ public static class UIActions
 			}
 			i++;	
 		}
-		ServerSend.StartPacket(SavesManager.ModSaves[save_index].selectedGamemode, parksCars);
-		
-		SavesManager.ModSaves[save_index].alreadyLoaded = true;
-		if (SavesManager.ModSaves[save_index].additionnalStand != null)
-			ServerData.Instance.engineStand2 = SavesManager.ModSaves[save_index].additionnalStand;
-		SavesManager.SaveModSave(save_index);
+		ServerSend.StartPacket(SaveSystem.Extensions[save_index].SelectedGamemode, parksCars);
+		if (SaveSystem.Extensions[save_index].AdditionnalStand != null)
+			ServerData.Instance.engineStand2 = SaveSystem.Extensions[save_index].AdditionnalStand;
 	}
 }

@@ -45,7 +45,7 @@ public static class UILobby
 
 		UICustomPanel.CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -40), new(440, 2));
 		
-		string saveName = isHost ? SavesManager.ModSaves[save_index].Name : "Game";
+		string saveName = isHost ? SaveSystem.Extensions[save_index].Name : "Game";
 		var saveNameTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Save name: "  + saveName, 18);
 		var saveNameTxtRect = saveNameTxt.GetComponent<RectTransform>();
 		saveNameTxtRect.anchorMin = new Vector2(0.5f, 1f);

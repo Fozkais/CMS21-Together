@@ -25,7 +25,6 @@ public static class ServerHandle
 		var content = packet.Read<ReadOnlyDictionary<string, bool>>();
 		var gameVersion = packet.Read<string>();
 		var modVersion = packet.Read<string>();
-		string playerID = packet.Read<string>();
 
 		//MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] Received info : {clientIdCheck},{username},{modVersion}");
 
@@ -50,17 +49,19 @@ public static class ServerHandle
 			return;
 		}
 
+		if (ServerData.Instance.connectedClients.Any(c => c.Value.username == username))
+		{
+			ServerSend.DisconnectPacket(fromClient, "A user with same name is already connected.");
+			return;
+		}
 		
 		MelonLogger.Msg($"[ServerHandle->ConnectValidationPacket] {username} connected successfully.");
-		Server.Instance.clients[fromClient].SendToLobby(username, playerID);
+		Server.Instance.clients[fromClient].SendToLobby(username);
 		
-		if (SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Any(s => s.id == playerID))
-			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(s => s.id == playerID));
+		if (SaveSystem.Extensions[SaveSystem.selectedSaveIndex].PlayerInfos.Any(s => s.id == username))
+			ServerSend.PlayerSpawnPacket(clientIdCheck, SaveSystem.Extensions[SaveSystem.selectedSaveIndex].PlayerInfos.First(s => s.id == username));
 		else
-		{
-			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
-			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
-		}
+			SaveSystem.Extensions[SaveSystem.selectedSaveIndex].PlayerInfos.Add(new PlayerInfo(username,Vector3.zero, Quaternion.identity, 0,1, 0));
 	}
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
@@ -90,7 +91,7 @@ public static class ServerHandle
 		string id = packet.Read<string>();
 		List<bool> skill = packet.Read<List<bool>>();
 
-		SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
+		SaveSystem.Extensions[SaveSystem.selectedSaveIndex].PlayerInfos.First(p => playerID == p.id).UpdateSkill(id, skill);
 	}
 
 	public static void PositionPacket(int fromClient, Packet packet)
@@ -137,7 +138,6 @@ public static class ServerHandle
 				if (ServerData.Instance.items.All(i => i.UID != item.UID))
 				{
 					// Business Logic: Increment UID counter and add item to server inventory
-					SavesManager.ModSaves[SavesManager.currentSaveIndex].inventoryItemUID[fromClient - 1]++;
 					ServerData.Instance.items.Add(item);
 					
 					// Business Logic: Broadcast item to all clients (including sender for confirmation)

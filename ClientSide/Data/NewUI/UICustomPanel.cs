@@ -56,22 +56,12 @@ public static class UICustomPanel
 
 		string lastSave = "Never";
 		string time = "0 min";
-		ModSaveData data = SavesManager.ModSaves[index];
-		if (data != null && data.alreadyLoaded)
+		ModProfileExtension data = SaveSystem.Extensions[index];
+		ProfileData save = Singleton<GameManager>.Instance.GameDataManager.ProfileData[index];
+		if (save != null)
 		{
-			var timePlayed = TimeSpan.FromMinutes(SavesManager.profileData[data.saveIndex].PlayTime);
-			if (timePlayed.TotalHours >= 1)
-				time = $"{Math.Round(timePlayed.TotalHours)} h";
-			else if (timePlayed.TotalMinutes >= 1.0)
-				time = $"{Math.Round(timePlayed.TotalMinutes)} min";
-			else
-				time = "less than 1 min";
-			
-			var currentCulture = CultureInfo.CurrentCulture;
-			CultureInfo.CurrentCulture = GlobalData.DefaultCultureInfo;
-			lastSave = DateTimeOffset.FromUnixTimeSeconds(
-				Convert.ToInt64(SavesManager.profileData[data.saveIndex].LastSave)).ToLocalTime().DateTime.ToString("g");
-			CultureInfo.CurrentCulture = currentCulture;
+			time = Singleton<GameManager>.Instance.ProfileManager.GetProfilePlayTimeAsString(index);
+			lastSave = Singleton<GameManager>.Instance.ProfileManager.GetProfileLastSave(index);
 		}
 		var nameTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Name : " + data?.Name, 20);
 		var nameTxtRect = nameTxt.GetComponent<RectTransform>();
@@ -81,7 +71,7 @@ public static class UICustomPanel
 		nameTxtRect.sizeDelta = new Vector2(230, 45);
 		nameTxtRect.anchoredPosition = new Vector2(10, -50);
 		
-		var gmTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Gamemode : " + data?.selectedGamemode, 20);
+		var gmTxt = UIElements.CreateText(UICore.TMP_Window.transform, "Gamemode : " + data?.SelectedGamemode, 20);
 		var gmTxtRect = gmTxt.GetComponent<RectTransform>();
 		gmTxtRect.anchorMin = new Vector2(0f, 1f);
 		gmTxtRect.anchorMax = new Vector2(0f, 1f);
@@ -102,7 +92,7 @@ public static class UICustomPanel
 		lsaveTxtRect.anchorMin = new Vector2(0f, 1f);
 		lsaveTxtRect.anchorMax = new Vector2(0f, 1f);
 		lsaveTxtRect.pivot = new Vector2(0f, 1f);
-		lsaveTxtRect.sizeDelta = new Vector2(230, 45);
+		lsaveTxtRect.sizeDelta = new Vector2(250, 45);
 		lsaveTxtRect.anchoredPosition = new Vector2(10, -140);
 		
 		CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -185), new(390, 2));
