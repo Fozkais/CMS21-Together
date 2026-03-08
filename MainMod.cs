@@ -27,6 +27,7 @@ namespace CMS21Together
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION + ASSEMBLY_HOTFIX_VERSION;
 		public bool isModInitialized;
 		public static bool IsSteamAvailable { get; private set; }
+		public static string? PendingJoinSteamID = null;
 
 
 		private void InitializeSteam()
@@ -53,6 +54,14 @@ namespace CMS21Together
 				
 				SteamNetworkingUtils.InitRelayNetworkAccess();
 				IsSteamAvailable = true;
+				
+				
+				SteamFriends.OnGameRichPresenceJoinRequested += (friend, connectString) =>
+				{
+					MelonLogger.Msg($"[Steam] Joining {friend.Name} with data: {connectString}");
+					PendingJoinSteamID = connectString;
+				};
+				
 				MelonLogger.Msg("Steamworks initialized successfully.");
 			}
 			catch (Exception)
@@ -61,6 +70,25 @@ namespace CMS21Together
 				SteamClient.Shutdown();
 				MelonLogger.Warning("Steamworks could not be initialized (Non-Steam version or Steam not running). Steam features will be disabled.");
 			}
+		}
+		
+		public static void TryExecutePendingJoin()
+		{
+			if (PendingJoinSteamID == null) return;
+
+
+			if (Singleton<GameManager>.Instance == null) return;
+			
+			string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+			if (sceneName != "Menu") return;
+			
+			if (UICore.MP_Lobby == null) return;
+
+			ClientData.UserData.selectedNetworkType = NetworkType.Steam;
+			UIActions.StartClient(ClientData.UserData.username, PendingJoinSteamID);
+			MelonLogger.Msg($"[Steam] Game is ready! Joining {PendingJoinSteamID}...");
+			PendingJoinSteamID = null;
+
 		}
 		
 		public override void OnLateInitializeMelon()
@@ -112,6 +140,7 @@ namespace CMS21Together
 				SteamClient.RunCallbacks();
 				if (Client.Instance.steam != null) Client.Instance.steam.Receive();
 				if (Server.Instance.steam != null) Server.Instance.steam.Receive();
+				TryExecutePendingJoin();
 			}
 			
 			ThreadManager.UpdateThread();

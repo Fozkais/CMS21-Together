@@ -3,6 +3,7 @@ using CMS21Together.ServerSide;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -34,14 +35,17 @@ public static class UILobby
 		saveTxtRect.pivot = new Vector2(0.5f, 1f);
 		saveTxtRect.sizeDelta = new Vector2(145, 45);
 		saveTxtRect.anchoredPosition = new Vector2(-144, 0);
-		
-		var idTxt = UIElements.CreateText(UICore.TMP_Window.transform, "ID: " + serverID, 20);
-		var idTxtRect = idTxt.GetComponent<RectTransform>();
-		idTxtRect.anchorMin = new Vector2(0.5f, 1f);
-		idTxtRect.anchorMax = new Vector2(0.5f, 1f);
-		idTxtRect.pivot = new Vector2(0.5f, 1f);
-		idTxtRect.sizeDelta = new Vector2(185, 45);
-		idTxtRect.anchoredPosition = new Vector2(150, 0);
+
+		if (Client.Instance.networkType == NetworkType.Steam || Server.Instance.networkType == NetworkType.Steam)
+		{
+			var idTxt = UIElements.CreateText(UICore.TMP_Window.transform, "ID: " + serverID, 20);
+			var idTxtRect = idTxt.GetComponent<RectTransform>();
+			idTxtRect.anchorMin = new Vector2(0.5f, 1f);
+			idTxtRect.anchorMax = new Vector2(0.5f, 1f);
+			idTxtRect.pivot = new Vector2(0.5f, 1f);
+			idTxtRect.sizeDelta = new Vector2(185, 45);
+			idTxtRect.anchoredPosition = new Vector2(150, 0);
+		}
 
 		UICustomPanel.CreateSplitter(UICore.TMP_Window.transform, new Vector2(0, -40), new(440, 2));
 		
@@ -98,7 +102,24 @@ public static class UILobby
 		joinBtn.SetLocked(false);
 		joinBtn.SetDisabled(false, true);
 		
-		var typeBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Invite via Steam", null);
+		var typeBtn = UIElements.CreateButton(UICore.MP_Lobby.transform,
+			"Invite via Steam", Client.Instance.networkType == NetworkType.Steam || Server.Instance.networkType == NetworkType.Steam ? () =>
+			{
+				string connectId = Server.Instance.isRunning
+					? Server.Instance.serverID
+					: ClientData.UserData.lobbyID;
+
+				MelonLogger.Msg($"[Steam] Preparing invite with ID: {connectId}");
+				
+				SteamFriends.SetRichPresence("connect", connectId);
+				SteamFriends.SetRichPresence("status", $"In Lobby - {ClientData.Instance.connectedClients.Count}/{MainMod.MAX_PLAYER}");
+				
+				if (Server.Instance.isRunning)
+					SteamFriends.OpenGameInviteOverlay(new SteamId());
+				else
+					SteamFriends.OpenGameInviteOverlay(new SteamId());
+        
+			} : null);
 		var typeRect = typeBtn.GetComponent<RectTransform>();
 		typeRect.anchorMin = new Vector2(0f, 0.5f);
 		typeRect.anchorMax = new Vector2(0f, 0.5f);
@@ -107,13 +128,13 @@ public static class UILobby
 		typeRect.anchoredPosition = new Vector2(0, 246);
 		
 		var copyIdBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, 
-			"Copy server ID", (() =>
+			"Copy server ID", () =>
 			{
 				if (!Server.Instance.isRunning)
 					GUIUtility.systemCopyBuffer = ClientData.UserData.lobbyID;
 				else
 					GUIUtility.systemCopyBuffer = Server.Instance.serverID;
-			}));
+			});
 		var copyIdRect = copyIdBtn.GetComponent<RectTransform>();
 		copyIdRect.anchorMin = new Vector2(0f, 0.5f);
 		copyIdRect.anchorMax = new Vector2(0f, 0.5f);

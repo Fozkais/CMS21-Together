@@ -11,6 +11,7 @@ using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using MelonLoader;
+using Steamworks;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
