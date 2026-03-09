@@ -46,6 +46,7 @@ public static class SaveSystem
 	            try
 	            {
 	                byte[] managedData = currentSave.Data.ToArray();
+	                MelonLogger.Msg($"Slot {i} data size: {managedData.Length}");
 	                using var ms = new MemoryStream(managedData);
 	                using var reader = new BinaryReader(ms);
 
@@ -88,7 +89,6 @@ public static class SaveSystem
 
 	public static void LoadGame(ModProfileExtension data, int index)
 	{
-		MelonLogger.Msg($"Trying to load save index:'{index}'.");
 		Singleton<GameManager>.Instance.RDGPlayerPrefs.SetInt("selectedProfile", index);
 		Singleton<GameManager>.Instance.ProfileManager.Load();
 		
@@ -118,7 +118,6 @@ public static class SaveSystem
 	
 	public static void StartGame(int index)
 	{
-		MelonLogger.Msg($"Trying to start save index:'{index}'.");
 		Application.runInBackground = true;
 		
 		Singleton<GameManager>.Instance.ProfileManager.selectedProfile = index;
@@ -188,50 +187,43 @@ public static class SaveSystem
 		payload = null;
 		try
 		{
+			long fileLength = reader.BaseStream.Length;
 			byte[] magicBytes = Encoding.UTF8.GetBytes(MAGIC_WORD);
-			long streamLength = reader.BaseStream.Length;
 			int magicLength = magicBytes.Length;
 
-			// On scanne le flux octet par octet pour trouver le MAGIC_WORD
-			while (reader.BaseStream.Position < streamLength - magicLength)
+			// Sécurité minimale : le fichier doit au moins contenir Magic + Length (int)
+			if (fileLength < magicLength + 4) return false;
+
+			// 1. Lire la taille du payload (les 4 derniers octets du fichier)
+			reader.BaseStream.Seek(-4, SeekOrigin.End);
+			int payloadLength = reader.ReadInt32();
+
+			// 2. Vérifier le Magic Word juste avant la taille
+			// Position = Fin - 4 (length) - magicLength
+			reader.BaseStream.Seek(-(4 + magicLength), SeekOrigin.End);
+			byte[] foundMagic = reader.ReadBytes(magicLength);
+
+			// Comparaison des Magic Bytes
+			for (int i = 0; i < magicLength; i++)
 			{
-				bool found = true;
-				long startPosition = reader.BaseStream.Position;
-
-				for (int i = 0; i < magicLength; i++)
-				{
-					if (reader.ReadByte() != magicBytes[i])
-					{
-						found = false;
-						break;
-					}
-				}
-
-				if (found)
-				{
-					// On a trouvé le marqueur !
-					// On lit maintenant la taille du payload (Int32)
-					int payloadLength = reader.ReadInt32();
-                
-					// Sécurité : on vérifie que la taille n'est pas aberrante
-					if (payloadLength > 0 && reader.BaseStream.Position + payloadLength <= streamLength)
-					{
-						payload = reader.ReadBytes(payloadLength);
-						return true;
-					}
-				}
-				else
-				{
-					// Si on n'a pas trouvé, on revient juste après le premier octet testé
-					reader.BaseStream.Position = startPosition + 1;
-				}
+				if (foundMagic[i] != magicBytes[i]) return false;
 			}
+
+			// 3. Lire le payload
+			// Il se trouve juste avant le Magic Word
+			long payloadPos = fileLength - 4 - magicLength - payloadLength;
+			if (payloadPos < 0) return false;
+
+			reader.BaseStream.Seek(payloadPos, SeekOrigin.End); // On peut aussi calculer depuis le début
+			reader.BaseStream.Position = payloadPos; 
+			payload = reader.ReadBytes(payloadLength);
+
+			return true;
 		}
 		catch (Exception ex)
 		{
-			MelonLogger.Error($"[SavesManager] Error while scanning for mod data: {ex.Message}");
+			MelonLogger.Error($"[SaveSystem] Load Error: {ex.Message}");
 		}
-
 		return false;
 	}
 	

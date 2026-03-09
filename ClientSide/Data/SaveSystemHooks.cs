@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using CMS.ContainersSave;
@@ -9,7 +10,6 @@ using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
-using Il2CppSystem.IO;
 using MelonLoader;
 using Newtonsoft.Json;
 using UnhollowerBaseLib;
@@ -30,32 +30,42 @@ public static class SaveSystemHooks
         return true;
     }
     
-    [HarmonyPatch(typeof(ProfileData), nameof(ProfileData.SerializeToBytes))]
-    [HarmonyPostfix]
-    public static void SerializePostfix(ProfileData __instance, ref Il2CppStructArray<byte> __result)
+    [HarmonyPatch(typeof(GameDataManager), nameof(GameDataManager.Save))]
+    [HarmonyPrefix]
+    public static bool SaveFix(GameDataManager __instance, int profileID)
     {
-        if (__result == null || !Server.Instance.isRunning) return;
+        if (profileID <= 3) return true;
+    
+        try
+        {
+            __instance.ProfileData[profileID].LastUID = UIDManager.GetDataForSave();
+            __instance.ProfileData[profileID].BuildVersion = GameSettings.BuildVersion;
+            byte[] originalData = __instance.ProfileData[profileID].SerializeToBytes();
 
-        int index = Singleton<GameManager>.Instance.ProfileManager.selectedProfile;
-        UpdateExtensionData(index);
-        byte[] modData = SaveSystem.Extensions[index].ToBytes();
-        
-        byte[] originalBytes = new byte[__result.Length];
-        for (int i = 0; i < __result.Length; i++) originalBytes[i] = __result[i];
+            byte[] finalArray;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                using (BinaryWriter writer = new BinaryWriter(ms))
+                {
+                    writer.Write(originalData);
+                    
+                    UpdateExtensionData(profileID);
+                    byte[] modData = SaveSystem.Extensions[profileID].ToBytes();
+                    writer.Write(modData);
+                    
+                    byte[] magicBytes = Encoding.UTF8.GetBytes(SaveSystem.MAGIC_WORD);
+                    writer.Write(magicBytes); 
+                    writer.Write(modData.Length);
+                }
+                finalArray = ms.ToArray();
+            }
 
-        MemoryStream ms = new MemoryStream();
-        ms.Write(originalBytes, 0, originalBytes.Length);
-        BinaryWriter writer = new BinaryWriter(ms);
-        writer.Write(SaveSystem.MAGIC_WORD);
-        writer.Write(modData.Length);
-        writer.Write(modData);
-        byte[] finalArray = ms.ToArray();
-        Il2CppStructArray<byte> il2CppArray = new Il2CppStructArray<byte>(finalArray.Length);
-        for (int i = 0; i < finalArray.Length; i++) il2CppArray[i] = finalArray[i];
-        __result = il2CppArray;
-        
-        ms.Dispose();
-        writer.Dispose();
+            MelonLogger.Msg($"[SaveFix] Saving slot {profileID}. Total size: {finalArray.Length} bytes.");
+            string fileName = $"profile{profileID}.cms21b";
+            Singleton<GameManager>.Instance.PlatformManager.SendSave(fileName, (Il2CppStructArray<byte>)finalArray);
+        }
+        catch (Exception ex) { MelonLogger.Error($"[SaveFix] Error: {ex}"); }
+        return false;
     }
     
     private static void UpdateExtensionData(int index)
