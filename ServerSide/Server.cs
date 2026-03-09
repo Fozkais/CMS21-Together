@@ -181,9 +181,12 @@ public class Server
 			{ (int)PacketTypes.rotation, ServerHandle.RotationPacket },
 			{ (int)PacketTypes.sceneChange, ServerHandle.SceneChangePacket },
 
-			{ (int)PacketTypes.item, ServerHandle.ItemPacket },
-			{ (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
-
+			{ (int)PacketTypes.requestAddItem, ServerHandle.AddItemRequest },
+			{ (int)PacketTypes.requestAddGroupItem, ServerHandle.AddGroupItemRequest },
+			{ (int)PacketTypes.requestItemDelete, ServerHandle.ItemDeleteRequest },
+			{ (int)PacketTypes.requestGroupItemDelete, ServerHandle.GroupItemDeleteRequest },
+			{ (int)PacketTypes.requestInventorySync, ServerHandle.InventoryResyncRequest },
+			
 			{ (int)PacketTypes.stat, ServerHandle.StatPacket },
 			{ (int)PacketTypes.exp, ServerHandle.ExpPacket },
 			{ (int)PacketTypes.point, ServerHandle.PointPacket },

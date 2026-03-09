@@ -1,6 +1,7 @@
 using System;
 using MelonLoader;
 using UnhollowerBaseLib;
+using UnityEngine;
 
 namespace CMS21Together.Shared.Data.Vanilla.Cars;
 
@@ -94,6 +95,11 @@ public struct ModCustomColor
 	{
 		if (color.Color != null)
 			Color = color.Color;
+	}
+	
+	public ModCustomColor(Color color)
+	{
+		Color = new[] { color.r, color.g, color.b, color.a };
 	}
 
 	public CustomColor ToGame()

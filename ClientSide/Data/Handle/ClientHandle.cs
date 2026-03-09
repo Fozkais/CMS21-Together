@@ -110,22 +110,36 @@ public static class ClientHandle
 		Rotation.UpdateRotation(id, rotation);
 		packet.Dispose();
 	}
-
-	public static void ItemPacket(Packet packet)
+	
+	public static void AddItemPacket(Packet packet)
 	{
-		var action = packet.Read<InventoryAction>();
 		var item = packet.Read<ModItem>();
 
-		MelonCoroutines.Start(Player.Inventory.HandleItem(item, action));
+		MelonCoroutines.Start(InventorySync.AddItem(item));
 		packet.Dispose();
 	}
-
-	public static void GroupItemPacket(Packet packet)
+	
+	public static void DeleteItemPacket(Packet packet)
 	{
-		var action = packet.Read<InventoryAction>();
+		var item = packet.Read<ModItem>();
+
+		MelonCoroutines.Start(InventorySync.DeleteItem(item));
+		packet.Dispose();
+	}
+	
+	public static void AddGroupItemPacket(Packet packet)
+	{
 		var item = packet.Read<ModGroupItem>();
 
-		MelonCoroutines.Start(Player.Inventory.HandleGroupItem(item, action));
+		MelonCoroutines.Start(InventorySync.AddGroupItem(item));
+		packet.Dispose();
+	}
+	
+	public static void DeleteGroupItemPacket(Packet packet)
+	{
+		long UId = packet.Read<long>();
+
+		MelonCoroutines.Start(InventorySync.DeleteGroupItem(UId));
 		packet.Dispose();
 	}
 

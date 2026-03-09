@@ -16,8 +16,13 @@ public enum PacketTypes
 	spawn,
 	position,
 	rotation,
-	item,
-	groupItem,
+	
+	requestAddItem,
+	requestItemDelete,
+	requestAddGroupItem,
+	requestGroupItemDelete,
+	requestInventorySync,
+	
 	stat,
 	lifter,
 	loadJobCar,

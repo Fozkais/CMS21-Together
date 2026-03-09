@@ -95,8 +95,10 @@ public class Client
 			{ (int)PacketTypes.rotation, ClientHandle.RotationPacket },
 			{ (int)PacketTypes.sceneChange, ClientHandle.SceneChangePacket },
 
-			{ (int)PacketTypes.item, ClientHandle.ItemPacket },
-			{ (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
+			{ (int)PacketTypes.requestAddGroupItem, ClientHandle.AddGroupItemPacket },
+			{ (int)PacketTypes.requestAddItem, ClientHandle.AddItemPacket },
+			{ (int)PacketTypes.requestGroupItemDelete, ClientHandle.DeleteGroupItemPacket },
+			{ (int)PacketTypes.requestItemDelete, ClientHandle.DeleteItemPacket },
 
 			{ (int)PacketTypes.stat, ClientHandle.StatPacket },
 

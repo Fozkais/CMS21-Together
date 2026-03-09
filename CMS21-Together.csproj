@@ -78,7 +78,8 @@
         <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
         <Compile Include="ClientSide\Data\Player\CarEnterExit.cs" />
-        <Compile Include="ClientSide\Data\Player\Inventory.cs" />
+        <Compile Include="ClientSide\Data\Player\InventoryFix.cs" />
+        <Compile Include="ClientSide\Data\Player\InventorySync.cs" />
         <Compile Include="ClientSide\Data\Player\Movement.cs" />
         <Compile Include="ClientSide\Data\Player\Rotation.cs" />
         <Compile Include="ClientSide\Data\Player\Stats.cs" />

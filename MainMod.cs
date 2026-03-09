@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.IO;
 using CMS21Together.ClientSide;
 using CMS21Together.ClientSide.Data;

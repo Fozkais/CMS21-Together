@@ -52,28 +52,43 @@ public static class ServerSend
 			SendDataToAll(fromClient, packet);
 		}
 	}
-
-	public static void ItemPacket(int fromClient, ModItem item, InventoryAction action)
+	
+	public static void AddItemPacket(ModItem item)
 	{
-		using (var packet = new Packet((int)PacketTypes.item))
+		using (var packet = new Packet((int)PacketTypes.requestAddItem))
 		{
-			packet.Write(action);
 			packet.Write(item);
-
-			SendDataToAll(fromClient, packet);
+			SendDataToAll(packet);
 		}
 	}
-
-	public static void GroupItemPacket(int fromClient, ModGroupItem item, InventoryAction action)
+	
+	public static void ItemDeletePacket(ModItem item)
 	{
-		using (var packet = new Packet((int)PacketTypes.groupItem))
+		using (var packet = new Packet((int)PacketTypes.requestItemDelete))
 		{
-			packet.Write(action);
 			packet.Write(item);
-
-			SendDataToAll(fromClient, packet);
+			SendDataToAll(packet);
 		}
 	}
+	
+	public static void AddGroupItemPacket(ModGroupItem item)
+	{
+		using (var packet = new Packet((int)PacketTypes.requestAddGroupItem))
+		{
+			packet.Write(item);
+			SendDataToAll(packet);
+		}
+	}
+	
+	public static void GroupItemDeletePacket(long UId)
+	{
+		using (var packet = new Packet((int)PacketTypes.requestGroupItemDelete))
+		{
+			packet.Write(UId);
+			SendDataToAll(packet);
+		}
+	}
+	
 
 	public static void StatPacket(int fromClient, int value, ModStats type, bool initial)
 	{
@@ -561,4 +576,5 @@ public static class ServerSend
 			SendDataToAll(fromClient, _packet, false); // Use UDP for sound sync (non-reliable)
 		}
 	}
+	
 }
