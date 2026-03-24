@@ -115,6 +115,7 @@ public static class ServerHandle
 		ModItem item = packet.Read<ModItem>();
 		int price = packet.ReadInt();
 
+		MelonLogger.Msg($"[SV] Receive new item: {item.ID}");
 		if (ServerData.Instance.money >= price)
 		{
 			ServerData.Instance.money -= price;
@@ -160,6 +161,8 @@ public static class ServerHandle
 
 	public static void InventoryResyncRequest(int fromClient, Packet packet)
 	{
+		MelonLogger.Msg($"Received Inventory sync request: {ServerData.Instance.items.Count} , {ServerData.Instance.groupItems.Count}");
+		
 		for (int i = 0; i < ServerData.Instance.items.Count; i++)
 		{
 			ServerSend.AddItemPacket(ServerData.Instance.items[i]);

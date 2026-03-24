@@ -6,6 +6,7 @@ using CMS.Managers;
 using CMS.UI;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Garage;
+using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
@@ -112,10 +113,12 @@ public static class GameLoadHook
 		TempInventory tempInventory = Singleton<GameManager>.Instance.TempInventory;
 		if (tempInventory.GetItemsCount() > 0)
 		{
+			MelonLogger.Msg($"Adding {tempInventory.GetItemsCount()} to inventory.");
 			List<BaseItem> listOfItems = tempInventory.GetListOfItems();
 			Singleton<GameManager>.Instance.Inventory.Add(listOfItems);
 			tempInventory.ClearListOfItems();
 		}
+		MelonLogger.Msg($"Inventory item after load: {Singleton<GameManager>.Instance.Inventory.items.Count}");
 		CarLoaderPlaces.Get().Load();
 		__instance.garageLevel.PrepareGarage();
 		while (!__instance.garageLevel.IsReady)
@@ -234,6 +237,10 @@ public static class GameLoadHook
 			MelonCoroutines.Start(GarageResync.ResyncGarage());
 		yield return new WaitForEndOfFrame();
 		
+		Singleton<GameManager>.Instance.Inventory.DeleteAllInventory();
+		ClientSend.RequestInventoryResync();
+		
+		yield return new WaitForEndOfFrame();
 		
 		SceneLoader.BlockProgress = false; // needed to end loading
 		NotificationCenter.IsGameReady = true; // needed to end loading
@@ -270,8 +277,5 @@ public static class GameLoadHook
 		}
 		WindowManager.Instance.EnableAllWindowsOpening();
 		Singleton<GameManager>.Instance.ProfileManager.BackupSave();
-		
-		MelonLogger.Msg("Run Custom Load method successfully !!");
-		yield break;
 	}
 }

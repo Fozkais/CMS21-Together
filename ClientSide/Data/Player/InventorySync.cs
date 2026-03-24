@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Linq;
+using CMS.UI.Helpers;
 using CMS.UI.Logic;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ServerSide;
+using CMS21Together.ServerSide.Data;
 using CMS21Together.Shared.Data.Vanilla;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using HarmonyLib;
@@ -36,7 +38,10 @@ public static class InventorySync
 		{
 			MelonLogger.Msg("Ask Full inventory resync!");
 			Singleton<GameManager>.Instance.TempInventory.ClearListOfItems();
-			GameData.Instance.localInventory.DeleteAllInventory();
+			Singleton<GameManager>.Instance.Inventory.DeleteAllInventory();
+			MelonLogger.Msg($"Inventory should be empty : {__instance.items.Count} , {__instance.groups.Count}");
+			
+			Singleton<GameManager>.Instance.Inventory.DeleteAllInventory();
 			ClientSend.RequestInventoryResync();
 			return false;
 		}
@@ -65,6 +70,7 @@ public static class InventorySync
 						item.Dent = 1f;
 					}
 					__instance.items.Add(new Item(item));
+					ServerData.Instance.items.Add(new ModItem(item));
 				}
 			}
 		}
@@ -90,6 +96,7 @@ public static class InventorySync
 					}
 				}
 				__instance.groups.Add(new GroupItem(groupItem));
+				ServerData.Instance.groupItems.Add(new ModGroupItem(groupItem));
 			}
 		}
 		return false;
