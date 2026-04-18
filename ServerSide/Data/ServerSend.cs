@@ -16,8 +16,8 @@ public static class ServerSend
 {
 	public static void PlayerSpawnPacket(int id, PlayerInfo info)
 	{
-		if (id == 1) return; // don't send if it's host (1 == host)
 		ServerData.Instance.SetPlayerInfo(id, info);
+		if (id == 1) return; // don't send if it's host (1 == host)
 		using (var packet = new Packet((int)PacketTypes.spawn))
 		{
 			packet.Write(SavesManager.ModSaves[SavesManager.currentSaveIndex].money);
@@ -88,6 +88,20 @@ public static class ServerSend
 			packet.Write(initial);
 
 			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void ExpPacket(int fromClient, int exp, int level, int onlyTo = -1)
+	{
+		using (var packet = new Packet((int)PacketTypes.exp))
+		{
+			packet.Write(exp);
+			packet.Write(level);
+
+			if (onlyTo >= 0)
+				SendData(onlyTo, packet);
+			else
+				SendDataToAll(fromClient, packet);
 		}
 	}
 
@@ -404,7 +418,10 @@ public static class ServerSend
 			_packet.Write(aType);
 			if(item != null)   {_packet.Write(item);}
 
-			SendDataToAll(fromClient, _packet);
+			if (aType == ModWheelBalancerActionType.remove)
+				SendDataToAll(_packet);
+			else
+				SendDataToAll(fromClient, _packet);
 		}
 	}
 

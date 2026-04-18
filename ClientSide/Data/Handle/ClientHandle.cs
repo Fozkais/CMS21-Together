@@ -139,6 +139,14 @@ public static class ClientHandle
 		MelonCoroutines.Start(Stats.UpdateStats(type, value, initial));
 	}
 
+	public static void ExpPacket(Packet packet)
+	{
+		int exp = packet.ReadInt();
+		int level = packet.ReadInt();
+
+		MelonCoroutines.Start(Stats.UpdateExperience(exp, level));
+	}
+
 	public static void LifterPacket(Packet packet)
 	{
 		if (SceneManager.CurrentScene() != GameScene.garage) return;
@@ -184,9 +192,15 @@ public static class ClientHandle
 		{
 			GameData.Instance.wheelBalancer.ResetActions();
 			GameData.Instance.wheelBalancer.Clear();
+			GameData.Instance.wheelBalancer.balanceCanceled = false;
 		}
 		else
 		{
+			if (_item == null)
+			{
+				MelonLogger.Warning($"[ClientHandle->WheelBalancePacket] Missing wheel balancer item for action {aType}.");
+				return;
+			}
 			WheelBalancer.listen = false;
 			//MelonLogger.Msg("CL: Received WheelBalance!");
 			GameData.Instance.wheelBalancer.SetGroupOnWheelBalancer(_item!.ToGame(_item), true);

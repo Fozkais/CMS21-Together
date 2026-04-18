@@ -58,9 +58,13 @@ public static class ServerHandle
 			ServerSend.PlayerSpawnPacket(clientIdCheck, SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.First(s => s.id == playerID));
 		else
 		{
-			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(new PlayerInfo(playerID,Vector3.zero, Quaternion.identity, 0,1, 0));
+			var playerInfo = new PlayerInfo(playerID, Vector3.zero, Quaternion.identity, 0, 1, 0);
+			SavesManager.ModSaves[SavesManager.currentSaveIndex].playerInfos.Add(playerInfo);
+			ServerData.Instance.SetPlayerInfo(clientIdCheck, playerInfo);
 			SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		}
+
+		SyncAuthoritativeExperience();
 	}
 
 	public static void DisconnectPacket(int fromclient, Packet packet)
@@ -274,10 +278,64 @@ public static class ServerHandle
 	{
 		int exp = packet.ReadInt();
 		int lvl = packet.ReadInt();
-		
-		//MelonLogger.Msg($"Received XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
-		ServerData.Instance.connectedClients[fromClient].playerExp = exp;
-		ServerData.Instance.connectedClients[fromClient].playerLevel = lvl;
+
+		var current = GetAuthoritativeExperience();
+		if (current.HasValue && IsExperienceBehind(exp, lvl, current.Value.exp, current.Value.level))
+		{
+			MelonLogger.Warning($"[ServerHandle->ExpPacket] Ignoring stale XP from client {fromClient}: {exp}/{lvl}; authoritative is {current.Value.exp}/{current.Value.level}.");
+			ServerSend.ExpPacket(fromClient, current.Value.exp, current.Value.level, fromClient);
+			return;
+		}
+
+		ApplyAuthoritativeExperience(exp, lvl);
+		ServerSend.ExpPacket(fromClient, exp, lvl);
+	}
+
+	private static (int exp, int level)? GetAuthoritativeExperience()
+	{
+		if (ServerData.Instance == null || ServerData.Instance.connectedClients.Count == 0)
+			return null;
+
+		var best = ServerData.Instance.connectedClients.Values
+			.OrderByDescending(c => c.playerLevel)
+			.ThenByDescending(c => c.playerExp)
+			.FirstOrDefault();
+
+		return best == null ? null : (best.playerExp, best.playerLevel);
+	}
+
+	private static bool IsExperienceBehind(int exp, int level, int currentExp, int currentLevel)
+	{
+		return level < currentLevel || level == currentLevel && exp < currentExp;
+	}
+
+	private static void UpdateSavedExperience(int exp, int level)
+	{
+		var save = SavesManager.ModSaves[SavesManager.currentSaveIndex];
+		foreach (var playerInfo in save.playerInfos)
+		{
+			playerInfo.playerExp = exp;
+			playerInfo.playerLevel = level;
+		}
+	}
+
+	private static void SyncAuthoritativeExperience()
+	{
+		var current = GetAuthoritativeExperience();
+		if (!current.HasValue) return;
+
+		ApplyAuthoritativeExperience(current.Value.exp, current.Value.level);
+		ServerSend.ExpPacket(-1, current.Value.exp, current.Value.level);
+	}
+
+	private static void ApplyAuthoritativeExperience(int exp, int level)
+	{
+		foreach (var client in ServerData.Instance.connectedClients.Values)
+		{
+			client.playerExp = exp;
+			client.playerLevel = level;
+		}
+		UpdateSavedExperience(exp, level);
 	}
 	
 	public static void PointPacket(int fromClient, Packet packet)
@@ -546,9 +604,12 @@ public static class ServerHandle
 		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.start ||(ModWheelBalancerActionType)aType == ModWheelBalancerActionType.setGroup)
 		{
 			item = packet.Read<ModGroupItem>();
+			ServerData.Instance.SetWheelBalancerState(item);
 			ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType, item);
 			return;
 		}
+		if ((ModWheelBalancerActionType)aType == ModWheelBalancerActionType.remove)
+			ServerData.Instance.SetWheelBalancerState(null);
 		ServerSend.WheelBalancerPacket(fromClient, (ModWheelBalancerActionType)aType);
 	}
 	
