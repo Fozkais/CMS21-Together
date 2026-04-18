@@ -83,8 +83,8 @@ public class Server
 			PlayerInfo info = save.playerInfos.First(p => playerGuid == p.id);
 			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
-			int lvl = ServerData.Instance.connectedClients[id].playerExp;
-			int exp = ServerData.Instance.connectedClients[id].playerLevel;
+			int lvl = ServerData.Instance.connectedClients[id].playerLevel;
+			int exp = ServerData.Instance.connectedClients[id].playerExp;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
 			if (save.playerInfos.Any(p => playerGuid == p.id))

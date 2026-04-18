@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using CMS.UI.Windows;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared.Data.Vanilla.GarageTool;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace CMS21Together.ClientSide.Data.Garage.Tools;
 public static class WheelBalancer
 {
 	public static bool listen = true;
+	private static bool balanceWatchRunning;
 	
         [HarmonyPrefix]
 	    [HarmonyPatch(typeof(WheelBalancerLogic), "SetGroupOnWheelBalancer")]
@@ -26,37 +28,59 @@ public static class WheelBalancer
         }
         
         [HarmonyPatch(typeof(WheelBalanceWindow), nameof(WheelBalanceWindow.StartMiniGame))]
-        [HarmonyPrefix]
-        public static bool WheelBalancer2Fix(WheelBalanceWindow __instance)
+        [HarmonyPostfix]
+        public static void WheelBalancer2Fix(WheelBalanceWindow __instance)
         {
-            if(!Client.Instance.isConnected) return true;
+            if(!Client.Instance.isConnected) return;
             
-            MelonCoroutines.Start(BalanceWheel(__instance));
-            return false;
+            MelonCoroutines.Start(WatchBalanceResult());
         }
-        public static IEnumerator BalanceWheel(WheelBalanceWindow __instance)
+
+        private static IEnumerator WatchBalanceResult()
         {
-            yield return new WaitForFixedUpdate();
+            if (balanceWatchRunning) yield break;
+
+            balanceWatchRunning = true;
             yield return new WaitForEndOfFrame();
-            yield return new WaitForSeconds(0.1f);
-            foreach (Item item in GameData.Instance.wheelBalancer.groupOnWheelBalancer.ItemList)
+
+            GroupItem watchedGroup = GameData.Instance?.wheelBalancer?.groupOnWheelBalancer;
+            if (watchedGroup == null)
             {
-                item.WheelData = new WheelData()
-                {
-                    ET = item.WheelData.ET,
-                    Profile = item.WheelData.Profile,
-                    Width = item.WheelData.Width,
-                    Size = item.WheelData.Size,
-                    IsBalanced = true
-                };
-                __instance.CancelAction();
-                yield return new WaitForFixedUpdate();
-                yield return new WaitForEndOfFrame();
-                yield return new WaitForSeconds(0.1f);
-                GameData.Instance.wheelBalancer.balanceCanceled = false;
-                GameMode.m_instance.SetCurrentMode(gameMode.Garage);
+                balanceWatchRunning = false;
+                yield break;
             }
-            ClientSend.SendWheelBalancer(1, GameData.Instance.wheelBalancer.groupOnWheelBalancer);
+
+            long watchedUid = watchedGroup.UID;
+            float timeoutAt = Time.time + 120f;
+            while (Client.Instance.isConnected && Time.time < timeoutAt)
+            {
+                GroupItem currentGroup = GameData.Instance?.wheelBalancer?.groupOnWheelBalancer;
+                if (currentGroup == null || currentGroup.UID != watchedUid)
+                    break;
+
+                if (IsBalanced(currentGroup))
+                {
+                    ClientSend.SendWheelBalancer((int)ModWheelBalancerActionType.start, currentGroup);
+                    break;
+                }
+
+                yield return new WaitForSeconds(0.25f);
+            }
+
+            balanceWatchRunning = false;
+        }
+
+        private static bool IsBalanced(GroupItem groupItem)
+        {
+            if (groupItem?.ItemList == null) return false;
+
+            foreach (Item item in groupItem.ItemList)
+            {
+                if (item != null && item.WheelData.IsBalanced)
+                    return true;
+            }
+
+            return false;
         }
         
         [HarmonyPatch(typeof(PieMenuController), "_GetOnClick_b__72_64")]

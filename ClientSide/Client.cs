@@ -98,6 +98,7 @@ public class Client
 			{ (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
 
 			{ (int)PacketTypes.stat, ClientHandle.StatPacket },
+			{ (int)PacketTypes.exp, ClientHandle.ExpPacket },
 
 			{ (int)PacketTypes.lifter, ClientHandle.LifterPacket },
 			{ (int)PacketTypes.setSpringClamp, ClientHandle.SetSpringClampPacket },

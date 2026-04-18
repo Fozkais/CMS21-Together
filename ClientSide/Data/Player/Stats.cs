@@ -83,6 +83,24 @@ public static class Stats
 		}
 	}
 
+	public static IEnumerator UpdateExperience(int exp, int level)
+	{
+		while (!ClientData.GameReady)
+			yield return new WaitForSeconds(0.25f);
+		yield return new WaitForEndOfFrame();
+
+		if (ClientData.Instance.gamemode == Gamemode.Sandbox) yield break;
+
+		ClientData.Instance.exp = exp;
+		ClientData.Instance.level = level;
+		GlobalData.PlayerExp = exp;
+		GlobalData.PlayerLevel = level;
+		UIManager.Get().StatsContainer.CurrentLevel = level;
+		UIManager.Get().StatsContainer.Refresh(StatType.Level, true);
+		UIManager.Get().StatsContainer.Refresh(StatType.Experience, true);
+		MelonLogger.Msg($"[Stats->UpdateExperience] Synced XP: {exp}, level: {level}");
+	}
+
 	[HarmonyPatch(typeof(GlobalData), nameof(GlobalData.AddPlayerExp))]
 	[HarmonyPostfix]
 	public static void AddPlayerExpHook(int exp, bool instant = false)
