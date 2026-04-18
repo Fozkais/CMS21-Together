@@ -106,6 +106,8 @@ public class Server
 			udp.Close();
 		if (tcp != null)
 			tcp.Stop();
+		if (networkType == NetworkType.Steam)
+			SteamworksUtils.LeaveInviteLobby();
 		if (steam != null)
 		  steam.Close();
 		if (packetHandlers != null)
