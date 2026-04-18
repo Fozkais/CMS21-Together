@@ -34,8 +34,17 @@ public class UDPConnection
 		{
 			using (var _packet = new Packet(_packetBytes))
 			{
-				var _packetId = _packet.ReadInt();
-				Server.packetHandlers[_packetId](id, _packet);
+				int _packetId = -1;
+				try
+				{
+					_packetId = _packet.ReadInt();
+					if (Server.packetHandlers.ContainsKey(_packetId))
+						Server.packetHandlers[_packetId](id, _packet);
+				}
+				catch (System.Exception handlerEx)
+				{
+					MelonLoader.MelonLogger.Error($"[UDPConnection] Server packet handler {_packetId} threw: {handlerEx}");
+				}
 			}
 		}, null);
 	}

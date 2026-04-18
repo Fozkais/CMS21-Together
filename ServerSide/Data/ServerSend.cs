@@ -158,14 +158,17 @@ public static class ServerSend
 		}
 	}
 
-	public static void CarPositionPacket(int fromClient, int carLoaderID, int placeNo)
+	public static void CarPositionPacket(int fromClient, int carLoaderID, int placeNo, int onlyTo = -1)
 	{
 		using (var packet = new Packet((int)PacketTypes.carPosition))
 		{
 			packet.Write(placeNo);
 			packet.Write(carLoaderID);
 
-			SendDataToAll(fromClient, packet);
+			if (onlyTo >= 0)
+				SendData(onlyTo, packet);
+			else
+				SendDataToAll(fromClient, packet);
 		}
 	}
 

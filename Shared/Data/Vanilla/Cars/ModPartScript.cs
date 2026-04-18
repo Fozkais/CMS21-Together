@@ -44,7 +44,13 @@ public class ModPartScript
 
 		if (_type != ModPartType.engineStand)
 		{
-			var carLoaderID = data.gameObject.GetComponentsInParent<CarLoaderOnCar>(true)[0].CarLoader.name[10] - '0' - 1;
+			var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(
+				data.gameObject.GetComponentsInParent<CarLoaderOnCar>(true)[0].CarLoader.name);
+			if (carLoaderID < 0 || !ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
+			{
+				unmountWith = new List<ModPartScript>();
+				return;
+			}
 			var car = ClientData.Instance.loadedCars[carLoaderID];
 			unmountWith = new List<ModPartScript>();
 			foreach (var part in data.unmountWith)

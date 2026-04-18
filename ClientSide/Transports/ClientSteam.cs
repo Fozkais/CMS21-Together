@@ -81,11 +81,19 @@ public class ClientSteam : ConnectionManager
            {
                using (Packet _packet = new Packet(_packetBytes))
                {
-                   int _packetId = _packet.ReadInt();
-                   if (Client.PacketHandlers.ContainsKey(_packetId))
-                       Client.PacketHandlers[_packetId](_packet);
-                   else
-                       MelonLogger.Error($"[ClientSteam->OnMessage] packet with id:{_packetId} is not valid.");
+                   int _packetId = -1;
+                   try
+                   {
+                       _packetId = _packet.ReadInt();
+                       if (Client.PacketHandlers.ContainsKey(_packetId))
+                           Client.PacketHandlers[_packetId](_packet);
+                       else
+                           MelonLogger.Error($"[ClientSteam->OnMessage] packet with id:{_packetId} is not valid.");
+                   }
+                   catch (Exception handlerEx)
+                   {
+                       MelonLogger.Error($"[ClientSteam->OnMessage] handler {_packetId} threw: {handlerEx}");
+                   }
                }
            }, null);
         }

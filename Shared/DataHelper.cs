@@ -11,6 +11,22 @@ namespace CMS21Together.Shared;
 
 public class DataHelper // TODO: Finish This!
 {
+	// Valid range for mod-side carLoaderID (0..MaxCarLoaderID inclusive).
+	// Matches the 5-slot mapping in GameData.carLoaders.
+	public const int MaxCarLoaderID = 4;
+
+	public static bool IsValidCarLoaderID(int id) => id >= 0 && id <= MaxCarLoaderID;
+
+	// CarLoader GameObjects are named like "CarLoader_1" ... "CarLoader_5"; char index 10
+	// is the digit. We normalize to 0-based mod id. Returns -1 on malformed names so
+	// callers can fail closed instead of silently using a garbage index.
+	public static int ExtractCarLoaderIDFromName(string goName)
+	{
+		if (string.IsNullOrEmpty(goName) || goName.Length <= 10) return -1;
+		int id = goName[10] - '0' - 1;
+		return IsValidCarLoaderID(id) ? id : -1;
+	}
+
 	public static Stream LoadContent(string assemblyPath)
 	{
 		var assembly = Assembly.GetExecutingAssembly();

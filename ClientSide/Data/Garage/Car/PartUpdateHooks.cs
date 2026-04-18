@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using CMS21Together.ClientSide.Data.Garage.Tools;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using CMS21Together.Shared.Data.Vanilla.Cars;
 using CMS21Together.Shared.Data.Vanilla.GarageTool;
@@ -23,7 +24,9 @@ public static class PartUpdateHooks
 
 		if (carFluidType == CarFluidType.EngineOil && __instance.Oil.CarFluid != null)
 		{
-			int carLoaderID = __instance.Oil.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			int carLoaderID = DataHelper.ExtractCarLoaderIDFromName(
+				__instance.Oil.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name);
+			if (carLoaderID < 0) return;
 			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance.Oil));
 		}
 
@@ -37,7 +40,9 @@ public static class PartUpdateHooks
 
 		if (__instance != null && __instance.CarFluid != null)
 		{
-			int carLoaderID = __instance.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
+			int carLoaderID = DataHelper.ExtractCarLoaderIDFromName(
+				__instance.CarFluid.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name);
+			if (carLoaderID < 0) return;
 			ClientSend.CarFluid(carLoaderID, new ModFluidData(__instance));
 		}
 
@@ -79,8 +84,10 @@ public static class PartUpdateHooks
 		MelonLogger.Msg("[PartUpdateHooks->DoMountHook] Triggered.");
 		if (partScript.GetComponentInParent<CarLoaderOnCar>())
 		{
-			var carLoaderID = partScript.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
-			var car = ClientData.Instance.loadedCars[carLoaderID];
+			var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(
+				partScript.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name);
+			if (carLoaderID < 0) yield break;
+			if (!ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car)) yield break;
 
 			if (FindPartInDictionaries(car, partScript, out var partType, out var key, out var index))
 				MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
@@ -115,8 +122,10 @@ public static class PartUpdateHooks
 		
 		if (__instance.GetComponentInParent<CarLoaderOnCar>())
 		{
-			var carLoaderID = __instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name[10] - '0' - 1;
-			var car = ClientData.Instance.loadedCars[carLoaderID];
+			var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(
+				__instance.GetComponentInParent<CarLoaderOnCar>().CarLoader.gameObject.name);
+			if (carLoaderID < 0) return;
+			if (!ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car)) return;
 
 			if (FindPartInDictionaries(car, __instance, out var partType, out var key, out var index))
 				MelonCoroutines.Start(SendPartUpdate(car, carLoaderID, key, index, partType));
@@ -141,8 +150,9 @@ public static class PartUpdateHooks
 	{
 		if (!Client.Instance.isConnected) return;
 
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		var car = ClientData.Instance.loadedCars[carLoaderID];
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0) return;
+		if (!ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car)) return;
 
 		if (FindBodyPartInDictionary(car, name, out var key))
 		{

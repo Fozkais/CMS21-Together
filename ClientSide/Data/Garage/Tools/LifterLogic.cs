@@ -1,4 +1,5 @@
 ﻿using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 
@@ -24,7 +25,8 @@ public static class LifterLogic
 		else if (actionType == 1) action = -1;
 
 		var currentState = (int)__instance.currentState + action;
-		var carLoaderID = __instance.connectedCarLoader.gameObject.name[10] - '0' - 1;
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.connectedCarLoader.gameObject.name);
+		if (carLoaderID < 0) return;
 
 		var state = GetState(currentState);
 		ClientSend.LifterPacket(state, carLoaderID);

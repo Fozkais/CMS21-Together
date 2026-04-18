@@ -109,9 +109,22 @@ public static class JobHooks
 
 	private static IEnumerator WaitForCarToBeReady(Job job)
 	{
-		while (job.carLoaderID == 0)
+		// Bound the wait: without a timeout, a vanilla game that never assigns a carLoaderID
+		// leaves this coroutine spinning forever (10 min upper bound at 0.2s = 3000 iters).
+		const int maxIterations = 3000;
+		int iterations = 0;
+		while (job.carLoaderID == 0 && iterations < maxIterations)
+		{
 			yield return new WaitForSeconds(0.2f);
-		
+			iterations++;
+		}
+
+		if (job.carLoaderID == 0)
+		{
+			MelonLogger.Warning($"[Hook->WaitForCarToBeReady] Timed out waiting for carLoaderID on job {job.id}; aborting accept.");
+			yield break;
+		}
+
 		MelonLogger.Msg($"[Hook->AcceptOrderActionHook] Accept Order : {job.id}, {job.carLoaderID}");
 		ClientSend.JobActionPacket(new ModJob(job), true);
 	}
@@ -205,7 +218,10 @@ public static class JobHooks
 		GlobalData.AddPlayerExp(job.XP);
 		
 		var modJob = new ModJob(job);
-		if (JobManager.selectedJobs.Any(j => j.id == job.id)) JobManager.selectedJobs.Remove(modJob);
+		// List<T>.Remove uses reference equality for ModJob (no Equals override), so we must
+		// remove the actual stored instance, not the freshly-constructed modJob.
+		var existing = JobManager.selectedJobs.FirstOrDefault(j => j.id == job.id);
+		if (existing != null) JobManager.selectedJobs.Remove(existing);
 		ClientSend.EndJobPacket(modJob);
 		
 		Singleton<GameManager>.Instance.OrderGenerator.CancelJob(job.id);

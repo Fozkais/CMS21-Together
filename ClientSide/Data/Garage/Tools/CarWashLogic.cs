@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using CMS;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -25,20 +26,11 @@ public static class CarWashLogic
 			return;
 		}
 
-		// Observation: Extract carLoaderID from gameObject name (format: "CarLoader_X")
-		// Security Rule: Validate name length before accessing character
-		if (__instance == null || __instance.gameObject == null || __instance.gameObject.name.Length < 11)
+		if (__instance == null || __instance.gameObject == null) return;
+		int carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0)
 		{
-			MelonLogger.Warning("[CarWashLogic->DTweenExteriorDustWashHook] Invalid CarLoader gameObject name.");
-			return;
-		}
-
-		int carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		
-		// Business Rule: Validate carLoaderID is within valid range
-		if (carLoaderID < 0 || carLoaderID >= 5)
-		{
-			MelonLogger.Warning($"[CarWashLogic->DTweenExteriorDustWashHook] Invalid carLoaderID: {carLoaderID}");
+			MelonLogger.Warning($"[CarWashLogic->DTweenExteriorDustWashHook] Invalid carLoader name '{__instance.gameObject.name}'.");
 			return;
 		}
 
@@ -56,19 +48,11 @@ public static class CarWashLogic
 			return;
 		}
 
-		// Security Rule: Validate carLoader is not null
-		if (carLoader == null || carLoader.gameObject == null || carLoader.gameObject.name.Length < 11)
+		if (carLoader == null || carLoader.gameObject == null) return;
+		int carLoaderID = DataHelper.ExtractCarLoaderIDFromName(carLoader.gameObject.name);
+		if (carLoaderID < 0)
 		{
-			MelonLogger.Warning("[CarWashLogic->DoWorkAnimHook] Invalid CarLoader reference.");
-			return;
-		}
-
-		int carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
-		
-		// Business Rule: Validate carLoaderID is within valid range
-		if (carLoaderID < 0 || carLoaderID >= 5)
-		{
-			MelonLogger.Warning($"[CarWashLogic->DoWorkAnimHook] Invalid carLoaderID: {carLoaderID}");
+			MelonLogger.Warning($"[CarWashLogic->DoWorkAnimHook] Invalid carLoader name '{carLoader.gameObject.name}'.");
 			return;
 		}
 

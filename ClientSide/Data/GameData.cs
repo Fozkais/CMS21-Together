@@ -45,6 +45,11 @@ public class GameData
 		wheelBalancer = Object.FindObjectOfType<WheelBalancerLogic>();
 		welderLogic = Object.FindObjectOfType<WelderLogic>();
 		paintshopManager = Object.FindObjectOfType<PaintshopManager>();
+		// Mod carLoaderID -> vanilla carOnScene index.
+		// The vanilla order doesn't match physical garage-slot order (1..5), so we remap
+		// so that carLoaderID 0..4 == garage slots 1..5 as the player sees them.
+		// If the vanilla game ever reorders carOnScene, this mapping will need to be
+		// updated in lockstep — every cross-client carLoaderID sync relies on it.
 		carLoaders = new[]
 		{
 			GameScript.Get().carOnScene[0],

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using CMS;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using HarmonyLib;
 using MelonLoader;
 using UnityEngine;
@@ -19,7 +20,8 @@ public static class WelderLogic
 	{
 		if (!Client.Instance.isConnected || !listen) { listen = true; return; }
 
-		int carLoaderID = carLoader.gameObject.name[10] - '0' - 1;
+		int carLoaderID = DataHelper.ExtractCarLoaderIDFromName(carLoader.gameObject.name);
+		if (carLoaderID < 0) return;
 
 		ClientSend.WelderPacket(carLoaderID);
 	}
