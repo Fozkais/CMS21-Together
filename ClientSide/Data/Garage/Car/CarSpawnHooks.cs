@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data;
 using HarmonyLib;
 using MelonLoader;
@@ -26,11 +27,14 @@ public static class CarSpawnHooks
 	[HarmonyPrefix]
 	public static void LoadCarFromFileHook(string file, CarLoader __instance)
 	{
+		// Originally this branch only reset the flag but fell through; meaning an unlisten
+		// request still queued a LoadCar coroutine. Return to honor the one-shot suppression.
 		if (!Client.Instance.isConnected || !listenToLoad)
 		{
 			listenToLoad = true;
+			return;
 		}
-		
+
 		int indexFromCarLoaderName = Helper.GetIndexFromCarLoaderName(file);
 		NewCarData newCarData = Singleton<GameManager>.Instance.GameDataManager.LoadCar(indexFromCarLoaderName, false);
 		MainMod.StartCoroutine(__instance.LoadCarFromFile(newCarData));
@@ -42,8 +46,13 @@ public static class CarSpawnHooks
 		yield return new WaitForEndOfFrame();
 		if (string.IsNullOrEmpty(__instance.carToLoad)) yield break;
 		if (!SceneManager.IsInGarage()) yield break;
-		
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0)
+		{
+			MelonLogger.Warning($"[CarSpawnHooks->LoadCarFromFile] Bad CarLoader name '{__instance.gameObject.name}', skipping.");
+			yield break;
+		}
 		//MelonLogger.Msg($"[CarSpawnHooks->LoadCarFromFileHook] Triggered:{__instance.carToLoad} , {carLoaderID}");
 		MelonCoroutines.Start(CarSpawnManager.LoadCar(carDataCheck, carLoaderID, __instance.placeNo));
 	}
@@ -57,13 +66,18 @@ public static class CarSpawnHooks
 			listenToSimpleLoad = true;
 			return;
 		}
-		
+
 		if (string.IsNullOrEmpty(name)) return;
 		if (!SceneManager.IsInGarage()) return;
 
 		//MelonLogger.Msg($"[CarSpawnHooks->LoadJobCar] Triggered:{name}");
 
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0)
+		{
+			MelonLogger.Warning($"[CarSpawnHooks->LoadCarHook] Bad CarLoader name '{__instance.gameObject.name}', skipping.");
+			return;
+		}
 		MelonCoroutines.Start(CarSpawnManager.LoadJobCar(name, carLoaderID, __instance));
 	}
 
@@ -77,13 +91,14 @@ public static class CarSpawnHooks
 			listenToDelete = true;
 			return;
 		}
-		
+
 		if (!NotificationCenter.IsGameReady) return;
 		if (__instance == null || string.IsNullOrEmpty(__instance.carToLoad)) return;
-		
+
 		if (SceneManager.CurrentScene() != GameScene.garage) return;
-		
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0) return;
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
 			if (!car.needResync)

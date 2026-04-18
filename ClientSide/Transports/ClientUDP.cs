@@ -107,12 +107,20 @@ public class ClientUDP
 		{
 			using (var _packet = new Packet(data))
 			{
-				var _packetId = _packet.ReadInt();
+				int _packetId = -1;
+				try
+				{
+					_packetId = _packet.ReadInt();
 
-				if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
-					handler(_packet);
-				else
-					MelonLogger.Error($"[ClientUDP->HandleData] packet with id:{_packetId} is not valid.");
+					if (Client.PacketHandlers.TryGetValue(_packetId, out var handler))
+						handler(_packet);
+					else
+						MelonLogger.Error($"[ClientUDP->HandleData] packet with id:{_packetId} is not valid.");
+				}
+				catch (Exception handlerEx)
+				{
+					MelonLogger.Error($"[ClientUDP->HandleData] handler {_packetId} threw: {handlerEx}");
+				}
 			}
 		}, null);
 	}

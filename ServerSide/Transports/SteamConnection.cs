@@ -63,9 +63,17 @@ public class SteamConnection
 	         {
 	             using (Packet _packet = new Packet(_packetBytes))
 	             {
-	                 int _packetId = _packet.ReadInt();
-	                 if (Server.packetHandlers.ContainsKey(_packetId))
-	                     Server.packetHandlers[_packetId](id, _packet);
+	                 int _packetId = -1;
+	                 try
+	                 {
+	                     _packetId = _packet.ReadInt();
+	                     if (Server.packetHandlers.ContainsKey(_packetId))
+	                         Server.packetHandlers[_packetId](id, _packet);
+	                 }
+	                 catch (Exception handlerEx)
+	                 {
+	                     MelonLoader.MelonLogger.Error($"[SteamConnection] Server packet handler {_packetId} threw: {handlerEx}");
+	                 }
 	             }
 	         }, null);
 	     }

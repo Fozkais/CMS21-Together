@@ -149,11 +149,19 @@ public class ClientTCP
 			{
 				using (var _packet = new Packet(_packetBytes))
 				{
-					var _packetId = _packet.ReadInt();
-					if (Client.PacketHandlers.ContainsKey(_packetId))
-						Client.PacketHandlers[_packetId](_packet);
-					else
-						MelonLogger.Error($"[ClientTCP->HandleData] packet with id:{_packetId} is not valid.");
+					int _packetId = -1;
+					try
+					{
+						_packetId = _packet.ReadInt();
+						if (Client.PacketHandlers.ContainsKey(_packetId))
+							Client.PacketHandlers[_packetId](_packet);
+						else
+							MelonLogger.Error($"[ClientTCP->HandleData] packet with id:{_packetId} is not valid.");
+					}
+					catch (Exception handlerEx)
+					{
+						MelonLogger.Error($"[ClientTCP->HandleData] handler {_packetId} threw: {handlerEx}");
+					}
 				}
 			}, null);
 

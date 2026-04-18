@@ -3,6 +3,7 @@ using System.Linq;
 using CMS;
 using CMS.Extensions;
 using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using CMS21Together.Shared.Data.Vanilla;
 using HarmonyLib;
 using MelonLoader;
@@ -32,7 +33,8 @@ public static class EngineCrane
 		if(!Client.Instance.isConnected || !listen) { listen = true; return;}
 
 		MelonLogger.Msg("[EngineCrane->UseEngineCraneHook] Hook!");
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0) return;
 		ClientSend.EngineCraneHandlePacket(-1, carLoaderID);
 	}
 

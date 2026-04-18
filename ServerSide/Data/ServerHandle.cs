@@ -381,7 +381,49 @@ public static class ServerHandle
 
 		//MelonLogger.Msg("SV: Received JobAction!");
 		ServerData.Instance.RemoveJob(job.id);
+
+		// Slot reservation: when two clients accept different orders at roughly the same
+		// moment, each vanilla instance may locally pick the same carLoaderID because they
+		// haven't yet heard about the other's pick. The server is the first point where
+		// both picks are visible, so we reconcile here: if the slot is already taken, pick
+		// the first free one. Clients then apply the reassigned carLoaderID via
+		// JobManager.JobAction.
+		if (takeJob && IsCarLoaderSlotTaken(job.carLoaderID, job.id))
+		{
+			int free = FindFreeCarLoaderSlot(job.id);
+			if (free < 0)
+			{
+				MelonLogger.Warning($"[ServerHandle->JobActionPacket] All carLoader slots are full; rejecting accept for job {job.id} from client {fromClient}.");
+				// Echo the action as takeJob=false so clients keep their state consistent
+				// (job stays cancelled rather than being silently lost).
+				ServerSend.JobActionPacket(fromClient, job, false);
+				return;
+			}
+
+			MelonLogger.Warning($"[ServerHandle->JobActionPacket] Slot {job.carLoaderID} collision for job {job.id}; reassigning to slot {free}.");
+			job.carLoaderID = free;
+		}
+
 		ServerSend.JobActionPacket(fromClient, job, takeJob);
+	}
+
+	private static bool IsCarLoaderSlotTaken(int carLoaderID, int excludingJobId)
+	{
+		if (ServerData.Instance == null) return false;
+		if (ServerData.Instance.CarSpawnDatas != null && ServerData.Instance.CarSpawnDatas.ContainsKey(carLoaderID))
+			return true;
+		if (ServerData.Instance.selectedJobs != null &&
+		    ServerData.Instance.selectedJobs.Any(j => j.id != excludingJobId && j.carLoaderID == carLoaderID))
+			return true;
+		return false;
+	}
+
+	private static int FindFreeCarLoaderSlot(int excludingJobId)
+	{
+		for (int i = 0; i <= DataHelper.MaxCarLoaderID; i++)
+			if (!IsCarLoaderSlotTaken(i, excludingJobId))
+				return i;
+		return -1;
 	}
 
 	public static void SelectedJobPacket(int fromClient, Packet packet)

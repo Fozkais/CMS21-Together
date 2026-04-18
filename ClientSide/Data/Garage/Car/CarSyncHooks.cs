@@ -1,4 +1,5 @@
 ﻿using CMS21Together.ClientSide.Data.Handle;
+using CMS21Together.Shared;
 using HarmonyLib;
 using MelonLoader;
 
@@ -15,8 +16,9 @@ public static class CarSyncHooks
 	{
 		if (!Client.Instance.isConnected) return;
 
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
-		var car = ClientData.Instance.loadedCars[carLoaderID];
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0) return;
+		if (!ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car)) return;
 
 		if (PartUpdateHooks.FindBodyPartInDictionary(car, name, out var key))
 		{
@@ -35,16 +37,23 @@ public static class CarSyncHooks
 			return true;
 		}
 
-		var carLoaderID = __instance.gameObject.name[10] - '0' - 1;
+		var carLoaderID = DataHelper.ExtractCarLoaderIDFromName(__instance.gameObject.name);
+		if (carLoaderID < 0) return true;
 		MelonLogger.Msg($"Move {__instance.carToLoad} to {no}.");
 		if (! ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
 			return true;
 		if (no == -1)
 			return false;
-		
+
 		var car = ClientData.Instance.loadedCars[carLoaderID];
+
+		// Guard against echo: if the position already matches what we have locally, the
+		// ChangePosition likely came from a relayed packet that slipped past the listen
+		// flag (e.g. via resync). Re-broadcasting would fight the originating client.
+		if (car.carPosition == no) return true;
+
 		car.carPosition = no;
-		
+
 		ClientSend.CarPositionPacket(carLoaderID, no);
 		return true;
 	}

@@ -259,6 +259,11 @@ public static class ClientHandle
 		var carData = packet.Read<ModNewCarData>();
 		var carLoaderID = packet.ReadInt();
 
+		if (!DataHelper.IsValidCarLoaderID(carLoaderID))
+		{
+			MelonLogger.Error($"[ClientHandle->LoadCarPacket] Ignoring carLoaderID out of range: {carLoaderID}.");
+			return;
+		}
 		//MelonLogger.Msg("[ClientHandle->LoadCarPacket] Received new car info.");
 
 		MelonCoroutines.Start(CarSpawnManager.LoadCarFromServer(carData, carLoaderID));
@@ -286,6 +291,11 @@ public static class ClientHandle
 	{
 		var carLoaderID = packet.ReadInt();
 
+		if (!DataHelper.IsValidCarLoaderID(carLoaderID))
+		{
+			MelonLogger.Error($"[ClientHandle->DeleteCarPacket] Ignoring carLoaderID out of range: {carLoaderID}.");
+			return;
+		}
 		MelonLogger.Msg($"[ClientHandle->DeleteCarPacket] Delete Car {carLoaderID}.");
 		MelonCoroutines.Start(CarSyncManager.DeleteCar(carLoaderID));
 	}
@@ -294,7 +304,12 @@ public static class ClientHandle
 	{
 		var placeNo = packet.ReadInt();
 		var carLoaderID = packet.ReadInt();
-		
+
+		if (!DataHelper.IsValidCarLoaderID(carLoaderID))
+		{
+			MelonLogger.Error($"[ClientHandle->CarPositionPacket] Ignoring carLoaderID out of range: {carLoaderID}.");
+			return;
+		}
 		MelonLogger.Msg($"[ClientHandle->CarPositionPacket] Move {carLoaderID} to {placeNo}.");
 		MelonCoroutines.Start(CarSyncManager.ChangePosition(carLoaderID, placeNo));
 	}

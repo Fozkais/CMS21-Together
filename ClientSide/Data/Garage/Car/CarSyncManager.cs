@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using CMS21Together.Shared;
 using MelonLoader;
 using UnityEngine;
 
@@ -11,6 +12,14 @@ public static class CarSyncManager
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
+
+		if (!DataHelper.IsValidCarLoaderID(carLoaderID) ||
+		    GameData.Instance?.carLoaders == null ||
+		    carLoaderID >= GameData.Instance.carLoaders.Length)
+		{
+			MelonLogger.Warning($"[CarSyncManager] ChangePosition: invalid carLoaderID {carLoaderID}.");
+			yield break;
+		}
 
 		if (ClientData.Instance.loadedCars.TryGetValue(carLoaderID, out var car))
 		{
@@ -29,6 +38,14 @@ public static class CarSyncManager
 		while (!ClientData.GameReady)
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
+
+		if (!DataHelper.IsValidCarLoaderID(carLoaderID) ||
+		    GameData.Instance?.carLoaders == null ||
+		    carLoaderID >= GameData.Instance.carLoaders.Length)
+		{
+			MelonLogger.Warning($"[CarSyncManager] DeleteCar: invalid carLoaderID {carLoaderID}.");
+			yield break;
+		}
 
 		if (ClientData.Instance.loadedCars.ContainsKey(carLoaderID))
 			ClientData.Instance.loadedCars.Remove(carLoaderID);
