@@ -353,8 +353,42 @@ public static class ServerHandle
 		var placeNo = packet.ReadInt();
 		var carLoaderID = packet.ReadInt();
 
+		// Physical-slot collision: two clients can concurrently try to park different
+		// cars at the same placeNo. The server sees both and must pick one. We keep
+		// the first and snap the loser back to its prior position by echoing it only
+		// to the requesting client, so everyone else stays consistent and the loser's
+		// car visibly reverts instead of overlapping.
+		if (placeNo >= 0 && IsPlaceNoTakenByOtherCar(placeNo, carLoaderID))
+		{
+			int priorPlace = GetCurrentPlaceNo(carLoaderID);
+			MelonLogger.Warning($"[ServerHandle->CarPositionPacket] placeNo {placeNo} already taken; rejecting move of carLoader {carLoaderID} from client {fromClient} (snap back to {priorPlace}).");
+			// Only the sender needs the snap-back; other clients never saw the invalid move.
+			ServerSend.CarPositionPacket(-1, carLoaderID, priorPlace, onlyTo: fromClient);
+			return;
+		}
+
 		ServerData.Instance.ChangePosition(carLoaderID, placeNo);
 		ServerSend.CarPositionPacket(fromClient, carLoaderID, placeNo);
+	}
+
+	private static bool IsPlaceNoTakenByOtherCar(int placeNo, int excludingCarLoaderID)
+	{
+		if (ServerData.Instance?.CarSpawnDatas == null) return false;
+		foreach (var kvp in ServerData.Instance.CarSpawnDatas)
+		{
+			if (kvp.Key == excludingCarLoaderID) continue;
+			if (kvp.Value != null && kvp.Value.carPosition == placeNo) return true;
+		}
+		return false;
+	}
+
+	private static int GetCurrentPlaceNo(int carLoaderID)
+	{
+		if (ServerData.Instance?.CarSpawnDatas != null &&
+		    ServerData.Instance.CarSpawnDatas.TryGetValue(carLoaderID, out var data) &&
+		    data != null)
+			return data.carPosition;
+		return -1;
 	}
 
 	public static void GarageUpgradePacket(int fromClient, Packet packet)
