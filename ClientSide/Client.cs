@@ -147,8 +147,18 @@ public class Client
 		isConnected = false;
 
 
-		tcp.Disconnect();
-		udp.Disconnect();
+		switch (networkType)
+		{
+			case NetworkType.TCP:
+				tcp?.Disconnect();
+				udp?.Disconnect();
+				break;
+			case NetworkType.Steam:
+				steam?.Close();
+				steam = null;
+				SteamworksUtils.LeaveInviteLobby();
+				break;
+		}
 		
 		if (SceneManager.GetActiveScene().name != "Menu")
 		{

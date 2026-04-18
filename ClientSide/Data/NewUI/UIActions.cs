@@ -68,6 +68,8 @@ public static class UIActions
 			UICustomPanel.CreateInfoPanel("Failed to connect to server !");
 		};
 		Server.Instance.StartServer(ClientData.UserData.selectedNetworkType);
+		if (ClientData.UserData.selectedNetworkType == NetworkType.Steam)
+			SteamworksUtils.CreateOrUpdateInviteLobby(Server.Instance.serverID);
 		SavesManager.LoadSave(SavesManager.ModSaves[save_index]);
 	}
 	
@@ -89,6 +91,38 @@ public static class UIActions
 			button.text.OnEnable();
 		};
 		return action;
+	}
+
+	public static void InviteViaSteam()
+	{
+		if (!ApiCalls.useSteam)
+		{
+			UICustomPanel.CreateInfoPanel("Steam invites are unavailable.");
+			return;
+		}
+
+		if (ClientData.UserData.selectedNetworkType != NetworkType.Steam)
+		{
+			UICustomPanel.CreateInfoPanel("Steam invites require Steam network mode.");
+			return;
+		}
+
+		if (!Server.Instance.isRunning || Server.Instance.networkType != NetworkType.Steam)
+		{
+			UICustomPanel.CreateInfoPanel("Only the Steam host can invite friends.");
+			return;
+		}
+
+		if (string.IsNullOrEmpty(Server.Instance.serverID) && Server.Instance.steam != null)
+			Server.Instance.steam.GetServerID();
+
+		if (string.IsNullOrEmpty(Server.Instance.serverID))
+		{
+			UICustomPanel.CreateInfoPanel("Steam lobby is not ready yet.");
+			return;
+		}
+
+		SteamworksUtils.OpenInviteOverlay(Server.Instance.serverID);
 	}
 
 	public static UnityAction LoadGame(MainMenuButton button, int save_index)

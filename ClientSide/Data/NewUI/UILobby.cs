@@ -98,7 +98,10 @@ public static class UILobby
 		joinBtn.SetLocked(false);
 		joinBtn.SetDisabled(false, true);
 		
-		var typeBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Invite via Steam", null);
+		var typeBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Invite via Steam",
+			isHost && ClientData.UserData.selectedNetworkType == NetworkType.Steam
+				? UIActions.InviteViaSteam
+				: null);
 		var typeRect = typeBtn.GetComponent<RectTransform>();
 		typeRect.anchorMin = new Vector2(0f, 0.5f);
 		typeRect.anchorMax = new Vector2(0f, 0.5f);

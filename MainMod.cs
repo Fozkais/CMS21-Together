@@ -38,6 +38,7 @@ namespace CMS21Together
 			{
 				SteamClient.Init(1190000);
 				SteamNetworkingUtils.InitRelayNetworkAccess();
+				SteamworksUtils.RegisterInviteCallbacks();
 			}
 			isModInitialized = true;
 			LoggerInstance.Msg("Together Mod Initialized!");
@@ -68,21 +69,23 @@ namespace CMS21Together
 
 		public override void OnUpdate()
 		{
-			if (!isModInitialized || !Client.Instance.isConnected)
+			if (!isModInitialized)
 				return;
-
-			if (SceneManager.CurrentScene() == GameScene.garage)
-				ClientData.Instance.UpdateClient();
-
 
 			if (ApiCalls.useSteam)
 			{
 				SteamClient.RunCallbacks();
-				if (Client.Instance.steam != null) Client.Instance.steam.Receive();
-				if (Server.Instance.steam != null) Server.Instance.steam.Receive();
+				if (Client.Instance.isConnected && Client.Instance.steam != null) Client.Instance.steam.Receive();
+				if (Server.Instance.isRunning && Server.Instance.steam != null) Server.Instance.steam.Receive();
 			}
 			
 			ThreadManager.UpdateThread();
+
+			if (!Client.Instance.isConnected)
+				return;
+
+			if (SceneManager.CurrentScene() == GameScene.garage)
+				ClientData.Instance.UpdateClient();
 		}
 
 
