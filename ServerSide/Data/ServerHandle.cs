@@ -176,7 +176,7 @@ public static class ServerHandle
 
 		// Business Logic: Resync - send all items to requesting client
 		MelonLogger.Msg($"[ServerHandle->ItemPacket] Resyncing {ServerData.Instance.items.Count} items to client {fromClient}");
-		foreach (var modItem in ServerData.Instance.items) ServerSend.ItemPacket(fromClient, modItem, action);
+		foreach (var modItem in ServerData.Instance.items) ServerSend.ItemPacketTo(fromClient, modItem, InventoryAction.add);
 	}
 
 	public static void GroupItemPacket(int fromClient, Packet _packet)
@@ -241,7 +241,80 @@ public static class ServerHandle
 
 		// Business Logic: Resync - send all group items to requesting client
 		MelonLogger.Msg($"[ServerHandle->GroupItemPacket] Resyncing {ServerData.Instance.groupItems.Count} group items to client {fromClient}");
-		foreach (var modItem in ServerData.Instance.groupItems) ServerSend.GroupItemPacket(fromClient, modItem, action);
+		foreach (var modItem in ServerData.Instance.groupItems) ServerSend.GroupItemPacketTo(fromClient, modItem, InventoryAction.add);
+	}
+
+	public static void WarehouseItemPacket(int fromClient, Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		var warehouseIndex = packet.ReadInt();
+		var item = packet.Read<ModItem>();
+
+		if (item == null)
+		{
+			MelonLogger.Warning($"[ServerHandle->WarehouseItemPacket] Received null item from client {fromClient}, skipping.");
+			return;
+		}
+
+		if (action == InventoryAction.add)
+			ServerData.Instance.warehouseData.AddItem(warehouseIndex, item);
+		else if (action == InventoryAction.remove)
+			ServerData.Instance.warehouseData.RemoveItem(warehouseIndex, item.UID);
+		else
+			return;
+
+		ServerSend.WarehouseItemPacket(fromClient, warehouseIndex, item, action);
+	}
+
+	public static void WarehouseGroupItemPacket(int fromClient, Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		var warehouseIndex = packet.ReadInt();
+		var item = packet.Read<ModGroupItem>();
+
+		if (item == null)
+		{
+			MelonLogger.Warning($"[ServerHandle->WarehouseGroupItemPacket] Received null group item from client {fromClient}, skipping.");
+			return;
+		}
+
+		if (action == InventoryAction.add)
+			ServerData.Instance.warehouseData.AddGroupItem(warehouseIndex, item);
+		else if (action == InventoryAction.remove)
+			ServerData.Instance.warehouseData.RemoveGroupItem(warehouseIndex, item.UID);
+		else
+			return;
+
+		ServerSend.WarehouseGroupItemPacket(fromClient, warehouseIndex, item, action);
+	}
+
+	public static void WarehouseSnapshotPacket(int fromClient, Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		if (action == InventoryAction.resync)
+		{
+			ServerSend.WarehouseSnapshotPacket(fromClient, ServerData.Instance.warehouseData, InventoryAction.add, fromClient);
+			return;
+		}
+
+		var warehouseData = packet.Read<ModWarehouseData>();
+		if (warehouseData == null)
+		{
+			MelonLogger.Warning($"[ServerHandle->WarehouseSnapshotPacket] Received null warehouse data from client {fromClient}, skipping.");
+			return;
+		}
+
+		ServerData.Instance.warehouseData = warehouseData;
+		ServerSend.WarehouseSnapshotPacket(fromClient, warehouseData, InventoryAction.add);
+	}
+
+	public static void WarehouseNamePacket(int fromClient, Packet packet)
+	{
+		var warehouseIndex = packet.ReadInt();
+		var name = packet.Read<string>();
+
+		ServerData.Instance.warehouseData.SetName(warehouseIndex, name);
+		ServerSend.WarehouseNamePacket(fromClient, warehouseIndex, name);
 	}
 
 	public static void StatPacket(int fromClient, Packet packet)

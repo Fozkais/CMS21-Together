@@ -129,6 +129,49 @@ public static class ClientHandle
 		packet.Dispose();
 	}
 
+	public static void WarehouseItemPacket(Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		var warehouseIndex = packet.ReadInt();
+		var item = packet.Read<ModItem>();
+
+		MelonCoroutines.Start(WarehouseSync.HandleItem(warehouseIndex, item, action));
+		packet.Dispose();
+	}
+
+	public static void WarehouseGroupItemPacket(Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		var warehouseIndex = packet.ReadInt();
+		var item = packet.Read<ModGroupItem>();
+
+		MelonCoroutines.Start(WarehouseSync.HandleGroupItem(warehouseIndex, item, action));
+		packet.Dispose();
+	}
+
+	public static void WarehouseSnapshotPacket(Packet packet)
+	{
+		var action = packet.Read<InventoryAction>();
+		if (action == InventoryAction.resync)
+		{
+			packet.Dispose();
+			return;
+		}
+
+		var warehouseData = packet.Read<ModWarehouseData>();
+		MelonCoroutines.Start(WarehouseSync.HandleSnapshot(warehouseData));
+		packet.Dispose();
+	}
+
+	public static void WarehouseNamePacket(Packet packet)
+	{
+		var warehouseIndex = packet.ReadInt();
+		var name = packet.Read<string>();
+
+		MelonCoroutines.Start(WarehouseSync.HandleName(warehouseIndex, name));
+		packet.Dispose();
+	}
+
 	public static void StatPacket(Packet packet)
 	{
 		var value = packet.ReadInt();

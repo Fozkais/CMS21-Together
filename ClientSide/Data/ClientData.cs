@@ -36,6 +36,7 @@ public class ClientData
 		GameData.Instance = null;
 		
 		Player.Inventory.Reset();
+		WarehouseSync.Reset();
 		CarSpawnHooks.Reset();
 		JobManager.Reset();
 		Stats.Reset();

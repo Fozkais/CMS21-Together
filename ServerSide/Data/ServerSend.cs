@@ -68,12 +68,84 @@ public static class ServerSend
 		}
 	}
 
+	public static void ItemPacketTo(int toClient, ModItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.item))
+		{
+			packet.Write(action);
+			packet.Write(item);
+
+			SendData(toClient, packet);
+		}
+	}
+
 	public static void GroupItemPacket(int fromClient, ModGroupItem item, InventoryAction action)
 	{
 		using (var packet = new Packet((int)PacketTypes.groupItem))
 		{
 			packet.Write(action);
 			packet.Write(item);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void GroupItemPacketTo(int toClient, ModGroupItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.groupItem))
+		{
+			packet.Write(action);
+			packet.Write(item);
+
+			SendData(toClient, packet);
+		}
+	}
+
+	public static void WarehouseItemPacket(int fromClient, int warehouseIndex, ModItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseItem))
+		{
+			packet.Write(action);
+			packet.Write(warehouseIndex);
+			packet.Write(item);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void WarehouseGroupItemPacket(int fromClient, int warehouseIndex, ModGroupItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseGroupItem))
+		{
+			packet.Write(action);
+			packet.Write(warehouseIndex);
+			packet.Write(item);
+
+			SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void WarehouseSnapshotPacket(int fromClient, ModWarehouseData warehouseData, InventoryAction action, int onlyTo = -1)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseSnapshot))
+		{
+			packet.Write(action);
+			if (action != InventoryAction.resync)
+				packet.Write(warehouseData);
+
+			if (onlyTo >= 0)
+				SendData(onlyTo, packet);
+			else
+				SendDataToAll(fromClient, packet);
+		}
+	}
+
+	public static void WarehouseNamePacket(int fromClient, int warehouseIndex, string name)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseName))
+		{
+			packet.Write(warehouseIndex);
+			packet.Write(name);
 
 			SendDataToAll(fromClient, packet);
 		}

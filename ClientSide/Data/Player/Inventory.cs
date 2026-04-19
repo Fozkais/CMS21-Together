@@ -19,13 +19,16 @@ public static class Inventory
 	public static List<ModItem> modItems = new();
 	public static List<ModGroupItem> modGroupItems = new();
 	private static bool loadSkip;
+	private static bool resyncRequested;
+	private static bool suppressInventoryHooks;
 
 	public static void Reset()
 	{
 		modItems.Clear();
 		modGroupItems.Clear();
 		loadSkip = false;
-		
+		resyncRequested = false;
+		suppressInventoryHooks = false;
 	}
 
 	[HarmonyPatch(typeof(UIHelper), nameof(UIHelper.GetItemsForID))]
@@ -95,6 +98,7 @@ public static class Inventory
 	public static void AddItemHook(Item item, bool showPopup = false)
 	{
 		if (!Client.Instance.isConnected) {return;}
+		if (suppressInventoryHooks) return;
 		if (modItems.Any(i => i.UID == item.UID)) return;
 		
 		var newItem = new ModItem(item);
@@ -107,6 +111,7 @@ public static class Inventory
 	public static void AddGroupItemHook(GroupItem group)
 	{
 		if (!Client.Instance.isConnected) {return;}
+		if (suppressInventoryHooks) return;
 		if (modGroupItems.Any(i => i.UID == group.UID)) return;
 
 		//MelonLogger.Msg($"Add new group item with UID: {group.UID}.");
@@ -120,6 +125,7 @@ public static class Inventory
 	public static void RemoveItemHook(Item item, global::Inventory __instance)
 	{
 		if (!Client.Instance.isConnected) {return;}
+		if (suppressInventoryHooks) return;
 
 		if (item == null) return;
 
@@ -136,6 +142,7 @@ public static class Inventory
 	public static void RemoveGroupItemHook(long UId)
 	{
 		if (!Client.Instance.isConnected ) {return;}
+		if (suppressInventoryHooks) return;
 
 		if (modGroupItems.Any(s => s.UID == UId))
 		{
@@ -153,16 +160,20 @@ public static class Inventory
 
 		if (!Server.Instance.isRunning)
 		{
-			if (loadSkip)
-			{
-				ClientSend.ItemPacket(null, InventoryAction.resync);
-				ClientSend.GroupItemPacket(null, InventoryAction.resync);
-			}
-			else
+			if (!loadSkip)
 			{
 				loadSkip = true;
 				return false;
 			}
+
+			if (!resyncRequested)
+			{
+				ClientSend.ItemPacket(null, InventoryAction.resync);
+				ClientSend.GroupItemPacket(null, InventoryAction.resync);
+				resyncRequested = true;
+			}
+
+			return false;
 		}
 
 		// Security Rule: Validate inventory data is available
@@ -252,15 +263,21 @@ public static class Inventory
 					yield break;
 				}
 
-				// Business Logic: Add item to modItems list and game inventory
-				modItems.Add(item);
-				
 				// Security Rule: Validate item conversion before adding to game inventory
 				var gameItem = item.ToGame();
 				if (gameItem != null)
 				{
-					GameData.Instance.localInventory.Add(gameItem);
-					MelonLogger.Msg($"[Inventory->HandleItem] Added item UID: {item.UID}");
+					suppressInventoryHooks = true;
+					try
+					{
+						modItems.Add(item);
+						GameData.Instance.localInventory.Add(gameItem);
+						MelonLogger.Msg($"[Inventory->HandleItem] Added item UID: {item.UID}");
+					}
+					finally
+					{
+						suppressInventoryHooks = false;
+					}
 				}
 				else
 				{
@@ -271,20 +288,28 @@ public static class Inventory
 				break;
 			case InventoryAction.remove:
 				// Business Rule: Only remove if item exists in modItems
-				if (modItems.Any(i => i.UID == item.UID))
+				var existingItem = modItems.FirstOrDefault(i => i.UID == item.UID);
+				if (existingItem != null)
 				{
-					modItems.Remove(item);
+					modItems.Remove(existingItem);
 					
-					// Security Rule: Validate item conversion before removing from game inventory
-					var itemToRemove = item.ToGame();
+					var itemToRemove = GameData.Instance.localInventory.GetItem(item.UID);
 					if (itemToRemove != null)
 					{
-						GameData.Instance.localInventory.Delete(itemToRemove);
-						MelonLogger.Msg($"[Inventory->HandleItem] Removed item UID: {item.UID}");
+						suppressInventoryHooks = true;
+						try
+						{
+							GameData.Instance.localInventory.Delete(itemToRemove);
+							MelonLogger.Msg($"[Inventory->HandleItem] Removed item UID: {item.UID}");
+						}
+						finally
+						{
+							suppressInventoryHooks = false;
+						}
 					}
 					else
 					{
-						MelonLogger.Warning($"[Inventory->HandleItem] Failed to convert ModItem to game Item for removal, UID: {item.UID}");
+						MelonLogger.Warning($"[Inventory->HandleItem] Local item not found for removal, UID: {item.UID}");
 					}
 				}
 				else
@@ -324,15 +349,21 @@ public static class Inventory
 					yield break;
 				}
 
-				// Business Logic: Add group item to modGroupItems list and game inventory
-				modGroupItems.Add(item);
-				
 				// Security Rule: Validate item conversion before adding to game inventory
 				var gameGroupItem = item.ToGame();
 				if (gameGroupItem != null)
 				{
-					GameData.Instance.localInventory.AddGroup(gameGroupItem);
-					MelonLogger.Msg($"[Inventory->HandleGroupItem] Added group item UID: {item.UID}");
+					suppressInventoryHooks = true;
+					try
+					{
+						modGroupItems.Add(item);
+						GameData.Instance.localInventory.AddGroup(gameGroupItem);
+						MelonLogger.Msg($"[Inventory->HandleGroupItem] Added group item UID: {item.UID}");
+					}
+					finally
+					{
+						suppressInventoryHooks = false;
+					}
 				}
 				else
 				{
@@ -343,11 +374,20 @@ public static class Inventory
 				break;
 			case InventoryAction.remove:
 				// Business Rule: Only remove if group item exists in modGroupItems
-				if (modGroupItems.Any(i => i.UID == item.UID))
+				var existingGroupItem = modGroupItems.FirstOrDefault(i => i.UID == item.UID);
+				if (existingGroupItem != null)
 				{
-					modGroupItems.Remove(item);
-					GameData.Instance.localInventory.DeleteGroup(item.UID);
-					MelonLogger.Msg($"[Inventory->HandleGroupItem] Removed group item UID: {item.UID}");
+					modGroupItems.Remove(existingGroupItem);
+					suppressInventoryHooks = true;
+					try
+					{
+						GameData.Instance.localInventory.DeleteGroup(item.UID);
+						MelonLogger.Msg($"[Inventory->HandleGroupItem] Removed group item UID: {item.UID}");
+					}
+					finally
+					{
+						suppressInventoryHooks = false;
+					}
 				}
 				else
 				{
@@ -364,4 +404,248 @@ public enum InventoryAction
 	add,
 	remove,
 	resync
+}
+
+[HarmonyPatch]
+public static class WarehouseSync
+{
+	private static bool loadSkip;
+	private static bool resyncRequested;
+	private static bool suppressWarehouseHooks;
+
+	public static void Reset()
+	{
+		loadSkip = false;
+		resyncRequested = false;
+		suppressWarehouseHooks = false;
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Add", typeof(Item))]
+	[HarmonyPrefix]
+	public static void AddItemHook(Item item, global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks || item == null) return;
+
+		ClientSend.WarehouseItemPacket(GetSelectedWarehouseIndex(__instance), new ModItem(item), InventoryAction.add);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Add", typeof(GroupItem))]
+	[HarmonyPrefix]
+	public static void AddGroupItemHook(GroupItem item, global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks || item == null) return;
+
+		ClientSend.WarehouseGroupItemPacket(GetSelectedWarehouseIndex(__instance), new ModGroupItem(item), InventoryAction.add);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Delete", typeof(Item))]
+	[HarmonyPrefix]
+	public static void DeleteItemHook(Item item, global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks || item == null) return;
+
+		ClientSend.WarehouseItemPacket(FindItemWarehouseIndex(__instance, item.UID), new ModItem(item), InventoryAction.remove);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Delete", typeof(GroupItem))]
+	[HarmonyPrefix]
+	public static void DeleteGroupItemHook(GroupItem item, global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks || item == null) return;
+
+		ClientSend.WarehouseGroupItemPacket(FindGroupWarehouseIndex(__instance, item.UID), new ModGroupItem(item), InventoryAction.remove);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "SetWarehouseName")]
+	[HarmonyPrefix]
+	public static void SetWarehouseNameHook(int index, string newName)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks) return;
+
+		ClientSend.WarehouseNamePacket(index, newName);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "UpgradeWarehouse")]
+	[HarmonyPostfix]
+	public static void UpgradeWarehouseHook(global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || suppressWarehouseHooks) return;
+
+		ClientSend.WarehouseSnapshotPacket(new ModWarehouseData(__instance), InventoryAction.add);
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Load")]
+	[HarmonyPrefix]
+	public static bool LoadHook(global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected) return true;
+
+		if (!Server.Instance.isRunning)
+		{
+			if (!loadSkip)
+			{
+				loadSkip = true;
+				return false;
+			}
+
+			if (!resyncRequested)
+			{
+				ClientSend.WarehouseSnapshotPacket(null, InventoryAction.resync);
+				resyncRequested = true;
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	[HarmonyPatch(typeof(global::Warehouse), "Load")]
+	[HarmonyPostfix]
+	public static void LoadPostfix(global::Warehouse __instance)
+	{
+		if (!Client.Instance.isConnected || !Server.Instance.isRunning || suppressWarehouseHooks) return;
+
+		ClientSend.WarehouseSnapshotPacket(new ModWarehouseData(__instance), InventoryAction.add);
+	}
+
+	public static IEnumerator HandleSnapshot(ModWarehouseData warehouseData)
+	{
+		yield return GameData.GameReady();
+
+		if (warehouseData == null)
+		{
+			MelonLogger.Warning("[WarehouseSync->HandleSnapshot] Received null warehouse snapshot, skipping.");
+			yield break;
+		}
+
+		var warehouse = GetWarehouse();
+		if (warehouse == null)
+		{
+			MelonLogger.Warning("[WarehouseSync->HandleSnapshot] Warehouse is null, skipping.");
+			yield break;
+		}
+
+		suppressWarehouseHooks = true;
+		try
+		{
+			warehouseData.ApplyToGame(warehouse);
+			MelonLogger.Msg("[WarehouseSync->HandleSnapshot] Applied warehouse snapshot.");
+		}
+		finally
+		{
+			suppressWarehouseHooks = false;
+		}
+	}
+
+	public static IEnumerator HandleItem(int warehouseIndex, ModItem item, InventoryAction action)
+	{
+		yield return GameData.GameReady();
+
+		if (item == null) yield break;
+
+		var warehouse = GetWarehouse();
+		if (warehouse == null) yield break;
+
+		suppressWarehouseHooks = true;
+		try
+		{
+			new ModWarehouseData().ApplyItemToGame(warehouse, warehouseIndex, item, action == InventoryAction.add);
+			warehouse.UpdateWarehouseShelfLevel();
+			MelonLogger.Msg($"[WarehouseSync->HandleItem] {action} item UID: {item.UID} in warehouse {warehouseIndex}");
+		}
+		finally
+		{
+			suppressWarehouseHooks = false;
+		}
+	}
+
+	public static IEnumerator HandleGroupItem(int warehouseIndex, ModGroupItem item, InventoryAction action)
+	{
+		yield return GameData.GameReady();
+
+		if (item == null) yield break;
+
+		var warehouse = GetWarehouse();
+		if (warehouse == null) yield break;
+
+		suppressWarehouseHooks = true;
+		try
+		{
+			new ModWarehouseData().ApplyGroupItemToGame(warehouse, warehouseIndex, item, action == InventoryAction.add);
+			warehouse.UpdateWarehouseShelfLevel();
+			MelonLogger.Msg($"[WarehouseSync->HandleGroupItem] {action} group item UID: {item.UID} in warehouse {warehouseIndex}");
+		}
+		finally
+		{
+			suppressWarehouseHooks = false;
+		}
+	}
+
+	public static IEnumerator HandleName(int warehouseIndex, string name)
+	{
+		yield return GameData.GameReady();
+
+		var warehouse = GetWarehouse();
+		if (warehouse == null) yield break;
+
+		suppressWarehouseHooks = true;
+		try
+		{
+			warehouse.SetWarehouseName(warehouseIndex, name);
+			MelonLogger.Msg($"[WarehouseSync->HandleName] Synced warehouse {warehouseIndex} name.");
+		}
+		finally
+		{
+			suppressWarehouseHooks = false;
+		}
+	}
+
+	private static global::Warehouse GetWarehouse()
+	{
+		if (Singleton<GameManager>.Instance == null) return null;
+
+		return Singleton<GameManager>.Instance.Warehouse;
+	}
+
+	private static int GetSelectedWarehouseIndex(global::Warehouse warehouse)
+	{
+		if (warehouse == null || warehouse.SelectedOption < 0) return 0;
+
+		return warehouse.SelectedOption;
+	}
+
+	private static int FindItemWarehouseIndex(global::Warehouse warehouse, long uid)
+	{
+		if (warehouse?.warehouseList == null) return GetSelectedWarehouseIndex(warehouse);
+
+		for (var warehouseIndex = 0; warehouseIndex < warehouse.warehouseList.Count; warehouseIndex++)
+		{
+			var items = warehouse.warehouseList[warehouseIndex];
+			if (items == null) continue;
+
+			for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)
+				if (items[itemIndex] != null && items[itemIndex].UID == uid)
+					return warehouseIndex;
+		}
+
+		return GetSelectedWarehouseIndex(warehouse);
+	}
+
+	private static int FindGroupWarehouseIndex(global::Warehouse warehouse, long uid)
+	{
+		if (warehouse?.warehouseGroupList == null) return GetSelectedWarehouseIndex(warehouse);
+
+		for (var warehouseIndex = 0; warehouseIndex < warehouse.warehouseGroupList.Count; warehouseIndex++)
+		{
+			var groups = warehouse.warehouseGroupList[warehouseIndex];
+			if (groups == null) continue;
+
+			for (var groupIndex = 0; groupIndex < groups.Count; groupIndex++)
+				if (groups[groupIndex] != null && groups[groupIndex].UID == uid)
+					return warehouseIndex;
+		}
+
+		return GetSelectedWarehouseIndex(warehouse);
+	}
 }

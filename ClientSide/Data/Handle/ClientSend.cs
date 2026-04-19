@@ -68,7 +68,8 @@ public class ClientSend
 		using (var packet = new Packet((int)PacketTypes.item))
 		{
 			packet.Write(action);
-			packet.Write(item);
+			if (action != InventoryAction.resync)
+				packet.Write(item);
 
 			SendData(packet);
 		}
@@ -79,7 +80,55 @@ public class ClientSend
 		using (var packet = new Packet((int)PacketTypes.groupItem))
 		{
 			packet.Write(action);
+			if (action != InventoryAction.resync)
+				packet.Write(groupItem);
+
+			SendData(packet);
+		}
+	}
+
+	public static void WarehouseItemPacket(int warehouseIndex, ModItem item, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseItem))
+		{
+			packet.Write(action);
+			packet.Write(warehouseIndex);
+			packet.Write(item);
+
+			SendData(packet);
+		}
+	}
+
+	public static void WarehouseGroupItemPacket(int warehouseIndex, ModGroupItem groupItem, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseGroupItem))
+		{
+			packet.Write(action);
+			packet.Write(warehouseIndex);
 			packet.Write(groupItem);
+
+			SendData(packet);
+		}
+	}
+
+	public static void WarehouseSnapshotPacket(ModWarehouseData warehouseData, InventoryAction action)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseSnapshot))
+		{
+			packet.Write(action);
+			if (action != InventoryAction.resync)
+				packet.Write(warehouseData);
+
+			SendData(packet);
+		}
+	}
+
+	public static void WarehouseNamePacket(int warehouseIndex, string name)
+	{
+		using (var packet = new Packet((int)PacketTypes.warehouseName))
+		{
+			packet.Write(warehouseIndex);
+			packet.Write(name);
 
 			SendData(packet);
 		}

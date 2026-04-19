@@ -55,5 +55,9 @@ public enum PacketTypes
 	parkAdd,
 	parkRemove,
 	playerInCar,
-	carEngineSound
+	carEngineSound,
+	warehouseItem,
+	warehouseGroupItem,
+	warehouseSnapshot,
+	warehouseName
 }

@@ -133,7 +133,11 @@ public class Client
 			{ (int)PacketTypes.selectedJob, ClientHandle.SelectedJobPacket },
 			{ (int)PacketTypes.endJob, ClientHandle.EndJobPacket },
 			{ (int)PacketTypes.playerInCar, ClientHandle.PlayerInCarPacket },
-			{ (int)PacketTypes.carEngineSound, ClientHandle.CarEngineSoundPacket }
+			{ (int)PacketTypes.carEngineSound, ClientHandle.CarEngineSoundPacket },
+			{ (int)PacketTypes.warehouseItem, ClientHandle.WarehouseItemPacket },
+			{ (int)PacketTypes.warehouseGroupItem, ClientHandle.WarehouseGroupItemPacket },
+			{ (int)PacketTypes.warehouseSnapshot, ClientHandle.WarehouseSnapshotPacket },
+			{ (int)PacketTypes.warehouseName, ClientHandle.WarehouseNamePacket }
 		};
 	}
 
