@@ -449,11 +449,11 @@ public static class WarehouseSync
 
 	[HarmonyPatch(typeof(global::Warehouse), "Delete", typeof(GroupItem))]
 	[HarmonyPrefix]
-	public static void DeleteGroupItemHook(GroupItem item, global::Warehouse __instance)
+	public static void DeleteGroupItemHook(GroupItem group, global::Warehouse __instance)
 	{
-		if (!Client.Instance.isConnected || suppressWarehouseHooks || item == null) return;
+		if (!Client.Instance.isConnected || suppressWarehouseHooks || group == null) return;
 
-		ClientSend.WarehouseGroupItemPacket(FindGroupWarehouseIndex(__instance, item.UID), new ModGroupItem(item), InventoryAction.remove);
+		ClientSend.WarehouseGroupItemPacket(FindGroupWarehouseIndex(__instance, group.UID), new ModGroupItem(group), InventoryAction.remove);
 	}
 
 	[HarmonyPatch(typeof(global::Warehouse), "SetWarehouseName")]
