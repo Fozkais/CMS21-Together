@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
@@ -32,6 +32,7 @@ public class Client
 		Instance.IsConnected = false;
 		Instance.Tcp = new ClientTCP();
 		Instance.UDP = new ClientUDP();
+		Instance.Steam = null;
 	}
 
 	public void ConnectToServer(string ip = "127.0.0.1")
@@ -87,10 +88,13 @@ public class Client
 	{
 		if (Tcp.socket != null)
 			Tcp.Disconnect();
-		if (Steam.Connected)
+		if (Steam != null && Steam.Connected)
 			Steam.Close();
 		Application.runInBackground = false;
 		IsConnected = false;
+		IsConnectionValid = false;
+		OnConnectionValidated -= OnConnectionSuccessful;
+		ClientData.Reset();
 		MelonLogger.Msg("Disconnected from server.");
 	}
 }

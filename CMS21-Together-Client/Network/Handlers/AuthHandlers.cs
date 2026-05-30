@@ -1,10 +1,13 @@
-﻿using System.Net;
+using System.Net;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Logic;
+using CMS21Together.Logic.Player;
 using MelonLoader;
+using UnityEngine;
 
 namespace CMS21Together.Network.Handlers;
 
@@ -41,8 +44,20 @@ public static class AuthHandler
 	[PacketHandler(PacketTypes.Disconnect)]
 	public static void HandleDisconnect(long senderId, DisconnectPacket packet)
 	{
-		MelonLogger.Msg($"[Received From Server] Disconnected from server : {packet.message}");
-		Client.Instance.Disconnect();
-		NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+		if (packet.playerID == Client.Instance.ID || packet.playerID == -1)
+		{
+			MelonLogger.Msg($"[Received From Server] Disconnected from server : {packet.message}");
+			Client.Instance.Disconnect();
+			NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
+		}
+		else
+		{
+			if (ClientData.Players.TryGetValue(packet.playerID, out PlayerInstance instance))
+			{
+				MelonLogger.Msg($"Player {packet.playerID} disconnected.");
+				Object.Destroy(instance.gameObject);
+				ClientData.Players.Remove(packet.playerID);
+			}
+		}
 	}
 }

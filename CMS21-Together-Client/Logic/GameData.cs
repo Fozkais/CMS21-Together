@@ -13,8 +13,6 @@ public class GameData
 
 	public GameData()
 	{
-		if (Instance != null) return;
-
 		Instance = this;
 		LocalPlayer = Object.FindObjectOfType<CharacterMotor>();
 		GarageTools = Object.FindObjectOfType<GarageLevelManager>().garageAndToolsTab;

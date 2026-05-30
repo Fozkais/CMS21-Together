@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using CMS21_Together_Core.Data;
 
@@ -26,5 +26,6 @@ public class ConnectPacket : INetworkData
 [NetworkPacket(PacketTypes.Disconnect)]
 public class DisconnectPacket : INetworkData
 {
+	public int playerID;
 	public string message;
 }

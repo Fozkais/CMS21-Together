@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
@@ -72,10 +72,17 @@ namespace CMS21_Together_Server.Network
 		{
 			Logger.Debug($"Client {ID} disconnected.");
 			Tcp.Disconnect();
+			Udp?.Disconnect();
 			IsConnected = false;
 			ConnectionValid = false;
 			lastHeartbeatTime = 0;
 			LastHeartbeatTime = 0;
+			
+			Server.SendToClients(new DisconnectPacket()
+			{
+				playerID = ID,
+				message = "Disconnected"
+			}, ID);
 		}
 	}
 }

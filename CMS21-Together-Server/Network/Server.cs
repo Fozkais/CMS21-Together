@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -190,6 +190,7 @@ namespace CMS21_Together_Server.Network
             
             SendToClients(new DisconnectPacket()
             {
+                playerID = -1,
                 message = "Server is closing."
             }, -1);
             

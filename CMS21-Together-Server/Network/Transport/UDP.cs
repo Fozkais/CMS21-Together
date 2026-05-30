@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
@@ -20,6 +20,11 @@ namespace CMS21_Together_Server.Network.Transport
 		{
 			endPoint = _endPoint;
 			Logger.Debug($"Client {id} connected with UDP by {endPoint}");
+		}
+
+		public void Disconnect()
+		{
+			endPoint = null;
 		}
 
 		public void SendData(Packet _packet)

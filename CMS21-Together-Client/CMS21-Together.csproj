@@ -41,6 +41,7 @@
         <Compile Include="Logic\Garage\GarageUpgrades.cs" />
         <Compile Include="Logic\LoaderAddition.cs" />
         <Compile Include="Logic\ModGameManager.cs" />
+        <Compile Include="Logic\Patch\DisconnectHooks.cs" />
         <Compile Include="Logic\PlayerInstance.cs" />
         <Compile Include="Logic\Player\Movement.cs" />
         <Compile Include="Logic\SaveUtils.cs" />
