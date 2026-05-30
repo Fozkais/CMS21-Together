@@ -45,19 +45,27 @@
         <Reference Include="System.Core"/>
         <Reference Include="System.Data"/>
         <Reference Include="System.Xml"/>
+        <Reference Include="Terminal.Gui">
+            <HintPath>Libs\TerminalGui\Terminal.Gui.dll</HintPath>
+        </Reference>
+        <Reference Include="NStack">
+            <HintPath>Libs\TerminalGui\NStack.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Data\GameDatabase.cs" />
         <Compile Include="Data\ServerConfig.cs" />
         <Compile Include="Data\GameDataManager.cs" />
         <Compile Include="Data\ServerTime.cs" />
-        <Compile Include="Logger\Logger.cs" />
-        <Compile Include="Logger\MultiTextWriter.cs" />
+        <Compile Include="Log\ServerWindow.cs" />
+        <Compile Include="Log\Logger.cs" />
+        <Compile Include="Log\MultiTextWriter.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Handlers\GarageUpgradeHandlers.cs" />
         <Compile Include="Network\Handlers\PlayerHandlers.cs" />
         <Compile Include="Network\Server.cs" />
+        <Compile Include="Network\CommandSystem.cs" />
         <Compile Include="Network\Transport\SteamTransport.cs" />
         <Compile Include="Network\Transport\TCP.cs" />
         <Compile Include="Network\Transport\UDP.cs" />

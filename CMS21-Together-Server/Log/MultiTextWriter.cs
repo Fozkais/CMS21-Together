@@ -1,7 +1,7 @@
-﻿using System.IO;
+using System.IO;
 using System.Text;
 
-namespace CMS21_Together_Server.Data
+namespace CMS21_Together_Server.Log
 {
 	public class MultiTextWriter : TextWriter
 	{
@@ -9,9 +9,8 @@ namespace CMS21_Together_Server.Data
 		private readonly StreamWriter _logFileWriter;
 		private readonly StreamWriter _latestFileWriter;
 
-		public MultiTextWriter(TextWriter originalConsole, string logPath, string latestPath)
+		public MultiTextWriter(string logPath, string latestPath)
 		{
-			_originalConsole = originalConsole;
         
 			// Open the specific log file (append mode)
 			_logFileWriter = new StreamWriter(logPath, true) { AutoFlush = true };
@@ -25,7 +24,6 @@ namespace CMS21_Together_Server.Data
 		// Override Write(char) - the most basic method
 		public override void Write(char value)
 		{
-			_originalConsole.Write(value);
 			_logFileWriter.Write(value);
 			_latestFileWriter.Write(value);
 		}
@@ -33,7 +31,6 @@ namespace CMS21_Together_Server.Data
 		// Override Write(string) for better performance with strings
 		public override void Write(string value)
 		{
-			_originalConsole.Write(value);
 			_logFileWriter.Write(value);
 			_latestFileWriter.Write(value);
 		}
@@ -41,7 +38,6 @@ namespace CMS21_Together_Server.Data
 		// Override WriteLine for convenience
 		public override void WriteLine(string value)
 		{
-			_originalConsole.WriteLine(value);
 			_logFileWriter.WriteLine(value);
 			_latestFileWriter.WriteLine(value);
 		}

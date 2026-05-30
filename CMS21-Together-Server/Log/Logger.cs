@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace CMS21_Together_Server.Data
+namespace CMS21_Together_Server.Log
 {
 	public static class Logger
 	{
@@ -40,26 +40,29 @@ namespace CMS21_Together_Server.Data
 
 		private static void WriteLogSameLine(string prefix, string message, ConsoleColor color)
 		{
-			ConsoleColor originalColor = Console.ForegroundColor;
-			Console.ForegroundColor = color;
-
 			string logLine = message;
 			if (prefix != "")
 				logLine = $"[{DateTime.Now:HH:mm:ss}] [{prefix}] {message}";
-			Console.Write(logLine);
 			
-			Console.ForegroundColor = originalColor;
+			if (ServerWindow.LogView != null)
+			{
+				ServerWindow.LogView.AddLog(logLine, color);
+			}
+			// Write to standard console out which is hooked by MultiTextWriter (for file writing)
+			// But since we override Console UI, we shouldn't use Console.WriteLine directly anymore.
+			// Let's use standard output only for the files.
+			Console.Out.Write(logLine);
 		}
 		
 		private static void WriteLog(string prefix, string message, ConsoleColor color)
 		{
-			ConsoleColor originalColor = Console.ForegroundColor;
-			Console.ForegroundColor = color;
-			
 			string logLine = $"[{DateTime.Now:HH:mm:ss}] [{prefix}] {message}";
-			Console.WriteLine(logLine);
 			
-			Console.ForegroundColor = originalColor;
+			if (ServerWindow.LogView != null)
+			{
+				ServerWindow.LogView.AddLog(logLine, color);
+			}
+			Console.Out.WriteLine(logLine);
 		}
 	}
 }

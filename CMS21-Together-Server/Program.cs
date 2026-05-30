@@ -1,10 +1,9 @@
 using System;
 using System.IO;
 using System.Reflection;
-using System.Threading;
-using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Server.Data;
+using CMS21_Together_Server.Log;
 using CMS21_Together_Server.Network;
 using Steamworks;
 
@@ -34,12 +33,21 @@ namespace CMS21_Together_Server
 			
 			string latestLogPath = Path.Combine(logDirectory, "Latest.txt");
 			
-			MultiTextWriter multiWriter = new MultiTextWriter(Console.Out, uniqueLogPath, latestLogPath);
+			MultiTextWriter multiWriter = new MultiTextWriter(uniqueLogPath, latestLogPath);
 			Console.SetOut(multiWriter);
 		}
 		
 		public static void Main(string[] args)
 		{
+			Terminal.Gui.Application.Init();
+			
+			Terminal.Gui.Colors.Base.Normal = Terminal.Gui.Application.Driver.MakeAttribute(Terminal.Gui.Color.White, Terminal.Gui.Color.Black);
+			Terminal.Gui.Colors.Base.Focus = Terminal.Gui.Application.Driver.MakeAttribute(Terminal.Gui.Color.White, Terminal.Gui.Color.Black);
+			Terminal.Gui.Colors.Base.HotNormal = Terminal.Gui.Application.Driver.MakeAttribute(Terminal.Gui.Color.Cyan, Terminal.Gui.Color.Black);
+			Terminal.Gui.Colors.Base.HotFocus = Terminal.Gui.Application.Driver.MakeAttribute(Terminal.Gui.Color.Cyan, Terminal.Gui.Color.Black);
+			
+			var window = new ServerWindow();
+			
 			SetupLogging();
 			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
 			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
@@ -60,25 +68,8 @@ namespace CMS21_Together_Server
 			GameDataManager.TryLoadSession(null);
 			Logger.Info($"Server started. Listening port {PORT}");
 			
-			bool isRunning = true;
-			while (isRunning)
-			{
-				if (ServerTime.Time - GameDataManager.lastAutoSaveTime >= GameDataManager.AutoSaveInterval)
-				{
-					GameDataManager.lastAutoSaveTime = ServerTime.Time;
-					GameDataManager.SaveSession();
-				}
-				Server.Update();
-				if (Console.KeyAvailable)
-				{
-					string cmd = Console.ReadLine();
-					if (cmd == "exit")
-					{
-						isRunning = false;
-					}
-				}
-				Thread.Sleep(10);
-			}
+			Terminal.Gui.Application.Run(window);
+			Terminal.Gui.Application.Shutdown();
 			Exit();
 		}
 
