@@ -14,12 +14,14 @@ public static class ClientData
 	public static bool IsWorldStateSynced { get; set; }
 	public static bool IsGarageStateSynced { get; set; }
 	public static bool IsInitialSyncFinished { get; set; }
+	public static bool IsServerUpdating { get; set; }
 
 	public static void Reset()
 	{
 		IsWorldStateSynced = false;
 		IsGarageStateSynced = false;
 		IsInitialSyncFinished = false;
+		IsServerUpdating = false;
 		
 		Players.Clear();
 	}

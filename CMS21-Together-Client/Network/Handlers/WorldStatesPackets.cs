@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +28,14 @@ public static class WorldStatesPackets
 			difficultyManager.ActivateDifficultyLevel();
 		}
 		
-		MelonLogger.Msg($"Received World State Sync :\nGamemode: {packet.Gamemode.ToString()}\nMoney: {packet.Money}\nLevel: {packet.Level}\n Exp:{packet.Exp}");
+		MelonLogger.Msg($"Received World State Sync :\nGamemode: {packet.Gamemode.ToString()}\nMoney: {packet.Money}\nLevel: {packet.Level}\n Exp:{packet.Exp}\n Scraps:{packet.Scraps}");
 		
+		ClientData.IsServerUpdating = true;
 		GlobalData.PlayerMoney = packet.Money;
 		GlobalData.PlayerLevel = packet.Level - 1;
 		GlobalData.PlayerExp = packet.Exp;
+		GlobalData.PlayerScraps = packet.Scraps;
+		ClientData.IsServerUpdating = false;
 		
 		var profile = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
 		if (profile != null)
@@ -46,6 +49,7 @@ public static class WorldStatesPackets
 		Singleton<GameManager>.Instance.PlatformManager.IncrementStat("stat_level", levelDifference);
 
 		UIManager.Get().RefreshAllStats();
+		UIManager.Get().RefreshStatsUICoroutine(StatType.Scraps, false);
 		ClientData.IsWorldStateSynced = true;
 	}
 	

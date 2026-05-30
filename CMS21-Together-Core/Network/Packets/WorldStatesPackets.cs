@@ -17,6 +17,7 @@ public class WorldState : INetworkData
 	public int Money;
 	public int Level;
 	public int Exp;
+	public int Scraps;
 }
 
 [Serializable]

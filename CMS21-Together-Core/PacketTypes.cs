@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace CMS21_Together_Core;
 
@@ -19,4 +19,5 @@ public enum PacketTypes
 	
 	Movement, // Position/Velocity & Rotation
 	UpgradeRequest, // Garage/Skill upgrade request
+	StatsAction, // Exp and Scrap deltas
 }
