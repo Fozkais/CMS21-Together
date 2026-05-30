@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data.Enum;
@@ -23,15 +23,12 @@ namespace CMS21_Together_Server.Network.Handlers
 		        case UpgradeType.Money:
 		            var upgradeData = GameDatabase.PlayerUpgrades.MoneyUpgrades.Find(s => s.ID == packet.id);
 		            
-		            // 1. Vérification d'existence et d'index
 		            if (upgradeData == null || packet.level < 0 || packet.level >= upgradeData.Costs.Count) return;
-
-		            // 2. Vérification si déjà débloqué
+		            
 		            if (garageState.GarageUpgradeLevels.TryGetValue(packet.id, out bool[] levels))
 		            {
-		                if (levels[packet.level]) return; // Déjà acheté !
-
-		                // 3. Vérification du solde
+		                if (levels[packet.level]) return;
+		                
 		                int cost = upgradeData.Costs[packet.level];
 		                if (worldState.Money >= cost)
 		                {
@@ -50,19 +47,8 @@ namespace CMS21_Together_Server.Network.Handlers
 			        {
 				        if (skillLevels[packet.level]) return; 
 
-				        // 1. Calcul du total des points gagnés via la liste PointsPerLevel
-				        int totalPointsEarned = 0;
-				        var pointsList = GameDatabase.PlayerUpgrades.PointsPerLevel;
-        
-				        // On additionne les points pour chaque niveau atteint
-				        for (int i = 0; i < worldState.Level && i < pointsList.Count; i++)
-				        {
-					        totalPointsEarned += pointsList[i];
-				        }
-
-				        // 2. Calcul des points déjà dépensés
-				        int totalPointsSpent = CalculateSpentPoints(garageState.PlayerUpgradeLevels);
-				        int availablePoints = totalPointsEarned - totalPointsSpent;
+				        // Calcul des points
+				        int availablePoints = ComputeAvailablePoints(worldState, garageState);
 
 				        int cost = skillData.Costs[packet.level];
 				        if (availablePoints >= cost)
@@ -73,10 +59,23 @@ namespace CMS21_Together_Server.Network.Handlers
 			        }
 		            break;
 		    }
+			GameDataManager.CurrentState.GarageState.AvailablePoints = ComputeAvailablePoints(GameDataManager.CurrentState.WorldState, GameDataManager.CurrentState.GarageState);
 			Server.SendToClients(GameDataManager.CurrentState.WorldState);
 			Server.SendToClients(GameDataManager.CurrentState.GarageState);
 		}
 		
+		public static int ComputeAvailablePoints(WorldState worldState, GarageState garageState)
+		{
+			int totalPointsEarned = 0;
+			var pointsList = GameDatabase.PlayerUpgrades.PointsPerLevel;
+			for (int i = 0; i < worldState.Level && i < pointsList.Count; i++)
+			{
+				totalPointsEarned += pointsList[i];
+			}
+			int totalPointsSpent = CalculateSpentPoints(garageState.PlayerUpgradeLevels);
+			return totalPointsEarned - totalPointsSpent;
+		}
+
 		private static int CalculateSpentPoints(Dictionary<string, bool[]> playerSkills)
 		{
 			int spent = 0;

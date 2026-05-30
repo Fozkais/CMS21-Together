@@ -50,7 +50,7 @@ namespace CMS21_Together_Server.Data
                     sw.WriteLine("use_steam = True");
                     sw.WriteLine("");
                     sw.WriteLine("# Game Server Login Token (GSLT)");
-                    sw.WriteLine("# Please have in mind that if you dont own the game you cant use this (only anonymous will work)");
+                    sw.WriteLine("# Have in mind that if you dont own the game you cant use this (only anonymous will work)");
                     sw.WriteLine("# Required for persistent ServerID. Leave empty \"\" for anonymous login.");
                     sw.WriteLine("# Generate one here: https://steamcommunity.com/dev/managegameservers");
                     sw.WriteLine("GSLT_Token = \"\"");
@@ -58,7 +58,7 @@ namespace CMS21_Together_Server.Data
                     sw.WriteLine("# Log Level Configuration");
                     sw.WriteLine("# 0 = Base (Info, Warn, Error, Success)");
                     sw.WriteLine("# 1 = Debug (Show all internal messages)");
-                    sw.WriteLine("log_level = 0");
+                    sw.WriteLine("log_level = 1");
                 }
                 Logger.Info($"Created default configuration file at: {path}");
                 Logger.Warn("Please edit the config file to add your GSLT token if needed.");

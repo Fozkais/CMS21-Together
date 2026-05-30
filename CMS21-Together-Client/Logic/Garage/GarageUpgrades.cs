@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
@@ -126,6 +126,13 @@ public static class GarageUpgrades
 
 		tools.SwitchIfUnlocked();
 		tools.PrepareItems();
+
+		tools.upgradeSystem.AvailablePoints = packet.AvailablePoints;
+		var skillsTab = Object.FindObjectOfType<SkillsTab>();
+		if (skillsTab != null && skillsTab.isActiveAndEnabled)
+		{
+			skillsTab.Invoke(nameof(SkillsTab.RefreshGUI), 0f);
+		}
 
 		IsSyncing = false;
 		MelonLogger.Msg("Garage and Skills synchronized successfully!");

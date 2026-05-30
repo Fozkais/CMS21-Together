@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using CMS21_Together_Core.Data.Enum;
 
@@ -25,6 +25,7 @@ public class GarageState : INetworkData
 {
 	public Dictionary<string, bool[]> GarageUpgradeLevels = new Dictionary<string, bool[]>();
 	public Dictionary<string, bool[]> PlayerUpgradeLevels = new Dictionary<string, bool[]>();
+	public int AvailablePoints;
 }
 
 [Serializable]

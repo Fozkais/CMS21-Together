@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
@@ -37,6 +37,7 @@ namespace CMS21_Together_Server.Network.Handlers
 			GameDataManager.CurrentState.WorldState.updateGamemode = true;
 			Server.SendToClient(GameDataManager.CurrentState.WorldState, (int)clientId);
 			GameDataManager.CurrentState.WorldState.updateGamemode = false;
+			GameDataManager.CurrentState.GarageState.AvailablePoints = GarageUpgradeHandler.ComputeAvailablePoints(GameDataManager.CurrentState.WorldState, GameDataManager.CurrentState.GarageState);
 			Server.SendToClient(GameDataManager.CurrentState.GarageState, (int)clientId);
 			Server.SendToClient(new SyncEnd(), (int)clientId);
 		}
