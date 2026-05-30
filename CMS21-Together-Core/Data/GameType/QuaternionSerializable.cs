@@ -1,14 +1,23 @@
 using System;
 
-namespace CMS21_Together_Core.Data.GameType;
-
-[Serializable]
-public class QuaternionSerializable(float x, float y, float z, float w)
+namespace CMS21_Together_Core.Data.GameType
 {
-	public float X = x;
-	public float Y = y;
-	public float Z = z;
-	public float W = w;
+	[Serializable]
+	public class QuaternionSerializable
+	{
+		public float X;
+		public float Y;
+		public float Z;
+		public float W;
 
-	public QuaternionSerializable() : this(0, 0, 0, 0) { }
+		public QuaternionSerializable() { }
+
+		public QuaternionSerializable(float x, float y, float z, float w)
+		{
+			X = x;
+			Y = y;
+			Z = z;
+			W = w;
+		}
+	}
 }

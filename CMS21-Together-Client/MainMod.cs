@@ -97,7 +97,7 @@ namespace CMS21Together
 			if (IsSteamAvailable)
 			{
 				SteamClient.RunCallbacks();
-				if (Client.Instance.IsConnected) Client.Instance.Steam.Receive();
+				if (Client.Instance.IsConnected) Client.Instance.Steam?.Receive();
 			}
 			ThreadManager.UpdateThread();
 		}

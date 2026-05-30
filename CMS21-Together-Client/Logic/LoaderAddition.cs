@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using CMS;
 using CMS.Difficulty;
 using CMS.Garage.Customization;
@@ -11,6 +12,7 @@ using HarmonyLib;
 using Il2CppSystem.Collections.Generic;
 using MelonLoader;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CMS21Together.Logic;
 
@@ -228,7 +230,7 @@ public static class LoaderAddition
 		ClientData.Reset();
 		Client.Instance.Send(new AskForSync());
 		
-		float timeoutDuration = 30.0f;
+		float timeoutDuration = 10.0f;
 		float waitStartTime = Time.realtimeSinceStartup;
 		bool timedOut = false;
 		

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.GameType;
 
@@ -13,4 +13,9 @@ public class MovementPacket : INetworkData
 	public Vector3Serializable Position;
 	public Vector3Serializable Velocity;
 	public QuaternionSerializable Rotation;
+	
+	public float CameraPitch;
+	public bool IsGrounded;
+	public bool IsCrouching;
+	public bool IsRunning;
 }

@@ -1,13 +1,21 @@
 using System;
 
-namespace CMS21_Together_Core.Data.GameType;
-
-[Serializable]
-public class Vector3Serializable(float x, float y, float z)
+namespace CMS21_Together_Core.Data.GameType
 {
-	public float X = x;
-	public float Y = y;
-	public float Z = z;
+	[Serializable]
+	public class Vector3Serializable
+	{
+		public float X;
+		public float Y;
+		public float Z;
 
-	public Vector3Serializable() : this(0, 0, 0) { }
+		public Vector3Serializable() { }
+
+		public Vector3Serializable(float x, float y, float z)
+		{
+			X = x;
+			Y = y;
+			Z = z;
+		}
+	}
 }

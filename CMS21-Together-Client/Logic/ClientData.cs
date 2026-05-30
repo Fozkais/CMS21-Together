@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Logic.Player;
 using MelonLoader;
@@ -46,7 +46,7 @@ public static class ClientData
 		player.gameObject.SetActive(true);
 		player.name = $"Player[{packet.SenderId}]";
 		PlayerInstance instance = player.AddComponent<PlayerInstance>();
-		instance.UpdateNetworkState(pos, rot, vel);
+		instance.UpdateNetworkState(pos, rot, vel, packet.CameraPitch, packet.IsGrounded, packet.IsCrouching, packet.IsRunning);
 		Players[packet.SenderId] = instance;
 	}
 }

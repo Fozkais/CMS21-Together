@@ -4,7 +4,7 @@ using MelonLoader;
 
 namespace CMS21Together;
 
-public class ThreadManager
+public static class ThreadManager
 {
 	private static readonly List<Action> executeOnMainThread = new();
 	private static readonly List<Action> executeCopiedOnMainThread = new();

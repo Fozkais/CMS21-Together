@@ -1,4 +1,4 @@
-﻿using Il2CppSystem.IO;
+using Il2CppSystem.IO;
 using MelonLoader;
 using UnityEngine;
 
@@ -37,38 +37,61 @@ public static class ModGameManager
 	public static void LoadPlayerPrefab()
 	{
 		AssetBundle bundle = AssetBundle.LoadFromStream
-		(DataUtils.ConvertStreamToIL2CPP(DataUtils.LoadContent("CMS21Together.Assets.player.assets")));
+		(DataUtils.ConvertStreamToIL2CPP(DataUtils.LoadContent("CMS21Together.Assets.playermodel.bundle")));
 		
 		if (!bundle) return;
-		GameObject prefab = bundle.LoadAsset<GameObject>("playerModel");
+		GameObject prefab = bundle.LoadAsset<GameObject>("model_rigged");
 		if (!prefab)
 		{
-			MelonLogger.Warning("Cannot load bundle.");
+			MelonLogger.Warning("Cannot load model_rigged from bundle.");
 			return;
 		}
 
+		RuntimeAnimatorController animatorController = bundle.LoadAsset<RuntimeAnimatorController>("model_ac");
 		Material material = new Material(Shader.Find("HDRP/Unlit"));
-		
+		Texture baseTexture = bundle.LoadAsset<Texture>("texture_shaded");
+		Texture normalTexture = bundle.LoadAsset<Texture>("texture_normal");
+		Texture maskTexture = bundle.LoadAsset<Texture>("texture_mask");
 
-		Texture baseTexture = bundle.LoadAsset<Texture>("tex_base");
-		if (baseTexture)
+		if (material)
 		{
-			baseTexture.filterMode = FilterMode.Bilinear;
-			material.mainTexture = baseTexture;
+			Shader litShader = Shader.Find("HDRP/Unlit");
+			if (litShader != null) material.shader = litShader;
+			
+			// Force Opaque instead of Transparent
+			material.SetFloat("_SurfaceType", 0.0f);
+			material.SetInt("_ZWrite", 1);
+			material.renderQueue = 2000;
+			material.DisableKeyword("_SURFACE_TYPE_TRANSPARENT");
+			material.DisableKeyword("_ALPHATEST_ON");
+			material.DisableKeyword("_ALPHABLEND_ON");
+
+			if (baseTexture)
+			{
+				material.SetTexture("_BaseColorMap", baseTexture);
+				material.mainTexture = baseTexture;
+			}
+
+			if (normalTexture)
+			{
+				material.SetTexture("_NormalMap", normalTexture);
+				material.SetTexture("_BumpMap", normalTexture);
+			}
+			if (maskTexture) material.SetTexture("_MaskMap", maskTexture);
+			
 		}
-    
-		Texture normalTexture = bundle.LoadAsset<Texture>("tex_normal");
-		if (normalTexture) 
-		{
-			normalTexture.filterMode = FilterMode.Bilinear;
-			material.SetTexture("_BumpMap", normalTexture);
-		}
-		
+
 		SkinnedMeshRenderer renderer = prefab.GetComponentInChildren<SkinnedMeshRenderer>();
-		if (renderer) renderer.material = material;
+		if (renderer && material) renderer.material = material;
+
+		Animator animator = prefab.GetComponent<Animator>();
+		if (animator && animatorController)
+		{
+			animator.runtimeAnimatorController = animatorController;
+		}
 
 		prefab.transform.position = new Vector3(0, -10, 0);
-		prefab.transform.localScale = new Vector3(0.095f, 0.095f, 0.095f);
+		prefab.transform.localScale = new Vector3(1f, 1f, 1f);
 		prefab.transform.rotation = Quaternion.Euler(0, 180, 0);
 
 		PlayerPrefab = Object.Instantiate(prefab);
