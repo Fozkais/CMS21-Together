@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Logic;
 using CMS21Together.Logic.Player;
+using CMS21Together.Managers;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.Logic;
+namespace CMS21Together.Data;
 
 public static class ClientData
 {
@@ -13,6 +15,7 @@ public static class ClientData
 	// Global Game States
 	public static bool IsWorldStateSynced { get; set; }
 	public static bool IsGarageStateSynced { get; set; }
+	public static bool IsInventorySynced { get; set; }
 	public static bool IsInitialSyncFinished { get; set; }
 	public static bool IsServerUpdating { get; set; }
 
@@ -20,6 +23,7 @@ public static class ClientData
 	{
 		IsWorldStateSynced = false;
 		IsGarageStateSynced = false;
+		IsInventorySynced = false;
 		IsInitialSyncFinished = false;
 		IsServerUpdating = false;
 		

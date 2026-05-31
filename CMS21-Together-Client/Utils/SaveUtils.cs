@@ -1,6 +1,6 @@
 ﻿using UnhollowerBaseLib;
 
-namespace CMS21Together.Logic;
+namespace CMS21Together.Utils;
 
 public static class SaveUtils
 {

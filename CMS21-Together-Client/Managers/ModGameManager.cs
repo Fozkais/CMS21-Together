@@ -1,8 +1,9 @@
+using CMS21Together.Utils;
 using Il2CppSystem.IO;
 using MelonLoader;
 using UnityEngine;
 
-namespace CMS21Together.Logic;
+namespace CMS21Together.Managers;
 
 public static class ModGameManager
 {

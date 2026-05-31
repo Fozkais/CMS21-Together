@@ -7,6 +7,7 @@ using CMS.Managers;
 using CMS.UI;
 using CMS.UI.Windows;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Data;
 using CMS21Together.Network;
 using HarmonyLib;
 using Il2CppSystem.Collections.Generic;

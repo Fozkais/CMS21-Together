@@ -16,37 +16,47 @@ namespace CMS21_Together_Server.Network.Handlers
             
             if (packet.Action == ShopActionType.Buy)
             {
-                int price = 0;
-                if (packet.IsGroupItem)
+                try
                 {
-                    price = PricingCalculator.GetPrice(packet.GroupItemToBuy);
-                }
-                else
-                {
-                    price = PricingCalculator.GetPrice(packet.ItemToBuy);
-                }
-
-                if (state.WorldState.Money >= price)
-                {
-                    state.WorldState.Money -= price;
-                    
+                    int price = 0;
                     if (packet.IsGroupItem)
                     {
-                        packet.GroupItemToBuy.UID = InventoryHandlers.GenerateNewUID();
-                        state.InventoryState.InventoryGroupItems.Add(packet.GroupItemToBuy);
+                        price = PricingCalculator.GetPrice(packet.GroupItemToBuy);
+                        Logger.Debug($"[ShopHandlers] Calculating price for GroupItem: {packet.GroupItemToBuy.ID}. Price={price}");
                     }
                     else
                     {
-                        packet.ItemToBuy.UID = InventoryHandlers.GenerateNewUID();
-                        state.InventoryState.InventoryItems.Add(packet.ItemToBuy);
+                        price = PricingCalculator.GetPrice(packet.ItemToBuy);
+                        Logger.Debug($"[ShopHandlers] Calculating price for Item: {packet.ItemToBuy.ID}. Price={price}");
                     }
-                    
-                    Server.SendToClients(packet);
-                    Server.SendToClients(state.WorldState);
+
+                    if (state.WorldState.Money >= price)
+                    {
+                        state.WorldState.Money -= price;
+                        
+                        if (packet.IsGroupItem)
+                        {
+                            packet.GroupItemToBuy.UID = InventoryHandlers.GenerateNewUID();
+                            state.InventoryState.InventoryGroupItems.Add(packet.GroupItemToBuy);
+                        }
+                        else
+                        {
+                            packet.ItemToBuy.UID = InventoryHandlers.GenerateNewUID();
+                            state.InventoryState.InventoryItems.Add(packet.ItemToBuy);
+                        }
+                        
+                        Logger.Debug($"[ShopHandlers] Buy successful. Client {clientId} bought item. New Money: {state.WorldState.Money}");
+                        Server.SendToClients(packet);
+                        Server.SendToClients(state.WorldState);
+                    }
+                    else
+                    {
+                        Logger.Warn($"Client {clientId} tried to buy item but didn't have enough money. (Has {state.WorldState.Money}, needs {price})");
+                    }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    Logger.Warn($"Client {clientId} tried to buy item but didn't have enough money.");
+                    Logger.Error($"[ShopHandlers] Error handling Buy action: {ex.Message}\n{ex.StackTrace}");
                 }
             }
             else if (packet.Action == ShopActionType.SellSingle)
@@ -80,7 +90,6 @@ namespace CMS21_Together_Server.Network.Handlers
             {
                 int totalEarned = 0;
                 
-                // Remove all items matching condition
                 for (int i = state.InventoryState.InventoryItems.Count - 1; i >= 0; i--)
                 {
                     var item = state.InventoryState.InventoryItems[i];
@@ -88,10 +97,15 @@ namespace CMS21_Together_Server.Network.Handlers
                     {
                         totalEarned += PricingCalculator.GetPrice(item);
                         state.InventoryState.InventoryItems.RemoveAt(i);
+                        
+                        Server.SendToClients(new InventoryItemActionPacket 
+                        { 
+                            Action = ItemActionType.Remove, 
+                            Item = item 
+                        });
                     }
                 }
                 
-                // Group Items usually don't have a single condition in the same way, but let's check
                 for (int i = state.InventoryState.InventoryGroupItems.Count - 1; i >= 0; i--)
                 {
                     var groupItem = state.InventoryState.InventoryGroupItems[i];
@@ -109,13 +123,18 @@ namespace CMS21_Together_Server.Network.Handlers
                     {
                         totalEarned += PricingCalculator.GetPrice(groupItem);
                         state.InventoryState.InventoryGroupItems.RemoveAt(i);
+                        
+                        Server.SendToClients(new InventoryGroupItemActionPacket 
+                        { 
+                            Action = ItemActionType.Remove, 
+                            GroupItem = groupItem 
+                        });
                     }
                 }
 
                 if (totalEarned > 0)
                 {
                     state.WorldState.Money += totalEarned;
-                    Server.SendToClients(packet); // All clients will clear their local inventories below condition
                     Server.SendToClients(state.WorldState);
                 }
             }
@@ -125,29 +144,42 @@ namespace CMS21_Together_Server.Network.Handlers
         public static void HandleItemsExchange(long clientId, ItemsExchangePacket packet)
         {
             var state = GameDataManager.CurrentState;
-            int totalPrice = 0;
+            float locationMod = packet.IsJunkyard ? 0.47f : 0.50f;
             
-            foreach(var item in packet.ItemsToBuy)
+            float discount = 0f;
+            if (state.GarageState.PlayerUpgradeLevels.TryGetValue("shop_discount", out bool[] levels))
             {
-                totalPrice += PricingCalculator.GetPrice(item);
+                int count = 0;
+                foreach (bool unlocked in levels)
+                {
+                    if (unlocked) count++;
+                }
+                discount = count * 0.05f; // 5% per level
             }
 
-            if (state.WorldState.Money >= totalPrice)
+            int totalCost = 0;
+            foreach (var item in packet.ItemsToBuy)
             {
-                state.WorldState.Money -= totalPrice;
-                
-                foreach(var item in packet.ItemsToBuy)
+                totalCost += PricingCalculator.GetPrice(item, locationMod);
+            }
+            int discountNum = (int)(totalCost * discount);
+            totalCost -= discountNum;
+
+            if (state.WorldState.Money >= totalCost)
+            {
+                state.WorldState.Money -= totalCost;
+                foreach (var item in packet.ItemsToBuy)
                 {
                     item.UID = InventoryHandlers.GenerateNewUID();
                     state.InventoryState.InventoryItems.Add(item);
                 }
-
                 Server.SendToClients(packet);
                 Server.SendToClients(state.WorldState);
+                Logger.Debug($"[ShopHandlers] ItemsExchange successful for client {clientId}. Cost={totalCost}. Mod={locationMod}, Discount={discount}");
             }
             else
             {
-                Logger.Warn($"Client {clientId} tried to exchange items but didn't have enough money.");
+                Logger.Debug($"[ShopHandlers] ItemsExchange failed for client {clientId}. Not enough money! (Cost={totalCost}, Money={state.WorldState.Money})");
             }
         }
 

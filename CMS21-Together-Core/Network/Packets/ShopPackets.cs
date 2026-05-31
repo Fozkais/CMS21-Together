@@ -34,6 +34,7 @@ public class ShopActionPacket : INetworkData
 [NetworkPacket(PacketTypes.ItemsExchange)]
 public class ItemsExchangePacket : INetworkData
 {
+    public bool IsJunkyard;
     public List<ModItem> ItemsToBuy;
 }
 

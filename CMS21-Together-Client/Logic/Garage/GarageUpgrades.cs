@@ -1,6 +1,7 @@
 using System.Collections;
 using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Data;
 using CMS21Together.Network;
 using HarmonyLib;
 using MelonLoader;

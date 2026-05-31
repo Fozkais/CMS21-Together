@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using CMS21_Together_Core.Data.GameType;
+using UnhollowerBaseLib;
 using UnityEngine;
 
-namespace CMS21_Together_Client.Logic
+namespace CMS21Together.Data
 {
     public static class ItemConverter
     {
@@ -15,28 +16,38 @@ namespace CMS21_Together_Client.Logic
                 ID = item.ID,
                 NormalID = item.NormalID,
                 Condition = item.Condition,
+                ConditionToShow = item.ConditionToShow,
+                Dent = item.Dent,
                 IsExamined = item.IsExamined,
                 IsPainted = item.IsPainted,
                 PaintType = (ModPaintType)(int)item.PaintType,
-                PaintData = new ModPaintData
-                {
-                    metal = item.PaintData.Metal,
-                    roughness = item.PaintData.Roughness,
-                    clearCoat = item.PaintData.ClearCoat,
-                    normalStrenght = item.PaintData.NormalStrength,
-                    fresnel = item.PaintData.Fresnel
-                },
                 Quality = item.Quality,
-                Color = new ModColor 
-                { 
-                    r = item.Color.GetColor().r, 
-                    g = item.Color.GetColor().g, 
-                    b = item.Color.GetColor().b, 
-                    a = item.Color.GetColor().a 
-                },
                 WashFactor = item.WashFactor,
                 UID = item.UID
             };
+
+            modItem.PaintData = new ModPaintData
+            {
+                metal = item.PaintData.Metal,
+                roughness = item.PaintData.Roughness,
+                clearCoat = item.PaintData.ClearCoat,
+                normalStrenght = item.PaintData.NormalStrength,
+                fresnel = item.PaintData.Fresnel
+            };
+
+            if (!object.ReferenceEquals(item.Color, null))
+            {
+                if (item.Color.Color.Count == 4)
+                {
+                    modItem.Color = new ModColor 
+                    { 
+                        r = item.Color.Color[0], 
+                        g = item.Color.Color[1], 
+                        b = item.Color.Color[2], 
+                        a = item.Color.Color[3] 
+                    };
+                }
+            }
 
             modItem.WheelData = new ModWheelData
             {
@@ -47,7 +58,7 @@ namespace CMS21_Together_Client.Logic
                 IsBalanced = item.WheelData.IsBalanced
             };
 
-            if (item.MountObjectData != null)
+            if (!object.ReferenceEquals(item.MountObjectData, null))
             {
                 modItem.MountObjectData = new ModMountObjectData
                 {
@@ -72,7 +83,7 @@ namespace CMS21_Together_Client.Logic
                 UID = groupItem.UID
             };
 
-            if (groupItem.ItemList != null)
+            if (!object.ReferenceEquals(groupItem.ItemList, null))
             {
                 foreach (var item in groupItem.ItemList)
                 {
@@ -91,22 +102,45 @@ namespace CMS21_Together_Client.Logic
             {
                 NormalID = modItem.NormalID,
                 Condition = modItem.Condition,
+                Dent = modItem.Dent,
                 IsExamined = modItem.IsExamined,
                 IsPainted = modItem.IsPainted,
                 PaintType = (PaintType)(int)modItem.PaintType,
-                PaintData = new PaintData
-                {
-                    Metal = modItem.PaintData.metal,
-                    Roughness = modItem.PaintData.roughness,
-                    ClearCoat = modItem.PaintData.clearCoat,
-                    NormalStrength = modItem.PaintData.normalStrenght,
-                    Fresnel = modItem.PaintData.fresnel
-                },
                 Quality = modItem.Quality,
-                Color = new CustomColor(new Color(modItem.Color.r, modItem.Color.g, modItem.Color.b, modItem.Color.a)),
                 WashFactor = modItem.WashFactor,
                 UID = modItem.UID
             };
+
+            item.PaintData = new PaintData
+            {
+                Metal = modItem.PaintData.metal,
+                Roughness = modItem.PaintData.roughness,
+                ClearCoat = modItem.PaintData.clearCoat,
+                NormalStrength = modItem.PaintData.normalStrenght,
+                Fresnel = modItem.PaintData.fresnel
+            };
+
+            if (modItem.Color != null)
+            {
+                CustomColor newColor = new CustomColor();
+                newColor.Color = new Il2CppStructArray<float>(4);
+                newColor.Color[0] = modItem.Color.r;
+                newColor.Color[1] = modItem.Color.g;
+                newColor.Color[2] = modItem.Color.b;
+                newColor.Color[3] = modItem.Color.a;
+                item.Color = newColor;
+            }
+            
+            if (modItem.TintColor != null)
+            {
+                CustomColor newColor = new CustomColor();
+                newColor.Color = new Il2CppStructArray<float>(4);
+                newColor.Color[0] = modItem.TintColor.r;
+                newColor.Color[1] = modItem.TintColor.g;
+                newColor.Color[2] = modItem.TintColor.b;
+                newColor.Color[3] = modItem.TintColor.a;
+                item.TintColor = newColor;
+            }
 
             // WheelData is a struct so we need to get it, modify it, then set it
             var wheelData = item.WheelData;

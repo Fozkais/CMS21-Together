@@ -3,31 +3,42 @@ using CMS.UI.Windows;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
-using CMS21_Together_Client.Logic;
+using CMS21Together.Data;
 using MelonLoader;
 
-namespace CMS21_Together_Client.Network.Handlers
+namespace CMS21Together.Network.Handlers
 {
     public static class ShopHandlers
     {
         [PacketHandler(PacketTypes.ShopAction)]
         public static void HandleShopAction(long clientId, ShopActionPacket packet)
         {
+            if (!ClientData.IsGarageStateSynced) return;
+
             if (packet.Action == ShopActionType.Buy)
             {
-                if (packet.IsGroupItem)
+                try
                 {
-                    Singleton<GameManager>.Instance.Inventory.AddGroup(packet.GroupItemToBuy.ToGameGroupItem());
+                    if (packet.IsGroupItem)
+                    {
+                        var gameGrp = packet.GroupItemToBuy.ToGameGroupItem();
+                        Singleton<GameManager>.Instance.Inventory.AddGroup(gameGrp);
+                        MelonLogger.Msg($"[ShopHandlers] Successfully added GroupItem {gameGrp.ID} to local inventory.");
+                    }
+                    else
+                    {
+                        var gameItem = packet.ItemToBuy.ToGameItem();
+                        Singleton<GameManager>.Instance.Inventory.Add(gameItem);
+                        MelonLogger.Msg($"[ShopHandlers] Successfully added Item {gameItem.ID} to local inventory.");
+                    }
                 }
-                else
+                catch (System.Exception ex)
                 {
-                    Singleton<GameManager>.Instance.Inventory.Add(packet.ItemToBuy.ToGameItem());
+                    MelonLogger.Error($"[ShopHandlers] Error during ToGameItem conversion or Add: {ex.Message}\n{ex.StackTrace}");
                 }
-                MelonLogger.Msg($"[ShopHandlers] Received Bought Item from server.");
             }
             else if (packet.Action == ShopActionType.SellSingle)
             {
-                // Delete the item by UID
                 var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.ItemUID);
                 if (item != null)
                 {
@@ -41,36 +52,37 @@ namespace CMS21_Together_Client.Network.Handlers
             }
             else if (packet.Action == ShopActionType.SellCondition)
             {
-                // The server removed items below condition, but the client should just call its own SellPerCondition?
-                // No, the client needs to actually delete them, but wait, the server doesn't broadcast WHICH items were sold.
-                // Wait! Server DOES broadcast ShopActionPacket with Action = SellCondition!
-                // If the client receives SellCondition, it could just call its own local SellPerCondition, BUT that would cause desync if client and server have different items!
-                // Actually, the server should probably just sync the whole inventory, or we can iterate and delete locally.
                 Singleton<GameManager>.Instance.Inventory.SellPerCondition(packet.SellCondition);
                 MelonLogger.Msg($"[ShopHandlers] Received SellCondition override for {packet.SellCondition}");
             }
             
-            // Refresh Inventory Window if open
-            if (WindowManager.Instance != null && WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory) != null)
+            try
             {
-                WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory).Refresh(true);
+                if (WindowManager.Instance != null)
+                {
+                    var invWindow = WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory);
+                    if (invWindow != null && invWindow.isActive)
+                    {
+                        invWindow.Refresh(true);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MelonLogger.Error($"[ShopHandlers] Error refreshing InventoryWindow: {ex.Message}");
             }
         }
 
         [PacketHandler(PacketTypes.ItemsExchange)]
         public static void HandleItemsExchange(long clientId, ItemsExchangePacket packet)
         {
+            if (!ClientData.IsGarageStateSynced) return;
+
             foreach (var item in packet.ItemsToBuy)
             {
                 Singleton<GameManager>.Instance.Inventory.Add(item.ToGameItem());
             }
             MelonLogger.Msg($"[ShopHandlers] Received {packet.ItemsToBuy.Count} items from ItemsExchange (Junkyard).");
-            
-            // Refresh Warehouse/ItemsExchange Window if open
-            if (WindowManager.Instance != null && WindowManager.Instance.GetWindowByID<ItemsExchangeWindow>(WindowID.ItemsExchange) != null)
-            {
-                WindowManager.Instance.GetWindowByID<ItemsExchangeWindow>(WindowID.ItemsExchange).Refresh(true);
-            }
         }
     }
 }

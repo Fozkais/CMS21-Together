@@ -4,6 +4,7 @@ using CMS21Together.Network;
 using HarmonyLib;
 using UnityEngine;
 using System.Reflection;
+using CMS21Together.Data;
 
 namespace CMS21Together.Logic.Player;
 

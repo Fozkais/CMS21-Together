@@ -3,40 +3,40 @@ using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using HarmonyLib;
+using MelonLoader;
 
-namespace CMS21Together.Logic.Patch
+namespace CMS21Together.Logic.Hook
 {
-    [HarmonyPatch(typeof(ShopBuyWindow), nameof(ShopBuyWindow.BuyItem))]
-    public static class ShopBuyWindow_BuyItem_Patch
+    [HarmonyPatch]
+    public static class ShopBuyWindowHook
     {
-        public static bool Prefix(ShopBuyWindow __instance, 
-            ref string ___itemID, 
-            ref int ___currentAmount,
-            ref int ___currentWidth,
-            ref int ___currentSize,
-            ref int ___currentProfile,
-            ref int ___currentET,
-            ref float ___currentPrice)
+        [HarmonyPatch(typeof(ShopBuyWindow), nameof(ShopBuyWindow.BuyItem))]
+        [HarmonyPrefix]
+        public static bool BuyItemPrefix(ShopBuyWindow __instance)
         {
             if (Client.Instance.IsConnected)
             {
-                // Create a ModItem representation
                 ModItem modItem = new ModItem();
-                modItem.ID = ___itemID;
+                modItem.ID = __instance.itemID;
                 modItem.Condition = 1f;
+                modItem.ConditionToShow = 1f;
+                modItem.Dent = 1f;
+                modItem.WashFactor = 1f;
+                
+                MelonLogger.Msg($"[ShopBuyWindowHook] Sending buy packet for {modItem.ID} (Amount: {__instance.currentAmount})");
                 
                 // Add Wheel properties
                 modItem.WheelData = new ModWheelData
                 {
-                    Width = ___currentWidth,
-                    Size = ___currentSize,
-                    Profile = ___currentProfile,
-                    ET = ___currentET
+                    Width = __instance.currentWidth,
+                    Size = __instance.currentSize,
+                    Profile = __instance.currentProfile,
+                    ET = __instance.currentET
                 };
 
                 // Send 1 packet per amount (or a bulk buy packet if we adapt it later)
                 // For now we just loop and send packets since ShopActionPacket takes 1 Item
-                for (int i = 0; i < ___currentAmount; i++)
+                for (int i = 0; i < __instance.currentAmount; i++)
                 {
                     var packet = new ShopActionPacket
                     {

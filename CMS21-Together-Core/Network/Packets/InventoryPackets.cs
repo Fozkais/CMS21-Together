@@ -15,6 +15,8 @@ public enum ItemActionType
 [NetworkPacket(PacketTypes.InventoryData)]
 public class InventorySyncPacket : INetworkData
 {
+    public bool IsFirstBatch;
+    public bool IsLastBatch;
     public List<ModItem> InventoryItems;
     public List<ModGroupItem> InventoryGroupItems;
     public List<ModItem> WarehouseItems;

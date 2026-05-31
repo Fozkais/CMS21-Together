@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using MelonLoader;
 
-namespace CMS21Together;
+namespace CMS21Together.Managers;
 
 public static class ThreadManager
 {

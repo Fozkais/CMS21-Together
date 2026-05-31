@@ -2,7 +2,7 @@ using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using HarmonyLib;
 
-namespace CMS21Together.Logic.Patch
+namespace CMS21Together.Logic.Hook
 {
 	[HarmonyPatch]
 	public static class DisconnectHooks

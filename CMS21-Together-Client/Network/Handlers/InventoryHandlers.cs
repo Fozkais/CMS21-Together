@@ -3,13 +3,115 @@ using CMS.UI.Windows;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
-using CMS21_Together_Client.Logic;
-using MelonLoader;
+using CMS21Together.Data;
 
-namespace CMS21_Together_Client.Network.Handlers
+namespace CMS21Together.Network.Handlers
 {
     public static class InventoryHandlers
     {
+        private static System.Collections.Generic.Queue<InventorySyncPacket> syncQueue = new System.Collections.Generic.Queue<InventorySyncPacket>();
+        private static bool isProcessingSync = false;
+
+        [PacketHandler(PacketTypes.InventoryData)]
+        public static void HandleInventorySync(long clientId, InventorySyncPacket packet)
+        {
+            syncQueue.Enqueue(packet);
+            if (!isProcessingSync)
+            {
+                isProcessingSync = true;
+                MelonLoader.MelonCoroutines.Start(ProcessSyncQueue());
+            }
+        }
+
+        private static System.Collections.IEnumerator ProcessSyncQueue()
+        {
+            // Wait for the garage state to be fully synced and ready
+            while (!ClientData.IsGarageStateSynced)
+            {
+                yield return new UnityEngine.WaitForSeconds(0.1f);
+            }
+
+            while (syncQueue.Count > 0)
+            {
+                var packet = syncQueue.Dequeue();
+
+                if (packet.IsFirstBatch)
+                {
+                    // Clear all local inventories first to prevent duplication
+                    Singleton<GameManager>.Instance.Inventory.DeleteAllInventory();
+                    
+                    var warehouse = Singleton<GameManager>.Instance.Warehouse;
+                    if (warehouse != null)
+                    {
+                        var allWhItems = warehouse.SortItemsForCategory(global::SortType.ByAlphabetAsc, CMS.UI.Logic.InventoryCategories.All);
+                        if (allWhItems != null)
+                        {
+                            foreach (var baseItem in allWhItems)
+                            {
+                                var i = baseItem.TryCast<Item>();
+                                if (i != null) warehouse.Delete(i);
+                                else
+                                {
+                                    var gi = baseItem.TryCast<GroupItem>();
+                                    if (gi != null) warehouse.Delete(gi);
+                                }
+                            }
+                        }
+                    }
+
+                    MelonLoader.MelonLogger.Msg("[DEBUG] [InventoryHandlers] Cleared local inventory and warehouse for full sync.");
+                }
+
+                int count = 0;
+                if (packet.InventoryItems != null)
+                {
+                    foreach (var item in packet.InventoryItems)
+                    {
+                        Singleton<GameManager>.Instance.Inventory.Add(item.ToGameItem());
+                        count++;
+                    }
+                }
+                if (packet.InventoryGroupItems != null)
+                {
+                    foreach (var group in packet.InventoryGroupItems)
+                    {
+                        Singleton<GameManager>.Instance.Inventory.AddGroup(group.ToGameGroupItem());
+                        count++;
+                    }
+                }
+                if (packet.WarehouseItems != null)
+                {
+                    foreach (var item in packet.WarehouseItems)
+                    {
+                        Singleton<GameManager>.Instance.Warehouse.Add(item.ToGameItem());
+                        count++;
+                    }
+                }
+                if (packet.WarehouseGroupItems != null)
+                {
+                    foreach (var group in packet.WarehouseGroupItems)
+                    {
+                        Singleton<GameManager>.Instance.Warehouse.Add(group.ToGameGroupItem());
+                        count++;
+                    }
+                }
+                
+                MelonLoader.MelonLogger.Msg($"[DEBUG] [InventoryHandlers] Received batch containing {count} items. LastBatch={packet.IsLastBatch}");
+
+                if (packet.IsLastBatch)
+                {
+                    MelonLoader.MelonLogger.Msg("[DEBUG] [InventoryHandlers] Inventory sync complete!");
+                    ClientData.IsInventorySynced = true;
+                    RefreshInventoryWindow();
+                    RefreshWarehouseWindow();
+                }
+
+                yield return null; // wait a frame between batches
+            }
+
+            isProcessingSync = false;
+        }
+
         [PacketHandler(PacketTypes.InventoryItemAction)]
         public static void HandleInventoryItemAction(long clientId, InventoryItemActionPacket packet)
         {
@@ -84,17 +186,39 @@ namespace CMS21_Together_Client.Network.Handlers
 
         private static void RefreshInventoryWindow()
         {
-            if (WindowManager.Instance != null && WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory) != null)
+            try
             {
-                WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory).Refresh(true);
+                if (WindowManager.Instance != null)
+                {
+                    var invWindow = WindowManager.Instance.GetWindowByID<InventoryWindow>(WindowID.Inventory);
+                    if (invWindow != null && invWindow.isActive)
+                    {
+                        invWindow.Refresh(true);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MelonLoader.MelonLogger.Error($"[InventoryHandlers] Error refreshing InventoryWindow: {ex.Message}");
             }
         }
         
         private static void RefreshWarehouseWindow()
         {
-            if (WindowManager.Instance != null && WindowManager.Instance.GetWindowByID<WarehouseWindow>(WindowID.Warehouse) != null)
+            try
             {
-                WindowManager.Instance.GetWindowByID<WarehouseWindow>(WindowID.Warehouse).Refresh(true);
+                if (WindowManager.Instance != null)
+                {
+                    var whWindow = WindowManager.Instance.GetWindowByID<WarehouseWindow>(WindowID.Warehouse);
+                    if (whWindow != null && whWindow.isActive)
+                    {
+                        whWindow.Refresh(true);
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                MelonLoader.MelonLogger.Error($"[InventoryHandlers] Error refreshing WarehouseWindow: {ex.Message}");
             }
         }
     }

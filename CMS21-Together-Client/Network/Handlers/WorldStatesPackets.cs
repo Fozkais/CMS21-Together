@@ -9,6 +9,7 @@ using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Data;
 using CMS21Together.Logic;
 using CMS21Together.Logic.Garage;
 using MelonLoader;
@@ -89,11 +90,11 @@ public static class WorldStatesPackets
 		float timeout = 15f;
 		float timer = 0f;
 
-		MelonLogger.Msg("Waiting for World and Garage states to sync...");
+		MelonLogger.Msg("Waiting for World, Garage and Inventory states to sync...");
 
 		while (timer < timeout)
 		{
-			if (ClientData.IsWorldStateSynced && ClientData.IsGarageStateSynced)
+			if (ClientData.IsWorldStateSynced && ClientData.IsGarageStateSynced && ClientData.IsInventorySynced)
 			{
 				ClientData.IsInitialSyncFinished = true;
 				MelonLogger.Msg("Initial synchronization finished successfully!");

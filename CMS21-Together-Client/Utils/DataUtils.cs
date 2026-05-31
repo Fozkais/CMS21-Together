@@ -4,7 +4,7 @@ using MelonLoader;
 using MemoryStream = System.IO.MemoryStream;
 using Stream = System.IO.Stream;
 
-namespace CMS21Together.Logic;
+namespace CMS21Together.Utils;
 
 public static class DataUtils
 {

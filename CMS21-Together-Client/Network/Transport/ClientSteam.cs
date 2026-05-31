@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Managers;
 using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
