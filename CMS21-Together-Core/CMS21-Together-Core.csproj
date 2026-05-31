@@ -45,6 +45,17 @@
         <Compile Include="Data\GameType\PartProperty.cs" />
         <Compile Include="Data\GameType\QuaternionSerializable.cs" />
         <Compile Include="Data\GameType\Vector3Serializable.cs" />
+        <Compile Include="Data\GameType\ModItem.cs" />
+        <Compile Include="Data\GameType\ModGroupItem.cs" />
+        <Compile Include="Data\GameType\ModColor.cs" />
+        <Compile Include="Data\GameType\ModLPData.cs" />
+        <Compile Include="Data\GameType\ModPaintData.cs" />
+        <Compile Include="Data\GameType\ModPaintType.cs" />
+        <Compile Include="Data\GameType\ModPartInfo.cs" />
+        <Compile Include="Data\GameType\ModWheelData.cs" />
+        <Compile Include="Data\GameType\ModMountObjectData.cs" />
+        <Compile Include="Data\GameType\ModTuningData.cs" />
+        <Compile Include="Data\GameType\ModGearboxData.cs" />
         <Compile Include="Data\ModGameState.cs" />
         <Compile Include="Data\PlayerState.cs" />
         <Compile Include="Network\Attributes.cs" />
