@@ -20,4 +20,11 @@ public enum PacketTypes
 	Movement, // Position/Velocity & Rotation
 	UpgradeRequest, // Garage/Skill upgrade request
 	StatsAction, // Exp and Scrap deltas
+	
+	InventoryItemAction,
+	InventoryGroupItemAction,
+	WarehouseAction,
+	ShopAction,
+	ItemsExchange,
+	RegisterModItem
 }

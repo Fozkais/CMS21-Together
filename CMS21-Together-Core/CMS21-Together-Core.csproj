@@ -61,7 +61,9 @@
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />
         <Compile Include="Network\Packets\GaragePackets.cs" />
+        <Compile Include="Network\Packets\InventoryPackets.cs" />
         <Compile Include="Network\Packets\PlayerPackets.cs" />
+        <Compile Include="Network\Packets\ShopPackets.cs" />
         <Compile Include="Network\Packets\StartPackets.cs" />
         <Compile Include="Network\Packets\WorldStatesPackets.cs" />
         <Compile Include="Network\Packets\StatsPackets.cs" />
