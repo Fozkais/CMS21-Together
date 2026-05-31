@@ -158,8 +158,7 @@ namespace CMS21_Together_Server.Network.Handlers
             {
                 GameDatabase.ItemsDatabase.Add(packet.ItemProperty.ID, packet.ItemProperty);
                 Logger.Info($"Registered new Mod Item dynamically: {packet.ItemProperty.ID} with Price {packet.ItemProperty.Price}");
-                // Ideally, here we would save it to a JSON file so it persists after server restart
-                // GameDatabase.SaveModdedItems();
+                GameDatabase.SaveModdedItems();
             }
         }
     }

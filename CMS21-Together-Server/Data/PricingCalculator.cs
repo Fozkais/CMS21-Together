@@ -15,11 +15,12 @@ namespace CMS21_Together_Server.Data
 
             if (!GameDatabase.ItemsDatabase.TryGetValue(item.ID, out PartProperty prop))
             {
-                // Item not in database! This could be a modded item that hasn't been registered yet.
-                // We will return a fallback of 1, but we should ideally have a fallback logic.
-                // Actually, if it reaches here and isn't known, we log a warning and return 1.
-                Log.Logger.Warn($"PricingCalculator: Item {item.ID} is not in the database! Returning 1.");
-                return 1;
+                Log.Logger.Warn($"PricingCalculator: Item {item.ID} is not in the database! Using fallback pricing.");
+                float fallbackPrice = 100f * item.ConditionToShow;
+                fallbackPrice = GetPriceWithQualityMod(item.Quality, fallbackPrice);
+                fallbackPrice *= mod;
+                fallbackPrice += (float)item.Quality;
+                return Math.Max(1, (int)Math.Round(fallbackPrice));
             }
 
             int size = item.WheelData?.Size ?? 0;

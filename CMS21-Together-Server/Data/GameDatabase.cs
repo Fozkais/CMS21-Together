@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -22,6 +22,19 @@ namespace CMS21_Together_Server.Data
 			ItemsDatabase = LoadItemDataBase();
 			if (ItemsDatabase == null)
 				return;
+				
+			var moddedItems = LoadModdedItemDataBase();
+			if (moddedItems != null)
+			{
+				foreach (var kvp in moddedItems)
+				{
+					if (!ItemsDatabase.ContainsKey(kvp.Key))
+					{
+						ItemsDatabase.Add(kvp.Key, kvp.Value);
+					}
+				}
+			}
+				
 			GarageUpgrades = LoadGarageUpgradeDatabase();
 			if (GarageUpgrades == null)
 				return;
@@ -49,6 +62,44 @@ namespace CMS21_Together_Server.Data
         
 			Logger.Success($"Database loaded with {dictionary.Count} items.");
 			return (dictionary);
+		}
+		
+		private static Dictionary<string, PartProperty> LoadModdedItemDataBase()
+		{
+			string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database/modded_item_database.json");
+			if (!File.Exists(filePath))
+			{
+				return new Dictionary<string, PartProperty>();
+			}
+
+			try
+			{
+				string json = File.ReadAllText(filePath);
+				var dict = JsonConvert.DeserializeObject<Dictionary<string, PartProperty>>(json);
+				Logger.Info($"Loaded {dict.Count} previously registered mod items.");
+				return dict;
+			}
+			catch (Exception ex)
+			{
+				Logger.Error($"Error loading modded items: {ex.Message}");
+				return new Dictionary<string, PartProperty>();
+			}
+		}
+
+		public static void SaveModdedItems()
+		{
+			try
+			{
+				// Only save items that are flagged as IsMod
+				var moddedItems = ItemsDatabase.Where(x => x.Value.IsMod).ToDictionary(x => x.Key, x => x.Value);
+				string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database/modded_item_database.json");
+				string json = JsonConvert.SerializeObject(moddedItems, Formatting.Indented);
+				File.WriteAllText(filePath, json);
+			}
+			catch (Exception ex)
+			{
+				Logger.Error($"Error saving modded items: {ex.Message}");
+			}
 		}
 		
 		private static Dictionary<string, Dictionary<int, UpgradeData>> LoadGarageUpgradeDatabase()
