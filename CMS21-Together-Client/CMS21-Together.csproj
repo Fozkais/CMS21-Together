@@ -35,15 +35,15 @@
         <PlatformTarget>x64</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
-        <Compile Include="Logic\ClientData.cs" />
-        <Compile Include="Logic\DataUtils.cs" />
-        <Compile Include="Logic\GameData.cs" />
+        <Compile Include="Data\ClientData.cs" />
+        <Compile Include="Data\GameData.cs" />
+        <Compile Include="Data\ItemConverter.cs" />
+        <Compile Include="Utils\DataUtils.cs" />
+        <Compile Include="Utils\SaveUtils.cs" />
+        <Compile Include="Managers\ModGameManager.cs" />
+        <Compile Include="Managers\ThreadManager.cs" />
         <Compile Include="Logic\Garage\GarageUpgrades.cs" />
         <Compile Include="Logic\LoaderAddition.cs" />
-        <Compile Include="Logic\ModGameManager.cs" />
-        <Compile Include="Logic\ItemConverter.cs" />
-        <Compile Include="Logic\Handlers\ShopHandlers.cs" />
-        <Compile Include="Logic\Handlers\InventoryHandlers.cs" />
         <Compile Include="Logic\Patch\DisconnectHooks.cs" />
         <Compile Include="Logic\Patch\NotificationCenterPatch.cs" />
         <Compile Include="Logic\Patch\SellPerConditionWindowPatch.cs" />
@@ -51,17 +51,17 @@
         <Compile Include="Logic\Patch\StatsHooks.cs" />
         <Compile Include="Logic\PlayerInstance.cs" />
         <Compile Include="Logic\Player\Movement.cs" />
-        <Compile Include="Logic\SaveUtils.cs" />
         <Compile Include="MainMod.cs" />
         <Compile Include="Network\Client.cs" />
         <Compile Include="Network\Handlers\AuthHandlers.cs" />
         <Compile Include="Network\Handlers\PlayerHandlers.cs" />
         <Compile Include="Network\Handlers\WorldStatesPackets.cs" />
+        <Compile Include="Network\Handlers\ShopHandlers.cs" />
+        <Compile Include="Network\Handlers\InventoryHandlers.cs" />
         <Compile Include="Network\Transport\ClientSteam.cs" />
         <Compile Include="Network\Transport\ClientTCP.cs" />
         <Compile Include="Network\Transport\ClientUDP.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="ThreadManager.cs" />
     </ItemGroup>
     <ItemGroup>
         <Content Include=".gitignore" />

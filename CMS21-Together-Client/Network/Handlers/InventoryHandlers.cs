@@ -6,7 +6,7 @@ using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Client.Logic;
 using MelonLoader;
 
-namespace CMS21_Together_Client.Logic.Handlers
+namespace CMS21_Together_Client.Network.Handlers
 {
     public static class InventoryHandlers
     {
