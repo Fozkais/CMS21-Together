@@ -1,19 +1,19 @@
+using System;
 using System.Collections.Generic;
-using CMS.UI.Windows;
 using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network.Packets;
 using HarmonyLib;
-using CMS21_Together_Client.Network;
-using System;
+using CMS21Together.Network;
+using CMS21_Together_Client.Logic;
 
 namespace CMS21_Together_Client.Logic.Patch
 {
-    [HarmonyPatch(typeof(NotificationCenter), "SellItem", new Type[] { typeof(Item), typeof(bool), typeof(bool) })]
+    [HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.SellItem), new Type[] { typeof(Item), typeof(bool), typeof(bool) })]
     public static class NotificationCenter_SellItem_Item_Patch
     {
         public static bool Prefix(Item item, bool warehouse, bool fromInventory)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 var packet = new ShopActionPacket
                 {
@@ -28,12 +28,12 @@ namespace CMS21_Together_Client.Logic.Patch
         }
     }
 
-    [HarmonyPatch(typeof(NotificationCenter), "SellItem", new Type[] { typeof(GroupItem), typeof(bool), typeof(bool) })]
+    [HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.SellItem), new Type[] { typeof(GroupItem), typeof(bool), typeof(bool) })]
     public static class NotificationCenter_SellItem_GroupItem_Patch
     {
         public static bool Prefix(GroupItem groupItem, bool warehouse, bool fromInventory)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 var packet = new ShopActionPacket
                 {
@@ -48,12 +48,12 @@ namespace CMS21_Together_Client.Logic.Patch
         }
     }
 
-    [HarmonyPatch(typeof(NotificationCenter), "MoveItem", new Type[] { typeof(Item), typeof(bool), typeof(string) })]
+    [HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.MoveItem), new Type[] { typeof(Item), typeof(bool), typeof(string) })]
     public static class NotificationCenter_MoveItem_Item_Patch
     {
         public static bool Prefix(Item itemToMove, bool toWarehouse, string windowType)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 if (windowType == "Warehouse")
                 {
@@ -61,7 +61,7 @@ namespace CMS21_Together_Client.Logic.Patch
                     {
                         ToWarehouse = toWarehouse,
                         IsGroupItem = false,
-                        Item = new ModItem(itemToMove)
+                        Item = itemToMove.ToModItem()
                     };
                     Client.Instance.Send(packet);
                     return false;
@@ -72,7 +72,7 @@ namespace CMS21_Together_Client.Logic.Patch
                     {
                         var packet = new ItemsExchangePacket
                         {
-                            ItemsToBuy = new List<ModItem> { new ModItem(itemToMove) }
+                            ItemsToBuy = new List<ModItem> { itemToMove.ToModItem() }
                         };
                         Client.Instance.Send(packet);
                         return false;
@@ -83,12 +83,12 @@ namespace CMS21_Together_Client.Logic.Patch
         }
     }
 
-    [HarmonyPatch(typeof(NotificationCenter), "MoveItem", new Type[] { typeof(GroupItem), typeof(bool), typeof(string) })]
+    [HarmonyPatch(typeof(NotificationCenter), nameof(NotificationCenter.MoveItem), new Type[] { typeof(GroupItem), typeof(bool), typeof(string) })]
     public static class NotificationCenter_MoveItem_GroupItem_Patch
     {
         public static bool Prefix(GroupItem itemToMove, bool toWarehouse, string windowType)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 if (windowType == "Warehouse")
                 {
@@ -96,7 +96,7 @@ namespace CMS21_Together_Client.Logic.Patch
                     {
                         ToWarehouse = toWarehouse,
                         IsGroupItem = true,
-                        GroupItem = new ModGroupItem(itemToMove)
+                        GroupItem = itemToMove.ToModGroupItem()
                     };
                     Client.Instance.Send(packet);
                     return false;
@@ -111,7 +111,7 @@ namespace CMS21_Together_Client.Logic.Patch
                         };
                         foreach (var item in itemToMove.ItemList)
                         {
-                            packet.ItemsToBuy.Add(new ModItem(item));
+                            packet.ItemsToBuy.Add(item.ToModItem());
                         }
                         Client.Instance.Send(packet);
                         return false;

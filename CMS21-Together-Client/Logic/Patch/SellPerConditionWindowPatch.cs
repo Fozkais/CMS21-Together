@@ -1,16 +1,16 @@
 using CMS.UI.Windows;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Network;
 using HarmonyLib;
-using CMS21_Together_Client.Network;
 
-namespace CMS21_Together_Client.Logic.Patch
+namespace CMS21Together.Logic.Patch
 {
-    [HarmonyPatch(typeof(SellPerConditionWindow), "AcceptAction")]
+    [HarmonyPatch(typeof(SellPerConditionWindow), nameof(SellPerConditionWindow.AcceptAction))]
     public static class SellPerConditionWindow_AcceptAction_Patch
     {
         public static bool Prefix(SellPerConditionWindow __instance, float ___currentSliderValue)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 var packet = new ShopActionPacket
                 {

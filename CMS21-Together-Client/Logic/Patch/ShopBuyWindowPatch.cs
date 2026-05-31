@@ -1,12 +1,12 @@
 using CMS.UI.Windows;
 using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network.Packets;
+using CMS21Together.Network;
 using HarmonyLib;
-using CMS21_Together_Client.Network;
 
-namespace CMS21_Together_Client.Logic.Patch
+namespace CMS21Together.Logic.Patch
 {
-    [HarmonyPatch(typeof(ShopBuyWindow), "BuyItem")]
+    [HarmonyPatch(typeof(ShopBuyWindow), nameof(ShopBuyWindow.BuyItem))]
     public static class ShopBuyWindow_BuyItem_Patch
     {
         public static bool Prefix(ShopBuyWindow __instance, 
@@ -18,10 +18,11 @@ namespace CMS21_Together_Client.Logic.Patch
             ref int ___currentET,
             ref float ___currentPrice)
         {
-            if (Client.Instance.isConnected)
+            if (Client.Instance.IsConnected)
             {
                 // Create a ModItem representation
-                ModItem modItem = new ModItem(new Item(___itemID));
+                ModItem modItem = new ModItem();
+                modItem.ID = ___itemID;
                 modItem.Condition = 1f;
                 
                 // Add Wheel properties
