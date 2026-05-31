@@ -57,6 +57,7 @@
         <Compile Include="Data\GameType\ModTuningData.cs" />
         <Compile Include="Data\GameType\ModGearboxData.cs" />
         <Compile Include="Data\ModGameState.cs" />
+        <Compile Include="Data\InventoryState.cs" />
         <Compile Include="Data\PlayerState.cs" />
         <Compile Include="Network\Attributes.cs" />
         <Compile Include="Network\PacketRouter.cs" />

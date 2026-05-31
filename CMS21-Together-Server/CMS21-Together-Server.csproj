@@ -55,6 +55,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Data\GameDatabase.cs" />
+        <Compile Include="Data\PricingCalculator.cs" />
         <Compile Include="Data\ServerConfig.cs" />
         <Compile Include="Data\GameDataManager.cs" />
         <Compile Include="Data\ServerTime.cs" />
@@ -66,6 +67,8 @@
         <Compile Include="Network\Handlers\GarageUpgradeHandlers.cs" />
         <Compile Include="Network\Handlers\PlayerHandlers.cs" />
         <Compile Include="Network\Handlers\StatsHandlers.cs" />
+        <Compile Include="Network\Handlers\InventoryHandlers.cs" />
+        <Compile Include="Network\Handlers\ShopHandlers.cs" />
         <Compile Include="Network\Server.cs" />
         <Compile Include="Network\CommandSystem.cs" />
         <Compile Include="Network\Transport\SteamTransport.cs" />
