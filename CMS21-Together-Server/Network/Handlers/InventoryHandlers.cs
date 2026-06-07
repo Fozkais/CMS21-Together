@@ -58,16 +58,14 @@ namespace CMS21_Together_Server.Network.Handlers
                 {
                     if (state.InventoryState.InventoryGroupItems.RemoveAll(i => i.UID == packet.GroupItem.UID) > 0)
                     {
-                        packet.GroupItem.UID = GenerateNewUID();
                         state.InventoryState.WarehouseGroupItems.Add(packet.GroupItem);
-                        Server.SendToClients(packet); // Send to all including sender so sender can update their local UI with new UID
+                        Server.SendToClients(packet); // Send to all including sender so sender can update their local UI
                     }
                 }
                 else
                 {
                     if (state.InventoryState.InventoryItems.RemoveAll(i => i.UID == packet.Item.UID) > 0)
                     {
-                        packet.Item.UID = GenerateNewUID();
                         state.InventoryState.WarehouseItems.Add(packet.Item);
                         Server.SendToClients(packet);
                     }
@@ -80,7 +78,6 @@ namespace CMS21_Together_Server.Network.Handlers
                 {
                     if (state.InventoryState.WarehouseGroupItems.RemoveAll(i => i.UID == packet.GroupItem.UID) > 0)
                     {
-                        packet.GroupItem.UID = GenerateNewUID();
                         state.InventoryState.InventoryGroupItems.Add(packet.GroupItem);
                         Server.SendToClients(packet);
                     }
@@ -89,7 +86,6 @@ namespace CMS21_Together_Server.Network.Handlers
                 {
                     if (state.InventoryState.WarehouseItems.RemoveAll(i => i.UID == packet.Item.UID) > 0)
                     {
-                        packet.Item.UID = GenerateNewUID();
                         state.InventoryState.InventoryItems.Add(packet.Item);
                         Server.SendToClients(packet);
                     }

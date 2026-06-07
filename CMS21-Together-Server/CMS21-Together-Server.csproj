@@ -1,40 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{23D76579-5F8A-4938-87E1-3D7B33571E3F}</ProjectGuid>
         <OutputType>Exe</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>CMS21_Together_Server</RootNamespace>
-        <AssemblyName>CMS21_Together_Server</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <LangVersion>latest</LangVersion>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <TargetFramework>net472</TargetFramework>
         <PlatformTarget>x64</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <Prefer32bit>false</Prefer32bit>
+        <AssemblyName>CMS21_Together_Server</AssemblyName>
+        <RootNamespace>CMS21_Together_Server</RootNamespace>
+        <LangVersion>latest</LangVersion>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
+
     <ItemGroup>
         <Reference Include="Facepunch.Steamworks.Win64">
           <HintPath>..\CMS21-Together-Core\Libs\Facepunch.Steamworks.Win64.dll</HintPath>
@@ -42,10 +17,6 @@
         <Reference Include="Newtonsoft.Json">
           <HintPath>..\CMS21-Together-Core\Libs\Newtonsoft.Json.dll</HintPath>
         </Reference>
-        <Reference Include="System"/>
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Data"/>
-        <Reference Include="System.Xml"/>
         <Reference Include="Terminal.Gui">
             <HintPath>Libs\TerminalGui\Terminal.Gui.dll</HintPath>
         </Reference>
@@ -53,32 +24,8 @@
             <HintPath>Libs\TerminalGui\NStack.dll</HintPath>
         </Reference>
     </ItemGroup>
+
     <ItemGroup>
-        <Compile Include="Data\GameDatabase.cs" />
-        <Compile Include="Data\PricingCalculator.cs" />
-        <Compile Include="Data\ServerConfig.cs" />
-        <Compile Include="Data\GameDataManager.cs" />
-        <Compile Include="Data\ServerTime.cs" />
-        <Compile Include="Log\ServerWindow.cs" />
-        <Compile Include="Log\Logger.cs" />
-        <Compile Include="Log\MultiTextWriter.cs" />
-        <Compile Include="Network\Client.cs" />
-        <Compile Include="Network\Handlers\AuthHandlers.cs" />
-        <Compile Include="Network\Handlers\GarageUpgradeHandlers.cs" />
-        <Compile Include="Network\Handlers\PlayerHandlers.cs" />
-        <Compile Include="Network\Handlers\StatsHandlers.cs" />
-        <Compile Include="Network\Handlers\InventoryHandlers.cs" />
-        <Compile Include="Network\Handlers\ShopHandlers.cs" />
-        <Compile Include="Network\Server.cs" />
-        <Compile Include="Network\CommandSystem.cs" />
-        <Compile Include="Network\Transport\SteamTransport.cs" />
-        <Compile Include="Network\Transport\TCP.cs" />
-        <Compile Include="Network\Transport\UDP.cs" />
-        <Compile Include="Program.cs"/>
-        <Compile Include="Properties\AssemblyInfo.cs"/>
-    </ItemGroup>
-    <ItemGroup>
-      <Content Include=".gitignore" />
       <Content Include="Database\garage_upgrade_database.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
@@ -89,19 +36,8 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj">
-        <Project>{4f57c271-97f2-4bad-8add-c0657ba91cda}</Project>
-        <Name>CMS21-Together-Core</Name><PlatformTarget>x64</PlatformTarget>
-      </ProjectReference>
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
 
+    <ItemGroup>
+      <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj" />
+    </ItemGroup>
 </Project>

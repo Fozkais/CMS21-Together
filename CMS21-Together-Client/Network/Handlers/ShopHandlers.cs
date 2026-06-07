@@ -15,45 +15,53 @@ namespace CMS21Together.Network.Handlers
         {
             if (!ClientData.IsGarageStateSynced) return;
 
-            if (packet.Action == ShopActionType.Buy)
+            InventoryHandlers.IgnoreInventoryHooks = true;
+            try
             {
-                try
+                if (packet.Action == ShopActionType.Buy)
                 {
-                    if (packet.IsGroupItem)
+                    try
                     {
-                        var gameGrp = packet.GroupItemToBuy.ToGameGroupItem();
-                        Singleton<GameManager>.Instance.Inventory.AddGroup(gameGrp);
-                        MelonLogger.Msg($"[ShopHandlers] Successfully added GroupItem {gameGrp.ID} to local inventory.");
+                        if (packet.IsGroupItem)
+                        {
+                            var gameGrp = packet.GroupItemToBuy.ToGameGroupItem();
+                            Singleton<GameManager>.Instance.Inventory.AddGroup(gameGrp);
+                            MelonLogger.Msg($"[ShopHandlers] Successfully added GroupItem {gameGrp.ID} to local inventory.");
+                        }
+                        else
+                        {
+                            var gameItem = packet.ItemToBuy.ToGameItem();
+                            Singleton<GameManager>.Instance.Inventory.Add(gameItem);
+                            MelonLogger.Msg($"[ShopHandlers] Successfully added Item {gameItem.ID} to local inventory.");
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MelonLogger.Error($"[ShopHandlers] Error during ToGameItem conversion or Add: {ex.Message}\n{ex.StackTrace}");
+                    }
+                }
+                else if (packet.Action == ShopActionType.SellSingle)
+                {
+                    var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.ItemUID);
+                    if (item != null)
+                    {
+                        Singleton<GameManager>.Instance.Inventory.Delete(item);
                     }
                     else
                     {
-                        var gameItem = packet.ItemToBuy.ToGameItem();
-                        Singleton<GameManager>.Instance.Inventory.Add(gameItem);
-                        MelonLogger.Msg($"[ShopHandlers] Successfully added Item {gameItem.ID} to local inventory.");
+                        Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.ItemUID);
                     }
+                    MelonLogger.Msg($"[ShopHandlers] Received SellSingle override for UID {packet.ItemUID}");
                 }
-                catch (System.Exception ex)
+                else if (packet.Action == ShopActionType.SellCondition)
                 {
-                    MelonLogger.Error($"[ShopHandlers] Error during ToGameItem conversion or Add: {ex.Message}\n{ex.StackTrace}");
+                    Singleton<GameManager>.Instance.Inventory.SellPerCondition(packet.SellCondition);
+                    MelonLogger.Msg($"[ShopHandlers] Received SellCondition override for {packet.SellCondition}");
                 }
             }
-            else if (packet.Action == ShopActionType.SellSingle)
+            finally
             {
-                var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.ItemUID);
-                if (item != null)
-                {
-                    Singleton<GameManager>.Instance.Inventory.Delete(item);
-                }
-                else
-                {
-                    Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.ItemUID);
-                }
-                MelonLogger.Msg($"[ShopHandlers] Received SellSingle override for UID {packet.ItemUID}");
-            }
-            else if (packet.Action == ShopActionType.SellCondition)
-            {
-                Singleton<GameManager>.Instance.Inventory.SellPerCondition(packet.SellCondition);
-                MelonLogger.Msg($"[ShopHandlers] Received SellCondition override for {packet.SellCondition}");
+                InventoryHandlers.IgnoreInventoryHooks = false;
             }
             
             try
@@ -78,11 +86,21 @@ namespace CMS21Together.Network.Handlers
         {
             if (!ClientData.IsGarageStateSynced) return;
 
-            foreach (var item in packet.ItemsToBuy)
+            InventoryHandlers.IgnoreInventoryHooks = true;
+            try
             {
-                Singleton<GameManager>.Instance.Inventory.Add(item.ToGameItem());
+                foreach (var item in packet.ItemsToBuy)
+                {
+                    Singleton<GameManager>.Instance.Inventory.Add(item.ToGameItem());
+                }
+            }
+            finally
+            {
+                InventoryHandlers.IgnoreInventoryHooks = false;
             }
             MelonLogger.Msg($"[ShopHandlers] Received {packet.ItemsToBuy.Count} items from ItemsExchange (Junkyard).");
+            
+            InventoryHandlers.RefreshInventoryWindow();
         }
     }
 }

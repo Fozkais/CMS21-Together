@@ -1,105 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{7EFF228F-6F77-4526-ACBC-D0832CA33C77}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>CMS21Together</RootNamespace>
+        <TargetFramework>net472</TargetFramework>
+        <PlatformTarget>x64</PlatformTarget>
         <AssemblyName>CMS21-Together</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <Deterministic>true</Deterministic>
+        <RootNamespace>CMS21Together</RootNamespace>
         <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <PlatformTarget>x64</PlatformTarget>
-    </PropertyGroup>
-    <ItemGroup>
-        <Compile Include="Data\ClientData.cs" />
-        <Compile Include="Data\GameData.cs" />
-        <Compile Include="Data\ItemConverter.cs" />
-        <Compile Include="Logic\Hook\TakenItemsWindowHook.cs" />
-        <Compile Include="Utils\DataUtils.cs" />
-        <Compile Include="Utils\SaveUtils.cs" />
-        <Compile Include="Managers\ModGameManager.cs" />
-        <Compile Include="Managers\ThreadManager.cs" />
-        <Compile Include="Logic\Garage\GarageUpgrades.cs" />
-        <Compile Include="Logic\LoaderAddition.cs" />
-        <Compile Include="Logic\Hook\DisconnectHooks.cs" />
-        <Compile Include="Logic\Hook\NotificationCenterItemsHook.cs" />
-        <Compile Include="Logic\Hook\SellPerConditionWindowHook.cs" />
-        <Compile Include="Logic\Hook\ShopBuyWindowHook.cs" />
-        <Compile Include="Logic\Hook\StatsHooks.cs" />
-        <Compile Include="Logic\PlayerInstance.cs" />
-        <Compile Include="Logic\Player\Movement.cs" />
-        <Compile Include="MainMod.cs" />
-        <Compile Include="Network\Client.cs" />
-        <Compile Include="Network\Handlers\AuthHandlers.cs" />
-        <Compile Include="Network\Handlers\PlayerHandlers.cs" />
-        <Compile Include="Network\Handlers\WorldStatesPackets.cs" />
-        <Compile Include="Network\Handlers\ShopHandlers.cs" />
-        <Compile Include="Network\Handlers\InventoryHandlers.cs" />
-        <Compile Include="Network\Transport\ClientSteam.cs" />
-        <Compile Include="Network\Transport\ClientTCP.cs" />
-        <Compile Include="Network\Transport\ClientUDP.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-        <Content Include=".gitignore" />
-        <Content Include="Libs\0Harmony.dll" />
-        <Content Include="Libs\Assembly-CSharp-firstpass.dll" />
-        <Content Include="Libs\Assembly-CSharp.dll" />
-        <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
-        <Content Include="Libs\Il2Cppmscorlib.dll" />
-        <Content Include="Libs\MelonLoader.dll" />
-        <Content Include="Libs\UnhollowerBaseLib.dll" />
-        <Content Include="Libs\UnityEngine.AnimationModule.dll" />
-        <Content Include="Libs\UnityEngine.AssetBundleModule.dll" />
-        <Content Include="Libs\UnityEngine.AudioModule.dll" />
-        <Content Include="Libs\UnityEngine.CoreModule.dll" />
-        <Content Include="Libs\UnityEngine.dll" />
-        <Content Include="Libs\UnityEngine.ImageConversionModule.dll" />
-        <Content Include="Libs\UnityEngine.IMGUIModule.dll" />
-        <Content Include="Libs\UnityEngine.InputLegacyModule.dll" />
-        <Content Include="Libs\UnityEngine.InputModule.dll" />
-        <Content Include="Libs\UnityEngine.JSONSerializeModule.dll" />
-        <Content Include="Libs\UnityEngine.ParticleSystemModule.dll" />
-        <Content Include="Libs\UnityEngine.PhysicsModule.dll" />
-        <Content Include="Libs\UnityEngine.TextCoreModule.dll" />
-        <Content Include="Libs\UnityEngine.TextRenderingModule.dll" />
-        <Content Include="Libs\UnityEngine.UI.dll" />
-        <Content Include="Libs\UnityEngine.UIElementsModule.dll" />
-        <Content Include="Libs\UnityEngine.UIModule.dll" />
-        <Content Include="Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll" />
-        <Content Include="Libs\UnityEngine.UnityWebRequestAudioModule.dll" />
-        <Content Include="Libs\UnityEngine.UnityWebRequestModule.dll" />
-        <Content Include="Libs\UnityEngine.UnityWebRequestTextureModule.dll" />
-        <Content Include="Libs\UnityEngine.UnityWebRequestWWWModule.dll" />
-        <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
-        <EmbeddedResource Include="Assets\peoples.png" />
-        <EmbeddedResource Include="Assets\playermodel.bundle" />
-        <EmbeddedResource Include="Assets\engineStand.assets" />
-    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="7.0.0" />
         <PackageReference Include="Microsoft.NET.StringTools" Version="17.6.3" />
@@ -113,108 +22,108 @@
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
     </ItemGroup>
+
     <ItemGroup>
-        <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj">
-            <Project>{4f57c271-97f2-4bad-8add-c0657ba91cda}</Project>
-            <Name>CMS21-Together-Core</Name>
-        </ProjectReference>
+        <Reference Include="0Harmony">
+            <HintPath>Libs\0Harmony.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp">
+            <HintPath>Libs\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="Assembly-CSharp-firstpass">
+            <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
+        </Reference>
+        <Reference Include="Facepunch.Steamworks.Win64">
+            <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+        </Reference>
+        <Reference Include="Il2Cppmscorlib">
+            <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
+        </Reference>
+        <Reference Include="MelonLoader">
+            <HintPath>Libs\MelonLoader.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>..\CMS21-Together-Core\Libs\Newtonsoft.Json.dll</HintPath>
+        </Reference>
+        <Reference Include="UnhollowerBaseLib">
+            <HintPath>Libs\UnhollowerBaseLib.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine">
+            <HintPath>Libs\UnityEngine.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AnimationModule">
+            <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AssetBundleModule">
+            <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.AudioModule">
+            <HintPath>Libs\UnityEngine.AudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.CoreModule">
+            <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ImageConversionModule">
+            <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.IMGUIModule">
+            <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputLegacyModule">
+            <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.InputModule">
+            <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+            <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.ParticleSystemModule">
+            <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.PhysicsModule">
+            <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextCoreModule">
+            <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.TextRenderingModule">
+            <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UI">
+            <HintPath>Libs\UnityEngine.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIElementsModule">
+            <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UIModule">
+            <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+            <HintPath>Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+            <HintPath>Libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestModule">
+            <HintPath>Libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+            <HintPath>Libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+            <HintPath>Libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+        </Reference>
     </ItemGroup>
+
     <ItemGroup>
-      <Reference Include="0Harmony">
-        <HintPath>Libs\0Harmony.dll</HintPath>
-      </Reference>
-      <Reference Include="Assembly-CSharp">
-        <HintPath>Libs\Assembly-CSharp.dll</HintPath>
-      </Reference>
-      <Reference Include="Assembly-CSharp-firstpass">
-        <HintPath>Libs\Assembly-CSharp-firstpass.dll</HintPath>
-      </Reference>
-      <Reference Include="Facepunch.Steamworks.Win64">
-        <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
-      </Reference>
-      <Reference Include="Il2Cppmscorlib">
-        <HintPath>Libs\Il2Cppmscorlib.dll</HintPath>
-      </Reference>
-      <Reference Include="MelonLoader">
-        <HintPath>Libs\MelonLoader.dll</HintPath>
-      </Reference>
-      <Reference Include="Newtonsoft.Json">
-        <HintPath>..\CMS21-Together-Core\Libs\Newtonsoft.Json.dll</HintPath>
-      </Reference>
-      <Reference Include="System" />
-      <Reference Include="System.Core" />
-      <Reference Include="System.Net" />
-      <Reference Include="System.Net.Http" />
-      <Reference Include="System.Net.Http.WebRequest" />
-      <Reference Include="UnhollowerBaseLib">
-        <HintPath>Libs\UnhollowerBaseLib.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine">
-        <HintPath>Libs\UnityEngine.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AnimationModule">
-        <HintPath>Libs\UnityEngine.AnimationModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AssetBundleModule">
-        <HintPath>Libs\UnityEngine.AssetBundleModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.AudioModule">
-        <HintPath>Libs\UnityEngine.AudioModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.CoreModule">
-        <HintPath>Libs\UnityEngine.CoreModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.ImageConversionModule">
-        <HintPath>Libs\UnityEngine.ImageConversionModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.IMGUIModule">
-        <HintPath>Libs\UnityEngine.IMGUIModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.InputLegacyModule">
-        <HintPath>Libs\UnityEngine.InputLegacyModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.InputModule">
-        <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.JSONSerializeModule">
-        <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.ParticleSystemModule">
-        <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.PhysicsModule">
-        <HintPath>Libs\UnityEngine.PhysicsModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.TextCoreModule">
-        <HintPath>Libs\UnityEngine.TextCoreModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.TextRenderingModule">
-        <HintPath>Libs\UnityEngine.TextRenderingModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UI">
-        <HintPath>Libs\UnityEngine.UI.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UIElementsModule">
-        <HintPath>Libs\UnityEngine.UIElementsModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UIModule">
-        <HintPath>Libs\UnityEngine.UIModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestAudioModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestTextureModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
-      </Reference>
-      <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-        <HintPath>Libs\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
-      </Reference>
+        <EmbeddedResource Include="Assets\cms21TogetherLogo.png" />
+        <EmbeddedResource Include="Assets\peoples.png" />
+        <EmbeddedResource Include="Assets\playermodel.bundle" />
+        <EmbeddedResource Include="Assets\engineStand.assets" />
     </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj" />
+    </ItemGroup>
 </Project>

@@ -11,6 +11,8 @@ namespace CMS21Together.Network.Handlers
     {
         private static System.Collections.Generic.Queue<InventorySyncPacket> syncQueue = new System.Collections.Generic.Queue<InventorySyncPacket>();
         private static bool isProcessingSync = false;
+        
+        public static bool IgnoreInventoryHooks = false;
 
         [PacketHandler(PacketTypes.InventoryData)]
         public static void HandleInventorySync(long clientId, InventorySyncPacket packet)
@@ -34,6 +36,8 @@ namespace CMS21Together.Network.Handlers
             while (syncQueue.Count > 0)
             {
                 var packet = syncQueue.Dequeue();
+
+                IgnoreInventoryHooks = true;
 
                 if (packet.IsFirstBatch)
                 {
@@ -96,6 +100,8 @@ namespace CMS21Together.Network.Handlers
                     }
                 }
                 
+                IgnoreInventoryHooks = false;
+                
                 MelonLoader.MelonLogger.Msg($"[DEBUG] [InventoryHandlers] Received batch containing {count} items. LastBatch={packet.IsLastBatch}");
 
                 if (packet.IsLastBatch)
@@ -115,15 +121,23 @@ namespace CMS21Together.Network.Handlers
         [PacketHandler(PacketTypes.InventoryItemAction)]
         public static void HandleInventoryItemAction(long clientId, InventoryItemActionPacket packet)
         {
-            if (packet.Action == ItemActionType.Add)
+            IgnoreInventoryHooks = true;
+            try
             {
-                Singleton<GameManager>.Instance.Inventory.Add(packet.Item.ToGameItem());
+                if (packet.Action == ItemActionType.Add)
+                {
+                    Singleton<GameManager>.Instance.Inventory.Add(packet.Item.ToGameItem());
+                }
+                else if (packet.Action == ItemActionType.Remove)
+                {
+                    var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.Item.UID);
+                    if (item != null)
+                        Singleton<GameManager>.Instance.Inventory.Delete(item);
+                }
             }
-            else if (packet.Action == ItemActionType.Remove)
+            finally
             {
-                var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.Item.UID);
-                if (item != null)
-                    Singleton<GameManager>.Instance.Inventory.Delete(item);
+                IgnoreInventoryHooks = false;
             }
             
             RefreshInventoryWindow();
@@ -132,13 +146,21 @@ namespace CMS21Together.Network.Handlers
         [PacketHandler(PacketTypes.InventoryGroupItemAction)]
         public static void HandleInventoryGroupItemAction(long clientId, InventoryGroupItemActionPacket packet)
         {
-            if (packet.Action == ItemActionType.Add)
+            IgnoreInventoryHooks = true;
+            try
             {
-                Singleton<GameManager>.Instance.Inventory.AddGroup(packet.GroupItem.ToGameGroupItem());
+                if (packet.Action == ItemActionType.Add)
+                {
+                    Singleton<GameManager>.Instance.Inventory.AddGroup(packet.GroupItem.ToGameGroupItem());
+                }
+                else if (packet.Action == ItemActionType.Remove)
+                {
+                    Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.GroupItem.UID);
+                }
             }
-            else if (packet.Action == ItemActionType.Remove)
+            finally
             {
-                Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.GroupItem.UID);
+                IgnoreInventoryHooks = false;
             }
             
             RefreshInventoryWindow();
@@ -147,44 +169,52 @@ namespace CMS21Together.Network.Handlers
         [PacketHandler(PacketTypes.WarehouseAction)]
         public static void HandleWarehouseAction(long clientId, WarehouseActionPacket packet)
         {
-            if (packet.ToWarehouse)
+            IgnoreInventoryHooks = true;
+            try
             {
-                // Remove from Inventory, Add to Warehouse
-                if (packet.IsGroupItem)
+                if (packet.ToWarehouse)
                 {
-                    Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.GroupItem.UID); 
-                    Singleton<GameManager>.Instance.Warehouse.Add(packet.GroupItem.ToGameGroupItem());
+                    // Remove from Inventory, Add to Warehouse
+                    if (packet.IsGroupItem)
+                    {
+                        Singleton<GameManager>.Instance.Inventory.DeleteGroup(packet.GroupItem.UID); 
+                        Singleton<GameManager>.Instance.Warehouse.Add(packet.GroupItem.ToGameGroupItem());
+                    }
+                    else
+                    {
+                        var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.Item.UID);
+                        if (item != null)
+                            Singleton<GameManager>.Instance.Inventory.Delete(item);
+                        Singleton<GameManager>.Instance.Warehouse.Add(packet.Item.ToGameItem());
+                    }
                 }
                 else
                 {
-                    var item = Singleton<GameManager>.Instance.Inventory.GetItem(packet.Item.UID);
-                    if (item != null)
-                        Singleton<GameManager>.Instance.Inventory.Delete(item);
-                    Singleton<GameManager>.Instance.Warehouse.Add(packet.Item.ToGameItem());
+                    // From Warehouse to Inventory
+                    if (packet.IsGroupItem)
+                    {
+                        var grp = packet.GroupItem.ToGameGroupItem();
+                        Singleton<GameManager>.Instance.Warehouse.Delete(grp);
+                        Singleton<GameManager>.Instance.Inventory.AddGroup(grp);
+                    }
+                    else
+                    {
+                        var item = packet.Item.ToGameItem();
+                        Singleton<GameManager>.Instance.Warehouse.Delete(item);
+                        Singleton<GameManager>.Instance.Inventory.Add(item);
+                    }
                 }
             }
-            else
+            finally
             {
-                // From Warehouse to Inventory
-                if (packet.IsGroupItem)
-                {
-                    var grp = packet.GroupItem.ToGameGroupItem();
-                    Singleton<GameManager>.Instance.Warehouse.Delete(grp);
-                    Singleton<GameManager>.Instance.Inventory.AddGroup(grp);
-                }
-                else
-                {
-                    var item = packet.Item.ToGameItem();
-                    Singleton<GameManager>.Instance.Warehouse.Delete(item);
-                    Singleton<GameManager>.Instance.Inventory.Add(item);
-                }
+                IgnoreInventoryHooks = false;
             }
             
             RefreshInventoryWindow();
             RefreshWarehouseWindow();
         }
 
-        private static void RefreshInventoryWindow()
+        public static void RefreshInventoryWindow()
         {
             try
             {
@@ -203,7 +233,7 @@ namespace CMS21Together.Network.Handlers
             }
         }
         
-        private static void RefreshWarehouseWindow()
+        public static void RefreshWarehouseWindow()
         {
             try
             {

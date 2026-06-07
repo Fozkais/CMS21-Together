@@ -1,99 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props"
-            Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProjectGuid>{4F57C271-97F2-4BAD-8ADD-C0657BA91CDA}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <RootNamespace>CMS21_Together_Core</RootNamespace>
+        <TargetFramework>net472</TargetFramework>
+        <PlatformTarget>x64</PlatformTarget>
         <AssemblyName>CMS21_Together_Core</AssemblyName>
-        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
+        <RootNamespace>CMS21_Together_Core</RootNamespace>
         <LangVersion>latest</LangVersion>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>bin\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
+    
     <ItemGroup>
-        <Compile Include="Data\Enum\Gamemode.cs" />
-        <Compile Include="Data\Enum\GameScene.cs" />
-        <Compile Include="Data\Enum\NetworkType.cs" />
-        <Compile Include="Data\Enum\SpecialGroup.cs" />
-        <Compile Include="Data\Enum\UpgradeType.cs" />
-        <Compile Include="Data\Enum\VersionStatus.cs" />
-        <Compile Include="Data\GameType\PlayerUpgradeData.cs" />
-        <Compile Include="Data\GameType\UpgradeData.cs" />
-        <Compile Include="Data\GameType\PartProperty.cs" />
-        <Compile Include="Data\GameType\QuaternionSerializable.cs" />
-        <Compile Include="Data\GameType\Vector3Serializable.cs" />
-        <Compile Include="Data\GameType\ModItem.cs" />
-        <Compile Include="Data\GameType\ModGroupItem.cs" />
-        <Compile Include="Data\GameType\ModColor.cs" />
-        <Compile Include="Data\GameType\ModLPData.cs" />
-        <Compile Include="Data\GameType\ModPaintData.cs" />
-        <Compile Include="Data\GameType\ModPaintType.cs" />
-        <Compile Include="Data\GameType\ModPartInfo.cs" />
-        <Compile Include="Data\GameType\ModWheelData.cs" />
-        <Compile Include="Data\GameType\ModMountObjectData.cs" />
-        <Compile Include="Data\GameType\ModTuningData.cs" />
-        <Compile Include="Data\GameType\ModGearboxData.cs" />
-        <Compile Include="Data\ModGameState.cs" />
-        <Compile Include="Data\InventoryState.cs" />
-        <Compile Include="Data\PlayerState.cs" />
-        <Compile Include="Network\Attributes.cs" />
-        <Compile Include="Network\PacketRouter.cs" />
-        <Compile Include="Network\Packets\GaragePackets.cs" />
-        <Compile Include="Network\Packets\InventoryPackets.cs" />
-        <Compile Include="Network\Packets\PlayerPackets.cs" />
-        <Compile Include="Network\Packets\ShopPackets.cs" />
-        <Compile Include="Network\Packets\StartPackets.cs" />
-        <Compile Include="Network\Packets\WorldStatesPackets.cs" />
-        <Compile Include="Network\Packets\StatsPackets.cs" />
-        <Compile Include="Network\SteamNetworkUtils.cs" />
-        <Compile Include="Packet.cs" />
-        <Compile Include="PacketTypes.cs" />
-        <Compile Include="Properties\AssemblyInfo.cs" />
-        <Compile Include="SteamNative.cs" />
+        <Reference Include="Facepunch.Steamworks.Win64">
+            <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
+        </Reference>
+        <Reference Include="Newtonsoft.Json">
+            <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
+        </Reference>
     </ItemGroup>
-    <ItemGroup>
-      <Content Include=".gitignore" />
-      <Content Include="Libs\Facepunch.Steamworks.Win64.dll" />
-      <Content Include="Libs\Newtonsoft.Json.dll" />
-    </ItemGroup>
-    <ItemGroup>
-      <Reference Include="Facepunch.Steamworks.Win64">
-        <HintPath>Libs\Facepunch.Steamworks.Win64.dll</HintPath>
-      </Reference>
-      <Reference Include="Newtonsoft.Json">
-        <HintPath>Libs\Newtonsoft.Json.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
-
 </Project>

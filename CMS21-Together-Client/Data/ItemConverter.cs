@@ -35,7 +35,7 @@ namespace CMS21Together.Data
                 fresnel = item.PaintData.Fresnel
             };
 
-            if (!object.ReferenceEquals(item.Color, null))
+            if (!object.ReferenceEquals(item.Color, null) && !object.ReferenceEquals(item.Color.Color, null))
             {
                 if (item.Color.Color.Count == 4)
                 {
@@ -45,6 +45,20 @@ namespace CMS21Together.Data
                         g = item.Color.Color[1], 
                         b = item.Color.Color[2], 
                         a = item.Color.Color[3] 
+                    };
+                }
+            }
+
+            if (!object.ReferenceEquals(item.TintColor, null) && !object.ReferenceEquals(item.TintColor.Color, null))
+            {
+                if (item.TintColor.Color.Count == 4)
+                {
+                    modItem.TintColor = new ModColor 
+                    { 
+                        r = item.TintColor.Color[0], 
+                        g = item.TintColor.Color[1], 
+                        b = item.TintColor.Color[2], 
+                        a = item.TintColor.Color[3] 
                     };
                 }
             }
