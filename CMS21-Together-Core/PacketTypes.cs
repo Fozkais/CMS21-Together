@@ -26,5 +26,10 @@ public enum PacketTypes
 	WarehouseAction,
 	ShopAction,
 	ItemsExchange,
-	RegisterModItem
+	RegisterModItem,
+	
+	// Car Packets
+	CarSpawnRequest,
+	CarSpawnResponse,
+	CarSpawnDelete
 }

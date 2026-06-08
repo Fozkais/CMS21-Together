@@ -5,7 +5,9 @@ namespace CMS21_Together_Server.Log
 {
 	public class MultiTextWriter : TextWriter
 	{
+#pragma warning disable CS0649 // Field is never assigned to, and will always have its default value
 		private readonly TextWriter _originalConsole;
+#pragma warning restore CS0649 // Field is never assigned to, and will always have its default value
 		private readonly StreamWriter _logFileWriter;
 		private readonly StreamWriter _latestFileWriter;
 

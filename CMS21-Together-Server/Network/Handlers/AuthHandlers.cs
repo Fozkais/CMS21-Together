@@ -40,8 +40,12 @@ namespace CMS21_Together_Server.Network.Handlers
 			GameDataManager.CurrentState.WorldState.updateGamemode = false;
 			GameDataManager.CurrentState.GarageState.AvailablePoints = GarageUpgradeHandler.ComputeAvailablePoints(GameDataManager.CurrentState.WorldState, GameDataManager.CurrentState.GarageState);
 			Server.SendToClient(GameDataManager.CurrentState.GarageState, (int)clientId);
-			
-			// --- Inventory Sync Logic ---
+	
+			SendFullInventoryState(clientId);
+		}
+
+		private static void SendFullInventoryState(long clientId)
+		{
 			var invState = GameDataManager.CurrentState.InventoryState;
 			int batchSize = 50;
 			

@@ -126,4 +126,8 @@
     <ItemGroup>
         <ProjectReference Include="..\CMS21-Together-Core\CMS21-Together-Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Logic\Car\" />
+    </ItemGroup>
 </Project>
