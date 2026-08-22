@@ -1,6 +1,6 @@
+using CMS21_Together_Core.Logging;
 using CMS21Together.Utils;
 using Il2CppSystem.IO;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Managers;
@@ -44,7 +44,7 @@ public static class ModGameManager
 		GameObject prefab = bundle.LoadAsset<GameObject>("model_rigged");
 		if (!prefab)
 		{
-			MelonLogger.Warning("Cannot load model_rigged from bundle.");
+			Log.Warn("Cannot load model_rigged from bundle.");
 			return;
 		}
 

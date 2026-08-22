@@ -1,9 +1,9 @@
 using CMS.UI.Windows;
 using CMS21_Together_Core.Data.GameType;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Network;
 using HarmonyLib;
-using MelonLoader;
 
 namespace CMS21Together.Logic.Hook
 {
@@ -23,7 +23,7 @@ namespace CMS21Together.Logic.Hook
                 modItem.Dent = 1f;
                 modItem.WashFactor = 1f;
                 
-                MelonLogger.Msg($"[ShopBuyWindowHook] Sending buy packet for {modItem.ID} (Amount: {__instance.currentAmount})");
+                Log.Info($"[ShopBuyWindowHook] Sending buy packet for {modItem.ID} (Amount: {__instance.currentAmount})");
                 
                 // Add Wheel properties
                 modItem.WheelData = new ModWheelData

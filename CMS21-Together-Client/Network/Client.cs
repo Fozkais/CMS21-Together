@@ -1,11 +1,11 @@
 using System;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data.Enum;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21Together.Data;
 using CMS21Together.Managers;
 using CMS21Together.Network.Transport;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Network;
@@ -97,6 +97,6 @@ public class Client
 		IsConnectionValid = false;
 		OnConnectionValidated -= OnConnectionSuccessful;
 		ClientData.Reset();
-		MelonLogger.Msg("Disconnected from server.");
+		Log.Info("Disconnected from server.");
 	}
 }

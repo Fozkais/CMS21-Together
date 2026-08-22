@@ -1,8 +1,7 @@
 using System.Collections;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
-using CMS21Together.Data;
 using CMS21Together.Network;
-using MelonLoader;
 
 namespace CMS21Together.Logic.Car
 {
@@ -23,7 +22,7 @@ namespace CMS21Together.Logic.Car
             };
            
             Client.Instance.Send(request);
-            MelonLogger.Msg($"[CarSpawnManager] Requested spawn for {carToLoad} on Loader {carLoaderID}");
+            Log.Info($"[CarSpawnManager] Requested spawn for {carToLoad} on Loader {carLoaderID}");
             yield break;
         }
 
@@ -37,7 +36,7 @@ namespace CMS21Together.Logic.Car
             };
 
             Client.Instance.Send(request);
-            MelonLogger.Msg($"[CarSpawnManager] Requested delete for Loader {carLoaderID}");
+            Log.Info($"[CarSpawnManager] Requested delete for Loader {carLoaderID}");
             yield break;
         }
     }

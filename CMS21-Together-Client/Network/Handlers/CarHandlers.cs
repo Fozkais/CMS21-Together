@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Logic.Hook;
@@ -39,7 +39,7 @@ namespace CMS21Together.Network.Handlers
             try
             {
                 carLoader.StartCoroutine(carLoader.LoadCar(packet.CarToLoad));
-                MelonLogger.Msg($"[CarHandlers] Loading {packet.CarToLoad} from server into Loader {packet.CarLoaderID}");
+                Log.Info($"[CarHandlers] Loading {packet.CarToLoad} from server into Loader {packet.CarLoaderID}");
             }
             finally
             {
@@ -73,7 +73,7 @@ namespace CMS21Together.Network.Handlers
             try
             {
                 carLoader.DeleteCar();
-                MelonLogger.Msg($"[CarHandlers] Deleted car from Loader {packet.CarLoaderID} as ordered by server.");
+                Log.Info($"[CarHandlers] Deleted car from Loader {packet.CarLoaderID} as ordered by server.");
             }
             finally
             {

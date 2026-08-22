@@ -4,7 +4,7 @@ using System.Threading;
 using System.Windows.Forms;
 using MelonLoader;
 
-namespace CMS21Together.Log
+namespace CMS21Together.Logging
 {
 	// Dedicated log window for this mod, separate from MelonLoader's shared console.
 	// MelonLogger's Msg/Warning/Error callbacks fire globally for every loaded mod, so

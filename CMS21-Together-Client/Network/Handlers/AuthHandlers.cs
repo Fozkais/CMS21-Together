@@ -1,13 +1,11 @@
 using System.Net;
 using CMS21_Together_Core;
-using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
 using CMS21Together.Logic;
-using CMS21Together.Logic.Player;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Network.Handlers;
@@ -25,8 +23,8 @@ public static class AuthHandler
 	[PacketHandler(PacketTypes.Connect)]
 	public static void HandleConnect(long senderId, ConnectPacket packet)
 	{
-		MelonLogger.Msg($"Server compatible with mod version {packet.modVersion}");
-		MelonLogger.Msg($"Received message from server: {packet.message}");
+		Log.Info($"Server compatible with mod version {packet.modVersion}");
+		Log.Info($"Received message from server: {packet.message}");
 		Client.Instance.ID = packet.playerID;
 		if (Client.Instance.NetworkType == NetworkType.DirectIP)
 		{
@@ -47,7 +45,7 @@ public static class AuthHandler
 	{
 		if (packet.playerID == Client.Instance.ID || packet.playerID == -1)
 		{
-			MelonLogger.Msg($"[Received From Server] Disconnected from server : {packet.message}");
+			Log.Info($"[Received From Server] Disconnected from server : {packet.message}");
 			Client.Instance.Disconnect();
 			NotificationCenter.m_instance.StartCoroutine(NotificationCenter.m_instance.SelectSceneToLoad("Menu", SceneType.Menu, true, false));
 		}
@@ -55,7 +53,7 @@ public static class AuthHandler
 		{
 			if (ClientData.Players.TryGetValue(packet.playerID, out PlayerInstance instance))
 			{
-				MelonLogger.Msg($"Player {packet.playerID} disconnected.");
+				Log.Info($"Player {packet.playerID} disconnected.");
 				Object.Destroy(instance.gameObject);
 				ClientData.Players.Remove(packet.playerID);
 			}

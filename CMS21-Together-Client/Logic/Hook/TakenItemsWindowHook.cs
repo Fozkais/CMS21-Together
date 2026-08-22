@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using CMS.UI.Windows;
-using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Data.GameType;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
 using CMS21Together.Network;
 using HarmonyLib;
-using MelonLoader;
 
 namespace CMS21Together.Logic.Hook
 {
@@ -30,7 +29,7 @@ namespace CMS21Together.Logic.Hook
                 var items = Singleton<GameManager>.Instance.TempInventory.GetListOfItems();
                 if (items == null || items.Count == 0)
                 {
-                    MelonLogger.Msg("[DEBUG] TakenItemsWindow: No items to buy.");
+                    Log.Debug("TakenItemsWindow: No items to buy.");
                     return false;
                 }
 
@@ -39,7 +38,7 @@ namespace CMS21Together.Logic.Hook
                     IsJunkyard = GameScript.Get().CurrentSceneType == SceneType.Junkyard,
                     ItemsToBuy = new List<ModItem>()
                 };
-                MelonLogger.Warning($"[DEBUG] [BuyPartsActionPrefix] List size:{items.Count} , _items size:{items._items.Count}.");
+                Log.Warn($"[BuyPartsActionPrefix] List size:{items.Count} , _items size:{items._items.Count}.");
                 foreach (var baseItem in items)
                 {
                     var item = baseItem.TryCast<Item>();
@@ -49,7 +48,7 @@ namespace CMS21Together.Logic.Hook
                     }
                     else
                     {
-                        MelonLogger.Warning("[DEBUG] [BuyPartsActionPrefix] Failed to cast baseItem to Item.");
+                        Log.Warn("[BuyPartsActionPrefix] Failed to cast baseItem to Item.");
                         var groupItem = baseItem.TryCast<GroupItem>();
                         if (groupItem != null)
                         {

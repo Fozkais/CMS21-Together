@@ -2,9 +2,9 @@
 using System.Net;
 using System.Net.Sockets;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21Together.Managers;
-using MelonLoader;
 
 namespace CMS21Together.Network.Transport;
 
@@ -41,7 +41,7 @@ public class ClientUDP
         }
         catch (Exception e)
         {
-            MelonLogger.Error($"Error on UDP Send: {e.Message}");
+            Log.Error($"Error on UDP Send: {e.Message}");
         }
     }
 
@@ -81,7 +81,7 @@ public class ClientUDP
                     }
                     catch (Exception e)
                     {
-                        MelonLogger.Error($"Error handling UDP packet {(PacketTypes)packetId}: {e.Message}");
+                        Log.Error($"Error handling UDP packet {(PacketTypes)packetId}: {e.Message}");
                     }
                 }
             }, null);

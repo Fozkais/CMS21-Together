@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
+using CMS21_Together_Core.Logging;
 using Il2CppSystem.IO;
-using MelonLoader;
 using MemoryStream = System.IO.MemoryStream;
 using Stream = System.IO.Stream;
 
@@ -21,7 +21,7 @@ public static class DataUtils
 	{
 		if (sourceStream == null)
 		{
-			MelonLogger.Error("[ConvertStreamToIL2CPP] parameter: sourceStream cannot be null.");
+			Log.Error("[ConvertStreamToIL2CPP] parameter: sourceStream cannot be null.");
 			return null;
 		}
 		

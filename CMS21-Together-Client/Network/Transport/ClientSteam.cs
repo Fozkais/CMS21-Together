@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Managers;
-using MelonLoader;
 using Steamworks;
 using Steamworks.Data;
 
@@ -24,7 +24,7 @@ public class ClientSteam : ConnectionManager
 			Interface?.OnConnecting(info);
 			Connecting = true;
 			OnConnecting(info);
-			MelonLogger.Msg("[ClientSteam->OnConnectionChanged] Connection in progress.");   
+			Log.Info("[ClientSteam->OnConnectionChanged] Connection in progress.");
 		}
 		else if (info.State == ConnectionState.Connected)
 		{
@@ -32,29 +32,29 @@ public class ClientSteam : ConnectionManager
 			Connected = true;
 			Connecting = false;
 			OnConnected(info);
-			MelonLogger.Msg("[ClientSteam->OnConnectionChanged] Connection established.");
+			Log.Success("[ClientSteam->OnConnectionChanged] Connection established.");
 		}
 		else if (info.State == ConnectionState.ClosedByPeer || info.State == ConnectionState.Dead || info.State == ConnectionState.None)
 		{
 			Connected = false;
 			OnDisconnected(info);
-			MelonLogger.Msg("[ClientSteam->OnConnectionChanged] Disconnected.");
+			Log.Info("[ClientSteam->OnConnectionChanged] Disconnected.");
 			Close();
 		}
 		else
 		{
-			MelonLogger.Msg($"[ClientSteam->OnConnectionChanged] Connection state changed: {info.State.ToString()}");
+			Log.Info($"[ClientSteam->OnConnectionChanged] Connection state changed: {info.State.ToString()}");
 		}
 	}
-    
+
 	public override void OnConnecting(ConnectionInfo info)
 	{
-		MelonLogger.Msg("Connecting to server.");
+		Log.Info("Connecting to server.");
 	}
 
 	public override void OnConnected(ConnectionInfo info)
 	{
-		MelonLogger.Msg("Successfully connected to server.");
+		Log.Success("Successfully connected to server.");
 		Client.Instance.Send(new ConnectPacket()
 		{
 			gameVersion = "",
@@ -68,7 +68,7 @@ public class ClientSteam : ConnectionManager
 	public override void OnDisconnected(ConnectionInfo info)
 	{
 		base.OnDisconnected(info);
-		MelonLogger.Msg("Successfully disconnected from server.");
+		Log.Info("Successfully disconnected from server.");
 	}
 
 	public override void OnMessage(IntPtr data, int size, long messageNum, long recvTime, int channel)
@@ -88,7 +88,7 @@ public class ClientSteam : ConnectionManager
 			packetLength = receivedData.ReadInt();
 			if (packetLength <= 0)
 			{
-				MelonLogger.Msg("Packet is empty");
+				Log.Debug("Packet is empty");
 				return;
 			}
 		}
@@ -109,7 +109,7 @@ public class ClientSteam : ConnectionManager
 					}
 					catch (Exception ex)
 					{
-						MelonLogger.Error($"Error reading packet {packetId}: {ex.Message}");
+						Log.Error($"Error reading packet {packetId}: {ex.Message}");
 					}
 				}
 			}, null); 
@@ -132,7 +132,7 @@ public class ClientSteam : ConnectionManager
 		SendType sendType = reliable ? SendType.Reliable : SendType.Unreliable;
 		Result res = Connection.SendMessage(data, _packet.Length(), sendType);
 		if(res != Result.OK)
-			MelonLogger.Error($"[ClientSteam->SendData] Issue while sending data:{res}");
+			Log.Error($"[ClientSteam->SendData] Issue while sending data:{res}");
 		if (data != IntPtr.Zero)
 		{
 			Marshal.FreeHGlobal(data); 

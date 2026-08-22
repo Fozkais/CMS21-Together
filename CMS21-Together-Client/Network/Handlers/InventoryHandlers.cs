@@ -1,6 +1,7 @@
 using CMS.UI;
 using CMS.UI.Windows;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
@@ -63,7 +64,7 @@ namespace CMS21Together.Network.Handlers
                         }
                     }
 
-                    MelonLoader.MelonLogger.Msg("[DEBUG] [InventoryHandlers] Cleared local inventory and warehouse for full sync.");
+                    Log.Debug("[InventoryHandlers] Cleared local inventory and warehouse for full sync.");
                 }
 
                 int count = 0;
@@ -102,11 +103,11 @@ namespace CMS21Together.Network.Handlers
                 
                 IgnoreInventoryHooks = false;
                 
-                MelonLoader.MelonLogger.Msg($"[DEBUG] [InventoryHandlers] Received batch containing {count} items. LastBatch={packet.IsLastBatch}");
+                Log.Debug($"[InventoryHandlers] Received batch containing {count} items. LastBatch={packet.IsLastBatch}");
 
                 if (packet.IsLastBatch)
                 {
-                    MelonLoader.MelonLogger.Msg("[DEBUG] [InventoryHandlers] Inventory sync complete!");
+                    Log.Success("[InventoryHandlers] Inventory sync complete!");
                     ClientData.IsInventorySynced = true;
                     RefreshInventoryWindow();
                     RefreshWarehouseWindow();
@@ -229,7 +230,7 @@ namespace CMS21Together.Network.Handlers
             }
             catch (System.Exception ex)
             {
-                MelonLoader.MelonLogger.Error($"[InventoryHandlers] Error refreshing InventoryWindow: {ex.Message}");
+                Log.Error($"[InventoryHandlers] Error refreshing InventoryWindow: {ex.Message}");
             }
         }
         
@@ -248,7 +249,7 @@ namespace CMS21Together.Network.Handlers
             }
             catch (System.Exception ex)
             {
-                MelonLoader.MelonLogger.Error($"[InventoryHandlers] Error refreshing WarehouseWindow: {ex.Message}");
+                Log.Error($"[InventoryHandlers] Error refreshing WarehouseWindow: {ex.Message}");
             }
         }
     }

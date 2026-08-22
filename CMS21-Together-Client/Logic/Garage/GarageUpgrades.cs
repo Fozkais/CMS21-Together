@@ -1,10 +1,10 @@
 using System.Collections;
 using CMS.UI.Logic.Upgrades;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
 using CMS21Together.Network;
 using HarmonyLib;
-using MelonLoader;
 using UnityEngine;
 using upgType = CMS21_Together_Core.Data.Enum.UpgradeType;
 
@@ -25,11 +25,11 @@ public static class GarageUpgrades
 		var currentItem = __instance.currentUpgradeItem;
 		if (currentItem == null)
 		{
-			MelonLogger.Msg($"[Client] Requesting invalid upgrade.");
+			Log.Warn($"[Client] Requesting invalid upgrade.");
 			return false;
 		}
-		
-		MelonLogger.Msg($"[Client] Requesting upgrade: {currentItem.UpgradeID} Lvl {currentItem.UpgradeLevel}");
+
+		Log.Info($"[Client] Requesting upgrade: {currentItem.UpgradeID} Lvl {currentItem.UpgradeLevel}");
         
 		Client.Instance.Send(new UpgradeRequest() {
 			id = currentItem.UpgradeID,
@@ -49,11 +49,11 @@ public static class GarageUpgrades
 		var currentItem = __instance.currentUpgradeItem;
 		if (currentItem == null)
 		{
-			MelonLogger.Msg($"[Client] Requesting invalid skill.");
+			Log.Warn($"[Client] Requesting invalid skill.");
 			return false;
 		}
-		
-		MelonLogger.Msg($"[Client] Requesting Skill: {currentItem.UpgradeID} Lvl {currentItem.UpgradeLevel}");
+
+		Log.Info($"[Client] Requesting Skill: {currentItem.UpgradeID} Lvl {currentItem.UpgradeLevel}");
 		
 		Client.Instance.Send(new UpgradeRequest()
 		{
@@ -83,7 +83,7 @@ public static class GarageUpgrades
         
 		if (tools.upgradeSystem == null)
 		{
-			MelonLogger.Error("Failed to sync: UpgradeSystem did not initialize in time.");
+			Log.Error("Failed to sync: UpgradeSystem did not initialize in time.");
 			yield break;
 		}
 
@@ -136,7 +136,7 @@ public static class GarageUpgrades
 		}
 
 		IsSyncing = false;
-		MelonLogger.Msg("Garage and Skills synchronized successfully!");
+		Log.Success("Garage and Skills synchronized successfully!");
 		ClientData.IsGarageStateSynced = true;
 	}
 }

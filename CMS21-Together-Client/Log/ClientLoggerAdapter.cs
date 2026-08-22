@@ -1,7 +1,7 @@
 using System.Drawing;
 using CoreLog = CMS21_Together_Core.Logging;
 
-namespace CMS21Together.Log
+namespace CMS21Together.Logging
 {
 	public class ClientLoggerAdapter : CoreLog.ILogger
 	{

@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using CMS;
 using CMS.Difficulty;
 using CMS.Garage.Customization;
 using CMS.Managers;
 using CMS.UI;
 using CMS.UI.Windows;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
 using CMS21Together.Network;
@@ -222,7 +222,7 @@ public static class LoaderAddition
 		ProfileData currentProfileData = Singleton<GameManager>.Instance.GameDataManager.CurrentProfileData;
 		PlayerData profileData = currentProfileData.PlayerData;
 		
-		MelonLogger.Msg("Run Custom Load method !!");
+		Log.Info("Run Custom Load method !!");
 
 		yield return new WaitForEndOfFrame();
 		_ = new GameData();
@@ -239,14 +239,14 @@ public static class LoaderAddition
 		{
 			if (Time.realtimeSinceStartup - waitStartTime > timeoutDuration)
 			{
-				MelonLogger.Error("Connection timed out during initial sync!");
+				Log.Error("Connection timed out during initial sync!");
 				timedOut = true;
 				break;
 			}
 			
 			if (!Client.Instance.IsConnected)
 			{
-				MelonLogger.Error("Disconnected from server during loading!");
+				Log.Error("Disconnected from server during loading!");
 				timedOut = true;
 				break;
 			}
@@ -264,7 +264,7 @@ public static class LoaderAddition
 			manager.StartCoroutine(manager.SelectSceneToLoad("Menu", SceneType.Menu, true, true));
 			yield break;
 		}
-		MelonLogger.Msg("Game synced successfully.");
+		Log.Success("Game synced successfully.");
 		
 		SceneLoader.BlockProgress = false; // needed to end loading
 		NotificationCenter.IsGameReady = true; // needed to end loading
@@ -301,7 +301,7 @@ public static class LoaderAddition
 		WindowManager.Instance.EnableAllWindowsOpening();
 		Singleton<GameManager>.Instance.ProfileManager.BackupSave();
 		
-		MelonLogger.Msg("Run Custom Load method successfully !!");
+		Log.Success("Run Custom Load method successfully !!");
 		yield break;
 	}
 }

@@ -1,8 +1,9 @@
 ﻿using System;
 using System.IO;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21Together.Data;
-using CMS21Together.Log;
+using CMS21Together.Logging;
 using CMS21Together.Managers;
 using CMS21Together.Network;
 using MelonLoader;
@@ -26,14 +27,14 @@ namespace CMS21Together
 
 		public override void OnLateInitializeMelon()
 		{
-			CMS21_Together_Core.Logging.Log.SetLogger(new ClientLoggerAdapter());
+			Log.SetLogger(new ClientLoggerAdapter());
 
 			InitializeSteam();
 
 			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
 			Client.Init();
-			
-			LoggerInstance.Msg("Together Mod Initialized!");
+
+			Log.Info("Together Mod Initialized!");
 			isModInitialized = true;
 		}
 		
@@ -44,7 +45,7 @@ namespace CMS21Together
 			if (!File.Exists(dllPath))
 			{
 				IsSteamAvailable = false;
-				MelonLogger.Warning("Steam DLL not found in UserLibs. Switching to Non-Steam mode.");
+				Log.Warn("Steam DLL not found in UserLibs. Switching to Non-Steam mode.");
 				return;
 			}
 			
@@ -55,19 +56,19 @@ namespace CMS21Together
 				{
 					IsSteamAvailable = false;
 					SteamClient.Shutdown();
-					MelonLogger.Warning("Steam environment invalid or emulated. Features disabled.");
+					Log.Warn("Steam environment invalid or emulated. Features disabled.");
 					return;
 				}
-				
+
 				SteamNetworkingUtils.InitRelayNetworkAccess();
 				IsSteamAvailable = true;
-				MelonLogger.Msg("Steamworks initialized successfully.");
+				Log.Success("Steamworks initialized successfully.");
 			}
 			catch (Exception)
 			{
 				IsSteamAvailable = false;
 				SteamClient.Shutdown();
-				MelonLogger.Warning("Steamworks could not be initialized (Non-Steam version or Steam not running). Steam features will be disabled.");
+				Log.Warn("Steamworks could not be initialized (Non-Steam version or Steam not running). Steam features will be disabled.");
 			}
 		}
 
@@ -80,12 +81,12 @@ namespace CMS21Together
 			
 			if (Input.GetKeyDown(KeyCode.F5))
 			{
-				LoggerInstance.Msg("Local Connection Attempt...");
+				Log.Info("Local Connection Attempt...");
 				Client.Instance.ConnectToServer("127.0.0.1");
 			}
 			if (Input.GetKeyDown(KeyCode.F6) && IsSteamAvailable)
 			{
-				LoggerInstance.Msg("Steam Connection Attempt...");
+				Log.Info("Steam Connection Attempt...");
 				Client.Instance.ConnectToSteamServer();
 			}
 			

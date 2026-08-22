@@ -1,9 +1,9 @@
 using System.Collections.Generic;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Logic;
 using CMS21Together.Logic.Player;
 using CMS21Together.Managers;
-using MelonLoader;
 using UnityEngine;
 
 namespace CMS21Together.Data;
@@ -41,7 +41,7 @@ public static class ClientData
 	{
 		if (!ModGameManager.PlayerPrefab)
 		{
-			MelonLogger.Warning("Cannot Spawn player, Player prefab is null.");
+			Log.Warn("Cannot Spawn player, Player prefab is null.");
 			return;
 		}
 		Vector3 pos = new Vector3(packet.Position.X, packet.Position.Y, packet.Position.Z);

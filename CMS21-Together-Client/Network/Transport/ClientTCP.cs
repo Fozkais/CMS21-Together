@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21Together.Managers;
-using MelonLoader;
 
 namespace CMS21Together.Network.Transport;
 
@@ -31,7 +31,7 @@ public class ClientTCP
         }
         catch (Exception ex)
         {
-            MelonLogger.Error($"Connection Error : {ex.Message}");
+            Log.Error($"Connection Error : {ex.Message}");
         }
     }
 
@@ -46,11 +46,11 @@ public class ClientTCP
             stream = socket.GetStream();
             stream.BeginRead(receiveBuffer, 0, 4096, ReceiveCallback, null);
             
-            MelonLogger.Msg("Connected to TCP server.");
+            Log.Success("Connected to TCP server.");
         }
         catch (Exception ex)
         {
-            MelonLogger.Error($"Error ConnectCallback : {ex.Message}");
+            Log.Error($"Error ConnectCallback : {ex.Message}");
         }
     }
 
@@ -105,7 +105,7 @@ public class ClientTCP
                     }
                     catch (Exception ex)
                     {
-                        MelonLogger.Error($"Error reading packet {packetId}: {ex.Message}");
+                        Log.Error($"Error reading packet {packetId}: {ex.Message}");
                     }
                 }
             }, null); 
@@ -133,7 +133,7 @@ public class ClientTCP
         }
         catch (Exception ex)
         {
-            MelonLogger.Error($"Error sending: {ex.Message}");
+            Log.Error($"Error sending: {ex.Message}");
         }
     }
 
@@ -145,6 +145,6 @@ public class ClientTCP
         receivedData = null;
         receiveBuffer = null;
         socket = null;
-        MelonLogger.Msg("TCP Connection closed.");
+        Log.Info("TCP Connection closed.");
     }
 }

@@ -1,16 +1,11 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 using CMS.Difficulty;
-using CMS.UI.Logic;
 using CMS.UI.Logic.Upgrades;
 using CMS21_Together_Core;
+using CMS21_Together_Core.Logging;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
-using CMS21Together.Logic;
 using CMS21Together.Logic.Garage;
 using MelonLoader;
 using UnityEngine;
@@ -29,7 +24,7 @@ public static class WorldStatesPackets
 			difficultyManager.ActivateDifficultyLevel();
 		}
 		
-		MelonLogger.Msg($"Received World State Sync :\nGamemode: {packet.Gamemode.ToString()}\nMoney: {packet.Money}\nLevel: {packet.Level}\n Exp:{packet.Exp}\n Scraps:{packet.Scraps}");
+		Log.Info($"Received World State Sync :\nGamemode: {packet.Gamemode.ToString()}\nMoney: {packet.Money}\nLevel: {packet.Level}\n Exp:{packet.Exp}\n Scraps:{packet.Scraps}");
 		
 		ClientData.IsServerUpdating = true;
 		GlobalData.PlayerMoney = packet.Money;
@@ -58,20 +53,20 @@ public static class WorldStatesPackets
 	public static void HandleGarageState(long senderId, GarageState packet)
 	{
 	    if (packet?.GarageUpgradeLevels == null) {
-	       MelonLogger.Error("Packet or GarageUpgradeLevels is null!");
+	       Log.Error("Packet or GarageUpgradeLevels is null!");
 	       return;
 	    }
 	    if (GameData.Instance == null) {
-	        MelonLogger.Error("CRITICAL: GameData.Instance is NULL. Are you in the main menu?");
+	        Log.Error("CRITICAL: GameData.Instance is NULL. Are you in the main menu?");
 	        return;
 	    }
 	    GarageAndToolsTab tools = GameData.Instance.GarageTools;
 	    if (tools == null) {
-	       MelonLogger.Error("CRITICAL: tools (GarageTools) is NULL!");
+	       Log.Error("CRITICAL: tools (GarageTools) is NULL!");
 	       return;
 	    }
 	    if (tools.upgradeSystem == null || tools.upgradeItems == null) {
-	       MelonLogger.Error($"Internal refs null: System={tools.upgradeSystem==null}, Items={tools.upgradeItems==null}");
+	       Log.Error($"Internal refs null: System={tools.upgradeSystem==null}, Items={tools.upgradeItems==null}");
 	       return;
 	    }
 	    
@@ -90,20 +85,20 @@ public static class WorldStatesPackets
 		float timeout = 15f;
 		float timer = 0f;
 
-		MelonLogger.Msg("Waiting for World, Garage and Inventory states to sync...");
+		Log.Info("Waiting for World, Garage and Inventory states to sync...");
 
 		while (timer < timeout)
 		{
 			if (ClientData.IsWorldStateSynced && ClientData.IsGarageStateSynced && ClientData.IsInventorySynced)
 			{
 				ClientData.IsInitialSyncFinished = true;
-				MelonLogger.Msg("Initial synchronization finished successfully!");
+				Log.Success("Initial synchronization finished successfully!");
 				yield break;
 			}
 
 			timer += Time.deltaTime;
 			yield return null; 
 		}
-		MelonLogger.Error("Sync timed out! Some data might be missing.");
+		Log.Error("Sync timed out! Some data might be missing.");
 	}
 }

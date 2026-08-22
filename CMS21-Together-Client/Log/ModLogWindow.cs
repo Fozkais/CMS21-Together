@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace CMS21Together.Log
+namespace CMS21Together.Logging
 {
 	public class ModLogWindow : Form
 	{

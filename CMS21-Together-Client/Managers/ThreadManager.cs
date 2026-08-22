@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MelonLoader;
+using CMS21_Together_Core.Logging;
 
 namespace CMS21Together.Managers;
 
@@ -21,7 +21,7 @@ public static class ThreadManager
 	{
 		if (_action == null)
 		{
-			MelonLogger.Msg("No action to execute on main thread!");
+			Log.Warn("No action to execute on main thread!");
 			return;
 		}
 
@@ -35,7 +35,7 @@ public static class ThreadManager
 				}
 				catch (Exception e)
 				{
-					MelonLogger.Msg("Encoutered exception on MainThread: " + e);
+					Log.Error("Encoutered exception on MainThread: " + e);
 				}
 			});
 			actionToExecuteOnMainThread = true;
