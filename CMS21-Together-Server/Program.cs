@@ -5,7 +5,6 @@ using CMS21_Together_Core.Network;
 using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Log;
 using CMS21_Together_Server.Network;
-using Steamworks;
 
 namespace CMS21_Together_Server
 {
@@ -13,7 +12,7 @@ namespace CMS21_Together_Server
 	{
 		public const string SERVER_VERSION = "1.0";
 		public const string MOD_VERSION = "0.5.0";
-		public const int PORT = 7777;
+		public const int PORT = NetworkConstants.DEFAULT_PORT;
 
 		public const int CONNECTION_TIMEOUT = 10;
 

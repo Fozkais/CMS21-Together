@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Server.Log;
 using Newtonsoft.Json;
@@ -47,8 +46,6 @@ namespace CMS21_Together_Server.Data
 
 		private static Dictionary<string, PartProperty> LoadItemDataBase()
 		{
-			Dictionary<string, PartProperty> dictionary = new Dictionary<string, PartProperty>();
-			
 			string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Database/item_database.json");
 			if (!File.Exists(filePath))
 			{
@@ -56,12 +53,19 @@ namespace CMS21_Together_Server.Data
 				return null;
 			}
 
-			string json = File.ReadAllText(filePath);
-			
-			dictionary = JsonConvert.DeserializeObject<Dictionary<string, PartProperty>>(json);
-        
-			Logger.Success($"Database loaded with {dictionary.Count} items.");
-			return (dictionary);
+			try
+			{
+				string json = File.ReadAllText(filePath);
+				var dictionary = JsonConvert.DeserializeObject<Dictionary<string, PartProperty>>(json);
+
+				Logger.Success($"Database loaded with {dictionary.Count} items.");
+				return dictionary;
+			}
+			catch (Exception ex)
+			{
+				Logger.Error($"Error loading Item DB: {ex.Message}");
+				return null;
+			}
 		}
 		
 		private static Dictionary<string, PartProperty> LoadModdedItemDataBase()

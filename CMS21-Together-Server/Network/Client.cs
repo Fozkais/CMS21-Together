@@ -1,6 +1,4 @@
 using System;
-using System.Threading;
-using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Server.Data;
@@ -32,11 +30,10 @@ namespace CMS21_Together_Server.Network
 		public Client(int clientId)
 		{
 			ID = clientId;
-			if (ConnectionType == NetworkType.DirectIP)
-			{
-				Tcp = new Tcp(ID);
-				Udp = new Udp(ID);
-			}
+			// Tcp/Udp are always allocated: a slot may be claimed by either a
+			// DirectIP or Steam connection, and ConnectionType isn't known yet here.
+			Tcp = new Tcp(ID);
+			Udp = new Udp(ID);
 			OnConnectedSuccessfully += OnConnected;
 		}
 		

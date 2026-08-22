@@ -1,20 +1,20 @@
 using System;
 using CMS21_Together_Core;
-using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21Together.Data;
-using CMS21Together.Logic;
 using CMS21Together.Managers;
 using CMS21Together.Network.Transport;
 using MelonLoader;
-using Steamworks;
 using UnityEngine;
 
 namespace CMS21Together.Network;
 
 public class Client
 {
+	// TODO: Temporary dev-testing default (F5/F6 quick-connect) until a server browser / join-by-ID UI exists.
+	private const ulong DEV_TEST_STEAM_SERVER_ID = 85568392935755356;
+
 	public static Client Instance;
 	public ClientTCP Tcp;
 	public ClientUDP UDP;
@@ -22,7 +22,7 @@ public class Client
 	public int ID;
 
 	public NetworkType NetworkType;
-	public ulong ServerID = 85568392935755356;
+	public ulong ServerID = DEV_TEST_STEAM_SERVER_ID;
 
 	public bool IsConnected { get; private set; }
 	public bool IsConnectionValid;

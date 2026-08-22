@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using CMS.UI.Logic.Upgrades;
-using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network;
 using CMS21Together.Data;
-using CMS21Together.Logic;
 using CMS21Together.Managers;
 using CMS21Together.Network;
 using MelonLoader;
-using Newtonsoft.Json;
 using Steamworks;
-using UnhollowerBaseLib;
 using UnityEngine;
 
 // ReSharper disable All
@@ -22,7 +15,7 @@ namespace CMS21Together
 	public class MainMod : MelonMod
 	{
 		public const int MAX_PLAYER = 4;
-		public const int PORT = 7777;
+		public const int PORT = NetworkConstants.DEFAULT_PORT;
 		public const string ASSEMBLY_MOD_VERSION = "0.5.0" + ASSEMBLY_HOTFIX_VERSION;
 		public const string ASSEMBLY_HOTFIX_VERSION = "";
 		public const string MOD_VERSION = "Together " + ASSEMBLY_MOD_VERSION + ASSEMBLY_HOTFIX_VERSION;

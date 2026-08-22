@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using CMS21_Together_Core;
-using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.Enum;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
-using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Log;
 using CMS21_Together_Server.Network.Transport;
 
@@ -47,7 +45,7 @@ namespace CMS21_Together_Server.Network
 
             if (Program.Config.UseSteam)
             {
-                steamTransport = SteamTransport.Initialize(7777);
+                steamTransport = SteamTransport.Initialize(Port);
             }
         }
 
@@ -69,7 +67,8 @@ namespace CMS21_Together_Server.Network
                     {
                         Clients[i].Tcp.Connect(client);
                         Clients[i].IsConnected = true;
-                        
+                        Clients[i].ConnectionType = NetworkType.DirectIP;
+
                         SendToClient(new ConnectPacket()
                         {
                             gameVersion = "",

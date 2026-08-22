@@ -14,7 +14,7 @@ public class ClientSteam : ConnectionManager
 {
 	public static ClientSteam ConnectToServer(ulong serverSteamId)
 	{
-		return SteamNetworkingSockets.ConnectRelay<ClientSteam>(serverSteamId, 7777);
+		return SteamNetworkingSockets.ConnectRelay<ClientSteam>(serverSteamId, MainMod.PORT);
 	}
 
 	public override void OnConnectionChanged(ConnectionInfo info)

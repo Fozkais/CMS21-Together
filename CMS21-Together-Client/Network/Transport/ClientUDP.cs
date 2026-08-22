@@ -79,7 +79,10 @@ public class ClientUDP
                         object dataObject = packet.Read<object>();
                         PacketRouter.Dispatch((PacketTypes)packetId, dataObject, 0);
                     }
-                    catch {  }
+                    catch (Exception e)
+                    {
+                        MelonLogger.Error($"Error handling UDP packet {(PacketTypes)packetId}: {e.Message}");
+                    }
                 }
             }, null);
         }
