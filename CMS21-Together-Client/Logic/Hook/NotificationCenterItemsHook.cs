@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
 using CMS21Together.Network;

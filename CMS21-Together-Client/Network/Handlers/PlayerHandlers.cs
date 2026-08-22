@@ -2,7 +2,6 @@ using CMS21_Together_Core;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21Together.Data;
-using CMS21Together.Logic;
 using CMS21Together.Logic.Player;
 
 namespace CMS21Together.Network.Handlers;

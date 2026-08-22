@@ -2,7 +2,6 @@ using System;
 using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Server.Data;
 using CMS21_Together_Server.Log;
-using CMS21_Together_Server.Network;
 
 namespace CMS21_Together_Server.Network
 {

@@ -1,6 +1,4 @@
 using System;
-using System.Collections.ObjectModel;
-using CMS21_Together_Core.Data;
 
 namespace CMS21_Together_Core.Network.Packets;
 

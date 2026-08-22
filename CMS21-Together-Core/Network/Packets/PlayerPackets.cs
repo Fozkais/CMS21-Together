@@ -1,5 +1,4 @@
 using System;
-using CMS21_Together_Core.Data;
 using CMS21_Together_Core.Data.GameType;
 
 namespace CMS21_Together_Core.Network.Packets;

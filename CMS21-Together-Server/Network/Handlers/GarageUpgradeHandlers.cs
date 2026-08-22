@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using CMS21_Together_Core;
 using CMS21_Together_Core.Data.Enum;
-using CMS21_Together_Core.Data.GameType;
 using CMS21_Together_Core.Network;
 using CMS21_Together_Core.Network.Packets;
 using CMS21_Together_Server.Data;
