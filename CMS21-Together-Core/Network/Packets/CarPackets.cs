@@ -33,4 +33,15 @@ namespace CMS21_Together_Core.Network.Packets
     {
         public int CarLoaderID;
     }
+
+    // Sent back to the requesting client only, when a CarSpawnRequest fails
+    // server-side validation. The sender already ran LoadCar natively (hybrid
+    // design), so the client must undo it locally to stay in sync with the server.
+    [Serializable]
+    [NetworkPacket(PacketTypes.CarSpawnRejected)]
+    public class CarSpawnRejectedPacket : INetworkData
+    {
+        public int CarLoaderID;
+        public string Reason;
+    }
 }

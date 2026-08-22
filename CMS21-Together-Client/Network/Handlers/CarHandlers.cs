@@ -25,33 +25,39 @@ namespace CMS21Together.Network.Handlers
 
             yield return new WaitForEndOfFrame();
 
-            // Find CarLoader by its ID from CarLoaderPlaces
+            // By the time IsGarageStateSynced/IsInventorySynced are true, CarLoaderPlaces
+            // is already guaranteed populated (LoaderAddition.VanillaLoad calls
+            // CarLoaderPlaces.Get().Load() before AskForSync is even sent, in the same
+            // coroutine chain). A null result here is a real bug, not a timing race.
             CarLoader carLoader = CarLoaderPlaces.Get().GetCarLoaderByIndex(packet.CarLoaderID);
-            
-            if (carLoader == null) yield break;
+            if (carLoader == null)
+            {
+                Log.Error($"[CarHandlers] CarLoader {packet.CarLoaderID} not found, dropping CarSpawnResponse.");
+                yield break;
+            }
 
             // Apply variables
             carLoader.placeNo = packet.PlaceNo;
             carLoader.ConfigVersion = packet.ConfigVersion;
             carLoader.customerCar = packet.IsJob;
 
-            CarSpawnHooks.IgnoreCarSpawnHooks = true;
+            CarSpawnHooks.Suppress(packet.CarLoaderID);
             try
             {
                 carLoader.StartCoroutine(carLoader.LoadCar(packet.CarToLoad));
                 Log.Info($"[CarHandlers] Loading {packet.CarToLoad} from server into Loader {packet.CarLoaderID}");
+
+                // Wait for native LoadCar to finish (sets carLoader.done = true)
+                while (!carLoader.IsCarLoaded())
+                    yield return new WaitForEndOfFrame();
+
+                // Place it at position (critical for clients who didn't call TakeJob)
+                carLoader.PlaceAtPosition(true, true);
             }
             finally
             {
-                CarSpawnHooks.IgnoreCarSpawnHooks = false;
+                CarSpawnHooks.Release(packet.CarLoaderID);
             }
-
-            // Wait for native LoadCar to finish (sets carLoader.done = true)
-            while (!carLoader.IsCarLoaded())
-                yield return new WaitForEndOfFrame();
-            
-            // Place it at position (critical for clients who didn't call TakeJob)
-            carLoader.PlaceAtPosition(true, true);
         }
 
         [PacketHandler(PacketTypes.CarSpawnDelete)]
@@ -66,10 +72,15 @@ namespace CMS21Together.Network.Handlers
                 yield return new WaitForSeconds(0.25f);
 
             CarLoader carLoader = CarLoaderPlaces.Get().GetCarLoaderByIndex(packet.CarLoaderID);
-            
-            if (carLoader == null || string.IsNullOrEmpty(carLoader.carToLoad)) yield break;
+            if (carLoader == null)
+            {
+                Log.Error($"[CarHandlers] CarLoader {packet.CarLoaderID} not found, dropping CarSpawnDelete.");
+                yield break;
+            }
 
-            CarSpawnHooks.IgnoreCarSpawnHooks = true;
+            if (string.IsNullOrEmpty(carLoader.carToLoad)) yield break;
+
+            CarSpawnHooks.Suppress(packet.CarLoaderID);
             try
             {
                 carLoader.DeleteCar();
@@ -77,7 +88,31 @@ namespace CMS21Together.Network.Handlers
             }
             finally
             {
-                CarSpawnHooks.IgnoreCarSpawnHooks = false;
+                CarSpawnHooks.Release(packet.CarLoaderID);
+            }
+        }
+
+        [PacketHandler(PacketTypes.CarSpawnRejected)]
+        public static void HandleCarSpawnRejected(long clientId, CarSpawnRejectedPacket packet)
+        {
+            MelonCoroutines.Start(ProcessCarSpawnRejected(packet));
+        }
+
+        private static IEnumerator ProcessCarSpawnRejected(CarSpawnRejectedPacket packet)
+        {
+            Log.Warn($"[CarHandlers] CarSpawnRequest for Loader {packet.CarLoaderID} was rejected by server: {packet.Reason}. Reverting local spawn.");
+
+            CarLoader carLoader = CarLoaderPlaces.Get().GetCarLoaderByIndex(packet.CarLoaderID);
+            if (carLoader == null || string.IsNullOrEmpty(carLoader.carToLoad)) yield break;
+
+            CarSpawnHooks.Suppress(packet.CarLoaderID);
+            try
+            {
+                carLoader.DeleteCar();
+            }
+            finally
+            {
+                CarSpawnHooks.Release(packet.CarLoaderID);
             }
         }
     }

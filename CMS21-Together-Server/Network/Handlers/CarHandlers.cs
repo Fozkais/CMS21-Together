@@ -19,6 +19,11 @@ namespace CMS21_Together_Server.Network.Handlers
             if (string.IsNullOrEmpty(packet.CarToLoad))
             {
                 Logger.Error($"[CarHandlers] CarSpawnRequest from client {clientId} missing CarToLoad!");
+                Server.SendToClient(new CarSpawnRejectedPacket
+                {
+                    CarLoaderID = packet.CarLoaderID,
+                    Reason = "CarToLoad was empty."
+                }, (int)clientId);
                 return;
             }
 
