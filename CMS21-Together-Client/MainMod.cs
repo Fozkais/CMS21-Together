@@ -2,6 +2,7 @@
 using System.IO;
 using CMS21_Together_Core.Network;
 using CMS21Together.Data;
+using CMS21Together.Log;
 using CMS21Together.Managers;
 using CMS21Together.Network;
 using MelonLoader;
@@ -25,8 +26,10 @@ namespace CMS21Together
 
 		public override void OnLateInitializeMelon()
 		{
+			CMS21_Together_Core.Logging.Log.SetLogger(new ClientLoggerAdapter());
+
 			InitializeSteam();
-			
+
 			PacketRouter.Initialize(System.Reflection.Assembly.GetExecutingAssembly());
 			Client.Init();
 			
@@ -99,7 +102,10 @@ namespace CMS21Together
 
 		public override void OnLateUpdate() { }
 
-		public override void OnInitializeMelon() { }
+		public override void OnInitializeMelon()
+		{
+			ModConsole.Initialize();
+		}
 
 		public override void OnApplicationQuit() { }
 	}

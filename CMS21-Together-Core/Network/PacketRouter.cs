@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using CMS21_Together_Core.Logging;
 
 namespace CMS21_Together_Core.Network;
 
@@ -24,7 +25,7 @@ public static class PacketRouter
 		// 2. Scan Logic Assembly (To find Handlers in Client or Server)
 		ScanAssembly(handlerAssembly);
 			
-		Console.WriteLine($"[PacketRouter] {_handlers.Count} handlers and {_packetMap.Count} packets registered.");
+		Log.Info($"[PacketRouter] {_handlers.Count} handlers and {_packetMap.Count} packets registered.");
 	}
 
 	private static void ScanAssembly(Assembly assembly)
@@ -54,7 +55,7 @@ public static class PacketRouter
 				{
 					if (_handlers.ContainsKey(handlerAttr.Type))
 					{
-						Console.WriteLine($"[PacketRouter] Warning: Multiple handlers found for packet {handlerAttr.Type}. Ignoring duplicate in {assembly.GetName().Name}.");
+						Log.Warn($"[PacketRouter] Multiple handlers found for packet {handlerAttr.Type}. Ignoring duplicate in {assembly.GetName().Name}.");
 						continue;
 					}
 					_handlers.Add(handlerAttr.Type, method);
@@ -80,7 +81,7 @@ public static class PacketRouter
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error in handler {id}: {ex.InnerException?.Message}");
+				Log.Error($"[PacketRouter] Error in handler {id}: {ex.InnerException?.Message}");
 			}
 		}
 	}

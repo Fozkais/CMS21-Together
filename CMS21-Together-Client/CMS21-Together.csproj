@@ -24,6 +24,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Drawing" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Reference Include="0Harmony">
             <HintPath>Libs\0Harmony.dll</HintPath>
         </Reference>

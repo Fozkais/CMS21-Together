@@ -48,6 +48,7 @@ namespace CMS21_Together_Server
 			var window = new ServerWindow();
 			
 			SetupLogging();
+			CMS21_Together_Core.Logging.Log.SetLogger(new ServerLoggerAdapter());
 			Logger.Info($"CMS21 Together Server v{SERVER_VERSION}");
 			PacketRouter.Initialize(Assembly.GetExecutingAssembly());
 			
