@@ -53,7 +53,7 @@ public class Client
 		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
 		}
 		else
-		if (networkType == NetworkType.TCP)
+		if (networkType == NetworkType.DirectIP)
 		{
 			tcp = new ClientTCP();
 			udp = new ClientUDP();
@@ -68,7 +68,7 @@ public class Client
 	{
 		switch (networkType)
 		{
-			case NetworkType.TCP:
+			case NetworkType.DirectIP:
 				if (!tcp.socket.Connected) break;
 				if (reliable) tcp.Send(packet);
 				else udp.Send(packet);

@@ -22,7 +22,7 @@ public static class TogetherModManager
 			{
 				ClientData.UserData = JsonConvert.DeserializeObject<UserData>(serializedUserData);
 				if (!MainMod.IsSteamAvailable)
-					ClientData.UserData.selectedNetworkType = NetworkType.TCP;
+					ClientData.UserData.selectedNetworkType = NetworkType.DirectIP;
 				if (ClientData.UserData != null)
 					return ClientData.UserData;
 				return new UserData();

@@ -141,7 +141,7 @@ public static class UILobby
 		copyIdRect.pivot = new Vector2(0f, 0.5f);
 		copyIdRect.sizeDelta = new Vector2(233, 44);
 		copyIdRect.anchoredPosition = new Vector2(0, 197);
-		if (ClientData.UserData.selectedNetworkType == NetworkType.TCP)
+		if (ClientData.UserData.selectedNetworkType == NetworkType.DirectIP)
 			copyIdBtn.SetLocked();
 		
 		var backBtn = UIElements.CreateButton(UICore.MP_Lobby.transform, "Back to menu", 

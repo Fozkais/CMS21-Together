@@ -30,7 +30,7 @@ public class ServerConnection
 	public void Connect(TcpClient connection)
 	{
 		tcp.Connect(connection);
-		connectionType = NetworkType.TCP;
+		connectionType = NetworkType.DirectIP;
 		isConnected = true;
 
 		ServerSend.ConnectPacket(id, "Connected to the server.");
@@ -55,7 +55,7 @@ public class ServerConnection
 		if(connectionType == NetworkType.Steam)
 		    steam.Send(packet, reliable);
 		else
-		if (connectionType == NetworkType.TCP)
+		if (connectionType == NetworkType.DirectIP)
 		{
 			if (reliable)
 				tcp.Send(packet);

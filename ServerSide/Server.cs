@@ -67,7 +67,7 @@ public class Server
 		Application.runInBackground = true;
 		isRunning = true;
 		MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
-		Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
+		Client.Instance.ConnectToServer(NetworkType.DirectIP, "127.0.0.1");
 	}
 
 	public IEnumerator CloseServer()

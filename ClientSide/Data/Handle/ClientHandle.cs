@@ -26,7 +26,7 @@ public static class ClientHandle
 		MelonLogger.Msg($"[ClientHandle->ConnectPacket] {message}");
 		ClientData.UserData.playerID = newID;
 
-		if (Client.Instance.networkType == NetworkType.TCP)
+		if (Client.Instance.networkType == NetworkType.DirectIP)
 			Client.Instance.udp.Connect();
 
 		Client.Instance.OnConnectedInvoke();

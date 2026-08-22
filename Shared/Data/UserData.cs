@@ -17,7 +17,7 @@ public class UserData
 	public string lobbyID;
 	public string playerGUID;
 
-	public NetworkType selectedNetworkType = NetworkType.TCP;
+	public NetworkType selectedNetworkType = NetworkType.DirectIP;
 
 	[JsonIgnore] public int playerID;
 	[JsonIgnore] public bool isReady;
@@ -44,7 +44,7 @@ public class UserData
 		lobbyID = "";
 		playerID = 1;
 		playerGUID = username;
-		selectedNetworkType = NetworkType.TCP;
+		selectedNetworkType = NetworkType.DirectIP;
 	}
 
 	public UserData(string _username, int _playerID, string playerGuid)

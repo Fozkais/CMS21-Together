@@ -79,9 +79,9 @@ public static class UIActions
 			switch (ClientData.UserData.selectedNetworkType)
 			{
 				case NetworkType.Steam:
-					ClientData.UserData.selectedNetworkType = NetworkType.TCP;
+					ClientData.UserData.selectedNetworkType = NetworkType.DirectIP;
 					break;
-				case NetworkType.TCP:
+				case NetworkType.DirectIP:
 					ClientData.UserData.selectedNetworkType = NetworkType.Steam;
 					break;
 			}
