@@ -68,7 +68,7 @@ public static class UIMenu
 		typeRect.sizeDelta = new Vector2(233, 44);
 		typeRect.anchoredPosition = new Vector2(0, 246);
 		typeBtn.OnClick.AddListener(UIActions.ChangeNetworkType(typeBtn));
-		if (ApiCalls.useSteam)
+		if (MainMod.IsSteamAvailable)
 			typeBtn.SetLocked(false);
 		
 		var settingBtn = UIElements.CreateButton(UICore.MP_Main.transform, "Mod settings", null);

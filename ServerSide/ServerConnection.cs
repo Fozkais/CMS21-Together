@@ -30,7 +30,7 @@ public class ServerConnection
 	public void Connect(TcpClient connection)
 	{
 		tcp.Connect(connection);
-		connectionType = NetworkType.TCP;
+		connectionType = NetworkType.DirectIP;
 		isConnected = true;
 
 		ServerSend.ConnectPacket(id, "Connected to the server.");
@@ -55,7 +55,7 @@ public class ServerConnection
 		if(connectionType == NetworkType.Steam)
 		    steam.Send(packet, reliable);
 		else
-		if (connectionType == NetworkType.TCP)
+		if (connectionType == NetworkType.DirectIP)
 		{
 			if (reliable)
 				tcp.Send(packet);
@@ -73,9 +73,9 @@ public class ServerConnection
 		isConnected = false;
 	}
 
-	public void SendToLobby(string username, string playerGuid)
+	public void SendToLobby(string username)
 	{
-		ServerData.Instance.connectedClients[id] = new UserData(username, id, playerGuid);
+		ServerData.Instance.connectedClients[id] = new UserData(username, id, username);
 		
 		foreach (var data in ServerData.Instance.connectedClients.Values)
 			ServerSend.UserDataPacket(data, id);

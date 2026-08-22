@@ -31,10 +31,8 @@ public static class Stats
 	{
 		if (sentInitial || !Server.Instance.isRunning) yield break;
 
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.2f);
-		yield return new WaitForEndOfFrame();
-		yield return new WaitForEndOfFrame();
 
 		ClientSend.StatPacket(GlobalData.PlayerMoney, ModStats.money, true);
 		ClientSend.StatPacket(GlobalData.PlayerScraps, ModStats.scrap, true);
@@ -47,7 +45,7 @@ public static class Stats
 
 	public static IEnumerator UpdateStats(ModStats type, int value, bool initial)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -56,12 +54,10 @@ public static class Stats
 			switch (type)
 			{
 				case ModStats.money:
-					ClientData.Instance.money = value;
 					GlobalData.SetPlayerMoney(value);
 					listentoAddMoney = true;
 					break;
 				case ModStats.scrap:
-					ClientData.Instance.scrap = value;
 					GlobalData.SetPlayerScraps(value);
 					listentoAddScrap = true;
 					break;
@@ -90,8 +86,6 @@ public static class Stats
 		if (!Client.Instance.isConnected) return;
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
 
-		ClientData.Instance.exp = GlobalData.PlayerExp;
-
 		MelonLogger.Msg($"Send XP Packet : {GlobalData.PlayerExp} , {GlobalData.PlayerLevel}");
 		ClientSend.ExpPacket(GlobalData.PlayerExp, GlobalData.PlayerLevel);
 	}
@@ -117,8 +111,7 @@ public static class Stats
 			return;
 		}
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
-
-		ClientData.Instance.money = GlobalData.PlayerMoney;
+		
 		ClientSend.StatPacket(money, ModStats.money);
 	}
 
@@ -132,8 +125,7 @@ public static class Stats
 			return;
 		}
 		if (ClientData.Instance.gamemode == Gamemode.Sandbox) return;
-
-		ClientData.Instance.scrap = GlobalData.PlayerScraps;
+		
 		ClientSend.StatPacket(amount, ModStats.scrap);
 	}
 }

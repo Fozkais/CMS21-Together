@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using CMS21Together.ClientSide.Data;
 using CMS21Together.ClientSide.Data.Handle;
 using CMS21Together.ClientSide.Data.NewUI;
@@ -52,7 +53,7 @@ public class Client
 		    steam = SteamNetworkingSockets.ConnectRelay<ClientSteam>(lobbyID);
 		}
 		else
-		if (networkType == NetworkType.TCP)
+		if (networkType == NetworkType.DirectIP)
 		{
 			tcp = new ClientTCP();
 			udp = new ClientUDP();
@@ -67,7 +68,7 @@ public class Client
 	{
 		switch (networkType)
 		{
-			case NetworkType.TCP:
+			case NetworkType.DirectIP:
 				if (!tcp.socket.Connected) break;
 				if (reliable) tcp.Send(packet);
 				else udp.Send(packet);
@@ -94,8 +95,10 @@ public class Client
 			{ (int)PacketTypes.rotation, ClientHandle.RotationPacket },
 			{ (int)PacketTypes.sceneChange, ClientHandle.SceneChangePacket },
 
-			{ (int)PacketTypes.item, ClientHandle.ItemPacket },
-			{ (int)PacketTypes.groupItem, ClientHandle.GroupItemPacket },
+			{ (int)PacketTypes.requestAddGroupItem, ClientHandle.AddGroupItemPacket },
+			{ (int)PacketTypes.requestAddItem, ClientHandle.AddItemPacket },
+			{ (int)PacketTypes.requestGroupItemDelete, ClientHandle.DeleteGroupItemPacket },
+			{ (int)PacketTypes.requestItemDelete, ClientHandle.DeleteItemPacket },
 
 			{ (int)PacketTypes.stat, ClientHandle.StatPacket },
 
@@ -140,13 +143,15 @@ public class Client
 	{
 		if (!isConnected) return;
 
-
 		if (!fromServer)
+		{
 			ClientSend.DisconnectPacket();
+			 Thread.Sleep(100); 
+		}
+		
 		Application.runInBackground = false;
 		isConnected = false;
-
-
+		
 		tcp.Disconnect();
 		udp.Disconnect();
 		

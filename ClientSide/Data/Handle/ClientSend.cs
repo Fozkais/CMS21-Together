@@ -28,7 +28,6 @@ public class ClientSend
 			packet.Write(ContentManager.Instance.ownedContents);
 			packet.Write(ContentManager.Instance.gameVersion);
 			packet.Write(MainMod.ASSEMBLY_MOD_VERSION);
-			packet.Write(ClientData.UserData.playerGUID);
 
 			SendData(packet);
 		}
@@ -63,24 +62,51 @@ public class ClientSend
 		}
 	}
 
-	public static void ItemPacket(ModItem item, InventoryAction action)
+	public static void RequestAddItem(ModItem item, int price)
 	{
-		using (var packet = new Packet((int)PacketTypes.item))
+		using (Packet packet = new Packet((int)PacketTypes.requestAddItem))
 		{
-			packet.Write(action);
 			packet.Write(item);
-
+			packet.Write(price);
+			
 			SendData(packet);
 		}
 	}
-
-	public static void GroupItemPacket(ModGroupItem groupItem, InventoryAction action)
+	
+	public static void RequestItemDelete(ModItem item)
 	{
-		using (var packet = new Packet((int)PacketTypes.groupItem))
+		using (Packet packet = new Packet((int)PacketTypes.requestItemDelete))
 		{
-			packet.Write(action);
-			packet.Write(groupItem);
-
+			packet.Write(item);
+			
+			SendData(packet);
+		}
+	}
+	
+	public static void RequestAddGroupItem(ModGroupItem item)
+	{
+		using (Packet packet = new Packet((int)PacketTypes.requestAddGroupItem))
+		{
+			packet.Write(item);
+			
+			SendData(packet);
+		}
+	}
+	
+	public static void RequestGroupItemDelete(long UId)
+	{
+		using (Packet packet = new Packet((int)PacketTypes.requestGroupItemDelete))
+		{
+			packet.Write(UId);
+			
+			SendData(packet);
+		}
+	}
+	
+	public static void RequestInventoryResync()
+	{
+		using (Packet packet = new Packet((int)PacketTypes.requestInventorySync))
+		{
 			SendData(packet);
 		}
 	}

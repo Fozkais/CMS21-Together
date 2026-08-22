@@ -26,7 +26,7 @@ public static class ClientHandle
 		MelonLogger.Msg($"[ClientHandle->ConnectPacket] {message}");
 		ClientData.UserData.playerID = newID;
 
-		if (Client.Instance.networkType == NetworkType.TCP)
+		if (Client.Instance.networkType == NetworkType.DirectIP)
 			Client.Instance.udp.Connect();
 
 		Client.Instance.OnConnectedInvoke();
@@ -72,10 +72,10 @@ public static class ClientHandle
 		var gamemode = packet.Read<Gamemode>();
 		var parkCars = packet.Read<Dictionary<int, ModNewCarData>>();
 
-		var data = new ModSaveData();
-		data.selectedGamemode = gamemode;
+		var data = new ModProfileExtension();
+		data.SelectedGamemode = gamemode;
 
-		SavesManager.LoadSave(data, parkCars,true);
+		SaveSystem.LoadGame(data, MainMod.MAX_SAVE_COUNT - 1);
 	}
 	
 	public static void SpawnPacket(Packet packet)
@@ -110,22 +110,36 @@ public static class ClientHandle
 		Rotation.UpdateRotation(id, rotation);
 		packet.Dispose();
 	}
-
-	public static void ItemPacket(Packet packet)
+	
+	public static void AddItemPacket(Packet packet)
 	{
-		var action = packet.Read<InventoryAction>();
 		var item = packet.Read<ModItem>();
 
-		MelonCoroutines.Start(Player.Inventory.HandleItem(item, action));
+		MelonCoroutines.Start(InventorySync.AddItem(item));
 		packet.Dispose();
 	}
-
-	public static void GroupItemPacket(Packet packet)
+	
+	public static void DeleteItemPacket(Packet packet)
 	{
-		var action = packet.Read<InventoryAction>();
+		var item = packet.Read<ModItem>();
+
+		MelonCoroutines.Start(InventorySync.DeleteItem(item));
+		packet.Dispose();
+	}
+	
+	public static void AddGroupItemPacket(Packet packet)
+	{
 		var item = packet.Read<ModGroupItem>();
 
-		MelonCoroutines.Start(Player.Inventory.HandleGroupItem(item, action));
+		MelonCoroutines.Start(InventorySync.AddGroupItem(item));
+		packet.Dispose();
+	}
+	
+	public static void DeleteGroupItemPacket(Packet packet)
+	{
+		long UId = packet.Read<long>();
+
+		MelonCoroutines.Start(InventorySync.DeleteGroupItem(UId));
 		packet.Dispose();
 	}
 

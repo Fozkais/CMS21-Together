@@ -89,23 +89,28 @@ public static class EngineStand
 	[HarmonyPostfix]
 	public static void SetGroupOnEngineStand(GroupItem groupItem, bool withFade, EngineStandLogic __instance)
 	{
-		if(!Client.Instance.isConnected) {  return; }
-		
-		if (groupItem == null || groupItem.ItemList == null) return;
+		if(!Client.Instance.isConnected || groupItem == null || groupItem.ItemList == null) return;
+		if (ClientData.Instance == null || GameData.Instance == null) return;
+
 		ModEngineStand stand;
 		if (__instance.gameObject.name == "Engine_stand_2")
 		{
+			if (GameData.Instance.engineStandLogic2 == null) return; 
+       
 			ClientData.Instance.engineStand2 = new ModEngineStand(GameData.Instance.engineStandLogic2);
 			stand = ClientData.Instance.engineStand2;
-			stand.engineGroupItem = new ModGroupItem(groupItem);
 		}
 		else
 		{
+			if (GameData.Instance.engineStandLogic == null) return;
+
 			ClientData.Instance.engineStand = new ModEngineStand(GameData.Instance.engineStandLogic);
 			stand = ClientData.Instance.engineStand;
-			stand.engineGroupItem = new ModGroupItem(groupItem);
 		}
+    
+		stand.engineGroupItem = new ModGroupItem(groupItem);
 
+		// 3. Start Coroutine
 		MelonCoroutines.Start(HandleEngineStand(stand));
 	}
 
@@ -149,7 +154,7 @@ public static class EngineStand
 	public static IEnumerator TakeOnEngineFromStand(ModGroupItem engineGroup, Vector3Serializable position, bool alt)
 	{
 		MelonLogger.Msg($"Received engine from server! {alt}");
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -184,7 +189,7 @@ public static class EngineStand
 	
 	public static IEnumerator TakeOffEngineFromStand(bool alt)
 	{
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 
@@ -200,7 +205,7 @@ public static class EngineStand
 	
 	public static IEnumerator IncreaseEngineStandAngle(float angle, bool alt)
 	{
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 		

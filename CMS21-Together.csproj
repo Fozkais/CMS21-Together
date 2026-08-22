@@ -68,6 +68,7 @@
         <Compile Include="ClientSide\Data\Garage\Tools\WheelBalancer.cs" />
         <Compile Include="ClientSide\Data\Handle\ClientHandle.cs"/>
         <Compile Include="ClientSide\Data\Handle\ClientSend.cs"/>
+        <Compile Include="ClientSide\Data\GameLoadHook.cs" />
         <Compile Include="ClientSide\Data\NewUI\UIActions.cs" />
         <Compile Include="ClientSide\Data\NewUI\UICore.cs" />
         <Compile Include="ClientSide\Data\NewUI\UICustomPanel.cs" />
@@ -77,10 +78,14 @@
         <Compile Include="ClientSide\Data\NewUI\UIUtils.cs" />
         <Compile Include="ClientSide\Data\Player\InfoBillboard.cs" />
         <Compile Include="ClientSide\Data\Player\CarEnterExit.cs" />
-        <Compile Include="ClientSide\Data\Player\Inventory.cs" />
+        <Compile Include="ClientSide\Data\Player\InventoryFix.cs" />
+        <Compile Include="ClientSide\Data\Player\InventorySync.cs" />
         <Compile Include="ClientSide\Data\Player\Movement.cs" />
         <Compile Include="ClientSide\Data\Player\Rotation.cs" />
         <Compile Include="ClientSide\Data\Player\Stats.cs" />
+        <Compile Include="ClientSide\Data\SaveSystem.cs" />
+        <Compile Include="ClientSide\Data\SaveSystemHooks.cs" />
+        <Compile Include="ClientSide\Data\SceneManager.cs" />
         <Compile Include="ClientSide\Transports\ClientSteam.cs" />
         <Compile Include="ClientSide\Transports\ClientTCP.cs" />
         <Compile Include="ClientSide\Transports\ClientUDP.cs" />
@@ -164,10 +169,9 @@
         <Compile Include="Shared\Data\Vanilla\ModStats.cs" />
         <Compile Include="Shared\Data\Vector3Serializable.cs" />
         <Compile Include="Shared\Data\VersionStatus.cs" />
-        <Compile Include="Shared\SceneManager.cs" />
+        <Compile Include="Shared\ModProfileExtension.cs" />
         <Compile Include="Shared\Packet.cs" />
         <Compile Include="Shared\PacketTypes.cs" />
-        <Compile Include="Shared\SavesManager.cs" />
         <Compile Include="Shared\TogetherModManager.cs" />
         <Compile Include="Shared\SteamworksUtils.cs" />
         <Compile Include="ThreadManager.cs" />
@@ -221,6 +225,9 @@
         </Reference>
         <Reference Include="UnityEngine.InputModule">
             <HintPath>Libs\UnityEngine.InputModule.dll</HintPath>
+        </Reference>
+        <Reference Include="UnityEngine.JSONSerializeModule">
+          <HintPath>Libs\UnityEngine.JSONSerializeModule.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.ParticleSystemModule">
           <HintPath>Libs\UnityEngine.ParticleSystemModule.dll</HintPath>

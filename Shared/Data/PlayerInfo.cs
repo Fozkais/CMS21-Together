@@ -40,7 +40,5 @@ public class PlayerInfo
 	public void UpdateSkill(string skill_ID, List<bool> skill)
 	{
 		skillsInfo[skill_ID] = skill;
-		
-		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 	}
 }

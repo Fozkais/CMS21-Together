@@ -36,12 +36,9 @@ public static class GarageResync
 
 	public static IEnumerator ResyncGarage()
 	{
-		while (SceneManager.CurrentScene() != GameScene.garage)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.5f);
-		while (!NotificationCenter.IsGameReady)
-			yield return new WaitForSeconds(0.25f);
-		while (!GameData.isReady)
-			yield return new WaitForSeconds(0.5f);
+		yield return new WaitForEndOfFrame();
 		
 		MelonCoroutines.Start(ResyncCars());
 		yield return new WaitForEndOfFrame();

@@ -12,7 +12,7 @@ public static class Rotation
 	public static void UpdateRotation(int id, QuaternionSerializable rotation)
 	{
 		if (!ClientData.Instance.connectedClients.ContainsKey(id)) return;
-		if (!GameData.isReady) return;
+		if (!GameLoadHook.IsGameReady()) return;
 
 		var player = ClientData.Instance.connectedClients[id];
 		if (player.scene != ClientData.UserData.scene) return;

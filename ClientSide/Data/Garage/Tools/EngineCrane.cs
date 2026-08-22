@@ -38,7 +38,7 @@ public static class EngineCrane
 
 	public static IEnumerator UseEngineCrane(int carLoaderID)
 	{
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 		
@@ -102,7 +102,7 @@ public static class EngineCrane
 	
 	public static IEnumerator InsertEngineIntoCar(ModGroupItem engine)
 	{
-		while (!GameData.isReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 		yield return new WaitForEndOfFrame();
 

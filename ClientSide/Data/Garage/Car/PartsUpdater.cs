@@ -12,7 +12,7 @@ public static class PartsUpdater
 {
 	public static IEnumerator UpdatePartScripts(ModPartScript partScript, int carLoaderID)
 	{
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.25f);
 
 		yield return new WaitForEndOfFrame();

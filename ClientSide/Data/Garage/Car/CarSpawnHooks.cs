@@ -71,14 +71,14 @@ public static class CarSpawnHooks
 	[HarmonyPrefix]
 	public static void DeleteCarHook(CarLoader __instance)
 	{
-		if (MainMod.isClosing || Client.Instance == null) return;
+		if (Client.Instance == null) return;
 		if (!Client.Instance.isConnected || !listenToDelete)
 		{
 			listenToDelete = true;
 			return;
 		}
 		
-		if (!NotificationCenter.IsGameReady) return;
+		if (!GameLoadHook.IsGameReady()) return;
 		if (__instance == null || string.IsNullOrEmpty(__instance.carToLoad)) return;
 		
 		if (SceneManager.CurrentScene() != GameScene.garage) return;

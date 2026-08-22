@@ -10,7 +10,6 @@ namespace CMS21Together.Shared;
 public static class ApiCalls
 {
 	private static readonly Assembly APIAssembly = LoadAssembly();
-	public static readonly bool useSteam = API_M4();
 	public static Dictionary<string, bool> API_M3()
 	{
 		var className = "TogetherModAPI.MainApi";

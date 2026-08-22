@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using CMS21Together.ClientSide;
+using CMS21Together.ClientSide.Data;
 using CMS21Together.ServerSide.Data;
 using CMS21Together.ServerSide.Transports;
 using CMS21Together.Shared;
@@ -66,7 +67,7 @@ public class Server
 		Application.runInBackground = true;
 		isRunning = true;
 		MelonLogger.Msg("[Server->StartServer] Server started Succefully.");
-		Client.Instance.ConnectToServer(NetworkType.TCP, "127.0.0.1");
+		Client.Instance.ConnectToServer(NetworkType.DirectIP, "127.0.0.1");
 	}
 
 	public IEnumerator CloseServer()
@@ -74,29 +75,24 @@ public class Server
 		if (!isRunning) yield break;
 
 		MelonLogger.Msg("[Server->CloseServer] Saving players infos...");
-		ModSaveData save = SavesManager.ModSaves[SavesManager.currentSaveIndex];
+		ModProfileExtension save = SaveSystem.Extensions[SaveSystem.selectedSaveIndex];
 		foreach (var id in clients.Keys)
 		{
 			if (!ServerData.Instance.connectedClients.ContainsKey(id)) continue;
 			
 			string playerGuid = ServerData.Instance.connectedClients[id].playerGUID;
-			PlayerInfo info = save.playerInfos.First(p => playerGuid == p.id);
+			PlayerInfo info = save.PlayerInfos.First(p => playerGuid == p.id);
 			Vector3Serializable pos = ServerData.Instance.connectedClients[id].position;
 			QuaternionSerializable rot = ServerData.Instance.connectedClients[id].rotation;
 			int lvl = ServerData.Instance.connectedClients[id].playerExp;
 			int exp = ServerData.Instance.connectedClients[id].playerLevel;
 			int points = ServerData.Instance.connectedClients[id].playerSkillPoints;
 
-			if (save.playerInfos.Any(p => playerGuid == p.id))
+			if (save.PlayerInfos.Any(p => playerGuid == p.id))
 				info.UpdateStats(pos, rot, exp , lvl, points);
 			if (id != 1) // dont send to host
 				ServerSend.DisconnectPacket(id, "Server is shutting down.");
 		}
-		save.missionFinished = GlobalData.MissionsFinished;
-		save.storyMissionInProgress = GlobalData.IsStoryMissionInProgress;
-		save.money = GlobalData.PlayerMoney;
-		
-		SavesManager.SaveModSave(SavesManager.currentSaveIndex);
 		yield return new WaitForSeconds(1);
 		MelonLogger.Msg("[Server->CloseServer] Successfully Saved players infos!");
 		
@@ -185,9 +181,12 @@ public class Server
 			{ (int)PacketTypes.rotation, ServerHandle.RotationPacket },
 			{ (int)PacketTypes.sceneChange, ServerHandle.SceneChangePacket },
 
-			{ (int)PacketTypes.item, ServerHandle.ItemPacket },
-			{ (int)PacketTypes.groupItem, ServerHandle.GroupItemPacket },
-
+			{ (int)PacketTypes.requestAddItem, ServerHandle.AddItemRequest },
+			{ (int)PacketTypes.requestAddGroupItem, ServerHandle.AddGroupItemRequest },
+			{ (int)PacketTypes.requestItemDelete, ServerHandle.ItemDeleteRequest },
+			{ (int)PacketTypes.requestGroupItemDelete, ServerHandle.GroupItemDeleteRequest },
+			{ (int)PacketTypes.requestInventorySync, ServerHandle.InventoryResyncRequest },
+			
 			{ (int)PacketTypes.stat, ServerHandle.StatPacket },
 			{ (int)PacketTypes.exp, ServerHandle.ExpPacket },
 			{ (int)PacketTypes.point, ServerHandle.PointPacket },

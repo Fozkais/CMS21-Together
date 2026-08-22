@@ -56,7 +56,7 @@ public static class GarageUpgradeHooks
 			return;
 		}
 		
-		if (SavesManager.currentSave.Difficulty == DifficultyLevel.Sandbox) return;
+		if (SaveSystem.selectedSave.Difficulty == DifficultyLevel.Sandbox) return;
 
 		int upgradeCost = __instance.upgradeSystem.GetUpgradeCost(__instance.currentUpgradeItem.UpgradeID, __instance.currentUpgradeItem.UpgradeLevel, UpgradeType.Money);
 		if (upgradeCost <= GlobalData.PlayerMoney)
@@ -75,15 +75,30 @@ public static class GarageUpgradeHooks
 	{
 		if (sentInitial || !Server.Instance.isRunning) yield break;
 
-		while (!ClientData.GameReady)
+		while (!GameLoadHook.IsGameReady())
 			yield return new WaitForSeconds(0.2f);
 		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
-		GameData.Instance.upgradeTools.PrepareItems();
+		
+		if (GameData.Instance == null) {
+			MelonLogger.Error("CRITICAL: GameData.Instance is NULL. Are you in the main menu?");
+			yield break;
+		}
+		GarageAndToolsTab tools = GameData.Instance.garageTools;
+		if (tools == null) {
+			MelonLogger.Error("CRITICAL: tools (GarageTools) is NULL!");
+			yield break;
+		}
+		if (tools.upgradeSystem == null || tools.upgradeItems == null) {
+			MelonLogger.Error($"Internal refs null: System={tools.upgradeSystem==null}, Items={tools.upgradeItems==null}");
+			yield break;
+		}
+		
+		GameData.Instance.garageTools.PrepareItems();
 		yield return new WaitForEndOfFrame();
 		
-		foreach (UpgradeItem item in GameData.Instance.upgradeTools.upgradeItems)
+		foreach (UpgradeItem item in GameData.Instance.garageTools.upgradeItems)
 		{
 			//MelonLogger.Msg($"Upgrade : {item.upgradeID} , state : {item.upgradeState}.");
 			ClientData.Instance.garageUpgrades[item.upgradeID] = new GarageUpgrade(item.upgradeID, item.UpgradeLevel, item.upgradeState == UpgradeState.Unlocked);

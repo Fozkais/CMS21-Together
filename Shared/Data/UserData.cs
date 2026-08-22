@@ -17,7 +17,7 @@ public class UserData
 	public string lobbyID;
 	public string playerGUID;
 
-	public NetworkType selectedNetworkType = NetworkType.TCP;
+	public NetworkType selectedNetworkType = NetworkType.DirectIP;
 
 	[JsonIgnore] public int playerID;
 	[JsonIgnore] public bool isReady;
@@ -43,8 +43,8 @@ public class UserData
 		ip = "127.0.0.1";
 		lobbyID = "";
 		playerID = 1;
-		playerGUID = Guid.NewGuid().ToString();
-		selectedNetworkType = NetworkType.TCP;
+		playerGUID = username;
+		selectedNetworkType = NetworkType.DirectIP;
 	}
 
 	public UserData(string _username, int _playerID, string playerGuid)
