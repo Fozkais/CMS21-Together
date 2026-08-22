@@ -32,5 +32,7 @@ public enum PacketTypes
 	CarSpawnRequest,
 	CarSpawnResponse,
 	CarSpawnDelete,
-	CarSpawnRejected
+	CarSpawnRejected,
+	CarBodyPartUpdate,
+	CarSubPartUpdate
 }
