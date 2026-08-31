@@ -38,10 +38,10 @@ public static class SaveSystem
 	    for (int i = 0; i < MainMod.MAX_SAVE_COUNT; i++)
 	    {
 	        SaveData currentSave = GetSave(i);
-	        bool hasModData = false;
+	        bool hasSaveFile = currentSave != null && currentSave.HasData;
 
-	        // 2. Extraction du Payload
-	        if (currentSave != null && currentSave.HasData)
+	        // 2. Extraction du Payload (moderne, ou legacy en fallback en lecture seule)
+	        if (hasSaveFile)
 	        {
 	            try
 	            {
@@ -53,24 +53,28 @@ public static class SaveSystem
 	                if (TryFindModData(reader, out var payload))
 	                {
 	                    Extensions[i] = ModProfileExtension.FromBytes(payload);
-	                    hasModData = true;
+	                }
+	                else if (SaveMigration.TryLoadLegacyExtension(i, out var legacyExtension))
+	                {
+	                    Extensions[i] = legacyExtension;
+	                    MelonLogger.Msg($"[SaveSystem] Slot {i} recovered from legacy (pre-0.4.17) save data.");
 	                }
 	            }
 	            catch (Exception e)
-	            { 
-	                MelonLogger.Error($"[SaveSystem] Error reading slot {i}: {e.Message}"); 
+	            {
+	                MelonLogger.Error($"[SaveSystem] Error reading slot {i}: {e.Message}");
 	            }
 	        }
-	        
-	        if (i < gdm.ProfileData.Length) 
+
+	        if (i < gdm.ProfileData.Length)
 	        {
 	            expandedProfiles[i] = gdm.ProfileData[i];
 	        }
-	        else if (hasModData)
+	        else if (hasSaveFile)
 	        {
 	            var tempArray = new Il2CppReferenceArray<SaveData>(1);
 	            tempArray[0] = currentSave;
-	            gdm.ReloadProfiles(tempArray); 
+	            gdm.ReloadProfiles(tempArray);
 	            expandedProfiles[i] = DataHelper.Copy(gdm.ProfileData[0]);
 	        }
 	        else

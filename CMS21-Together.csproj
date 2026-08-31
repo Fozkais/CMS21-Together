@@ -83,6 +83,7 @@
         <Compile Include="ClientSide\Data\Player\Movement.cs" />
         <Compile Include="ClientSide\Data\Player\Rotation.cs" />
         <Compile Include="ClientSide\Data\Player\Stats.cs" />
+        <Compile Include="ClientSide\Data\SaveMigration.cs" />
         <Compile Include="ClientSide\Data\SaveSystem.cs" />
         <Compile Include="ClientSide\Data\SaveSystemHooks.cs" />
         <Compile Include="ClientSide\Data\SceneManager.cs" />
